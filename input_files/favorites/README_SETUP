@@ -1,0 +1,4 @@
+# fixing up variants.
+rna_score -s 1lnt_RNA.pdb
+ex default.out 1
+mv default.out.1.pdb  native_1lnt_RNA.pdb

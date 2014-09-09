@@ -1,0 +1,7 @@
++TGProject = "TG-MCB090153"
+universe = vanilla
+notification = never
+
+executable = /home/rhiju/src/rosetta//main/source/bin/stepwise
+arguments = -s anticodon_HELIX1.pdb -fasta anticodon.fasta -terminal_res A:29 A:41 -extra_min_res A:31 A:39 -superimpose_over_all -cycles 200 -nstruct 20 -intermolecular_frequency 0.0 -save_times -native anticodon_3l0u_RNA.pdb -score:rna_torsion_potential RNA11_based_new -chemical::enlarge_H_lj -set_weights rna_torsion 1.0 -cycles 2000 -out:file:silent SWM/$(Process)/swm_rebuild.out
+Queue 10

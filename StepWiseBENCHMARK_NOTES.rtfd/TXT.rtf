@@ -1,0 +1,99 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1265\cocoasubrtf210
+{\fonttbl\f0\fmodern\fcharset0 Courier;\f1\fswiss\fcharset0 Helvetica;\f2\fmodern\fcharset0 Courier-Bold;
+\f3\fmodern\fcharset0 Courier-Oblique;}
+{\colortbl;\red255\green255\blue255;}
+\margl1440\margr1440\vieww19420\viewh14840\viewkind0
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+
+\f0\fs24 \cf0 \ul \ulc0 Aug 12, 2014, onwards\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+
+\fs22 \cf0 \CocoaLigature0 /Users/rhiju/projects/stepwise/benchmark/input_files/favorites\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+
+\fs24 \cf0 \ulnone \CocoaLigature1 \
+\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+\cf0 \ul Figured out how to virtualize free moieties \'97 should be useful in processing natives\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+\cf0 \ulnone See white below \'97 gets virtualized by virtualize_free_rna_moieties() as access through rna_score.\ul \
+
+\f1 \ulnone {{\NeXTGraphic Screen Shot 2014-08-14 at 2.33.11 PM.png \width7180 \height7820
+}¬}{{\NeXTGraphic Screen Shot 2014-08-14 at 2.33.18 PM.png \width7380 \height9160
+}¬}{{\NeXTGraphic Screen Shot 2014-08-14 at 2.33.47 PM.png \width6060 \height11520
+}¬}
+\f0 \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+\cf0 \ul UUCG\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+
+\fs22 \cf0 \CocoaLigature0 /Users/rhiju/projects/RNA/swm/tetraloops/uucg_loop/rna_suite_optimize\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+
+\fs24 \cf0 \ulnone \CocoaLigature1 playing with fang\'92s new suite_torsion score term.\
+Implemented rna_torsion_sc.\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+
+\fs22 \cf0 \CocoaLigature0 uucg_RNA.pdb:1: :   1: : rC inc  __ 0.000\
+uucg_RNA.pdb:1: :   2: : rC 33 p 1a 0.959\
+uucg_RNA.pdb:1: :   3: : rU 33 p 1a 0.807\
+
+\f2\b uucg_RNA.pdb:1: :   4: : rU 32 p 1z 0.043\
+uucg_RNA.pdb:1: :   5: : rC 22 p 2[ 0.707\
+uucg_RNA.pdb:1: :   6: : rG 23 t 6n 0.271
+\f0\b0 \
+uucg_RNA.pdb:1: :   7: : rG 33 p 1a 0.205\
+uucg_RNA.pdb:1: :   8: : rG 33 t 1c 0.629\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+
+\fs28 \cf0 \ul Sep. 8, 2014\
+
+\fs22 LoopE motif\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+\cf0 \ulnone \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+
+\f1\fs24 \cf0 \CocoaLigature1 {{\NeXTGraphic Screen Shot 2014-09-08 at 3.26.34 PM.png \width5120 \height9140
+}¬}
+\f0\fs22 \
+Main different is A*U hoogsteen/Wc \'97 \'91perfect\'92 in SW models, but forming only one H-bond in xtals.\
+\
+\ul kink_turn\
+\ulnone \CocoaLigature0 problem: \'91interleaved\'92 base planes \'97 one base has pairs above and below (left compared to native on right):\
+
+\f1\fs24 \CocoaLigature1 {{\NeXTGraphic Screen Shot 2014-09-08 at 3.57.48 PM.png \width5080 \height3940
+}¬}{{\NeXTGraphic Screen Shot 2014-09-08 at 3.57.52 PM.png \width5400 \height3420
+}¬}
+\f0\fs22 \
+\
+\ul puzzle1_alt_fixed\
+\ulnone \CocoaLigature0 may need to change centroid screener to capture bulged-U/neighbor interaction \'97 3 good H-bonds but not a base pair or stack:\
+
+\f1\fs24 \CocoaLigature1 {{\NeXTGraphic Screen Shot 2014-09-08 at 4.03.26 PM.png \width10060 \height8120
+}¬}
+\f0\fs22 \CocoaLigature0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\pardirnatural
+
+\fs24 \cf0 fix:\
+ uucg -- this works in other runs -- dissect\
+ tl_tr_p4p6 -- this used to work -- dissect.\
+ anticodon -- check increase in rna_torsion?\
+ kiss_add_L3_fixed -- make cost of U higher?\
+ kink_turn -- base pairs are not in ladder -- alternating planes?\
+ puzzle1 -- may be easily fixed through different persistence length.\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\pardirnatural
+
+\f3\i \cf0  [allow_skip_bulge -- potential fixes to j55a, tltr, and gagu.]\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\pardirnatural
+
+\f0\i0 \cf0 \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\pardirnatural
+
+\fs22 \cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+\cf0 \
+}

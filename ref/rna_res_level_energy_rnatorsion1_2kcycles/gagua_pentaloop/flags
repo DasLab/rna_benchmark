@@ -1,0 +1,13 @@
+-s gagua_pentaloop_HELIX1.pdb
+-fasta gagua_pentaloop.fasta
+-terminal_res  A:20 A:28  
+-extra_min_res  A:21 A:27 
+-superimpose_over_all
+-cycles 200
+-nstruct 20
+-intermolecular_frequency 0.0
+-native gagua_pentaloop_1xjr_RNA.pdb
+-score:rna_torsion_potential RNA11_based_new
+-chemical::enlarge_H_lj
+-set_weights rna_torsion 1.0
+-cycles 2000
