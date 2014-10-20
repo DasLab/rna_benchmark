@@ -5,6 +5,8 @@ if ~exist( 'colorcode', 'var' ) colorcode = [0 0 0; 1 0 0]; end;
 if size( colorcode, 1 ) < length( inpaths ); colorcode = jet( length( inpaths ) ); end;
 clf;
 
+for n = 1:length( inpaths );  assert( exist( inpaths{n}, 'dir' ) > 0 ); end
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 target_names = get_target_names();
 for n = 1:length( inpaths )
@@ -67,6 +69,7 @@ set(figure(1), 'position', [300 200 500 600] );
 for n = 1:length( inpaths )
   score_name = 'score'; rms_name = 'rms_fill';
   for  k= 1:length( outfiles )
+    if isempty( which_target{n,k} ); continue; end;
     subplot( nrows, ncols, mod( which_target{n,k} -1, nrows*ncols ) + 1 );
     if length( data{n,k} ) == 0; continue; end; 
     score_idx = find(strcmp( data{n,k}.score_labels, score_name ));
