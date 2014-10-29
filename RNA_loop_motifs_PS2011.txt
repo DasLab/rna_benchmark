@@ -1,0 +1,16 @@
+Name                           Sequence              Secstruct           Working_res     Native               Input_res                 Extra_flags
+5P_j12_leadzyme		                                 -                   E:23-26		 1nuj_RNA.pdb         - 						-
+5P_p1_m_box_riboswitch								 -					 X:164-167		 2qbz_RNA.pdb		  -							-
+3P_j55a_group_I_intron								 -					 R:196-199		 2r8s_RNA.pdb		  -							-
+5P_j55a_group_I_intron								 -					 R:122-126		 2r8s_RNA.pdb		  -							-
+hepatitis_C_virus_ires_IIa							 -					 A:53-57  		 2pn4_RNA.pdb		  -							-
+j24_tpp_riboswitch									 -					 B:40-44		 3d2v_RNA.pdb		  - 						-
+23s_rrna_44_49										 -					 0:44-49		 1s72_RNA.pdb		  -							-		 
+23s_rrna_531_536									 -					 0:531-536		 1s72_RNA.pdb		  -							-
+j31_glycine_riboswitch								 - 			 		 B:75-81		 3owi_RNA.pdb		  -							-  
+j23_group_II_intron									 -					 A:287-293		 3g78_RNA.pdb		  -							-    
+l1_sam_II_riboswitch								 -					 B:8-14			 2qwy_RNA.pdb		  -							-
+l2_viral_rna_pseudoknot								 -					 A:19-25		 1l2x_RNA.pdb		  -							-
+23s_rrna_2534_2540									 - 					 0:2534-2540	 1s72_RNA.pdb		  -							-
+23s_rrna_1976_1985									 -					 0:1976-1985	 1s72_RNA.pdb		  -							-
+23s_rrna_2003_2012									 - 					 0:2003-2012	 1s72_RNA.pdb		  -							- 

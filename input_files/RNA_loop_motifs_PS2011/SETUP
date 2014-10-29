@@ -1,0 +1,23 @@
+fetch_pdb.py 1NUJ
+fetch_pdb.py 2QBZ
+fetch_pdb.py 2R8S
+fetch_pdb.py 2PN4
+fetch_pdb.py 3D2V
+fetch_pdb.py 1S72		 
+fetch_pdb.py 3OWI 
+fetch_pdb.py 3G78    
+fetch_pdb.py 2QWY
+fetch_pdb.py 1L2X
+
+make_rna_rosetta_ready.py 1NUJ.pdb
+make_rna_rosetta_ready.py 2QBZ.pdb
+make_rna_rosetta_ready.py 2R8S.pdb
+make_rna_rosetta_ready.py 2PN4.pdb
+make_rna_rosetta_ready.py 3D2V.pdb
+make_rna_rosetta_ready.py 1S72.pdb	 
+make_rna_rosetta_ready.py 3OWI.pdb
+make_rna_rosetta_ready.py 3G78.pdb
+make_rna_rosetta_ready.py 2QWY.pdb
+make_rna_rosetta_ready.py 1L2X.pdb
+
+
