@@ -3,7 +3,7 @@
 ##########################################################
 
 from sys import exit
-from os.path import exists, dirname, basename
+from os.path import exists, dirname, basename, abspath
 from os import popen
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
@@ -24,6 +24,8 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', colorcode=None, xvar='rm
 	data = []
 	which_target = []
 	outfiles_list = []
+
+	inpaths = map( lambda x: abspath(x), inpaths )
 
 	for inpath in inpaths:
 
@@ -67,7 +69,7 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', colorcode=None, xvar='rm
 			print ' Run %d          %5.0f +/- %4.0f' % ( n, mean_time, std_time )
 	print '\n'
 	for n in xrange( len( inpaths ) ):
-		print ' Run %d: %s' % ( n, inpaths[n] )
+		print ' Run %d: %s' % ( n, basename( inpaths[n] ) )
 
 	###################################################
 
@@ -81,7 +83,7 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', colorcode=None, xvar='rm
 	###################################################
 	
 	fig = plt.figure(1)
-	fig.set_size_inches(15.5,18)
+	#fig.set_size_inches(15.5,18)
 	
 	titles = []
 
@@ -89,7 +91,6 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', colorcode=None, xvar='rm
 		
 		for k in xrange( len( outfiles_list[n] ) ):
 
-			if not which_target[n][k]: continue
 			plt.subplot( nrows, ncols, np.mod( which_target[n][k] -1, nrows*ncols ) + 1 )
 			if not len( data[n][k].scores ): continue
 
@@ -98,24 +99,18 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', colorcode=None, xvar='rm
 			score_data = [ score[score_idx] for score in data[n][k].scores ]
 			rms_data = [ score[rms_idx] for score in data[n][k].scores ]
 
-			plt.plot( rms_data, score_data, marker='.', markersize=3, color=colorcode[n], linestyle=' ' )
+			plt.plot( rms_data, score_data, marker='.', markersize=5, color=colorcode[n], linestyle=' ' )
 			plt.title( target_names[ which_target[n][k] ] )
 			plt.xlim( 0, 12 )
 
 			if ( np.mod( which_target[n][k], ncols ) == 1 ):  plt.ylabel( yvar )
 			if ( np.floor( (which_target[n][k]-1) / ncols ) == nrows-1 ): plt.xlabel( xvar )
-			#if n == len( inpaths ) - 1:
-			#	ylim0 = plt.ylim()
-				#line( [ 1 1 ], ylim0,'color','k','linestyle',':','selectionhighlight','off')
-				#line( [ 2 2 ], ylim0,'color','k','selectionhighlight','off')
-				#plt.ylim( ylim0 );
-				
+	
 		titles.append( basename( inpaths[n] ) )
 
 	plt.subplot( nrows, ncols, 1 )
 	plt.legend( titles, prop={'size':6} )
 	
-
 	pp.savefig()
 	pp.close()
 	if show:	
@@ -136,6 +131,7 @@ if __name__=='__main__':
 	parser.add_argument('-xvar', help='Name of x variable.', default='rms_fill')
 	parser.add_argument('-yvar', help='Name of y variable.', default='score')
 	parser.add_argument('-show', help='Boolean for showing plot after it is created.', default=False)
+	
 	args=parser.parse_args()
 
 	make_plots( args.inpaths, outfilename=args.outfilename, xvar=args.xvar, yvar=args.yvar, show=args.show )
