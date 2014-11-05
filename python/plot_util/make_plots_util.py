@@ -53,17 +53,11 @@ def load_score_data( file ):
 
 ##########################################################
 
-def get_target_names():
-	
-	file_names = []
+def get_target_names( target_files ):
 	target_names = []
-
-	file_names.append( get_path_to_dir('stepwise_benchmark') + '/favorites.txt' )
-	file_names.append( get_path_to_dir('stepwise_benchmark') + '/favorites2.txt' )
-
-	for file_name in file_names:
+	for file_name in target_files:
+		if '..' not in file_name:	file_name = get_path_to_dir('stepwise_benchmark') + '/' + file_name
 		target_names = get_target_names_from_file( file_name, target_names )
-
 	return target_names
 
 ###########################################################

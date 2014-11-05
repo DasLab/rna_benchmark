@@ -14,12 +14,12 @@ from make_plots_util import *
 
 ##########################################################
 
-def make_plots( inpaths, outfilename='swm_rebuild.out', colorcode=None, xvar='rms_fill', yvar='score', show=False ):
+def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites.txt','favorites2.txt'], colorcode=None, xvar='rms_fill', yvar='score', show=False ):
 
 	if not colorcode: colorcode = [ (0.0, 0.0, 0.0, 1.0), (1.0, 0.0, 0.0, 1.0) ]
 	if len( colorcode ) < len( inpaths ): colorcode = jet( len( inpaths ) )
 
-	target_names = get_target_names()
+	target_names = get_target_names( target_files )
 	
 	data = []
 	which_target = []
@@ -128,10 +128,11 @@ if __name__=='__main__':
 	parser = argparse.ArgumentParser(description='Make plots of scores from silent files.')
 	parser.add_argument('inpaths', nargs='+', help='List of paths to silent files.')
 	parser.add_argument('-outfilename', help='Name of silent file.', default='swm_rebuild.out')
+	parser.add_argument('-target_files', nargs='+', help='List of additional target files.', default=['favorites.txt','favorites2.txt'])
 	parser.add_argument('-xvar', help='Name of x variable.', default='rms_fill')
 	parser.add_argument('-yvar', help='Name of y variable.', default='score')
 	parser.add_argument('-show', help='Boolean for showing plot after it is created.', default=False)
 	
 	args=parser.parse_args()
 
-	make_plots( args.inpaths, outfilename=args.outfilename, xvar=args.xvar, yvar=args.yvar, show=args.show )
+	make_plots( args.inpaths, outfilename=args.outfilename, target_files=args.target_files, xvar=args.xvar, yvar=args.yvar, show=args.show )

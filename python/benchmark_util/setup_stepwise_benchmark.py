@@ -59,16 +59,26 @@ for line in lines[ 1: ]:
     working_res[ name ] = cols[3]
     native[ name ]      = cols[4]
     input_res[ name ]   = cols[5]
-    inpath[ name ]      = relpath + '/input_files/' + basename( args.info_file.replace('.txt','' ) )
+    inpath[ name ]      = relpath + 'input_files/' + basename( args.info_file.replace('.txt','' ) )
     extra_flags[ name ] = string.join( cols[6:] )
         
     
     if extra_flags[ name ] == '-': extra_flags[ name ] = ''
+    
+    fasta[ name ] = '%s/%s.fasta' % (inpath[name],name)
+    #if '.fasta' in sequence[ name ]:  ### if sequence is too long, .fasta file should be specified
+    #    assert( exists( fasta[ name ] ) ) 
+    #    sequences = []
+    #    for line in open( fasta[ name ], 'r' ).readlines():
+    #        if '>' in line: continue
+    #        if not len( line ): continue
+    #        sequences.append( line )
+    #    sequence[ name ] = string.join( sequences, ',')
+
     sequences          = string.split( sequence[name], ',' )
     working_res_blocks = string.split( working_res[name], ',' )
 
     # create fasta
-    fasta[ name ] = '%s/%s.fasta' % (inpath[name],name)
     if not exists( fasta[ name ] ):
         fid = open( fasta[ name ], 'w' )
         assert( len( sequences ) == len( working_res_blocks ) )
@@ -228,11 +238,12 @@ for name in names:
     if extra_flags_benchmark:
         for flag in extra_flags_benchmark:
             if ( flag.find('#') == 0 ): continue
+            if ( flag.find('-single_stranded_loop_mode') ): continue ### SWA Specific
             if ( flag.find( '-score:weights' ) == 0 ): weights_file = string.split( flag )[1]
             fid.write( flag )
-        if len( weights_file ) > 0:
-            assert( exists( weights_file ) )
-            system( 'cp ' + weights_file + ' ' + name )
+        #if len( weights_file ) > 0:
+        #    assert( exists( weights_file ) )
+        #    system( 'cp ' + weights_file + ' ' + name )
 
     fid.close()
 
@@ -253,7 +264,9 @@ for name in names:
   
         fid = open( '%s/README_SWA' % dirname, 'w' )
         fid.write( '~/src/rosetta/tools/SWA_RNA_python/SWA_dagman_python/SWA_DAG/setup_SWA_RNA_dag_job_files.py' )
-        fid.write( ' -single_stranded_loop_mode True' )
+        
+        ### THIS SHOULD BE SPECIFIED IN EXTRAS_BENCHMARK.txt
+        #fid.write( ' -single_stranded_loop_mode True' )
         
         if input_res[ name ] != '':
             working_res_ranges = working_res[ name ].split(',')
@@ -288,6 +301,7 @@ for name in names:
         if extra_flags_benchmark:
             for flag in extra_flags_benchmark:
                 if ( flag.find('#') == 0 ): continue
+                if ( flag.find('-analytic_etable_evaluation') ): continue ### SWM Specific
                 if ( flag.find( '-score:weights' ) == 0 ):
                     flag.replace( '-score:weights', '-force_field_file' ) 
                     weights_file = string.split( flag )[1]
