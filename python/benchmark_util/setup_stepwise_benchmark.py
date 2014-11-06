@@ -250,7 +250,8 @@ for name in names:
 
 
         loopres = [ renumbered_workres[x] for x in xrange( len( renumbered_workres ) ) if workres[x] in loopres ]
-        loopres_legacy = string.join( [ loopchains[x]+':'+str(loopres[x]) for x in xrange( len( loopres ) ) ] ,' ')
+        #loopres_legacy = string.join( [ loopchains[x]+':'+str(loopres[x]) for x in xrange( len( loopres ) ) ] ,' ')
+        loopres_legacy = string.join( [ str(loopres[x]) for x in xrange( len( loopres ) ) ] ,' ')
 
         loop_res[ name ][ 'default' ] = loopres_default
         loop_res[ name ][ 'legacy' ]  = loopres_legacy
