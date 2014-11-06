@@ -120,7 +120,8 @@ for name in names:
     if not exists( fasta[ name ] ):
         fid = open( fasta[ name ], 'w' )
         assert( len( sequences ) == len( working_res_blocks ) )
-        for n in range( len( sequences ) ): fid.write( '>%s %s\n%s\n' % (name,working_res_blocks[n],sequences[n]) )
+        #for n in range( len( sequences ) ): fid.write( '>%s %s\n%s\n' % (name,working_res_blocks[n],sequences[n]) )
+        fid.write('>%s %s\n%s\n' % ( name, working_res[ name ].replace(',',' '), string.join(sequences, '')))
         fid.close()
 
     # store information on 'conventional' residue numbers and chains.
@@ -168,7 +169,6 @@ for name in names:
     # create secstruct if not defined
     if secstruct[ name ] == '-': 
         secstruct[ name ] = string.join( [ '.' * len( seq ) for seq in sequences ], ',' )
-        print 'Secstruct for '+name+': '+secstruct[ name ]
 
 
     # create any helices.
@@ -222,6 +222,7 @@ for name in names:
             extra_min_res[ name ].append( m )
 
 
+    # get sample loop res
     if args.legacy:
 
         loop_res[ name ] = {}      
@@ -229,35 +230,24 @@ for name in names:
         
         loopres_tag = string.join( [ res_tag for res_tag in working_res[ name ].split(',') if res_tag not in input_res[ name ] ], ',' )
         ( loopres , loopchains  ) = parse_tag( loopres_tag )
+        ( workres , workchains  ) = parse_tag( working_res[ name ] )
+
         ( loopres , loopchains  ) = loopres[1:-1], loopchains[1:-1]
         loopres_default = string.join( [ loopchains[x]+':'+str(loopres[x]) for x in xrange( len( loopres ) ) ] ,' ')
 
-
-        ( workres , workchains  ) = parse_tag( working_res[ name ] )
         sorted_workres = zip( workchains, workres )
         sorted_workres.sort()
         [ workchains, workres ] = [ list(l) for l in zip(*sorted_workres) ]
-        print workchains
-        print workres
         renumbered_workres = [ x for x in xrange( 1, len( workres )+1 ) ]
-        print renumbered_workres
 
         sorted_loopres = zip( loopchains, loopres )
         sorted_loopres.sort()
         [ loopchains, loopres ] = [ list(l) for l in zip(*sorted_loopres) ]
-        print loopchains
-        print loopres
-
-
         loopres = [ renumbered_workres[x] for x in xrange( len( renumbered_workres ) ) if workres[x] in loopres ]
-        #loopres_legacy = string.join( [ loopchains[x]+':'+str(loopres[x]) for x in xrange( len( loopres ) ) ] ,' ')
         loopres_legacy = string.join( [ str(loopres[x]) for x in xrange( len( loopres ) ) ] ,' ')
 
         loop_res[ name ][ 'default' ] = loopres_default
         loop_res[ name ][ 'legacy' ]  = loopres_legacy
-
-        print 'loopres_defalt: ', loopres_default
-        print 'loopres_legacy: ', loopres_legacy
 
             
 if len (args.extra_flags) > 0:
@@ -309,9 +299,9 @@ for name in names:
     weights_file = ''
     if extra_flags_benchmark:
         for flag in extra_flags_benchmark:
-            if ( flag.find('#') == 0 ): continue
-            if ( flag.find('-single_stranded_loop_mode') ): continue ### SWA Specific
-            if ( flag.find( '-score:weights' ) == 0 ): weights_file = string.split( flag )[1]
+            if ( '#' in flag ): continue
+            if ( '-single_stranded_loop_mode' in flag ): continue ### SWA Specific
+            if ( '-score:weights' in flag ): weights_file = string.split( flag )[1]
             fid.write( flag )
         #if len( weights_file ) > 0:
         #    assert( exists( weights_file ) )
@@ -336,7 +326,6 @@ for name in names:
   
         fid = open( '%s/README_SWA' % dirname, 'w' )
         fid.write( '~/src/rosetta/tools/SWA_RNA_python/SWA_dagman_python/SWA_DAG/setup_SWA_RNA_dag_job_files.py' )           
-        fid.write( ' -sample_res %s' % loop_res[ name ][ 'legacy' ] )
 
         for infile in [ fasta[name] ] + helix_files[ name ] + input_pdbs[ name ]:  system( 'cp %s %s/ ' % ( infile, dirname ) )
 
@@ -345,6 +334,7 @@ for name in names:
             fid.write( ' -s' )
             for infile in start_files:  fid.write( ' %s' % (basename(infile) ) )
         fid.write( ' -fasta %s.fasta' % name )
+        fid.write( ' -sample_res %s' % loop_res[ name ][ 'legacy' ] )
         if len( native[ name ] ) > 0:
             system( 'cp %s %s/' % (working_native[name],dirname) )
             fid.write( ' -native_pdb %s' % basename( working_native[name] ) )
@@ -355,13 +345,14 @@ for name in names:
         weights_file = ''
         if extra_flags_benchmark:
             for flag in extra_flags_benchmark:
-                if ( flag.find('#') == 0 ): continue
-                if ( flag.find('-analytic_etable_evaluation') ): continue ### SWM Specific
-                if ( flag.find( '-score:weights' ) == 0 ):
-                    flag.replace( '-score:weights', '-force_field_file' ) 
+                if ( '#' in flag ): continue
+                if ( '-analytic_etable_evaluation' in flag ): continue ### SWM Specific
+                if ( '-score:weights' in flag ):
+                    flag = flag.replace( '-score:weights', '-force_field_file' ) 
                     weights_file = string.split( flag )[1]
-                if ( flag.find( '-score:rna_torsion_potential' ) == 0 ):
-                    flag.replace( '-score:rna_torsion_potential', '-rna_torsion_potential_folder' )
+                if ( '-score:rna_torsion_potential' in flag ):
+                    flag = flag.replace( '-score:rna_torsion_potential', '-rna_torsion_potential_folder' )
+                flag = ' '+flag.replace( '\n', '' )
                 fid.write( flag )
         
             #if len( weights_file ) > 0:

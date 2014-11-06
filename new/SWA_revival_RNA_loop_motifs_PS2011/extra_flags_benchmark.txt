@@ -1,4 +1,4 @@
 -score:weights stepwise/rna/rna_loop_hires_04092010.wts 
 -score:rna_torsion_potential ps_03242010/   
 -single_stranded_loop_mode True
-#-analytic_etable_evaluation false
+-analytic_etable_evaluation false
