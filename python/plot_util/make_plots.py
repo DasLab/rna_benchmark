@@ -14,7 +14,7 @@ from make_plots_util import *
 
 ##########################################################
 
-def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites.txt','favorites2.txt'], colorcode=None, xvar='rms_fill', yvar='score', show=False ):
+def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites.txt','favorites2.txt'], colorcode=None, xvar='rms_fill', yvar='score', scale=False, show=False ):
 
 	if not colorcode: colorcode = [ (0.0, 0.0, 0.0, 1.0), (1.0, 0.0, 0.0, 1.0) ]
 	if len( colorcode ) < len( inpaths ): colorcode = jet( len( inpaths ) )
@@ -94,14 +94,12 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites
 			plt.subplot( nrows, ncols, np.mod( which_target[n][k] -1, nrows*ncols ) + 1 )
 			if not len( data[n][k].scores ): continue
 
-			score_idx = data[n][k].score_labels.index( yvar )
-			rms_idx = data[n][k].score_labels.index( xvar )
-			score_data = [ score[score_idx] for score in data[n][k].scores ]
-			rms_data = [ score[rms_idx] for score in data[n][k].scores ]
-
-			plt.plot( rms_data, score_data, marker='.', markersize=5, color=colorcode[n], linestyle=' ' )
+			( xvar_idx , yvar_idx  ) = data[n][k].score_labels.index( xvar ) , data[n][k].score_labels.index( yvar )
+			[ xvar_data, yvar_data ] = [ list(d) for d in zip( *[ ( score[xvar_idx], score[yvar_idx] ) for score in data[n][k].scores] ) ]
+			
+			plt.plot( xvar_data, yvar_data, marker='.', markersize=5, color=colorcode[n], linestyle=' ' )
 			plt.title( target_names[ which_target[n][k] ] )
-			plt.xlim( 0, 12 )
+			if not scale:	plt.xlim( 0, 12 )
 
 			if ( np.mod( which_target[n][k], ncols ) == 1 ):  plt.ylabel( yvar )
 			if ( np.floor( (which_target[n][k]-1) / ncols ) == nrows-1 ): plt.xlabel( xvar )
@@ -131,8 +129,8 @@ if __name__=='__main__':
 	parser.add_argument('-target_files', nargs='+', help='List of additional target files.', default=['favorites.txt','favorites2.txt'])
 	parser.add_argument('-xvar', help='Name of x variable.', default='rms_fill')
 	parser.add_argument('-yvar', help='Name of y variable.', default='score')
-	parser.add_argument('-show', help='Boolean for showing plot after it is created.', default=False)
-	
+	parser.add_argument('--scale', help='scale plot axes.', action='store_true')
+	parser.add_argument('--show', help='show plot after it is created.', action='store_true')
 	args=parser.parse_args()
 
-	make_plots( args.inpaths, outfilename=args.outfilename, target_files=args.target_files, xvar=args.xvar, yvar=args.yvar, show=args.show )
+	make_plots( args.inpaths, outfilename=args.outfilename, target_files=args.target_files, xvar=args.xvar, yvar=args.yvar, scale=args.scale, show=args.show )

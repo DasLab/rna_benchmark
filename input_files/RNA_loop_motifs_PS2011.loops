@@ -22,13 +22,13 @@ Name:          j24_tpp_riboswitch
 Native:        3d2v_RNA.pdb
 Loop_res:      B:40-44
 
-Name:          23s_rrna_44_49
-Native:        1s72_RNA.pdb
-Loop_res:      0:44-49
+#Name:          23s_rrna_44_49
+#Native:        1s72_RNA.pdb
+#Loop_res:      0:44-49
 
-Name:          23s_rrna_531_536
-Native:        1s72_RNA.pdb
-Loop_res:      0:531-536
+#Name:          23s_rrna_531_536
+#Native:        1s72_RNA.pdb
+#Loop_res:      0:531-536
 
 Name:          j31_glycine_riboswitch
 Native:        3owi_RNA.pdb
@@ -46,14 +46,14 @@ Name:          l2_viral_rna_pseudoknot
 Native:        1l2x_RNA.pdb
 Loop_res:      A:19-25
 
-Name:          23s_rrna_2534_2540
-Native:        1s72_RNA.pdb
-Loop_res:      0:2534-2540
+#Name:          23s_rrna_2534_2540
+#Native:        1s72_RNA.pdb
+#Loop_res:      0:2534-2540
 
-Name:          23s_rrna_1976_1985
-Native:        1s72_RNA.pdb
-Loop_res:      0:1976-1985
+#Name:          23s_rrna_1976_1985
+#Native:        1s72_RNA.pdb
+#Loop_res:      0:1976-1985
 
-Name:          23s_rrna_2003_2012
-Native:        1s72_RNA.pdb
-Loop_res:      0:2003-2012
+#Name:          23s_rrna_2003_2012
+#Native:        1s72_RNA.pdb
+#Loop_res:      0:2003-2012

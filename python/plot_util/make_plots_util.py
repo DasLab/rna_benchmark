@@ -56,7 +56,7 @@ def load_score_data( file ):
 def get_target_names( target_files ):
 	target_names = []
 	for file_name in target_files:
-		if '..' not in file_name:	file_name = get_path_to_dir('stepwise_benchmark') + '/' + file_name
+		if '..' not in file_name:	file_name = get_path_to_dir('stepwise_benchmark') + '/input_files/' + file_name
 		target_names = get_target_names_from_file( file_name, target_names )
 	return target_names
 
@@ -65,10 +65,19 @@ def get_target_names( target_files ):
 def get_target_names_from_file( filename, target_names ):
 	fid = open( filename, 'r' )
 	for line in fid.readlines():
-		if 'Name' in line: continue
-		cols = line.split()
-		if not len( cols ): continue
-		target_names.append( cols[0] ) 
+		### Old target file format
+		### Name 			Sequence 	Secstruct ...
+		### target_name 
+		#if 'Name' in line: continue
+		#cols = line.split()
+		#if not len( cols ): continue
+		#target_names.append( cols[0] ) 
+		
+		### New target file format
+		### Name:		target_name
+		cols = string.split( line.replace( '\n', '' ) )
+		if cols[0] == 'Name:': target_names.append( cols[1] ) 
+
 	fid.close()
 	return target_names
 
