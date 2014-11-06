@@ -1,14 +1,19 @@
 #!/usr/bin/python
 
+
 import string
 import argparse
 from os.path import exists,basename,dirname
 from os import system, getcwd, chdir
 from make_tag import make_tag_with_conventional_numbering, make_tag_from_list_of_int_ranges
 from parse_options import get_resnum_chain
+from parse_tag import parse_tag
 from get_sequence import get_sequences
 from rna_server_conversions import get_all_stems, join_sequence
 from sys import argv, exit
+
+
+#####################################################################################################################
 
 parser = argparse.ArgumentParser(description='Setup benchmark for stepwise monte carlo')
 parser.add_argument("info_file",       help='text file with information, in same directory as input_files/ (e.g., "../favorites.txt")')
@@ -16,14 +21,13 @@ parser.add_argument("user_input_runs", nargs='*',help='specify particular cases 
 default_extra_flags_benchmark = 'extra_flags_benchmark.txt'
 parser.add_argument('-extra_flags', default=default_extra_flags_benchmark, help='Filename of text file with extra_flags for all cases.')
 parser.add_argument('-nhours', default='16', type=int, help='Number of hours to queue each job.')
-parser.add_argument('-legacy', default=False, help='Additional flag for setting up SWA runs.')
+parser.add_argument('--legacy', action='store_true', help='Additional flag for setting up SWA runs.')
 args = parser.parse_args()
 
-# read in benchmark information & create any missing input files.
-lines = open( args.info_file ).readlines()
-relpath = dirname( args.info_file )
-if len( relpath) > 0: relpath += '/'
+#####################################################################################################################
 
+
+# initialize directories
 names = []
 sequence = {}
 secstruct = {}
@@ -31,7 +35,6 @@ working_res = {}
 native = {}
 input_res = {}
 extra_flags = {}
-inpath = {}
 fasta = {}
 resnums = {}
 chains  = {}
@@ -40,45 +43,80 @@ working_native = {}
 input_pdbs = {}
 terminal_res = {}
 extra_min_res = {}
-
+loop_res = {}
 bps = ['au','ua','gc','cg','ug','gu']
-fid_qsub = open( 'qsubMINI', 'w' )
 
-for line in lines[ 1: ]:
-    if line[0] == '#': continue
-    if len( line.replace(' ','') ) < 5: continue
-    cols = string.split( line.replace( '\n','' ) )
-    name = cols[0]
-    print 'Reading in info for: ', name
-    if ( len( args.user_input_runs ) > 0 ) and (name not in args.user_input_runs): continue
 
-    assert( not name in names ) # better be unique
-    names.append( name )
-    sequence [ name ]   = cols[1]
-    secstruct[ name ]   = cols[2]
-    working_res[ name ] = cols[3]
-    native[ name ]      = cols[4]
-    input_res[ name ]   = cols[5]
-    inpath[ name ]      = relpath + 'input_files/' + basename( args.info_file.replace('.txt','' ) )
-    extra_flags[ name ] = string.join( cols[6:] )
-        
+# make sure the info file is specified correctly and exists
+info_file = args.info_file
+assert( len( info_file ) > 0 )
+assert( '.txt' in info_file )
+assert( exists( info_file ) )
+
+
+# define and check paths
+inpath = info_file.replace('.txt', '' ) + '/'
+assert( exists( inpath ) )
+
+
+# read info_file 
+for info_file_line in open( info_file ).readlines():
+
+    if info_file_line[0] == '#' : continue
+    if len( info_file_line ) < 5: continue
     
-    if extra_flags[ name ] == '-': extra_flags[ name ] = ''
+    cols = string.split( info_file_line.replace( '\n','' ) )
+    assert( len( cols ) >= 2 )
+
+    if cols[0] == 'Name:':
+        name = cols[1]
+        if ( len( args.user_input_runs ) > 0 ) and ( name not in args.user_input_runs ): continue
+        print 'Reading in info for: ', name
+        assert( name not in names )
+        names.append( name )
+        continue
+
+    if ( len( args.user_input_runs ) > 0 ) and ( name not in args.user_input_runs ): 
+        continue
     
-    fasta[ name ] = '%s/%s.fasta' % (inpath[name],name)
-    #if '.fasta' in sequence[ name ]:  ### if sequence is too long, .fasta file should be specified
-    #    assert( exists( fasta[ name ] ) ) 
-    #    sequences = []
-    #    for line in open( fasta[ name ], 'r' ).readlines():
-    #        if '>' in line: continue
-    #        if not len( line ): continue
-    #        sequences.append( line )
-    #    sequence[ name ] = string.join( sequences, ',')
+    if cols[0] == 'Sequence:':
+        sequence[ name ] = cols[1]
+        continue
+
+    if cols[0] == 'Secstruct:':
+        secstruct[ name ] = cols[1]
+        continue
+
+    if cols[0] == 'Working_res:':
+        working_res[ name ] = cols[1]
+        continue
+
+    if cols[0] == 'Input_res:':
+        input_res[ name ] = cols[1]
+        continue
+
+    if cols[0] == 'Native:':
+        native[ name ] = cols[1]
+        continue
+
+    if cols[0] == 'Extra_flags:':
+        if cols[1] == '-':  extra_flags[ name ] = ''
+        else:               extra_flags[ name ] = string.join( cols[1:] )
+        continue
+
+
+# check that each dictionary is the same size
+assert( len( names ) == len( sequence ) == len( secstruct ) == len( working_res ) == len( input_res ) == len( native ))
+
+
+# iterate over names 
+for name in names:
 
     sequences          = string.split( sequence[name], ',' )
     working_res_blocks = string.split( working_res[name], ',' )
 
     # create fasta
+    fasta[ name ] = '%s/%s.fasta' % (inpath,name)
     if not exists( fasta[ name ] ):
         fid = open( fasta[ name ], 'w' )
         assert( len( sequences ) == len( working_res_blocks ) )
@@ -103,8 +141,8 @@ for line in lines[ 1: ]:
 
     # working_native
     assert( native[ name ] != '-' ) # for now, require a native, since this is a benchmark.
-    prefix = '%s/%s_' % ( inpath[name],name)
-    working_native[ name ] = slice_out( inpath[ name ], prefix, native[ name ], string.join( working_res_blocks ) )
+    prefix = '%s/%s_' % ( inpath,name)
+    working_native[ name ] = slice_out( inpath, prefix, native[ name ], string.join( working_res_blocks ) )
     assert( string.join(sequences,'') == string.join(get_sequences( working_native[name] )[0],'') )
 
     # create starting PDBs
@@ -114,8 +152,8 @@ for line in lines[ 1: ]:
     if input_res[ name ] != '-':
         input_res_blocks = string.split( input_res[ name ], ';' )
         for m in range( len ( input_res_blocks ) ):
-            prefix = '%s/%s_START%d_' % ( inpath[name],name,m+1)
-            input_pdb = slice_out( inpath[ name ], prefix, native[ name ],input_res_blocks[m] )
+            prefix = '%s/%s_START%d_' % ( inpath,name,m+1)
+            input_pdb = slice_out( inpath, prefix, native[ name ],input_res_blocks[m] )
             input_pdbs[ name ].append( input_pdb )
             get_resnum_chain( input_res_blocks[m], input_resnums, input_chains )
     
@@ -129,13 +167,7 @@ for line in lines[ 1: ]:
 
     # create secstruct if not defined
     if secstruct[ name ] == '-': 
-        secstruct[ name ] = ''
-        res_ranges = working_res[ name ].split(',')
-        for res_range in res_ranges:
-            res_str = make_tag_from_list_of_int_ranges( [ res_range ] )
-            secstruct[ name ] += string.join(['.' for x in res_str.split()],'')
-            secstruct[ name ] += ','
-        secstruct[ name ] = secstruct[ name ][:-1]
+        secstruct[ name ] = string.join( [ '.' * len( seq ) for seq in sequences ], ',' )
         print 'Secstruct for '+name+': '+secstruct[ name ]
 
 
@@ -147,7 +179,7 @@ for line in lines[ 1: ]:
     stems = get_all_stems( secstruct_joined, chainbreak_pos, sequence_joined  )
 
     for i in range( len( stems ) ):
-        helix_file =  '%s/%s_HELIX%d.pdb' % (inpath[name],name,(i+1))
+        helix_file =  '%s/%s_HELIX%d.pdb' % (inpath,name,(i+1))
 
         stem = stems[i]
         helix_seq = ''; helix_resnum = [];
@@ -189,6 +221,26 @@ for line in lines[ 1: ]:
              ( next_moving and not prev_moving and not right_after_chainbreak ) ):
             extra_min_res[ name ].append( m )
 
+
+    if args.legacy:
+
+        loop_res[ name ] = {}      
+        assert( input_res[ name ] != '-' )
+        
+        loop_res_tag = string.join( [ res_tag for res_tag in working_res[ name ] if res_tag not in input_res[ name ] ], ',' )
+        ( loopres , loopchains  ) = parse_tag( loop_res_tag )
+        
+        ### THIS MAY NEED TO BE FIXED
+        offset = 1 - loopres[0]
+
+        loopres_default = string.join( [ str(x) for x in loopres ] ,' ')
+        loopres_fixed = string.join( [ str(x+offset) for x in loopres ] ,' ')
+
+        loop_res[ name ][ 'default' ] = loopres_default
+        loop_res[ name ][ 'legacy' ]  = loopres_fixed
+
+
+            
 if len (args.extra_flags) > 0:
     if exists( args.extra_flags ):
         extra_flags_benchmark = open( args.extra_flags ).readlines()
@@ -197,7 +249,8 @@ if len (args.extra_flags) > 0:
         print 'Did not find ', args.extra_flags, ' so not using any extra flags for the benchmark'
         assert ( args.extra_flags == default_extra_flags_benchmark )
 
-
+# write qsubMINIs, READMEs and SUBMITs
+fid_qsub = open( 'qsubMINI', 'w' )
 for name in names:
     
     dirname = name
@@ -256,32 +309,15 @@ for name in names:
 
     fid_qsub.write( 'cd %s; source qsubMINI; cd %s\n' % ( name, CWD ) )
 
-
-    if args.legacy: # SETUP for StepWise Assembly
+    # SETUP for StepWise Assembly
+    if args.legacy:
         
         dirname = name+'/'+'SWA'
         if not exists( dirname ): system( 'mkdir '+dirname )
   
         fid = open( '%s/README_SWA' % dirname, 'w' )
-        fid.write( '~/src/rosetta/tools/SWA_RNA_python/SWA_dagman_python/SWA_DAG/setup_SWA_RNA_dag_job_files.py' )
-        
-        ### THIS SHOULD BE SPECIFIED IN EXTRAS_BENCHMARK.txt
-        #fid.write( ' -single_stranded_loop_mode True' )
-        
-        if input_res[ name ] != '':
-            working_res_ranges = working_res[ name ].split(',')
-            input_res_ranges = input_res[ name ].split(',')
-            working_res_str = make_tag_from_list_of_int_ranges( working_res_ranges )
-            input_res_str = make_tag_from_list_of_int_ranges( input_res_ranges )
-            print 'Working_res: '+working_res_str
-            print '  Input_res: '+input_res_str
-            offset = 1 - int(working_res_str.split()[0])
-            sample_res = string.join([ str(int(x)+offset) for x in working_res_str.split() if x not in input_res_str ],' ')     
-        else:
-            print "ERROR: Must define Input_res for SWA setup."
-            exit(0)
-        
-        fid.write( ' -sample_res %s' % sample_res )
+        fid.write( '~/src/rosetta/tools/SWA_RNA_python/SWA_dagman_python/SWA_DAG/setup_SWA_RNA_dag_job_files.py' )           
+        fid.write( ' -sample_res %s' % loop_res[ name ][ 'legacy' ] )
 
         for infile in [ fasta[name] ] + helix_files[ name ] + input_pdbs[ name ]:  system( 'cp %s %s/ ' % ( infile, dirname ) )
 

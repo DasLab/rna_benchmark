@@ -1,5 +1,0 @@
-Name                   Sequence              Secstruct           Working_res     Native               Input_res                 Extra_flags
-gcaa_tetraloop         gcgcaagc              -            		 A:3-10          1zih_RNA.pdb         A:3-4,9-10                -          
-uucg_tetraloop         acuucggu              -            		 A:4-11          2koc_RNA.pdb         A:4-5,10-11               -
-gagua_pentaloop        cggaguacg             -           		 A:20-28         1xjr_RNA.pdb         A:20-21,27-28    		    -
-srl_free               ccuaguacgagaggaccgg   -					 A:651-669       1q9a_RNA.pdb         A:651-652,658-663,668-669	-

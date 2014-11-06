@@ -42,7 +42,7 @@ for line in lines[1:]:
 	if line[0] == '#': continue
 	cols = string.split( line.replace( '\n','' ) )
 	name = cols[0]
-	print 'Setting up input files for: ', name
+	#print '\nSetting up input files for: ', name
 
 	assert( not name in names ) # better be unique
 	names.append( name )
@@ -54,42 +54,13 @@ for line in lines[1:]:
 	inpath[ name ]      = relpath + 'input_files/' + basename( args.info_file.replace('.txt','' ) )
 	extra_flags[ name ] = string.join( cols[6:] )
 
-
-	if not exists( inpath[ name ]+'/'+native[ name ] ):
-		
-		### Fetch PDB
-		pdb_id = native[ name ].replace('RNA','').replace('.pdb','').replace('_','').upper()
-		pdb = pdb_id+'.pdb'
-		assert( len(pdb_id) == 4 )
-		if not exists( inpath[ name ]+'/'+pdb ):
-			fetch = popen('fetch_pdb.py %s' % pdb_id )
-			#assert( exists( pdb ) )
-			#if dirname( pdb ) != inpath[ name ]:
-			#	mv = popen( 'mv %s %s/' % ( pdb, inpath[ name ] ) )
-			#assert( exists( inpath[ name ]+'/'+pdb ) )
-
-		### make_rna_rosetta_ready.py
-		while True:
-			try:
-				#outfile = popen( 'make_rna_rosetta_ready.py %s -no_renumber' % ( inpath[ name ]+'/'+pdb_id+'.pdb' ) ).readline().replace('\n','')
-				outfile = popen( 'make_rna_rosetta_ready.py %s -no_renumber' % ( pdb ) ).readline().replace('\n','')
-				outfile = outfile.split(' ... ')[1].replace(' ', '').replace('\n','')
-				break
-			except:
-				print 'ERROR ... Trying again'
-				continue
-		#assert( exists( outfile ) )
-		#if not dirname( outfile ) != inpath[ name ]:
-		#	mv = popen( 'mv %s %s/' % ( outfile, inpath[ name ] ) )
-		assert( exists( inpath[ name ]+'/'+native[ name ] ) )
-
-
+	
 	if args.radius and input_res[ name ] == '-':
 		try:
 			surrounding_res_tag = get_surrounding_res_tag( inpath[ name ]+'/'+native[ name ], sample_res_list=working_res[ name ], radius=args.radius, verbose=False )
 			input_res[ name ] = surrounding_res_tag.replace(' ',',')
 			if input_res[ name ][0] == ',': input_res[ name ] = input_res[ name ][1:]
-			print input_res[ name ]
+			#print 'Input_res: ',input_res[ name ]
 		except:
 			input_res[ name ] = '-'
 	
@@ -97,16 +68,27 @@ for line in lines[1:]:
 	if args.sequence:
 		if sequence[ name ] == '-':
 			( coords, pdb_lines, sequence, chains, residues ) = read_pdb( inpath[ name ]+'/'+native[ name ] )
-			if input_res[ name ] != '-':	( residues, surr_and_sample_chains ) = parse_tag( input_res[ name ]+' '+working_res[ name ] )
-			seq = [ sequence[chains[res-1]][res] for res in residues ]
-			
-			if not len( seq ) > 20:
-				sequence[ name ] = string.join( [res.replace( ' MG', '[MG]' ).replace(' ','').lower() for res in seq] ,'')
-			else:
-				sequence[ name ] = '%s.fasta' % name
-	
+			if input_res[ name ] != '-':	( residues, chains ) = parse_tag( input_res[ name ]+' '+working_res[ name ] )
+			seq = []
+			for res_idx in xrange( len( residues ) ):
+				seq.append( sequence[chains[res_idx]][residues[res_idx]])
+			#if not len( seq ) > 40:
+			sequence[ name ] = string.join( [res.replace( ' MG', '[MG]' ).replace(' ','').lower() for res in seq] ,'')
+			#else:
+			#	sequence[ name ] = '%s.fasta' % name
+				### write fasta?
+			#print 'Sequence: ',sequence[ name ]
    
-	
+   	print
+	print 'Name:         ', name
+	print 'Sequence:     ', sequence[ name ]
+	print 'Secstruct:    ', secstruct[ name ] 
+	print 'Working_res:  ', working_res[ name ] 
+	print 'Native:       ', native[ name ] 
+	print 'Input_res:    ', input_res[ name ] 
+	print 'Extra_flags:  ', extra_flags[ name ] 
+
+
 	info_line = [ name, sequence[ name ], secstruct[ name ], working_res[ name ], native[ name ], input_res[ name ], extra_flags[ name ] ]
 	if args.update_info_file:
 		open( args.info_file, 'a' ).write( string.join( info_line, '\t' ) + '\n' )
