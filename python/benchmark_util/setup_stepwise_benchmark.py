@@ -227,18 +227,36 @@ for name in names:
         loop_res[ name ] = {}      
         assert( input_res[ name ] != '-' )
         
-        loop_res_tag = string.join( [ res_tag for res_tag in working_res[ name ] if res_tag not in input_res[ name ] ], ',' )
-        ( loopres , loopchains  ) = parse_tag( loop_res_tag )
-        
-        ### THIS MAY NEED TO BE FIXED
-        offset = 1 - loopres[0]
+        loopres_tag = string.join( [ res_tag for res_tag in working_res[ name ].split(',') if res_tag not in input_res[ name ] ], ',' )
+        ( loopres , loopchains  ) = parse_tag( loopres_tag )
+        ( loopres , loopchains  ) = loopres[1:-1], loopchains[1:-1]
+        loopres_default = string.join( [ loopchains[x]+':'+str(loopres[x]) for x in xrange( len( loopres ) ) ] ,' ')
 
-        loopres_default = string.join( [ str(x) for x in loopres ] ,' ')
-        loopres_fixed = string.join( [ str(x+offset) for x in loopres ] ,' ')
+
+        ( workres , workchains  ) = parse_tag( working_res[ name ] )
+        sorted_workres = zip( workchains, workres )
+        sorted_workres.sort()
+        [ workchains, workres ] = [ list(l) for l in zip(*sorted_workres) ]
+        print workchains
+        print workres
+        renumbered_workres = [ x for x in xrange( 1, len( workres )+1 ) ]
+        print renumbered_workres
+
+        sorted_loopres = zip( loopchains, loopres )
+        sorted_loopres.sort()
+        [ loopchains, loopres ] = [ list(l) for l in zip(*sorted_loopres) ]
+        print loopchains
+        print loopres
+
+
+        loopres = [ renumbered_workres[x] for x in xrange( len( renumbered_workres ) ) if workres[x] in loopres ]
+        loopres_legacy = string.join( [ loopchains[x]+':'+str(loopres[x]) for x in xrange( len( loopres ) ) ] ,' ')
 
         loop_res[ name ][ 'default' ] = loopres_default
-        loop_res[ name ][ 'legacy' ]  = loopres_fixed
+        loop_res[ name ][ 'legacy' ]  = loopres_legacy
 
+        print 'loopres_defalt: ', loopres_default
+        print 'loopres_legacy: ', loopres_legacy
 
             
 if len (args.extra_flags) > 0:
