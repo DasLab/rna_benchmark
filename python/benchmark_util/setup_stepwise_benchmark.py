@@ -313,7 +313,7 @@ for name in names:
     print 'Setting up submission files for: ', name
     CWD = getcwd()
     chdir( name )
-    system( 'rosetta_submit.py README_SWM SWM 10 %d' % args.nhours )
+    system( 'rosetta_submit.py README_SWM SWM 10 %d -save_logs' % args.nhours )
     chdir( CWD )
 
     fid_qsub.write( 'cd %s; source qsubMINI; cd %s\n' % ( name, CWD ) )

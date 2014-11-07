@@ -101,8 +101,10 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites
 			plt.title( target_names[ which_target[n][k] ] )
 			if not scale:	plt.xlim( 0, 12 )
 
-			if ( np.mod( which_target[n][k], ncols ) == 1 ):  plt.ylabel( yvar )
-			if ( np.floor( (which_target[n][k]-1) / ncols ) == nrows-1 ): plt.xlabel( xvar )
+			if ( ( np.mod( which_target[n][k], ncols ) == 1 ) or ( ncols == 1 ) ):
+				plt.ylabel( yvar )
+			if ( ( np.floor( (which_target[n][k]-1) / ncols ) == nrows-1 ) or ( nrows == 1 ) ): 
+				plt.xlabel( xvar )
 	
 		titles.append( basename( inpaths[n] ) )
 
