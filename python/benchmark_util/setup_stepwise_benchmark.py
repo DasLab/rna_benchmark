@@ -21,7 +21,7 @@ parser.add_argument("user_input_runs", nargs='*',help='specify particular cases 
 default_extra_flags_benchmark = 'extra_flags_benchmark.txt'
 parser.add_argument('-extra_flags', default=default_extra_flags_benchmark, help='Filename of text file with extra_flags for all cases.')
 parser.add_argument('-nhours', default='16', type=int, help='Number of hours to queue each job.')
-parser.add_argument('--legacy', action='store_true', help='Additional flag for setting up SWA runs.')
+parser.add_argument('--swa', action='store_true', help='Additional flag for setting up SWA runs.')
 args = parser.parse_args()
 
 #####################################################################################################################
@@ -64,7 +64,6 @@ for info_file_line in open( info_file ).readlines():
 
     if info_file_line[0] == '#' : continue
     if len( info_file_line ) < 5: continue
-    
     cols = string.split( info_file_line.replace( '\n','' ) )
     assert( len( cols ) >= 2 )
 
@@ -75,35 +74,16 @@ for info_file_line in open( info_file ).readlines():
         assert( name not in names )
         names.append( name )
         continue
-
-    if ( len( args.user_input_runs ) > 0 ) and ( name not in args.user_input_runs ): 
-        continue
     
-    if cols[0] == 'Sequence:':
-        sequence[ name ] = cols[1]
-        continue
+    if ( len( args.user_input_runs ) > 0 ) and ( name not in args.user_input_runs ): continue
 
-    if cols[0] == 'Secstruct:':
-        secstruct[ name ] = cols[1]
-        continue
-
-    if cols[0] == 'Working_res:':
-        working_res[ name ] = cols[1]
-        continue
-
-    if cols[0] == 'Input_res:':
-        input_res[ name ] = cols[1]
-        continue
-
-    if cols[0] == 'Native:':
-        native[ name ] = cols[1]
-        continue
-
-    if cols[0] == 'Extra_flags:':
-        if cols[1] == '-':  extra_flags[ name ] = ''
-        else:               extra_flags[ name ] = string.join( cols[1:] )
-        continue
-
+    if   cols[0] == 'Sequence:'    :    sequence   [ name ] = cols[1]
+    elif cols[0] == 'Secstruct:'   :    secstruct  [ name ] = cols[1]
+    elif cols[0] == 'Working_res:' :    working_res[ name ] = cols[1]
+    elif cols[0] == 'Input_res:'   :    input_res  [ name ] = cols[1]
+    elif cols[0] == 'Native:'      :    native     [ name ] = cols[1]
+    elif cols[0] == 'Extra_flags:' :    extra_flags[ name ] = string.join( cols[1:] )
+       
 
 # check that each dictionary is the same size
 assert( len( names ) == len( sequence ) == len( secstruct ) == len( working_res ) == len( input_res ) == len( native ))
@@ -223,7 +203,7 @@ for name in names:
 
 
     # get sample loop res
-    if args.legacy:
+    if args.swa:
 
         loop_res[ name ] = {}      
         assert( input_res[ name ] != '-' )
@@ -233,7 +213,7 @@ for name in names:
         ( workres , workchains  ) = parse_tag( working_res[ name ] )
 
         ( loopres , loopchains  ) = loopres[1:-1], loopchains[1:-1]
-        loopres_default = string.join( [ loopchains[x]+':'+str(loopres[x]) for x in xrange( len( loopres ) ) ] ,' ')
+        loopres_conventional = string.join( [ loopchains[x]+':'+str(loopres[x]) for x in xrange( len( loopres ) ) ] ,' ')
 
         sorted_workres = zip( workchains, workres )
         sorted_workres.sort()
@@ -244,10 +224,10 @@ for name in names:
         sorted_loopres.sort()
         [ loopchains, loopres ] = [ list(l) for l in zip(*sorted_loopres) ]
         loopres = [ renumbered_workres[x] for x in xrange( len( renumbered_workres ) ) if workres[x] in loopres ]
-        loopres_legacy = string.join( [ str(loopres[x]) for x in xrange( len( loopres ) ) ] ,' ')
+        loopres_swa = string.join( [ str(loopres[x]) for x in xrange( len( loopres ) ) ] ,' ')
 
-        loop_res[ name ][ 'default' ] = loopres_default
-        loop_res[ name ][ 'legacy' ]  = loopres_legacy
+        loop_res[ name ][ 'conventional' ] = loopres_conventional
+        loop_res[ name ][ 'swa' ]  = loopres_swa
 
             
 if len (args.extra_flags) > 0:
@@ -258,89 +238,33 @@ if len (args.extra_flags) > 0:
         print 'Did not find ', args.extra_flags, ' so not using any extra flags for the benchmark'
         assert ( args.extra_flags == default_extra_flags_benchmark )
 
+
 # write qsubMINIs, READMEs and SUBMITs
 fid_qsub = open( 'qsubMINI', 'w' )
 for name in names:
     
     dirname = name
     if not exists( dirname ): system( 'mkdir '+dirname )
-  
-    fid = open( '%s/README_SWM' % name, 'w' )
-    fid.write( 'stepwise @flags -out:file:silent swm_rebuild.out\n' )
-    fid.close()
-
-    fid = open( '%s/flags' % name, 'w' )
-
-    for infile in [ fasta[name] ] + helix_files[ name ] + input_pdbs[ name ]:  system( 'cp %s %s/ ' % ( infile, name ) )
-
-    start_files = helix_files[ name ] + input_pdbs[ name ]
-    if len( start_files ) > 0 :
-        fid.write( '-s' )
-        for infile in start_files:  fid.write( ' %s' % (basename(infile) ) )
-        fid.write( '\n' )
-    fid.write( '-fasta %s.fasta\n' % name )
-    if len( terminal_res[ name ] ) > 0:
-        fid.write( '-terminal_res %s  \n' % make_tag_with_conventional_numbering( terminal_res[ name ], resnums[ name ], chains[ name ] ) )
-    if len( extra_min_res[ name ] ) > 0 and not args.legacy: ### Turn extra_min_res off for SWM when comparing to SWA
-        fid.write( '-extra_min_res %s \n' % make_tag_with_conventional_numbering( extra_min_res[ name ], resnums[ name ], chains[ name ] ) )
-    if ( len( input_pdbs[ name ] ) == 0 ):
-        fid.write( '-superimpose_over_all\n' ) # RMSD over everything -- better test since helices are usually native
-    fid.write( '-cycles 200\n' )
-    fid.write( '-nstruct 20\n' )
-    fid.write( '-intermolecular_frequency 0.0\n' )
-    #fid.write( '-save_times\n' )
-
-    if len( native[ name ] ) > 0:
-        system( 'cp %s %s/' % (working_native[name],name) )
-        fid.write( '-native %s\n' % basename( working_native[name] ) )
-    # case-specific extra flags
-    if len( extra_flags[name] ) > 0 : fid.write( '%s\n' % extra_flags[name] )
-    # extra flags for whole benchmark
-    weights_file = ''
-    if extra_flags_benchmark:
-        for flag in extra_flags_benchmark:
-            if ( '#' in flag ): continue
-            if ( '-single_stranded_loop_mode' in flag ): continue ### SWA Specific
-            if ( '-score:weights' in flag ): weights_file = string.split( flag )[1]
-            fid.write( flag )
-        #if len( weights_file ) > 0:
-        #    assert( exists( weights_file ) )
-        #    system( 'cp ' + weights_file + ' ' + name )
-
-    fid.close()
-
-    print
-    print 'Setting up submission files for: ', name
-    CWD = getcwd()
-    chdir( name )
-    system( 'rosetta_submit.py README_SWM SWM 10 %d -save_logs' % args.nhours )
-    chdir( CWD )
-
-    fid_qsub.write( 'cd %s; source qsubMINI; cd %s\n' % ( name, CWD ) )
 
     # SETUP for StepWise Assembly
-    if args.legacy:
+    if args.swa:
+                
+        start_files = helix_files[ name ] + input_pdbs[ name ]
+        for infile in [ fasta[name] ] + start_files + [ working_native[ name ] ]:  system( 'cp %s %s/ ' % ( infile, dirname ) )
         
-        dirname = name+'/'+'SWA'
-        if not exists( dirname ): system( 'mkdir '+dirname )
-  
         fid = open( '%s/README_SWA' % dirname, 'w' )
         fid.write( '~/src/rosetta/tools/SWA_RNA_python/SWA_dagman_python/SWA_DAG/setup_SWA_RNA_dag_job_files.py' )           
-
-        for infile in [ fasta[name] ] + helix_files[ name ] + input_pdbs[ name ]:  system( 'cp %s %s/ ' % ( infile, dirname ) )
-
-        start_files = helix_files[ name ] + input_pdbs[ name ]
         if len( start_files ) > 0 :
             fid.write( ' -s' )
             for infile in start_files:  fid.write( ' %s' % (basename(infile) ) )
-        fid.write( ' -fasta %s.fasta' % name )
-        fid.write( ' -sample_res %s' % loop_res[ name ][ 'legacy' ] )
         if len( native[ name ] ) > 0:
-            system( 'cp %s %s/' % (working_native[name],dirname) )
             fid.write( ' -native_pdb %s' % basename( working_native[name] ) )
+        fid.write( ' -fasta %s.fasta' % name )
+        fid.write( ' -sample_res %s' % loop_res[ name ][ 'swa' ] )
         
         # case-specific extra flags
-        if len( extra_flags[name] ) > 0 : fid.write( ' %s' % extra_flags[name] )
+        if ( len( extra_flags[name] ) > 0 ) and ( extra_flags[ name ] != '-' ) : fid.write( ' %s' % extra_flags[name] )
+        
         # extra flags for whole benchmark
         weights_file = ''
         if extra_flags_benchmark:
@@ -353,26 +277,73 @@ for name in names:
                 if ( '-score:rna_torsion_potential' in flag ):
                     flag = flag.replace( '-score:rna_torsion_potential', '-rna_torsion_potential_folder' )
                 flag = ' '+flag.replace( '\n', '' )
-                fid.write( flag )
-        
-            #if len( weights_file ) > 0:
-            #   assert( exists( weights_file ) )
-            #   system( 'cp ' + weights_file + ' ' + name )
+                fid.write( flag )      
 
         fid.close()
 
-        print
-        print 'Setting up submission files for: ', name
+        print '\nSetting up submission files for: ', name
         CWD = getcwd()
         fid_submit = open( dirname+'/SUBMIT_SWA', 'w' )
         fid_submit.write( '~/src/rosetta/tools/SWA_RNA_python/SWA_dagman_python/dagman/submit_DAG_job.py' )
-        fid_submit.write( ' -master_wall_time %d'% 72 ) #args.nhours )
+        fid_submit.write( ' -master_wall_time %d' % 72 ) #args.nhours )
         fid_submit.write( ' -master_memory_reserve 2048' )
-        fid_submit.write( ' -num_slave_nodes 50' )
+        fid_submit.write( ' -num_slave_nodes %d' % 150  )
         fid_submit.write( ' -dagman_file rna_build.dag' )
         fid_submit.close()
 
         fid_qsub.write( 'cd %s; source ./README_SWA && source ./SUBMIT_SWA; cd %s\n' % ( dirname, CWD ) )
+
+    # SETUP for StepWise Monte Carlo
+    else:
+  
+        start_files = helix_files[ name ] + input_pdbs[ name ]
+        for infile in [ fasta[name] ] + start_files + [ working_native[ name ] ]:  system( 'cp %s %s/ ' % ( infile, name ) )
+
+        fid = open( '%s/README_SWM' % name, 'w' )
+        fid.write( 'stepwise @flags -out:file:silent swm_rebuild.out\n' )
+        fid.close()
+
+        fid = open( '%s/flags' % name, 'w' )       
+        if len( start_files ) > 0 :
+            fid.write( '-s' )
+            for infile in start_files:  fid.write( ' %s' % (basename(infile) ) )
+            fid.write( '\n' )
+        if len( native[ name ] ) > 0:
+            fid.write( '-native %s\n' % basename( working_native[name] ) )
+        if len( terminal_res[ name ] ) > 0:
+            fid.write( '-terminal_res %s  \n' % make_tag_with_conventional_numbering( terminal_res[ name ], resnums[ name ], chains[ name ] ) )
+        if len( extra_min_res[ name ] ) > 0 and not args.swa: ### Turn extra_min_res off for SWM when comparing to SWA
+            fid.write( '-extra_min_res %s \n' % make_tag_with_conventional_numbering( extra_min_res[ name ], resnums[ name ], chains[ name ] ) )
+        if ( len( input_pdbs[ name ] ) == 0 ):
+            fid.write( '-superimpose_over_all\n' ) # RMSD over everything -- better test since helices are usually native
+        fid.write( '-fasta %s.fasta\n' % name )
+        fid.write( '-cycles 200\n' )
+        fid.write( '-nstruct 20\n' )
+        fid.write( '-intermolecular_frequency 0.0\n' )
+        #fid.write( '-save_times\n' )
+        
+        # case-specific extra flags
+        if ( len( extra_flags[name] ) > 0 ) and ( extra_flags[ name ] != '-' ) : fid.write( ' %s' % extra_flags[name] )
+
+        # extra flags for whole benchmark
+        weights_file = ''
+        if extra_flags_benchmark:
+            for flag in extra_flags_benchmark:
+                if ( '#' in flag ): continue
+                if ( '-single_stranded_loop_mode' in flag ): continue ### SWA Specific
+                if ( '-score:weights' in flag ): weights_file = string.split( flag )[1]
+                fid.write( flag )
+        
+        fid.close()
+
+        print '\nSetting up submission files for: ', name
+        CWD = getcwd()
+        chdir( name )
+        system( 'rosetta_submit.py README_SWM SWM 10 %d -save_logs' % args.nhours )
+        chdir( CWD )
+
+        fid_qsub.write( 'cd %s; source qsubMINI; cd %s\n' % ( name, CWD ) )  
+
 
 fid_qsub.close()
 
