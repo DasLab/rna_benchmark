@@ -22,6 +22,8 @@ default_extra_flags_benchmark = 'extra_flags_benchmark.txt'
 parser.add_argument('-extra_flags', default=default_extra_flags_benchmark, help='Filename of text file with extra_flags for all cases.')
 parser.add_argument('-nhours', default='16', type=int, help='Number of hours to queue each job.')
 parser.add_argument('--swa', action='store_true', help='Additional flag for setting up SWA runs.')
+parser.add_argument('--extra_min_res_off', action='store_true', help='Additional flag for turning extra_min_res off.')
+parser.add_argument('--save_times_off', action='store_true', help='Additional flag for turning save_times flag off.')
 args = parser.parse_args()
 
 #####################################################################################################################
@@ -312,7 +314,7 @@ for name in names:
             fid.write( '-native %s\n' % basename( working_native[name] ) )
         if len( terminal_res[ name ] ) > 0:
             fid.write( '-terminal_res %s  \n' % make_tag_with_conventional_numbering( terminal_res[ name ], resnums[ name ], chains[ name ] ) )
-        if len( extra_min_res[ name ] ) > 0 and not args.swa: ### Turn extra_min_res off for SWM when comparing to SWA
+        if len( extra_min_res[ name ] ) > 0 and not args.no_extra_min_res: ### Turn extra_min_res off for SWM when comparing to SWA
             fid.write( '-extra_min_res %s \n' % make_tag_with_conventional_numbering( extra_min_res[ name ], resnums[ name ], chains[ name ] ) )
         if ( len( input_pdbs[ name ] ) == 0 ):
             fid.write( '-superimpose_over_all\n' ) # RMSD over everything -- better test since helices are usually native
@@ -320,7 +322,8 @@ for name in names:
         fid.write( '-cycles 200\n' )
         fid.write( '-nstruct 20\n' )
         fid.write( '-intermolecular_frequency 0.0\n' )
-        #fid.write( '-save_times\n' )
+        if not args.save_times_off: 
+            fid.write( '-save_times\n' )
         
         # case-specific extra flags
         if ( len( extra_flags[name] ) > 0 ) and ( extra_flags[ name ] != '-' ) : fid.write( ' %s' % extra_flags[name] )
