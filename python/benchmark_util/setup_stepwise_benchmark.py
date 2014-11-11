@@ -314,7 +314,7 @@ for name in names:
             fid.write( '-native %s\n' % basename( working_native[name] ) )
         if len( terminal_res[ name ] ) > 0:
             fid.write( '-terminal_res %s  \n' % make_tag_with_conventional_numbering( terminal_res[ name ], resnums[ name ], chains[ name ] ) )
-        if len( extra_min_res[ name ] ) > 0 and not args.no_extra_min_res: ### Turn extra_min_res off for SWM when comparing to SWA
+        if len( extra_min_res[ name ] ) > 0 and not args.extra_min_res_off: ### Turn extra_min_res off for SWM when comparing to SWA
             fid.write( '-extra_min_res %s \n' % make_tag_with_conventional_numbering( extra_min_res[ name ], resnums[ name ], chains[ name ] ) )
         if ( len( input_pdbs[ name ] ) == 0 ):
             fid.write( '-superimpose_over_all\n' ) # RMSD over everything -- better test since helices are usually native
