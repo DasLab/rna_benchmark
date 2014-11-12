@@ -24,6 +24,7 @@ parser.add_argument('-nhours', default='16', type=int, help='Number of hours to 
 parser.add_argument('--swa', action='store_true', help='Additional flag for setting up SWA runs.')
 parser.add_argument('--extra_min_res_off', action='store_true', help='Additional flag for turning extra_min_res off.')
 parser.add_argument('--save_times_off', action='store_true', help='Additional flag for turning save_times flag off.')
+parser.add_argument('-slave_nodes', default='150', type=int, help='Number of nodes to queue.')
 args = parser.parse_args()
 
 #####################################################################################################################
@@ -295,7 +296,7 @@ for name in names:
         fid_submit.write( '~/src/rosetta/tools/SWA_RNA_python/SWA_dagman_python/dagman/submit_DAG_job.py' )
         fid_submit.write( ' -master_wall_time %d' % 72 ) #args.nhours )
         fid_submit.write( ' -master_memory_reserve 2048' )
-        fid_submit.write( ' -num_slave_nodes %d' % 150  )
+        fid_submit.write( ' -num_slave_nodes %d' % args.slave_nodes )
         fid_submit.write( ' -dagman_file rna_build.dag' )
         fid_submit.close()
 
