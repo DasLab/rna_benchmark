@@ -4,8 +4,8 @@
 import string
 import argparse
 from os.path import exists,basename,dirname
-from os import system, getcwd, chdir
-from make_tag import make_tag_with_conventional_numbering, make_tag_from_list_of_int_ranges
+from os import system, getcwd, chdir, popen
+from make_tag import *
 from parse_options import get_resnum_chain
 from parse_tag import parse_tag
 from get_sequence import get_sequences
@@ -96,15 +96,6 @@ for name in names:
 
     sequences          = string.split( sequence[name], ',' )
     working_res_blocks = string.split( working_res[name], ',' )
-
-    # create fasta
-    fasta[ name ] = '%s/%s.fasta' % (inpath,name)
-    if not exists( fasta[ name ] ):
-        fid = open( fasta[ name ], 'w' )
-        assert( len( sequences ) == len( working_res_blocks ) )
-        #for n in range( len( sequences ) ): fid.write( '>%s %s\n%s\n' % (name,working_res_blocks[n],sequences[n]) )
-        fid.write('>%s %s\n%s\n' % ( name, working_res[ name ].replace(',',' '), string.join(sequences, '')))
-        fid.close()
 
     # store information on 'conventional' residue numbers and chains.
     resnums[ name ] = []
@@ -203,32 +194,47 @@ for name in names:
              ( next_moving and not prev_moving and not right_after_chainbreak ) ):
             extra_min_res[ name ].append( m )
 
+ 
+    # create fasta
+    fasta[ name ] = '%s/%s.fasta' % (inpath,name)
+    if not exists( fasta[ name ] ):
+        fid = open( fasta[ name ], 'w' )
+        assert( len( sequences ) == len( working_res_blocks ) )
+        #for n in range( len( sequences ) ): fid.write( '>%s %s\n%s\n' % (name,working_res_blocks[n],sequences[n]) )
+        fid.write( popen( 'pdb2fasta.py %s' % (  working_native[ name ] ) ).read() )
+        fid.close()
 
+ 
     # get sample loop res
     if args.swa:
-
+        
         loop_res[ name ] = {}      
         assert( input_res[ name ] != '-' )
+            
+        ( workres , workchains  ) = parse_tag( working_res[ name ], alpha_sort=True )
+        ( inputres , inputchains  ) = parse_tag( input_res[ name ], alpha_sort=True )
+
+        loopres_tag = []
+        for ii in xrange( len( workres ) ):
+            working_tag = workchains[ ii ] + ':' + str(workres[ ii ])
+            is_input_tag = False
+            for jj in xrange( len( inputres ) ):
+                input_tag = inputchains[ jj ] + ':' + str(inputres[ jj ])
+                if input_tag == working_tag:
+                    is_input_tag = True
+            if is_input_tag: continue
+            loopres_tag.append( working_tag )
+        loopres_tag = string.join( loopres_tag, ',' )
         
-        loopres_tag = string.join( [ res_tag for res_tag in working_res[ name ].split(',') if res_tag not in input_res[ name ] ], ',' )
-        ( loopres , loopchains  ) = parse_tag( loopres_tag )
-        ( workres , workchains  ) = parse_tag( working_res[ name ] )
+        ( loopres , loopchains  ) = parse_tag( loopres_tag, alpha_sort=True )
+        ( workres , workchains  ) = parse_tag( working_res[ name ], alpha_sort=True )
+             
+        loopres_swa = [ idx+1 for idx in xrange( len( workres ) ) if (workres[idx] in loopres and workchains[idx] in loopchains) ]
+        loopres_swa = string.join( [ str(loopres_swa[x]) for x in xrange( len( loopres_swa ) ) ] ,' ')
 
-        ( loopres , loopchains  ) = loopres[1:-1], loopchains[1:-1]
-        loopres_conventional = string.join( [ loopchains[x]+':'+str(loopres[x]) for x in xrange( len( loopres ) ) ] ,' ')
+        #print name, ': ', loopres_tag
+        #print name, ': ', loopres_swa
 
-        sorted_workres = zip( workchains, workres )
-        sorted_workres.sort()
-        [ workchains, workres ] = [ list(l) for l in zip(*sorted_workres) ]
-        renumbered_workres = [ x for x in xrange( 1, len( workres )+1 ) ]
-
-        sorted_loopres = zip( loopchains, loopres )
-        sorted_loopres.sort()
-        [ loopchains, loopres ] = [ list(l) for l in zip(*sorted_loopres) ]
-        loopres = [ renumbered_workres[x] for x in xrange( len( renumbered_workres ) ) if workres[x] in loopres ]
-        loopres_swa = string.join( [ str(loopres[x]) for x in xrange( len( loopres ) ) ] ,' ')
-
-        loop_res[ name ][ 'conventional' ] = loopres_conventional
         loop_res[ name ][ 'swa' ]  = loopres_swa
 
             
@@ -261,7 +267,7 @@ for name in names:
             for infile in start_files:  fid.write( ' %s' % (basename(infile) ) )
         if len( native[ name ] ) > 0:
             fid.write( ' -native_pdb %s' % basename( working_native[name] ) )
-        fid.write( ' -fasta %s.fasta' % name )
+        fid.write( ' -fasta %s.fasta' %  name )
         fid.write( ' -sample_res %s' % loop_res[ name ][ 'swa' ] )
         
         # case-specific extra flags
