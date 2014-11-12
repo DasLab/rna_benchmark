@@ -76,6 +76,7 @@ def get_target_names_from_file( filename, target_names ):
 		### New target file format
 		### Name:		target_name
 		cols = string.split( line.replace( '\n', '' ) )
+		if not len( cols ): continue
 		if cols[0] == 'Name:': target_names.append( cols[1] ) 
 
 	fid.close()
