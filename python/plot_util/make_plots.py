@@ -20,7 +20,7 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites
 	if len( colorcode ) < len( inpaths ): colorcode = jet( len( inpaths ) )
 
 	target_names = get_target_names( target_files )
-	
+
 	data = []
 	which_target = []
 	outfiles_list = []
@@ -36,15 +36,12 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites
 			print 'Reading in ... '+outfile
 			assert( exists( outfile ) )
 
-		which_target.append( map( lambda x: target_names.index( basename( dirname( x ) ) ), outfiles ) )
 		data.append( map( lambda x: load_score_data( x ), outfiles ) )
+		which_target.append( map( lambda x: target_names.index( basename( dirname( x ) ) ), outfiles ) )	
 		outfiles_list.append( outfiles )
 
 	noutfiles = np.max( map( lambda x: len(x), outfiles_list ) )
-	nplots = np.max( map( lambda x: len(x), which_target ) )
-	nrows = int( np.ceil( np.sqrt( nplots ) ) )  
-	ncols = int( np.floor( np.sqrt( nplots ) ) )  
-
+	
 	###################################################
 
 	time_name = 'time'
@@ -87,17 +84,27 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites
 	
 	titles = []
 
+	### determine number of plots, rows, and columns
+	nplots = 0
+	for n in xrange( len( inpaths ) ):
+		for k in xrange( len( outfiles_list[n] ) ):
+			if not len( data[n][k].scores ): continue
+			nplots += 1
+	if nplots < 3: 	  nrows = nplots
+	elif nplots < 10: nrows = 3
+	else:  		      nrows = 4
+	ncols = np.ceil( nplots / float( nrows ) )
+	
+
 	for n in xrange( len( inpaths ) ):
 
-		print 'INPATH: ', inpath
-		
+		plot_idx = 0
+
 		for k in xrange( len( outfiles_list[n] ) ):
 
-			print 'OUTFILE: ', outfiles_list[n][k]
-			print 'WHICH_TARGET: ', which_target[n][k]
-
-			plt.subplot( nrows, ncols, np.floor( which_target[n][k] / float( nrows * ncols ) ) + 1 )
 			if not len( data[n][k].scores ): continue
+			plot_idx += 1
+			plt.subplot( nrows, ncols, plot_idx )
 
 			( xvar_idx , yvar_idx  ) = data[n][k].score_labels.index( xvar ) , data[n][k].score_labels.index( yvar )
 			[ xvar_data, yvar_data ] = [ list(d) for d in zip( *[ ( score[xvar_idx], score[yvar_idx] ) for score in data[n][k].scores] ) ]
@@ -105,13 +112,11 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites
 			plt.plot( xvar_data, yvar_data, marker='.', markersize=5, color=colorcode[n], linestyle=' ' )
 			plt.title( target_names[ which_target[n][k] ] )
 			
-			print 'TITLE: ', target_names[ which_target[n][k] ]
-
 			if not scale:	plt.xlim( 0, 12 )
 
-			if ( ( np.mod( which_target[n][k], ncols ) == 1 ) or ( ncols == 1 ) ):
+			if ( ( np.mod( plot_idx, ncols ) == 1 ) or ( ncols == 1 ) ):
 				plt.ylabel( yvar )
-			if ( ( np.floor( (which_target[n][k]-1) / ncols ) == nrows-1 ) or ( nrows == 1 ) ): 
+			if ( ( np.floor( (plot_idx-1) / ncols ) == nrows-1 ) or ( nrows == 1 ) ): 
 				plt.xlabel( xvar )
 	
 		titles.append( basename( inpaths[n] ) )
