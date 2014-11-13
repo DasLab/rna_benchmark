@@ -88,10 +88,15 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites
 	titles = []
 
 	for n in xrange( len( inpaths ) ):
+
+		print 'INPATH: ', inpath
 		
 		for k in xrange( len( outfiles_list[n] ) ):
 
-			plt.subplot( nrows, ncols, np.mod( which_target[n][k] -1, nrows*ncols ) + 1 )
+			print 'OUTFILE: ', outfiles_list[n][k]
+			print 'WHICH_TARGET: ', which_target[n][k]
+
+			plt.subplot( nrows, ncols, np.floor( which_target[n][k] / float( nrows * ncols ) ) + 1 )
 			if not len( data[n][k].scores ): continue
 
 			( xvar_idx , yvar_idx  ) = data[n][k].score_labels.index( xvar ) , data[n][k].score_labels.index( yvar )
@@ -99,6 +104,9 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites
 			
 			plt.plot( xvar_data, yvar_data, marker='.', markersize=5, color=colorcode[n], linestyle=' ' )
 			plt.title( target_names[ which_target[n][k] ] )
+			
+			print 'TITLE: ', target_names[ which_target[n][k] ]
+
 			if not scale:	plt.xlim( 0, 12 )
 
 			if ( ( np.mod( which_target[n][k], ncols ) == 1 ) or ( ncols == 1 ) ):
