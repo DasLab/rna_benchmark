@@ -37,11 +37,11 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites
 			assert( exists( outfile ) )
 
 		data.append( map( lambda x: load_score_data( x ), outfiles ) )
-		which_target.append( map( lambda x: target_names.index( basename( dirname( x ) ) ), outfiles ) )	
+		which_target.append( map( lambda x: target_names.index( basename( dirname( x ) ) ), outfiles ) )
 		outfiles_list.append( outfiles )
 
 	noutfiles = np.max( map( lambda x: len(x), outfiles_list ) )
-	
+
 	###################################################
 
 	time_name = 'time'
@@ -57,7 +57,7 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites
 				times.append( np.array( [ 0.0 for score in xrange( noutfiles ) ], dtype = 'float_' ) )
 		times_list.append( times )
 
-	
+
 	for k in xrange( noutfiles ):
 		print '\n %-6s%23s' % ( 'TARGET', target_names[ which_target[n][k] ] )
 		for n in xrange( len( inpaths ) ):
@@ -78,23 +78,26 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites
 	pp = PdfPages( fullpdfname )
 
 	###################################################
-	
+
 	fig = plt.figure(1)
 	#fig.set_size_inches(15.5,18)
-	
+
 	titles = []
 
 	### determine number of plots, rows, and columns
-	nplots = 0
-	for n in xrange( len( inpaths ) ):
-		for k in xrange( len( outfiles_list[n] ) ):
-			if not len( data[n][k].scores ): continue
-			nplots += 1
+	#nplots = 0
+	#for n in xrange( len( inpaths ) ):
+	#	for k in xrange( len( outfiles_list[n] ) ):
+	#		if not len( data[n][k].scores ): continue
+	#		nplots += 1
+
+	nplots = noutfiles
+	assert( nplots )
 	if nplots < 3: 	  nrows = nplots
 	elif nplots < 10: nrows = 3
 	else:  		      nrows = 4
 	ncols = np.ceil( nplots / float( nrows ) )
-	
+
 
 	for n in xrange( len( inpaths ) ):
 
@@ -108,25 +111,25 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites
 
 			( xvar_idx , yvar_idx  ) = data[n][k].score_labels.index( xvar ) , data[n][k].score_labels.index( yvar )
 			[ xvar_data, yvar_data ] = [ list(d) for d in zip( *[ ( score[xvar_idx], score[yvar_idx] ) for score in data[n][k].scores] ) ]
-			
+
 			plt.plot( xvar_data, yvar_data, marker='.', markersize=5, color=colorcode[n], linestyle=' ' )
 			plt.title( target_names[ which_target[n][k] ] )
-			
+
 			if not scale:	plt.xlim( 0, 12 )
 
 			if ( ( np.mod( plot_idx, ncols ) == 1 ) or ( ncols == 1 ) ):
 				plt.ylabel( yvar )
-			if ( ( np.floor( (plot_idx-1) / ncols ) == nrows-1 ) or ( nrows == 1 ) ): 
+			if ( ( np.floor( (plot_idx-1) / ncols ) == nrows-1 ) or ( nrows == 1 ) ):
 				plt.xlabel( xvar )
-	
+
 		titles.append( basename( inpaths[n] ) )
 
 	plt.subplot( nrows, ncols, 1 )
 	plt.legend( titles, prop={'size':6} )
-	
+
 	pp.savefig()
 	pp.close()
-	if show:	
+	if show:
 		plt.show()
 
 	return

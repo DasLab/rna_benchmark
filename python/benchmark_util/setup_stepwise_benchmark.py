@@ -47,6 +47,8 @@ input_pdbs = {}
 terminal_res = {}
 extra_min_res = {}
 loop_res = {}
+VDW_rep_screen_pdb = {}
+VDW_rep_screen_info = {}
 bps = ['au','ua','gc','cg','ug','gu']
 
 
@@ -104,12 +106,13 @@ for name in names:
     for working_res_block in working_res_blocks: get_resnum_chain( working_res_block, resnums[ name ], chains[ name ] )
 
     # helper function for PDB processing
-    def slice_out( inpath_dir, prefix, pdb, res_string ):
+    def slice_out( inpath_dir, prefix, pdb, res_string, excise=False ):
         starting_native = inpath_dir+'/'+pdb
         assert( exists( starting_native ) )
         slice_pdb = prefix + pdb
         if not exists( slice_pdb ):
-            command = 'pdbslice.py %s -subset %s %s ' % ( starting_native, res_string, prefix )
+            if excise:  command = 'pdbslice.py %s -excise %s %s ' % ( starting_native, res_string, prefix )
+            else:       command = 'pdbslice.py %s -subset %s %s ' % ( starting_native, res_string, prefix )
             system( command )
         assert( exists( slice_pdb ) )
         return slice_pdb
@@ -238,6 +241,13 @@ for name in names:
 
         loop_res[ name ][ 'swa' ]  = loopres_swa
 
+    # get VDW_rep_screen_info, it will only be used if -VDW_rep_screen_info flag is set in extra_flags_benchmark 
+    prefix = '%s/%s_PERIPHERAL_REGIONS_' % ( inpath, name )
+    VDW_rep_screen_pdb[ name ] = slice_out( inpath, prefix, native[ name ], string.join( working_res_blocks ), excise=True )
+    VDW_rep_screen_info[ name ] = VDW_rep_screen_pdb[ name ]
+
+
+
             
 if len (args.extra_flags) > 0:
     if exists( args.extra_flags ):
@@ -255,12 +265,14 @@ for name in names:
     dirname = name
     if not exists( dirname ): system( 'mkdir '+dirname )
 
+    # move all required files to the correct directory
+    start_files = helix_files[ name ] + input_pdbs[ name ]
+    infiles = start_files + [ fasta[name], working_native[ name ], VDW_rep_screen_pdb[ name ] ]
+    for infile in infiles:  system( 'cp %s %s/ ' % ( infile, dirname ) )
+
     # SETUP for StepWise Assembly
     if args.swa:
-                
-        start_files = helix_files[ name ] + input_pdbs[ name ]
-        for infile in [ fasta[name] ] + start_files + [ working_native[ name ] ]:  system( 'cp %s %s/ ' % ( infile, dirname ) )
-        
+                        
         fid = open( '%s/README_SWA' % dirname, 'w' )
         fid.write( '~/src/rosetta/tools/SWA_RNA_python/SWA_dagman_python/SWA_DAG/setup_SWA_RNA_dag_job_files.py' )           
         if len( start_files ) > 0 :
@@ -285,6 +297,13 @@ for name in names:
                     weights_file = string.split( flag )[1]
                 if ( '-score:rna_torsion_potential' in flag ):
                     flag = flag.replace( '-score:rna_torsion_potential', '-rna_torsion_potential_folder' )
+                if ( '-VDW_rep_screen_info' in flag ):  
+                    if ( 'True' in flag ):
+                        flag = flag.replace( 'True', basename( VDW_rep_screen_info[ name ] ) ) #-VDW_rep_screen_info 1zih_RNA.pdb
+                    elif ( 'true' in flag ):
+                        flag = flag.replace( 'true', basename( VDW_rep_screen_info[ name ] ) ) #-VDW_rep_screen_info 1zih_RNA.pdb
+                    else:
+                        continue
                 flag = ' '+flag.replace( '\n', '' )
                 fid.write( flag )      
 
@@ -304,10 +323,7 @@ for name in names:
 
     # SETUP for StepWise Monte Carlo
     else:
-  
-        start_files = helix_files[ name ] + input_pdbs[ name ]
-        for infile in [ fasta[name] ] + start_files + [ working_native[ name ] ]:  system( 'cp %s %s/ ' % ( infile, name ) )
-
+       
         fid = open( '%s/README_SWM' % name, 'w' )
         fid.write( 'stepwise @flags -out:file:silent swm_rebuild.out\n' )
         fid.close()
@@ -342,6 +358,13 @@ for name in names:
                 if ( '#' in flag ): continue
                 if ( '-single_stranded_loop_mode' in flag ): continue ### SWA Specific
                 if ( '-score:weights' in flag ): weights_file = string.split( flag )[1]
+                if ( '-VDW_rep_screen_info' in flag ): 
+                    if ( 'True' in flag ):
+                        flag = flag.replace( 'True', basename( VDW_rep_screen_info[ name ] ) )#-VDW_rep_screen_info 1zih_RNA.pdb
+                    elif ( 'true' in flag ):
+                        flag = flag.replace( 'true', basename( VDW_rep_screen_info[ name ] ) )#-VDW_rep_screen_info 1zih_RNA.pdb
+                    else:
+                        continue
                 fid.write( flag )
         
         fid.close()
