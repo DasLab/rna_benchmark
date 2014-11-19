@@ -304,6 +304,7 @@ for name in names:
                         flag = flag.replace( 'true', basename( VDW_rep_screen_info[ name ] ) ) #-VDW_rep_screen_info 1zih_RNA.pdb
                     else:
                         continue
+                    flag = flag.replace('\n', ' -apply_VDW_rep_delete_matching_res False')
                 flag = ' '+flag.replace( '\n', '' )
                 fid.write( flag )      
 
