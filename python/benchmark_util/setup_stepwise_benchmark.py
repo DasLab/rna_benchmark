@@ -241,13 +241,42 @@ for name in names:
 
         loop_res[ name ][ 'swa' ]  = loopres_swa
 
+    
+
     # get VDW_rep_screen_info, it will only be used if -VDW_rep_screen_info flag is set in extra_flags_benchmark 
+    def get_align_res( screen_pdb, working_pdb, working_fixed_res ):
+        from read_pdb import read_pdb
+        screen_align_res = []
+        working_align_res = []
+        for pdb in [ screen_pdb, working_pdb ]: assert( exists( pdb ) )
+        #( coords, pdb_lines, sequence, chains, residues ) = read_pdb( pdb )
+        screen_pdb_info = read_pdb( screen_pdb )
+        working_pdb_info = read_pdb( working_pdb )
+        for n in xrange( len( screen_pdb_info[4] ) ):
+            screen_chain = screen_pdb_info[3][n]
+            screen_res = screen_pdb_info[4][n]
+            #working_reschain = pdb2pose( working_pdb_info[3], working_pdb_info[4], screen_chain, screen_res )   
+            working_reschain = ( 0, '' )
+            for m in xrange( len( working_pdb_info[3] ) ):
+                if ( working_pdb_info[4][m] == screen_res ) and ( working_pdb_info[3][m] == screen_chain ): 
+                    working_reschain = ( working_pdb_info[4][m], working_pdb_info[3][m] )
+            if ( working_reschain[0] > 0 ):# and ( working_reschain[0] in working_fixed_res ):
+                screen_align_res.append( n )
+                working_align_res.append( get_fullmodel_number(working_reschain,working_pdb_info[4],working_pdb_info[3]) ) 
+        if len( screen_align_res ): screen_align_res_tag = make_tag_with_dashes( screen_align_res )
+        else:   screen_align_res_tag = '-'
+        if len( working_align_res ):    working_align_res_tag = make_tag_with_dashes( working_align_res )
+        else:   working_align_res_tag = '-'
+        return ( screen_align_res_tag, working_align_res_tag )
+
     prefix = '%s/%s_PERIPHERAL_REGIONS_' % ( inpath, name )
     VDW_rep_screen_pdb[ name ] = slice_out( inpath, prefix, native[ name ], string.join( working_res_blocks ), excise=True )
-    VDW_rep_screen_info[ name ] = VDW_rep_screen_pdb[ name ]
-
-
-
+   
+    ###6-44( align_res of VDW_rep_screen_pose ) 1-33( align_res of working_pose )
+    working_fixed_res = input_res[ name ]
+    ( VDW_align_res, full_align_res ) = get_align_res( VDW_rep_screen_pdb[ name ], working_native[ name ], working_fixed_res ) 
+    VDW_rep_screen_info[ name ] = '%s %s %s' % ( basename( VDW_rep_screen_pdb[name] ), VDW_align_res, full_align_res ) 
+    
             
 if len (args.extra_flags) > 0:
     if exists( args.extra_flags ):
@@ -299,9 +328,9 @@ for name in names:
                     flag = flag.replace( '-score:rna_torsion_potential', '-rna_torsion_potential_folder' )
                 if ( '-VDW_rep_screen_info' in flag ):  
                     if ( 'True' in flag ):
-                        flag = flag.replace( 'True', basename( VDW_rep_screen_info[ name ] ) ) #-VDW_rep_screen_info 1zih_RNA.pdb
+                        flag = flag.replace( 'True', VDW_rep_screen_info[ name ] ) #-VDW_rep_screen_info 1zih_RNA.pdb
                     elif ( 'true' in flag ):
-                        flag = flag.replace( 'true', basename( VDW_rep_screen_info[ name ] ) ) #-VDW_rep_screen_info 1zih_RNA.pdb
+                        flag = flag.replace( 'true', VDW_rep_screen_info[ name ] ) #-VDW_rep_screen_info 1zih_RNA.pdb
                     else:
                         continue
                     flag = flag.replace('\n', ' -apply_VDW_rep_delete_matching_res False')
