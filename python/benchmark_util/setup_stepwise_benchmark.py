@@ -275,7 +275,7 @@ for name in names:
     ###6-44( align_res of VDW_rep_screen_pose ) 1-33( align_res of working_pose )
     working_fixed_res = input_res[ name ]
     ( VDW_align_res, full_align_res ) = get_align_res( VDW_rep_screen_pdb[ name ], working_native[ name ], working_fixed_res ) 
-    if args.swa:
+    if ( VDW_align_res != '0-0' and full_align_res != '0-0' ):
         VDW_rep_screen_info[ name ] = '%s %s %s' % ( basename( VDW_rep_screen_pdb[name] ), VDW_align_res, full_align_res ) 
     else:
         VDW_rep_screen_info[ name ] = '%s' % ( basename( VDW_rep_screen_pdb[name] ) ) 
