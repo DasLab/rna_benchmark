@@ -15,78 +15,35 @@ from make_plots_util import *
 ##########################################################
 
 def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites.txt','favorites2.txt'], colorcode=None, xvar='rms_fill', yvar='score', scale=False, show=False ):
-
-	if not colorcode: colorcode = [ (0.0, 0.0, 0.0, 1.0), (1.0, 0.0, 0.0, 1.0) ]
-	if len( colorcode ) < len( inpaths ): colorcode = jet( len( inpaths ) )
-
-	target_names = get_target_names( target_files )
-
+	
 	data = []
 	which_target = []
 	outfiles_list = []
-
+	
+	if not colorcode: colorcode = [ (0.0, 0.0, 0.0, 1.0), (1.0, 0.0, 0.0, 1.0) ]
+	if len( colorcode ) < len( inpaths ): colorcode = jet( len( inpaths ) )
+	target_names = get_target_names( target_files )
 	inpaths = map( lambda x: abspath(x), inpaths )
-
-	for inpath in inpaths:
-
-		assert( exists( inpath ) )
-		outfiles = popen( 'ls -1 '+inpath+'/*/'+outfilename ).read().split('\n')[:-1]
-
+	
+	for n in xrange( len(inpaths) ):
+		assert( exists( inpaths[n] ) )
+		outfiles = popen( 'ls -1 '+inpaths[n]+'/*/'+outfilename ).read().split('\n')[:-1]
 		for outfile in outfiles:
 			print 'Reading in ... '+outfile
 			assert( exists( outfile ) )
-
-		data.append( map( lambda x: load_score_data( x ), outfiles ) )
 		which_target.append( map( lambda x: target_names.index( basename( dirname( x ) ) ), outfiles ) )
+		data.append( dict([ (target_names[ which_target[n][k] ], load_score_data(outfiles[k])) for k in xrange( len(outfiles) ) ]) )
 		outfiles_list.append( outfiles )
-
 	noutfiles = np.max( map( lambda x: len(x), outfiles_list ) )
 
 	###################################################
-
-	time_name = 'time'
-	times_list = []
-
-	for n in xrange( len( inpaths ) ):
-		times = []
-		for k in xrange( noutfiles ):
-			try:
-				time_idx = data[n][k].score_labels.index( time_name )
-				times.append( np.array( [ score[time_idx] for score in data[n][k].scores ], dtype = 'float_' ) )
-			except:
-				times.append( np.array( [ 0.0 for score in xrange( noutfiles ) ], dtype = 'float_' ) )
-		times_list.append( times )
-
-
-	for k in xrange( noutfiles ):
-		print '\n %-6s%33s' % ( 'TARGET', target_names[ which_target[0][k] ] )
-		for n in xrange( len( inpaths ) ):
-			mean_time = np.mean( times_list[n][k] )
-			std_time = np.std( times_list[n][k] )
-			print ' Run %d                    %5.0f +/- %4.0f' % ( n, mean_time, std_time )
-	print '\n'
-	for n in xrange( len( inpaths ) ):
-		print ' Run %d: %s' % ( n, basename( inpaths[n] ) )
-
-	###################################################
-
-	pdfname = basename( inpaths[0] )
-	if len( inpaths ) > 1:
-		for k in xrange( 1, len( inpaths ) ): pdfname += '_vs_' + basename( inpaths[k] )
-	fullpdfname = get_path_to_dir('stepwise_benchmark') + '/Figures/' + pdfname + '.pdf'
-	print '\nMaking figure in: %s\n' % fullpdfname
-	pp = PdfPages( fullpdfname )
-
-	###################################################
-
 	
-	### determine number of plots, rows, and columns
-	#nplots = 0
-	#for n in xrange( len( inpaths ) ):
-	#	for k in xrange( len( outfiles_list[n] ) ):
-	#		if not len( data[n][k].scores ): continue
-	#		nplots += 1
+	# print out runtimes, stored in the silent files
+	show_times( inpaths, data, noutfiles, target_names, which_target )
 
+	###################################################
+
+	# get nplots, nrows, ncols
 	nplots = noutfiles
 	assert( nplots )
 	if nplots < 3: 	  nrows = nplots
@@ -94,58 +51,67 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites
 	else:  		      nrows = 5
 	ncols = np.ceil( nplots / float( nrows ) )
 
-	
-	fig = plt.figure(1) #figsize=(1.5*ncols, 1.5*nrows))
+	# setup pdf file name, and PdfPages handle
+	pdfname = basename( inpaths[0] )
+	if len( inpaths ) > 1:	
+		for k in xrange( 1, len( inpaths ) ): pdfname += '_vs_' + basename( inpaths[k] )
+	fullpdfname = get_path_to_dir('stepwise_benchmark') + '/Figures/' + pdfname + '.pdf'
+	print '\nMaking figure in: %s\n' % fullpdfname
+	pp = PdfPages( fullpdfname )
+
+	# set up figure, adjust properties
+	fig = plt.figure(1)
 	fig.set_size_inches(8.5,11)
 
-	titles = []
-
+	# iterate over runs
 	for n in xrange( len( inpaths ) ):
 
+		# initialize plot index
 		plot_idx = 0
 
-		for k in xrange( len( outfiles_list[n] ) ):
-
-			if not len( data[n][k].scores ): continue
+		# iterate over targets
+		for target in target_names:
+			
+			# add subplot, if scores are available
 			plot_idx += 1
-			#plt.subplot( nrows, ncols, plot_idx )
+			try: data[n][ target ]
+			except:	continue
 			ax = fig.add_subplot( nrows, ncols, plot_idx )
 
-			( xvar_idx , yvar_idx  ) = data[n][k].score_labels.index( xvar ) , data[n][k].score_labels.index( yvar )
-			[ xvar_data, yvar_data ] = [ list(d) for d in zip( *[ ( score[xvar_idx], score[yvar_idx] ) for score in data[n][k].scores] ) ]
+			# get data
+			( xvar_idx , yvar_idx  ) = data[n][ target ].score_labels.index( xvar ) , data[n][ target ].score_labels.index( yvar )
+			[ xvar_data, yvar_data ] = [ list(d) for d in zip( *[ ( score[xvar_idx], score[yvar_idx] ) for score in data[n][ target ].scores] ) ]
 
-			ax.plot( xvar_data, yvar_data, marker='.', markersize=5, color=colorcode[n], linestyle=' ', label=basename(inpaths[n]) )
-			ax.set_title( target_names[ which_target[n][k] ], fontsize='medium', weight='bold' )
+			# plot data
+			ax.plot( xvar_data, yvar_data, marker='.', markersize=5, color=colorcode[n], linestyle=' ', label=basename(inpaths[n]) )	
+			ax.plot( [1 for y in plt.ylim()], plt.ylim(), color='black', linestyle=':')
+			ax.plot( [2 for y in plt.ylim()], plt.ylim(), color='black')
 
-			if not scale:	plt.xlim( 0, 12 )
+			# set axes limits
+			if not scale:	ax.set_xlim( 0, 16 )
 
-			if ( ( np.mod( plot_idx, ncols ) == 1 ) or ( ncols == 1 ) ):
-				ax.set_ylabel( yvar, fontsize='medium' )
-			if ( ( np.floor( (plot_idx-1) / ncols ) == nrows-1 ) or ( nrows == 1 ) ):
-				ax.set_xlabel( xvar, fontsize='medium' )
+			# set title and axes lables
+			ax.set_title( target, fontsize='medium', weight='bold' )
+			if ( ( np.mod( plot_idx, ncols ) == 1 ) or ( ncols == 1 ) ):	ax.set_ylabel( yvar, fontsize='medium' )
+			if ( ( np.floor( (plot_idx-1) / ncols ) == nrows-1 ) or ( nrows == 1 ) ):	ax.set_xlabel( xvar, fontsize='medium' )
 
-			for tick in ax.xaxis.get_ticklabels() :
-				tick.set_fontsize(6)
+			# adjust axis properties
+			for tick in ax.xaxis.get_ticklabels():	tick.set_fontsize(6)
+			for tick in ax.yaxis.get_ticklabels():	tick.set_fontsize(6)
 
-			for tick in ax.yaxis.get_ticklabels() :
-				tick.set_fontsize(6)
-
+			# setup legend
 			if ( plot_idx == 1 ):	
-				ax.legend()
-				plt.rc('legend', fontsize=6)
+				legend = ax.legend(shadow=True)
+				for label in legend.get_texts():	label.set_fontsize(8)
+				for label in legend.get_lines():	label.set_linewidth(.5)
 
-
-		titles.append( basename( inpaths[n] ) )
-
-	#plt.tight_layout()
+	# adjust spacing of plots on figure
 	plt.subplots_adjust(bottom=.05, left=.08, right=.95, top=.95, hspace=.35)
-	ax = fig.add_subplot( nrows, ncols, 1 )
-	#ax.legend( titles, prop={'size':6} )
 
+	# save as pdf and close, show plot if show=True
 	pp.savefig()
 	pp.close()
-	if show:
-		plt.show()
+	if show:	plt.show()
 
 	return
 

@@ -3,10 +3,12 @@
 ##########################################################
 
 from os import system, popen
+from os.path import exists, dirname, basename, abspath
 import string
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 import matplotlib.cm as cmx
+import numpy as np
 
 ##########################################################
 
@@ -87,6 +89,37 @@ def get_target_names_from_file( filename, target_names ):
 def get_path_to_dir( dirname ):
 	pwd = popen( 'pwd' ).readline()[:-1].split( '/' )
 	return string.join( pwd[:pwd.index( dirname )+1], '/' )
+
+###########################################################
+
+def show_times( inpaths, data, noutfiles, target_names, which_target ):
+
+	time_name = 'time'
+	times_list = []
+
+	for n in xrange( len( inpaths ) ):
+		times = []
+		for target in target_names:
+			try:
+				time_idx = data[n][ target ].score_labels.index( time_name )
+				times.append( np.array( [ score[time_idx] for score in data[n][ target ].scores ], dtype = 'float_' ) )
+			except:
+				times.append( np.array( [ 0.0 for score in xrange( noutfiles ) ], dtype = 'float_' ) )
+		times_list.append( times )
+
+
+	for k in xrange( len(target_names) ):
+		print '\n %-6s%33s' % ( 'TARGET', target_names[ k ] ) #which_target[0][k] ] )
+		for n in xrange( len( inpaths ) ):
+			mean_time = np.mean( times_list[n][k] )
+			std_time = np.std( times_list[n][k] )
+			print ' Run %d                    %5.0f +/- %4.0f' % ( n, mean_time, std_time )
+	
+	print '\n'
+	for n in xrange( len( inpaths ) ):
+		print ' Run %d: %s' % ( n, basename( inpaths[n] ) )
+
+	return
 
 ###########################################################
 
