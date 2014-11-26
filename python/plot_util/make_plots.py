@@ -91,7 +91,7 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites
 			if not scale:	ax.set_xlim( 0, 16 )
 
 			# set title and axes lables
-			ax.set_title( target, fontsize='medium', weight='bold' )
+			ax.set_title( get_title(target), fontsize='medium', weight='bold' )
 			if ( ( np.mod( plot_idx, ncols ) == 1 ) or ( ncols == 1 ) ):	ax.set_ylabel( yvar, fontsize='medium' )
 			if ( ( np.floor( (plot_idx-1) / ncols ) == nrows-1 ) or ( nrows == 1 ) ):	ax.set_xlabel( xvar, fontsize='medium' )
 

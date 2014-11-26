@@ -129,3 +129,16 @@ def jet( size ):
 	scalar_map = cmx.ScalarMappable( norm=cnorm, cmap=cmap )
 	colorcode = [ scalar_map.to_rgba( x ) for x in xrange( size ) ]
 	return colorcode
+
+###########################################################
+
+def get_title( target ):
+	names = get_path_to_dir('stepwise_benchmark') + '/python/plot_util/titles.txt'
+	try:
+		lines = open( names, 'r' ).readlines()
+	except:
+		return target
+	for line in lines:
+		if target in line: 
+			return line.replace('\n','').split(': ')[1]
+	return target
