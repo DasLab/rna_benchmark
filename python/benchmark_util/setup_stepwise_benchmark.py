@@ -269,8 +269,16 @@ for name in names:
         else:   working_align_res_tag = '0-0'
         return ( screen_align_res_tag, working_align_res_tag )
 
+
+    ###
+    ### FIND EXPANDED RADIUSES AND EXCISE WORKING_RESIDUES, AS WELL AS RESIDUES BEYOND EXPANDED RADIUS
+    ###
+    excise_res_str = string.join( working_res_blocks )
+    
+    
+
     prefix = '%s/%s_PERIPHERAL_REGIONS_' % ( inpath, name )
-    VDW_rep_screen_pdb[ name ] = slice_out( inpath, prefix, native[ name ], string.join( working_res_blocks ), excise=True )
+    VDW_rep_screen_pdb[ name ] = slice_out( inpath, prefix, native[ name ], excise_res_str, excise=True )
    
     ###6-44( align_res of VDW_rep_screen_pose ) 1-33( align_res of working_pose )
     working_fixed_res = input_res[ name ]
@@ -278,7 +286,11 @@ for name in names:
     if ( VDW_align_res != '0-0' and full_align_res != '0-0' ):
         VDW_rep_screen_info[ name ] = '%s %s %s' % ( basename( VDW_rep_screen_pdb[name] ), VDW_align_res, full_align_res ) 
     else:
-        VDW_rep_screen_info[ name ] = '%s' % ( basename( VDW_rep_screen_pdb[name] ) ) 
+        VDW_rep_screen_info[ name ] = '%s' % ( basename( VDW_rep_screen_pdb[name] ) )
+
+
+
+
 
             
 if len (args.extra_flags) > 0:
