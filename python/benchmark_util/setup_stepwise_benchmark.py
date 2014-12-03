@@ -10,6 +10,8 @@ from parse_options import get_resnum_chain
 from parse_tag import parse_tag
 from get_sequence import get_sequences
 from rna_server_conversions import get_all_stems, join_sequence
+from get_surrounding_res import get_surrounding_res_tag
+from setup_stepwise_benchmark_util import *
 from sys import argv, exit
 
 
@@ -25,10 +27,26 @@ parser.add_argument('--swa', action='store_true', help='Additional flag for sett
 parser.add_argument('--extra_min_res_off', action='store_true', help='Additional flag for turning extra_min_res off.')
 parser.add_argument('--save_times_off', action='store_true', help='Additional flag for turning save_times flag off.')
 parser.add_argument('-slave_nodes', default='150', type=int, help='Number of nodes to queue.')
+parser.add_argument('-v', '--verbose', help="increase output verbosity", action="store_true")   
 args = parser.parse_args()
 
 #####################################################################################################################
 
+# get extra_flags_benchmark
+VDW_rep_screen_info_flag_found = False
+
+if len (args.extra_flags) > 0:
+    if exists( args.extra_flags ):
+        extra_flags_benchmark = open( args.extra_flags ).readlines()
+
+        for flag in extra_flags_benchmark:
+            if ( '-VDW_rep_screen_info' in flag ):
+                VDW_rep_screen_info_flag_found = True
+    
+    else:
+        extra_flags_benchmark = None
+        print 'Did not find ', args.extra_flags, ' so not using any extra flags for the benchmark'
+        assert ( args.extra_flags == default_extra_flags_benchmark )
 
 # initialize directories
 names = []
@@ -100,22 +118,12 @@ for name in names:
     sequences          = string.split( sequence[name], ',' )
     working_res_blocks = string.split( working_res[name], ',' )
 
+
     # store information on 'conventional' residue numbers and chains.
     resnums[ name ] = []
     chains[ name ] = []
     for working_res_block in working_res_blocks: get_resnum_chain( working_res_block, resnums[ name ], chains[ name ] )
 
-    # helper function for PDB processing
-    def slice_out( inpath_dir, prefix, pdb, res_string, excise=False ):
-        starting_native = inpath_dir+'/'+pdb
-        assert( exists( starting_native ) )
-        slice_pdb = prefix + pdb
-        if not exists( slice_pdb ):
-            if excise:  command = 'pdbslice.py %s -excise %s %s ' % ( starting_native, res_string, prefix )
-            else:       command = 'pdbslice.py %s -subset %s %s ' % ( starting_native, res_string, prefix )
-            system( command )
-        assert( exists( slice_pdb ) )
-        return slice_pdb
 
     # working_native
     assert( native[ name ] != '-' ) # for now, require a native, since this is a benchmark.
@@ -135,10 +143,6 @@ for name in names:
             input_pdbs[ name ].append( input_pdb )
             get_resnum_chain( input_res_blocks[m], input_resnums, input_chains )
     
-    def get_fullmodel_number( reschain, resnums, chains):
-        for m in range( len( resnums ) ):
-            if ( resnums[m] == reschain[0] ) and ( reschain[1] == '' or chains[m] == reschain[1] ): return m+1
-        return 0
     
     input_resnum_fullmodel = map( lambda x: get_fullmodel_number(x,resnums[name],chains[name]), zip( input_resnums, input_chains ) )
 
@@ -209,97 +213,62 @@ for name in names:
         fid.close()
 
  
-    # get sample loop res
+    # get sample loop res      
+    loop_res[ name ] = {}      
+    assert( input_res[ name ] != '-' )
+        
+    ( workres , workchains  ) = parse_tag( working_res[ name ], alpha_sort=True )
+    ( inputres , inputchains  ) = parse_tag( input_res[ name ], alpha_sort=True )
+
+    loopres_tag = []
+    for ii in xrange( len( workres ) ):
+        working_tag = workchains[ ii ] + ':' + str(workres[ ii ])
+        is_input_tag = False
+        for jj in xrange( len( inputres ) ):
+            input_tag = inputchains[ jj ] + ':' + str(inputres[ jj ])
+            if input_tag == working_tag:
+                is_input_tag = True
+        if is_input_tag: continue
+        loopres_tag.append( working_tag )
+    loopres_tag = string.join( loopres_tag, ',' )
+    
+    ( loopres , loopchains  ) = parse_tag( loopres_tag, alpha_sort=True )
+    ( workres , workchains  ) = parse_tag( working_res[ name ], alpha_sort=True )
+         
+    loopres_conventional = [ str(workchains[idx])+':'+str(workres[idx]) for idx in xrange( len( workres ) ) if (workres[idx] in loopres and workchains[idx] == loopchains[loopres.index(workres[idx])]) ]
+    loopres_conventional = string.join( [ str(x) for x in loopres_conventional ] ,' ')
+    loop_res[ name ][ 'conventional' ] = loopres_conventional
+
     if args.swa:
-        
-        loop_res[ name ] = {}      
-        assert( input_res[ name ] != '-' )
-            
-        ( workres , workchains  ) = parse_tag( working_res[ name ], alpha_sort=True )
-        ( inputres , inputchains  ) = parse_tag( input_res[ name ], alpha_sort=True )
-
-        loopres_tag = []
-        for ii in xrange( len( workres ) ):
-            working_tag = workchains[ ii ] + ':' + str(workres[ ii ])
-            is_input_tag = False
-            for jj in xrange( len( inputres ) ):
-                input_tag = inputchains[ jj ] + ':' + str(inputres[ jj ])
-                if input_tag == working_tag:
-                    is_input_tag = True
-            if is_input_tag: continue
-            loopres_tag.append( working_tag )
-        loopres_tag = string.join( loopres_tag, ',' )
-        
-        ( loopres , loopchains  ) = parse_tag( loopres_tag, alpha_sort=True )
-        ( workres , workchains  ) = parse_tag( working_res[ name ], alpha_sort=True )
-             
-        loopres_swa = [ idx+1 for idx in xrange( len( workres ) ) if (workres[idx] in loopres and workchains[idx] in loopchains) ]
-        loopres_swa = string.join( [ str(loopres_swa[x]) for x in xrange( len( loopres_swa ) ) ] ,' ')
-
-        #print name, ': ', loopres_tag
-        #print name, ': ', loopres_swa
-
+        loopres_swa = [ idx+1 for idx in xrange( len( workres ) ) if (workres[idx] in loopres and workchains[idx] == loopchains[loopres.index(workres[idx])]) ]
+        loopres_swa = string.join( [ str(x) for x in loopres_swa ] ,' ')
         loop_res[ name ][ 'swa' ]  = loopres_swa
 
-    
 
     # get VDW_rep_screen_info, it will only be used if -VDW_rep_screen_info flag is set in extra_flags_benchmark 
-    def get_align_res( screen_pdb, working_pdb, working_fixed_res ):
-        from read_pdb import read_pdb
-        screen_align_res = []
-        working_align_res = []
-        for pdb in [ screen_pdb, working_pdb ]: assert( exists( pdb ) )
-        #( coords, pdb_lines, sequence, chains, residues ) = read_pdb( pdb )
-        screen_pdb_info = read_pdb( screen_pdb )
-        working_pdb_info = read_pdb( working_pdb )
-        for n in xrange( len( screen_pdb_info[4] ) ):
-            screen_chain = screen_pdb_info[3][n]
-            screen_res = screen_pdb_info[4][n]
-            #working_reschain = pdb2pose( working_pdb_info[3], working_pdb_info[4], screen_chain, screen_res )   
-            working_reschain = ( 0, '' )
-            for m in xrange( len( working_pdb_info[3] ) ):
-                if ( working_pdb_info[4][m] == screen_res ) and ( working_pdb_info[3][m] == screen_chain ): 
-                    working_reschain = ( working_pdb_info[4][m], working_pdb_info[3][m] )
-            if ( working_reschain[0] > 0 ):# and ( working_reschain[0] in working_fixed_res ):
-                screen_align_res.append( n )
-                working_align_res.append( get_fullmodel_number(working_reschain,working_pdb_info[4],working_pdb_info[3]) ) 
-        if len( screen_align_res ): screen_align_res_tag = make_tag_with_dashes( screen_align_res )
-        else:   screen_align_res_tag = '0-0'
-        if len( working_align_res ):    working_align_res_tag = make_tag_with_dashes( working_align_res )
-        else:   working_align_res_tag = '0-0'
-        return ( screen_align_res_tag, working_align_res_tag )
+    if VDW_rep_screen_info_flag_found:
 
-
-    ###
-    ### FIND EXPANDED RADIUSES AND EXCISE WORKING_RESIDUES, AS WELL AS RESIDUES BEYOND EXPANDED RADIUS
-    ###
-    excise_res_str = string.join( working_res_blocks )
-    
-    
-
-    prefix = '%s/%s_PERIPHERAL_REGIONS_' % ( inpath, name )
-    VDW_rep_screen_pdb[ name ] = slice_out( inpath, prefix, native[ name ], excise_res_str, excise=True )
-   
-    ###6-44( align_res of VDW_rep_screen_pose ) 1-33( align_res of working_pose )
-    working_fixed_res = input_res[ name ]
-    ( VDW_align_res, full_align_res ) = get_align_res( VDW_rep_screen_pdb[ name ], working_native[ name ], working_fixed_res ) 
-    if ( VDW_align_res != '0-0' and full_align_res != '0-0' ):
-        VDW_rep_screen_info[ name ] = '%s %s %s' % ( basename( VDW_rep_screen_pdb[name] ), VDW_align_res, full_align_res ) 
-    else:
+        prefix = '%s/%s_PERIPHERAL_REGIONS_' % ( inpath, name )
+        
+        VDW_rep_screen_pdb[ name ] = prefix + native[ name ] 
         VDW_rep_screen_info[ name ] = '%s' % ( basename( VDW_rep_screen_pdb[name] ) )
 
-
-
-
-
+        if not exists( VDW_rep_screen_pdb[ name ] ):
             
-if len (args.extra_flags) > 0:
-    if exists( args.extra_flags ):
-        extra_flags_benchmark = open( args.extra_flags ).readlines()
-    else:
-        extra_flags_benchmark = None
-        print 'Did not find ', args.extra_flags, ' so not using any extra flags for the benchmark'
-        assert ( args.extra_flags == default_extra_flags_benchmark )
+            #if ( 'rrna' in name ) or ( 'rRNA' in name ):    periph_res_radius = 100.0
+            #else:                                           periph_res_radius = 50.0
+            periph_res_radius = 50.0
+
+            loopres_list=string.split( loop_res[ name ][ 'conventional' ], ' ' )
+            periph_res = get_surrounding_res_tag( inpath+native[ name ], sample_res_list=loopres_list, radius=periph_res_radius, verbose=args.verbose )
+            assert( len( periph_res ) )
+
+            slice_out( inpath, prefix, native[ name ], periph_res )
+       
+            if args.verbose:
+                print 'loopres_list for '+name+' = '+string.join(loopres_list)
+                print 'periph_res for '+name+' = '+str(periph_res)
+
 
 
 # write qsubMINIs, READMEs and SUBMITs
