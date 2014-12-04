@@ -255,27 +255,16 @@ for name in names:
         if not exists( VDW_rep_screen_pdb[ name ] ):
 
             periph_res_radius = 30.0
-            #if ( 'rrna' in name ) or ( 'rRNA' in name ):    periph_res_radius = 100.0
+            if ( 'rrna' in name ) or ( 'rRNA' in name ):    periph_res_radius = 30.0
             
             loopres_list=string.split( loop_res[ name ][ 'conventional' ], ' ' )
-            periph_res = get_surrounding_res_tag( inpath+native[ name ], sample_res_list=loopres_list, radius=periph_res_radius, verbose=args.verbose )
+            periph_res_tag = get_surrounding_res_tag( inpath+native[ name ], sample_res_list=loopres_list, radius=periph_res_radius, verbose=args.verbose )      
+            assert( len( periph_res_tag ) )
+            slice_out( inpath, prefix, native[ name ], periph_res_tag )
             
-            ( periphres , periphcloopchains  ) = parse_tag( loopres_tag, alpha_sort=True )
-            ( workres , workchains  ) = parse_tag( working_res[ name ], alpha_sort=True )
-         
-            loopres_conventional = [ str(workchains[idx])+':'+str(workres[idx]) for idx in xrange( len( workres ) ) if (workres[idx] in loopres and workchains[idx] == loopchains[loopres.index(workres[idx])]) ]
-             = string.join( [ str(x) for x in loopres_conventional ] ,' ')
-
-
-
-            periph_res_str = string.join( periph_res )
-            assert( len( periph_res ) )
-
-            slice_out( inpath, prefix, native[ name ], periph_res_str )
-       
             if args.verbose:
                 print 'loopres_list for '+name+' = '+string.join(loopres_list)
-                print 'periph_res for '+name+' = '+str(periph_res)
+                print 'periph_res for '+name+' = '+periph_res_tag
 
 
 
