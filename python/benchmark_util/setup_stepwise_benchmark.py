@@ -246,7 +246,10 @@ for name in names:
 
 
     # get VDW_rep_screen_info, it will only be used if -VDW_rep_screen_info flag is set in extra_flags_benchmark 
-    prefix = '%s/%s_PERIPHERAL_REGIONS_' % ( inpath, name )       
+    periph_res_radius = 30.0
+    if ( 'rrna' in name ) or ( 'rRNA' in name ):    periph_res_radius = 30.0
+        
+    prefix = '%s/%s_%d_ANGSTROM_GRID_' % ( inpath, name, periph_res_radius )       
     VDW_rep_screen_pdb[ name ] = prefix + native[ name ] 
     VDW_rep_screen_info[ name ] = '%s' % ( basename( VDW_rep_screen_pdb[name] ) )
 
@@ -254,9 +257,6 @@ for name in names:
 
         if not exists( VDW_rep_screen_pdb[ name ] ):
 
-            periph_res_radius = 30.0
-            if ( 'rrna' in name ) or ( 'rRNA' in name ):    periph_res_radius = 30.0
-            
             loopres_list=string.split( loop_res[ name ][ 'conventional' ], ' ' )
             periph_res_tag = get_surrounding_res_tag( inpath+native[ name ], sample_res_list=loopres_list, radius=periph_res_radius, verbose=args.verbose )      
             assert( len( periph_res_tag ) )
