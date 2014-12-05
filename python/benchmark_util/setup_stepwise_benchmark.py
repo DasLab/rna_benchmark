@@ -246,8 +246,8 @@ for name in names:
 
 
     # get VDW_rep_screen_info, it will only be used if -VDW_rep_screen_info flag is set in extra_flags_benchmark 
-    periph_res_radius = 30.0
-    if ( 'rrna' in name ) or ( 'rRNA' in name ):    periph_res_radius = 30.0
+    periph_res_radius = 50.0
+    if ( 'rrna' in name ) or ( 'rRNA' in name ):    periph_res_radius = 100.0
         
     prefix = '%s/%s_%d_ANGSTROM_GRID_' % ( inpath, name, periph_res_radius )       
     VDW_rep_screen_pdb[ name ] = prefix + native[ name ] 
