@@ -14,7 +14,7 @@ from make_plots_util import *
 
 ##########################################################
 
-def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites.txt','favorites2.txt'], colorcode=None, xvar='rms_fill', yvar='score', scale=False, show=False ):
+def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites.txt','favorites2.txt'], colorcode=None, xvar='rms_fill', yvar='score', scale=False, show=False, landscape=False ):
 	
 	data = []
 	which_target = []
@@ -46,22 +46,29 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites
 	# get nplots, nrows, ncols
 	nplots = noutfiles
 	assert( nplots )
-	if nplots < 3: 	  nrows = nplots
-	elif nplots < 12: nrows = 4
-	else:  		      nrows = 5
+	if landscape:
+		if nplots < 3: 	  nrows = 1
+		else: 			  nrows = 3
+	else:
+		if nplots < 3: 	  nrows = nplots
+		elif nplots < 12: nrows = 4
+		else:  		      nrows = 5
 	ncols = np.ceil( nplots / float( nrows ) )
 
 	# setup pdf file name, and PdfPages handle
 	pdfname = basename( inpaths[0] )
 	if len( inpaths ) > 1:	
 		for k in xrange( 1, len( inpaths ) ): pdfname += '_vs_' + basename( inpaths[k] )
-	fullpdfname = get_path_to_dir('stepwise_benchmark') + '/Figures/' + pdfname + '.pdf'
+	fullpdfname = get_path_to_dir('stepwise_benchmark') + '/Figures/' + pdfname # + '.pdf'
+	if landscape:	fullpdfname += '_landscape.pdf'
+	else:			fullpdfname += '.pdf'
 	print '\nMaking figure in: %s\n' % fullpdfname
 	pp = PdfPages( fullpdfname )
 
 	# set up figure, adjust properties
 	fig = plt.figure(1)
-	fig.set_size_inches(8.5,11)
+	if landscape:	fig.set_size_inches(11,8.5)
+	else:			fig.set_size_inches(8.5,11)
 
 	# iterate over runs
 	for n in xrange( len( inpaths ) ):
@@ -91,22 +98,28 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites
 			if not scale:	ax.set_xlim( 0, 16 )
 
 			# set title and axes lables
-			ax.set_title( get_title(target), fontsize='medium', weight='bold' )
-			if ( ( np.mod( plot_idx, ncols ) == 1 ) or ( ncols == 1 ) ):	ax.set_ylabel( yvar, fontsize='medium' )
-			if ( ( np.floor( (plot_idx-1) / ncols ) == nrows-1 ) or ( nrows == 1 ) ):	ax.set_xlabel( xvar, fontsize='medium' )
+			if landscape:	ax.set_title( get_title(target), fontsize='small', weight='bold' )
+			else:			ax.set_title( get_title(target), fontsize='medium', weight='bold' )
+			if ( ( np.mod( plot_idx, ncols ) == 1 ) or ( ncols == 1 ) ):	
+				if landscape:	ax.set_ylabel( yvar, fontsize='small' )
+				else:			ax.set_ylabel( yvar, fontsize='medium' )
+			if ( ( np.floor( (plot_idx-1) / ncols ) == nrows-1 ) or ( nrows == 1 ) ):	
+				if landscape:	ax.set_xlabel( xvar, fontsize='small' )
+				else:			ax.set_xlabel( xvar, fontsize='medium' )
 
 			# adjust axis properties
 			for tick in ax.xaxis.get_ticklabels():	tick.set_fontsize(6)
 			for tick in ax.yaxis.get_ticklabels():	tick.set_fontsize(6)
 
 			# setup legend
-			if ( plot_idx == 1 ):	
+			if ( plot_idx == 3 ):	
 				legend = ax.legend(shadow=True)
 				for label in legend.get_texts():	label.set_fontsize(8)
 				for label in legend.get_lines():	label.set_linewidth(.5)
 
 	# adjust spacing of plots on figure
-	plt.subplots_adjust(bottom=.05, left=.08, right=.95, top=.95, hspace=.35)
+	if landscape:	plt.subplots_adjust(bottom=.1, left=.05, right=.98, top=.90, hspace=.5)
+	else:			plt.subplots_adjust(bottom=.05, left=.08, right=.95, top=.95, hspace=.35)
 
 	# save as pdf and close, show plot if show=True
 	pp.savefig()
@@ -129,7 +142,8 @@ if __name__=='__main__':
 	parser.add_argument('-xvar', help='Name of x variable.', default='rms_fill')
 	parser.add_argument('-yvar', help='Name of y variable.', default='score')
 	parser.add_argument('--scale', help='scale plot axes.', action='store_true')
+	parser.add_argument('--landscape', help='orientation of figure.', action='store_true')
 	parser.add_argument('--show', help='show plot after it is created.', action='store_true')
 	args=parser.parse_args()
 
-	make_plots( args.inpaths, outfilename=args.outfilename, target_files=args.target_files, xvar=args.xvar, yvar=args.yvar, scale=args.scale, show=args.show )
+	make_plots( args.inpaths, outfilename=args.outfilename, target_files=args.target_files, xvar=args.xvar, yvar=args.yvar, scale=args.scale, show=args.show, landscape=args.landscape )
