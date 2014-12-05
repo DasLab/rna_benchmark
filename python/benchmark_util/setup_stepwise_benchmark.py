@@ -277,7 +277,8 @@ for name in names:
 
     # move all required files to the correct directory
     start_files = helix_files[ name ] + input_pdbs[ name ]
-    infiles = start_files + [ fasta[name], working_native[ name ], VDW_rep_screen_pdb[ name ] ]
+    infiles = start_files + [ fasta[name], working_native[ name ] ] 
+    if VDW_rep_screen_info_flag_found:  infiles.append( VDW_rep_screen_pdb[ name ] )
     for infile in infiles:  system( 'cp %s %s/ ' % ( infile, dirname ) )
 
     # SETUP for StepWise Assembly
