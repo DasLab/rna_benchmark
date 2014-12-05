@@ -215,7 +215,10 @@ for name in names:
  
     # get sample loop res      
     loop_res[ name ] = {}      
-    assert( input_res[ name ] != '-' )
+    if input_res[ name ] == '-':
+        if args.swa:    
+            print "WARNING: input_res[ name ] == '-' "
+        continue
         
     ( workres , workchains  ) = parse_tag( working_res[ name ], alpha_sort=True )
     ( inputres , inputchains  ) = parse_tag( input_res[ name ], alpha_sort=True )
