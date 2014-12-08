@@ -3,7 +3,7 @@
 
 import string
 import argparse
-from os.path import exists,basename,dirname
+from os.path import exists,basename,dirname,expandvars
 from os import system, getcwd, chdir, popen
 from make_tag import *
 from parse_options import get_resnum_chain
@@ -31,6 +31,7 @@ parser.add_argument('-v', '--verbose', help="increase output verbosity", action=
 args = parser.parse_args()
 
 #####################################################################################################################
+
 
 # get extra_flags_benchmark
 VDW_rep_screen_info_flag_found = False
@@ -320,7 +321,12 @@ for name in names:
                         continue
                     flag = flag.replace('\n', ' -apply_VDW_rep_delete_matching_res False')
                 flag = ' '+flag.replace( '\n', '' )
-                fid.write( flag )      
+                fid.write( flag )
+        if len( weights_file ) > 0:
+            if exists( weights_file ): 
+                system( 'cp ' + weights_file + ' ' + name )
+            else:
+                if args.verbose:    print "WARNING: "+weights_file+" not found in current working directory!!!"
 
         fid.close()
 
@@ -381,7 +387,11 @@ for name in names:
                     else:
                         continue
                 fid.write( flag )
-        
+        if len( weights_file ) > 0:
+            if exists( weights_file ): 
+                system( 'cp ' + weights_file + ' ' + name )
+            else:
+                if args.verbose:    print "WARNING: "+weights_file+" not found in current working directory!!!"
         fid.close()
 
         print '\nSetting up submission files for: ', name
