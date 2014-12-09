@@ -86,10 +86,18 @@ Input_res:     A:651-652,658-663,668-669
 Native:        1q9a_RNA.pdb
 Extra_flags:   -
 
-Name:          srl_free
-Sequence:      ccuaguacgagaggaccgg
-Secstruct:     ((.....(....)....))
-Working_res:   A:651-669
+#Name:          srl_free
+#Sequence:      ccuaguacgagaggaccgg
+#Secstruct:     ((.....(....)....))
+#Working_res:   A:651-669
+#Input_res:     -
+#Native:        1q9a_RNA.pdb
+#Extra_flags:   -
+
+Name:          srl_free_bulgedG
+Sequence:      ccuaguac,ggaccgg
+Secstruct:     ((.....(,)....))
+Working_res:   A:651-658,A:663-669
 Input_res:     -
 Native:        1q9a_RNA.pdb
 Extra_flags:   -
