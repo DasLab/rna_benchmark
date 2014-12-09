@@ -13,7 +13,7 @@ for n = 1:length( inpaths )
   inpath = inpaths{n};
   assert( exist( inpath,'dir' )>0 );
 
-  outfilename = 'swm_rebuild.out';
+  outfilename = 'swm_rebuild.sc';
   outfiles = split_string( ls( '-1', [inpath,'/*/',outfilename ] ), '\n' );
   for  k= 1:length( outfiles )
     fprintf( ['Reading in... ', outfiles{k}, '\n'] );
