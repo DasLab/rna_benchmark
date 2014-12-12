@@ -90,7 +90,7 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites
 			[ xvar_data, yvar_data ] = [ list(d) for d in zip( *[ ( score[xvar_idx], score[yvar_idx] ) for score in data[n][ target ].scores] ) ]
 
 			# plot data
-			ax.plot( xvar_data, yvar_data, marker='.', markersize=5, color=colorcode[n], linestyle=' ', label=basename(inpaths[n]) )	
+			ax.plot( xvar_data, yvar_data, marker='.', markersize=4, color=colorcode[n], linestyle=' ', label=basename(inpaths[n]) )	
 			ax.plot( [1 for y in plt.ylim()], plt.ylim(), color='black', linestyle=':')
 			ax.plot( [2 for y in plt.ylim()], plt.ylim(), color='black')
 
@@ -112,8 +112,8 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites
 			for tick in ax.yaxis.get_ticklabels():	tick.set_fontsize(6)
 
 			# setup legend
-			if ( plot_idx == 3 ):	
-				legend = ax.legend(shadow=True)
+			if ( plot_idx == nplots ): # == 3 ):	
+				legend = ax.legend(loc=9, bbox_to_anchor=(0.5,-0.1) )#, shadow=True)
 				for label in legend.get_texts():	label.set_fontsize(8)
 				for label in legend.get_lines():	label.set_linewidth(.5)
 

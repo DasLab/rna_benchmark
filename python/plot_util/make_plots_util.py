@@ -124,7 +124,7 @@ def show_times( inpaths, data, noutfiles, target_names, which_target ):
 ###########################################################
 
 def jet( size ):
-	cmap = plt.get_cmap( 'hot' )
+	cmap = plt.get_cmap( 'jet' )
 	cnorm = colors.Normalize( vmin=0, vmax=size )
 	scalar_map = cmx.ScalarMappable( norm=cnorm, cmap=cmap )
 	colorcode = [ scalar_map.to_rgba( x ) for x in xrange( size ) ]
