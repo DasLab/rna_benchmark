@@ -13,21 +13,27 @@ for n = 1:length( inpaths )
   inpath = inpaths{n};
   assert( exist( inpath,'dir' )>0 );
 
-  outfilename = 'swm_rebuild.out';
+  outfilename = 'swm_rebuild.*';
   outfiles = split_string( ls( '-1', [inpath,'/*/',outfilename ] ), '\n' );
+  count = 0;
   for  k= 1:length( outfiles )
-    fprintf( ['Reading in... ', outfiles{k}, '\n'] );
-    dirn = dirname( outfiles{k} );
+    outfile = outfiles{k};
+    if ( ~strcmp(outfile(end-3:end),'.out') &  ...
+	 ~strcmp(outfile(end-2:end), '.sc' ) ); continue; 
+    end;
+    fprintf( ['Reading in... ', outfile, '\n'] );
+    dirn = dirname( outfile );
     target = basename( dirn(1:end-1) );
-    which_target{n,k} = find( strcmp( target_names, target ) );
-    [data{n,k}, tags{n,k} ] = load_score_data( outfiles{k} );
+    count = count+1;
+    which_target{n,count} = find( strcmp( target_names, target ) );
+    [data{n,count}, tags{n,count} ] = load_score_data( outfile );
   end
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 time_name = 'time';
 for n = 1:length( inpaths )
-  for  k= 1:length( outfiles )
+  for  k= 1:count
     %subplot( nrows, ncols, mod( which_target{n,k} -1, nrows*ncols ) + 1 );
     if length( data{n,k} ) == 0; continue; end; 
     time_idx = find(strcmp( data{n,k}.score_labels, time_name ));
@@ -50,7 +56,7 @@ for n = 1:length( inpaths )
 end
 fprintf( 1, '\n' );
 
-for  k= 1:length( outfiles )
+for  k= 1:count
   fprintf( 1, '%30s', target_names{ which_target{n,k} } );
   for n = 1:length( inpaths )
     mean_time = mean( times{n,k} );
@@ -68,7 +74,7 @@ end
 set(figure(1), 'position', [300 200 500 600] );
 for n = 1:length( inpaths )
   score_name = 'score'; rms_name = 'rms_fill';
-  for  k= 1:length( outfiles )
+  for  k= 1:count
     if isempty( which_target{n,k} ); continue; end;
     subplot( nrows, ncols, mod( which_target{n,k} -1, nrows*ncols ) + 1 );
     if length( data{n,k} ) == 0; continue; end; 
@@ -109,18 +115,19 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function target_names = get_target_names( );
 
-target_names = get_target_names_from_file( '../favorites.txt', {} );
-target_names = get_target_names_from_file( '../favorites2.txt', target_names );
+target_names = get_target_names_from_file( '../input_files/favorites.txt', {} );
+target_names = get_target_names_from_file( '../input_files/favorites2.txt', target_names );
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function target_names = get_target_names_from_file( filename, target_names );
 
 fid = fopen( filename );
-line = fgetl( fid );
+%line = fgetl( fid );
 while ~feof( fid )
   line = fgetl( fid );
   cols = split_string( line );
   if length( cols ) == 0; continue;end;
-  target_names = [ target_names, cols{1} ];
+  if ~strcmp( cols{1},  'Name:' ); continue;end;
+  target_names = [ target_names, cols{2} ];
 end
 fclose( fid );
