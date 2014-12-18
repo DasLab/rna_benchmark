@@ -208,8 +208,10 @@ for name in names:
     if not exists( fasta[ name ] ):
         fid = open( fasta[ name ], 'w' )
         assert( len( sequences ) == len( working_res_blocks ) )
+        ### splitting up sequence in fasta may cause errors in SWA runs
         #for n in range( len( sequences ) ): fid.write( '>%s %s\n%s\n' % (name,working_res_blocks[n],sequences[n]) )
-        fid.write( popen( 'pdb2fasta.py %s' % (  working_native[ name ] ) ).read() )
+        #fid.write( popen( 'pdb2fasta.py %s' % (  working_native[ name ] ) ).read() )
+        fid.write( '>%s %s\n%s\n' % ( name,string.join(working_res_blocks,' '),string.join(sequences,'') ) )
         fid.close()
 
  
