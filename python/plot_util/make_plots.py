@@ -14,7 +14,7 @@ from make_plots_util import *
 
 ##########################################################
 
-def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites.txt','favorites2.txt'], colorcode=None, xvar='rms_fill', yvar='score', scale=False, show=False, landscape=False ):
+def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites.txt','favorites2.txt'], targets=[''], colorcode=None, xvar='rms_fill', yvar='score', scale=False, show=False, landscape=False ):
 	
 	data = []
 	which_target = []
@@ -22,7 +22,15 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites
 	
 	if not colorcode: colorcode = [ (0.0, 0.0, 0.0, 1.0), (1.0, 0.0, 0.0, 1.0) ]
 	if len( colorcode ) < len( inpaths ): colorcode = jet( len( inpaths ) )
-	target_names = get_target_names( target_files )
+
+	if targets[0] != '':
+		target_names = targets
+	else:
+		target_names = get_target_names( target_files )
+	
+	for target in target_names:
+		print "Target: "+target
+
 	inpaths = map( lambda x: abspath(x), inpaths )
 	
 	for n in xrange( len(inpaths) ):
@@ -90,7 +98,7 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites
 			[ xvar_data, yvar_data ] = [ list(d) for d in zip( *[ ( score[xvar_idx], score[yvar_idx] ) for score in data[n][ target ].scores] ) ]
 
 			# plot data
-			ax.plot( xvar_data, yvar_data, marker='.', markersize=5, color=colorcode[n], linestyle=' ', label=basename(inpaths[n]) )	
+			ax.plot( xvar_data, yvar_data, marker='.', markersize=4, color=colorcode[n], linestyle=' ', label=basename(inpaths[n]) )	
 			ax.plot( [1 for y in plt.ylim()], plt.ylim(), color='black', linestyle=':')
 			ax.plot( [2 for y in plt.ylim()], plt.ylim(), color='black')
 
@@ -112,8 +120,8 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites
 			for tick in ax.yaxis.get_ticklabels():	tick.set_fontsize(6)
 
 			# setup legend
-			if ( plot_idx == 3 ):	
-				legend = ax.legend(shadow=True)
+			if ( plot_idx == nplots ): # == 3 ):	
+				legend = ax.legend(loc=9, bbox_to_anchor=(0.5,-0.1) )#, shadow=True)
 				for label in legend.get_texts():	label.set_fontsize(8)
 				for label in legend.get_lines():	label.set_linewidth(.5)
 
@@ -139,6 +147,7 @@ if __name__=='__main__':
 	parser.add_argument('inpaths', nargs='+', help='List of paths to silent files.')
 	parser.add_argument('-outfilename', help='Name of silent file.', default='swm_rebuild.out')
 	parser.add_argument('-target_files', nargs='+', help='List of additional target files.', default=['favorites.txt','favorites2.txt'])
+	parser.add_argument('-targets', nargs='+', help='List of targets.', default=[''])
 	parser.add_argument('-xvar', help='Name of x variable.', default='rms_fill')
 	parser.add_argument('-yvar', help='Name of y variable.', default='score')
 	parser.add_argument('--scale', help='scale plot axes.', action='store_true')
@@ -146,4 +155,4 @@ if __name__=='__main__':
 	parser.add_argument('--show', help='show plot after it is created.', action='store_true')
 	args=parser.parse_args()
 
-	make_plots( args.inpaths, outfilename=args.outfilename, target_files=args.target_files, xvar=args.xvar, yvar=args.yvar, scale=args.scale, show=args.show, landscape=args.landscape )
+	make_plots( args.inpaths, outfilename=args.outfilename, target_files=args.target_files, targets=args.targets, xvar=args.xvar, yvar=args.yvar, scale=args.scale, show=args.show, landscape=args.landscape )

@@ -12,4 +12,5 @@
 -score:rna_torsion_potential RNA11_based_new
 -chemical::enlarge_H_lj
 -set_weights rna_torsion 1.0
+-allow_skip_bulge
 -cycles 2000
