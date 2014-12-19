@@ -15,11 +15,11 @@ from make_plots_util import *
 ##########################################################
 
 def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites.txt','favorites2.txt'], targets=[''], colorcode=None, xvar='rms_fill', yvar='score', scale=False, show=False, landscape=False ):
-	
+
 	data = []
 	which_target = []
 	outfiles_list = []
-	
+
 	if not colorcode: colorcode = [ (0.0, 0.0, 0.0, 1.0), (1.0, 0.0, 0.0, 1.0) ]
 	if len( colorcode ) < len( inpaths ): colorcode = jet( len( inpaths ) )
 
@@ -27,12 +27,12 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites
 		target_names = targets
 	else:
 		target_names = get_target_names( target_files )
-	
+
 	for target in target_names:
 		print "Target: "+target
 
 	inpaths = map( lambda x: abspath(x), inpaths )
-	
+
 	for n in xrange( len(inpaths) ):
 		assert( exists( inpaths[n] ) )
 		outfiles = popen( 'ls -1 '+inpaths[n]+'/*/'+outfilename ).read().split('\n')[:-1]
@@ -45,7 +45,7 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites
 	noutfiles = np.max( map( lambda x: len(x), outfiles_list ) )
 
 	###################################################
-	
+
 	# print out runtimes, stored in the silent files
 	show_times( inpaths, data, noutfiles, target_names, which_target )
 
@@ -65,7 +65,7 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites
 
 	# setup pdf file name, and PdfPages handle
 	pdfname = basename( inpaths[0] )
-	if len( inpaths ) > 1:	
+	if len( inpaths ) > 1:
 		for k in xrange( 1, len( inpaths ) ): pdfname += '_vs_' + basename( inpaths[k] )
 	fullpdfname = get_path_to_dir('stepwise_benchmark') + '/Figures/' + pdfname # + '.pdf'
 	if landscape:	fullpdfname += '_landscape.pdf'
@@ -86,7 +86,7 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites
 
 		# iterate over targets
 		for target in target_names:
-			
+
 			# add subplot, if scores are available
 			plot_idx += 1
 			try: data[n][ target ]
@@ -98,7 +98,7 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites
 			[ xvar_data, yvar_data ] = [ list(d) for d in zip( *[ ( score[xvar_idx], score[yvar_idx] ) for score in data[n][ target ].scores] ) ]
 
 			# plot data
-			ax.plot( xvar_data, yvar_data, marker='.', markersize=4, color=colorcode[n], linestyle=' ', label=basename(inpaths[n]) )	
+			ax.plot( xvar_data, yvar_data, marker='.', markersize=4, color=colorcode[n], linestyle=' ', label=basename(inpaths[n]) )
 			ax.plot( [1 for y in plt.ylim()], plt.ylim(), color='black', linestyle=':')
 			ax.plot( [2 for y in plt.ylim()], plt.ylim(), color='black')
 
@@ -108,10 +108,10 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites
 			# set title and axes lables
 			if landscape:	ax.set_title( get_title(target), fontsize='small', weight='bold' )
 			else:			ax.set_title( get_title(target), fontsize='medium', weight='bold' )
-			if ( ( np.mod( plot_idx, ncols ) == 1 ) or ( ncols == 1 ) ):	
+			if ( ( np.mod( plot_idx, ncols ) == 1 ) or ( ncols == 1 ) ):
 				if landscape:	ax.set_ylabel( yvar, fontsize='small' )
 				else:			ax.set_ylabel( yvar, fontsize='medium' )
-			if ( ( np.floor( (plot_idx-1) / ncols ) == nrows-1 ) or ( nrows == 1 ) ):	
+			if ( ( np.floor( (plot_idx-1) / ncols ) == nrows-1 ) or ( nrows == 1 ) ):
 				if landscape:	ax.set_xlabel( xvar, fontsize='small' )
 				else:			ax.set_xlabel( xvar, fontsize='medium' )
 
@@ -120,8 +120,11 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites
 			for tick in ax.yaxis.get_ticklabels():	tick.set_fontsize(6)
 
 			# setup legend
-			if ( plot_idx == nplots ): # == 3 ):	
-				legend = ax.legend(loc=9, bbox_to_anchor=(0.5,-0.1) )#, shadow=True)
+			if ( plot_idx == nplots ): # == 3 ):
+				if (nplots == 1):
+					legend = ax.legend(shadow=True)
+				else:
+					legend = ax.legend(loc=9, bbox_to_anchor=(0.5,-0.1) )#, shadow=True)
 				for label in legend.get_texts():	label.set_fontsize(8)
 				for label in legend.get_lines():	label.set_linewidth(.5)
 
