@@ -28,14 +28,14 @@ parser.add_argument('--extra_min_res_off', action='store_true', help='Additional
 parser.add_argument('--save_times_off', action='store_true', help='Additional flag for turning save_times flag off.')
 parser.add_argument('-slave_nodes', default='150', type=int, help='Number of nodes to queue.')
 parser.add_argument('--path_to_rosetta', default='', help='Path to working copy of rosetta.')
-parser.add_argument('-v', '--verbose', help="increase output verbosity", action="store_true")   
+parser.add_argument('-v', '--verbose', help="increase output verbosity", action="store_true")
 args = parser.parse_args()
 
 #####################################################################################################################
 
 # get path to rosetta, required for now
 ROSETTA=args.path_to_rosetta
-if ( not len( ROSETTA ) ) or ( not exists( ROSETTA ) ): 
+if ( not len( ROSETTA ) ) or ( not exists( ROSETTA ) ):
     ROSETTA=expandvars( '$ROSETTA' )
     if ( not len( ROSETTA ) ) or ( not exists( ROSETTA ) ):
         print 'WARNING: $ROSETTA must be defined as the path to a working rosetta repository!!!'
@@ -57,7 +57,7 @@ if len (args.extra_flags) > 0:
         for flag in extra_flags_benchmark:
             if ( '-VDW_rep_screen_info' in flag ):
                 VDW_rep_screen_info_flag_found = True
-    
+
     else:
         extra_flags_benchmark = None
         print 'Did not find ', args.extra_flags, ' so not using any extra flags for the benchmark'
@@ -97,7 +97,7 @@ inpath = info_file.replace('.txt', '' ) + '/'
 assert( exists( inpath ) )
 
 
-# read info_file 
+# read info_file
 for info_file_line in open( info_file ).readlines():
 
     if info_file_line[0] == '#' : continue
@@ -112,7 +112,7 @@ for info_file_line in open( info_file ).readlines():
         assert( name not in names )
         names.append( name )
         continue
-    
+
     if ( len( args.user_input_runs ) > 0 ) and ( name not in args.user_input_runs ): continue
 
     if   cols[0] == 'Sequence:'    :    sequence   [ name ] = cols[1]
@@ -121,13 +121,13 @@ for info_file_line in open( info_file ).readlines():
     elif cols[0] == 'Input_res:'   :    input_res  [ name ] = cols[1]
     elif cols[0] == 'Native:'      :    native     [ name ] = cols[1]
     elif cols[0] == 'Extra_flags:' :    extra_flags[ name ] = string.join( cols[1:] )
-       
+
 
 # check that each dictionary is the same size
 assert( len( names ) == len( sequence ) == len( secstruct ) == len( working_res ) == len( input_res ) == len( native ))
 
 
-# iterate over names 
+# iterate over names
 for name in names:
 
     sequences          = string.split( sequence[name], ',' )
@@ -157,13 +157,13 @@ for name in names:
             input_pdb = slice_out( inpath, prefix, native[ name ],input_res_blocks[m] )
             input_pdbs[ name ].append( input_pdb )
             get_resnum_chain( input_res_blocks[m], input_resnums, input_chains )
-    
-    
+
+
     input_resnum_fullmodel = map( lambda x: get_fullmodel_number(x,resnums[name],chains[name]), zip( input_resnums, input_chains ) )
 
 
     # create secstruct if not defined
-    if secstruct[ name ] == '-': 
+    if secstruct[ name ] == '-':
         secstruct[ name ] = string.join( [ '.' * len( seq ) for seq in sequences ], ',' )
 
 
@@ -217,7 +217,7 @@ for name in names:
              ( next_moving and not prev_moving and not right_after_chainbreak ) ):
             extra_min_res[ name ].append( m )
 
- 
+
     # create fasta
     fasta[ name ] = '%s/%s.fasta' % (inpath,name)
     if not exists( fasta[ name ] ):
@@ -229,14 +229,14 @@ for name in names:
         fid.write( '>%s %s\n%s\n' % ( name,string.join(working_res_blocks,' '),string.join(sequences,'') ) )
         fid.close()
 
- 
-    # get sample loop res      
-    loop_res[ name ] = {}      
+
+    # get sample loop res
+    loop_res[ name ] = {}
     if input_res[ name ] == '-':
-        if args.swa:    
+        if args.swa:
             print "WARNING: input_res[ name ] == '-' "
         continue
-        
+
     ( workres , workchains  ) = parse_tag( working_res[ name ], alpha_sort=True )
     ( inputres , inputchains  ) = parse_tag( input_res[ name ], alpha_sort=True )
 
@@ -251,10 +251,10 @@ for name in names:
         if is_input_tag: continue
         loopres_tag.append( working_tag )
     loopres_tag = string.join( loopres_tag, ',' )
-    
+
     ( loopres , loopchains  ) = parse_tag( loopres_tag, alpha_sort=True )
     ( workres , workchains  ) = parse_tag( working_res[ name ], alpha_sort=True )
-         
+
     loopres_conventional = [ str(workchains[idx])+':'+str(workres[idx]) for idx in xrange( len( workres ) ) if (workres[idx] in loopres and workchains[idx] == loopchains[loopres.index(workres[idx])]) ]
     loopres_conventional = string.join( [ str(x) for x in loopres_conventional ] ,' ')
     loop_res[ name ][ 'conventional' ] = loopres_conventional
@@ -265,12 +265,12 @@ for name in names:
         loop_res[ name ][ 'swa' ]  = loopres_swa
 
 
-    # get VDW_rep_screen_info, it will only be used if -VDW_rep_screen_info flag is set in extra_flags_benchmark 
+    # get VDW_rep_screen_info, it will only be used if -VDW_rep_screen_info flag is set in extra_flags_benchmark
     periph_res_radius = 50.0
     if ( 'rrna' in name ) or ( 'rRNA' in name ):    periph_res_radius = 100.0
-        
-    prefix = '%s/%s_%d_ANGSTROM_GRID_' % ( inpath, name, periph_res_radius )       
-    VDW_rep_screen_pdb[ name ] = prefix + native[ name ] 
+
+    prefix = '%s/%s_%d_ANGSTROM_GRID_' % ( inpath, name, periph_res_radius )
+    VDW_rep_screen_pdb[ name ] = prefix + native[ name ]
     VDW_rep_screen_info[ name ] = '%s' % ( basename( VDW_rep_screen_pdb[name] ) )
 
     if VDW_rep_screen_info_flag_found:
@@ -278,10 +278,10 @@ for name in names:
         if not exists( VDW_rep_screen_pdb[ name ] ):
 
             loopres_list=string.split( loop_res[ name ][ 'conventional' ], ' ' )
-            periph_res_tag = get_surrounding_res_tag( inpath+native[ name ], sample_res_list=loopres_list, radius=periph_res_radius, verbose=args.verbose )      
+            periph_res_tag = get_surrounding_res_tag( inpath+native[ name ], sample_res_list=loopres_list, radius=periph_res_radius, verbose=args.verbose )
             assert( len( periph_res_tag ) )
             slice_out( inpath, prefix, native[ name ], periph_res_tag )
-            
+
             if args.verbose:
                 print 'loopres_list for '+name+' = '+string.join(loopres_list)
                 print 'periph_res for '+name+' = '+periph_res_tag
@@ -291,21 +291,21 @@ for name in names:
 # write qsubMINIs, READMEs and SUBMITs
 fid_qsub = open( 'qsubMINI', 'w' )
 for name in names:
-    
+
     dirname = name
     if not exists( dirname ): system( 'mkdir '+dirname )
 
     # move all required files to the correct directory
     start_files = helix_files[ name ] + input_pdbs[ name ]
-    infiles = start_files + [ fasta[name], working_native[ name ] ] 
+    infiles = start_files + [ fasta[name], working_native[ name ] ]
     if VDW_rep_screen_info_flag_found:  infiles.append( VDW_rep_screen_pdb[ name ] )
     for infile in infiles:  system( 'cp %s %s/ ' % ( infile, dirname ) )
 
     # SETUP for StepWise Assembly
     if args.swa:
-                        
+
         fid = open( '%s/README_SWA' % dirname, 'w' )
-        fid.write( SWA_DAGMAN_TOOLS+'/SWA_DAG/setup_SWA_RNA_dag_job_files.py' )           
+        fid.write( SWA_DAGMAN_TOOLS+'/SWA_DAG/setup_SWA_RNA_dag_job_files.py' )
         if len( start_files ) > 0 :
             fid.write( ' -s' )
             for infile in start_files:  fid.write( ' %s' % (basename(infile) ) )
@@ -313,35 +313,37 @@ for name in names:
             fid.write( ' -native_pdb %s' % basename( working_native[name] ) )
         fid.write( ' -fasta %s.fasta' %  name )
         fid.write( ' -sample_res %s' % loop_res[ name ][ 'swa' ] )
-        
+
         # case-specific extra flags
-        if ( len( extra_flags[name] ) > 0 ) and ( extra_flags[ name ] != '-' ) : fid.write( ' %s' % extra_flags[name] )
-        
+        if ( len( extra_flags[name] ) > 0 ) and ( extra_flags[ name ] != '-' ) :
+            #fid.write( '%s\n' % extra_flags[name] )
+            for flag in extra_flags[name].split('-'):
+                if not len( flag ): continue
+                flag = flag.replace('true','True').replace('false','False')
+                fid.write( ' -%s' % flag )
+
+
         # extra flags for whole benchmark
         weights_file = ''
         if extra_flags_benchmark:
             for flag in extra_flags_benchmark:
                 if ( '#' in flag ): continue
+                flag = flag.replace('true','True').replace('false','False')
                 if ( '-analytic_etable_evaluation' in flag ): continue ### SWM Specific
                 if ( '-score:weights' in flag ):
-                    flag = flag.replace( '-score:weights', '-force_field_file' ) 
+                    flag = flag.replace( '-score:weights', '-force_field_file' )
                     weights_file = string.split( flag )[1]
                 if ( '-score:rna_torsion_potential' in flag ):
                     flag = flag.replace( '-score:rna_torsion_potential', '-rna_torsion_potential_folder' )
-                if ( '-VDW_rep_screen_info' in flag ):  
-                    if ( 'True' in flag ):
-                        flag = flag.replace( 'True', VDW_rep_screen_info[ name ] ) #-VDW_rep_screen_info 1zih_RNA.pdb
-                    elif ( 'true' in flag ):
-                        flag = flag.replace( 'true', VDW_rep_screen_info[ name ] ) #-VDW_rep_screen_info 1zih_RNA.pdb
-                    else:
-                        continue
-                    flag = flag.replace('\n', ' -apply_VDW_rep_delete_matching_res False')
+                if ( '-VDW_rep_screen_info True' in flag ):
+                    flag = flag.replace( 'True', VDW_rep_screen_info[ name ] ) #-VDW_rep_screen_info 1zih_RNA.pdb
+                    flag = flag + ' -apply_VDW_rep_delete_matching_res False'
                 flag = ' '+flag.replace( '\n', '' )
                 fid.write( flag )
         if len( weights_file ) > 0:
             if not exists( weights_file ):
                 weights_file = ROSETTA_DB+'/scoring/weights/'+weights_file
-            assert( exists( weights_file ) ) 
+            assert( exists( weights_file ) )
             system( 'cp ' + weights_file + ' ' + name )
 
         fid.close()
@@ -360,12 +362,12 @@ for name in names:
 
     # SETUP for StepWise Monte Carlo
     else:
-       
+
         fid = open( '%s/README_SWM' % name, 'w' )
         fid.write( 'stepwise @flags -out:file:silent swm_rebuild.out\n' )
         fid.close()
 
-        fid = open( '%s/flags' % name, 'w' )       
+        fid = open( '%s/flags' % name, 'w' )
         if len( start_files ) > 0 :
             fid.write( '-s' )
             for infile in start_files:  fid.write( ' %s' % (basename(infile) ) )
@@ -382,32 +384,33 @@ for name in names:
         fid.write( '-cycles 200\n' )
         fid.write( '-nstruct 20\n' )
         fid.write( '-intermolecular_frequency 0.0\n' )
-        if not args.save_times_off: 
+        if not args.save_times_off:
             fid.write( '-save_times\n' )
-        
+
         # case-specific extra flags
-        if ( len( extra_flags[name] ) > 0 ) and ( extra_flags[ name ] != '-' ) : fid.write( ' %s' % extra_flags[name] )
+        if ( len( extra_flags[name] ) > 0 ) and ( extra_flags[ name ] != '-' ) :
+            #fid.write( '%s\n' % extra_flags[name] )
+            for flag in extra_flags[name].split('-'):
+                if not len( flag ): continue
+                flag = flag.replace('True','true').replace('False','false')
+                fid.write( '-%s\n' % flag )
 
         # extra flags for whole benchmark
         weights_file = ''
         if extra_flags_benchmark:
             for flag in extra_flags_benchmark:
                 if ( '#' in flag ): continue
+                flag = flag.replace('True','true').replace('False','false')
                 if ( '-single_stranded_loop_mode' in flag ): continue ### SWA Specific
                 if ( '-score:weights' in flag ): weights_file = string.split( flag )[1]
-                if ( '-VDW_rep_screen_info' in flag ): 
-                    if ( 'True' in flag ):
-                        flag = flag.replace( 'True', basename( VDW_rep_screen_info[ name ] ) )#-VDW_rep_screen_info 1zih_RNA.pdb
-                    elif ( 'true' in flag ):
-                        flag = flag.replace( 'true', basename( VDW_rep_screen_info[ name ] ) )#-VDW_rep_screen_info 1zih_RNA.pdb
-                    else:
-                        continue
+                if ( '-VDW_rep_screen_info true' in flag ):
+                    flag = flag.replace( 'true', basename( VDW_rep_screen_info[ name ] ) )#-VDW_rep_screen_info 1zih_RNA.pdb
                 fid.write( flag )
 
         if len( weights_file ) > 0:
             if not exists( weights_file ):
                 weights_file = ROSETTA_DB+'/scoring/weights/'+weights_file
-            assert( exists( weights_file ) ) 
+            assert( exists( weights_file ) )
             system( 'cp ' + weights_file + ' ' + name )
 
         fid.close()
@@ -418,7 +421,7 @@ for name in names:
         system( 'rosetta_submit.py README_SWM SWM 10 %d -save_logs' % args.nhours )
         chdir( CWD )
 
-        fid_qsub.write( 'cd %s; source qsubMINI; cd %s\n' % ( name, CWD ) )  
+        fid_qsub.write( 'cd %s; source qsubMINI; cd %s\n' % ( name, CWD ) )
 
 
 fid_qsub.close()
