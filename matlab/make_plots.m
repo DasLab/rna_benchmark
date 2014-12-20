@@ -13,14 +13,15 @@ for n = 1:length( inpaths )
   inpath = inpaths{n};
   assert( exist( inpath,'dir' )>0 );
 
-  outfilename = 'swm_rebuild.*';
-  outfiles = split_string( ls( '-1', [inpath,'/*/',outfilename ] ), '\n' );
+  outfilename = 'swm_rebuild.out'; 
+  outfiles = glob( [inpath,'/*/',outfilename ] );
+  if length( outfiles ) == 0 
+    outfilename = 'swm_rebuild.sc';
+    outfiles = glob( [inpath,'/*/',outfilename ] );
+  end
   count = 0;
-  for  k= 1:length( outfiles )
+  for k= 1:length( outfiles )
     outfile = outfiles{k};
-    if ( ~strcmp(outfile(end-3:end),'.out') &  ...
-	 ~strcmp(outfile(end-2:end), '.sc' ) ); continue; 
-    end;
     fprintf( ['Reading in... ', outfile, '\n'] );
     dirn = dirname( outfile );
     target = basename( dirn(1:end-1) );
@@ -74,7 +75,7 @@ end
 set(figure(1), 'position', [300 200 500 600] );
 for n = 1:length( inpaths )
   score_name = 'score'; rms_name = 'rms_fill';
-  for  k= 1:count
+  for  k= 1:size( which_target, 2 )
     if isempty( which_target{n,k} ); continue; end;
     subplot( nrows, ncols, mod( which_target{n,k} -1, nrows*ncols ) + 1 );
     if length( data{n,k} ) == 0; continue; end; 
@@ -108,6 +109,7 @@ if length ( inpaths ) > 1
   fullpdfname = ['Figures/',pdfname, '.pdf'];
   fprintf( '\nMaking figure in: %s\n\n', fullpdfname );
   export_fig( fullpdfname );
+  system( ['open ', fullpdfname ] );
 end
 
 
