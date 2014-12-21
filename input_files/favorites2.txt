@@ -84,7 +84,7 @@ Secstruct:     ((...((,))....))
 Working_res:   A:5-11,B:12-19
 Input_res:     -
 Native:        3mei_with_symm_RNA.pdb
-Extra_flags:   
+Extra_flags:   -
 
 Name:          puzzle1_alt_fixed
 Sequence:      ugccugug,cgcgcca,gcc,gcc
@@ -92,5 +92,5 @@ Secstruct:     ((....((,))...)),(.(,).)
 Working_res:   A:12-19,B:5-11,C:8-10,D:13-15
 Input_res:     A:12-13,A:18-19,B:5-6,B:10-11,C:8-10,D:13-15
 Native:        3mei_with_symm_RNA.pdb
-Extra_flags:   
+Extra_flags:   -
 
