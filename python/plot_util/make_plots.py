@@ -11,6 +11,7 @@ import matplotlib.cm as cmx
 from matplotlib.backends.backend_pdf import PdfPages
 import numpy as np
 from make_plots_util import *
+import subprocess
 
 ##########################################################
 
@@ -27,8 +28,10 @@ def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], targ
 
 	for n in xrange( len(inpaths) ):
 		assert( exists( inpaths[n] ) )
+                outfiles = []
                 for outfilename in outfilenames:
                         outfiles = popen( 'ls -1 '+inpaths[n]+'/*/'+outfilename ).read().split('\n')[:-1]
+                        print outfiles
                         if len( outfiles ) > 0: break
 		for outfile in outfiles:
 			print 'Reading in ... '+outfile
@@ -82,9 +85,9 @@ def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], targ
 		for target in target_names:
 
 			# add subplot, if scores are available
-			plot_idx += 1
 			try: data[n][ target ]
 			except:	continue
+			plot_idx += 1
 			ax = fig.add_subplot( nrows, ncols, plot_idx )
 
 			# get data
@@ -127,6 +130,11 @@ def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], targ
 	pp.savefig()
 	pp.close()
 	if show:	plt.show()
+
+        try:
+                subprocess.call( ['open',fullpdfname] ) # works nicely on a mac.
+        except:
+                pass
 
 	return
 
