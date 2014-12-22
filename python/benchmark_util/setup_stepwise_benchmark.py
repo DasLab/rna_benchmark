@@ -201,6 +201,8 @@ for name in names:
         print command
         system( command )
 
+    # following is now 'hard-coded' into Rosetta option '-motif_mode'
+    # deprecate this python block in 2015 after testing -- rd2014
     L = len( sequence_joined )
     terminal_res[ name ] = []
     extra_min_res[ name ] = []
@@ -216,7 +218,7 @@ for name in names:
         if ( ( prev_moving and not next_moving and not right_before_chainbreak ) or \
              ( next_moving and not prev_moving and not right_after_chainbreak ) ):
             extra_min_res[ name ].append( m )
-
+    if not '-motif_mode\n' in extra_flags_benchmark: extra_flags_benchmark.append( '-motif_mode\n' )
 
     # create fasta
     fasta[ name ] = '%s/%s.fasta' % (inpath,name)
