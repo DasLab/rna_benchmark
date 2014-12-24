@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 
 import string
@@ -13,7 +13,7 @@ from rna_server_conversions import get_all_stems, join_sequence
 from get_surrounding_res import get_surrounding_res_tag
 from setup_stepwise_benchmark_util import *
 from sys import argv, exit
-
+import subprocess
 
 #####################################################################################################################
 
@@ -290,7 +290,10 @@ for name in names:
 
 
 # write qsubMINIs, READMEs and SUBMITs
-fid_qsub = open( 'qsubMINI', 'w' )
+qsub_file = 'qsubMINI'
+hostname = subprocess.check_output( 'hostname' )
+if hostname.find( 'stampede' ) > 0: qsub_file = 'qsubMPI'
+fid_qsub = open( qsub_file, 'w' )
 for name in names:
 
     dirname = name
@@ -419,7 +422,7 @@ for name in names:
         system( 'rosetta_submit.py README_SWM SWM %d %d -save_logs' % (args.njobs, args.nhours ) )
         chdir( CWD )
 
-        fid_qsub.write( 'cd %s; source qsubMINI; cd %s\n' % ( name, CWD ) )
+        fid_qsub.write( 'cd %s; source %s; cd %s\n' % ( name, qsub_file,  CWD ) )
 
 
 fid_qsub.close()
