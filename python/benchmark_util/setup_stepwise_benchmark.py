@@ -23,6 +23,7 @@ parser.add_argument("user_input_runs", nargs='*',help='specify particular cases 
 default_extra_flags_benchmark = 'extra_flags_benchmark.txt'
 parser.add_argument('-extra_flags', default=default_extra_flags_benchmark, help='Filename of text file with extra_flags for all cases.')
 parser.add_argument('-nhours', default='16', type=int, help='Number of hours to queue each job.')
+parser.add_argument('-j','--njobs', default='10', type=int, help='Number of cores for each job.')
 parser.add_argument('--swa', action='store_true', help='Additional flag for setting up SWA runs.')
 parser.add_argument('--extra_min_res_off', action='store_true', help='Additional flag for turning extra_min_res off.')
 parser.add_argument('--save_times_off', action='store_true', help='Additional flag for turning save_times flag off.')
@@ -415,7 +416,7 @@ for name in names:
         print '\nSetting up submission files for: ', name
         CWD = getcwd()
         chdir( name )
-        system( 'rosetta_submit.py README_SWM SWM 10 %d -save_logs' % args.nhours )
+        system( 'rosetta_submit.py README_SWM SWM %d %d -save_logs' % (args.njobs, args.nhours ) )
         chdir( CWD )
 
         fid_qsub.write( 'cd %s; source qsubMINI; cd %s\n' % ( name, CWD ) )
