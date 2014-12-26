@@ -31,12 +31,15 @@ def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], targ
                 outfiles = []
                 for outfilename in outfilenames:
                         outfiles += popen( 'ls -1 '+inpaths[n]+'/*/'+outfilename ).read().split('\n')[:-1]
+                outfiles_actual = []
 		for outfile in outfiles:
+                        if outfile.find( '.out' ) > 0 and outfile.replace( '.out','.sc' ) in outfiles: continue
 			print 'Reading in ... '+outfile
 			assert( exists( outfile ) )
-		which_target.append( map( lambda x: target_names.index( basename( dirname( x ) ) ), outfiles ) )
-		data.append( dict([ (target_names[ which_target[n][k] ], load_score_data(outfiles[k])) for k in xrange( len(outfiles) ) ]) )
-		outfiles_list.append( outfiles )
+                        outfiles_actual.append( outfile )
+		which_target.append( map( lambda x: target_names.index( basename( dirname( x ) ) ), outfiles_actual ) )
+		data.append( dict([ (target_names[ which_target[n][k] ], load_score_data(outfiles_actual[k])) for k in xrange( len(outfiles_actual) ) ]) )
+		outfiles_list.append( outfiles_actual )
 	noutfiles = np.max( map( lambda x: len(x), outfiles_list ) )
 
 	###################################################
@@ -49,6 +52,7 @@ def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], targ
 	# get nplots, nrows, ncols
 	nplots = noutfiles
 	assert( nplots )
+        print nplots
 	if landscape:
 		if nplots < 3: 	  nrows = 1
 		else: 			  nrows = 3
