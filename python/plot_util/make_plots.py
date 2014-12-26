@@ -30,9 +30,7 @@ def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], targ
 		assert( exists( inpaths[n] ) )
                 outfiles = []
                 for outfilename in outfilenames:
-                        outfiles = popen( 'ls -1 '+inpaths[n]+'/*/'+outfilename ).read().split('\n')[:-1]
-                        print outfiles
-                        if len( outfiles ) > 0: break
+                        outfiles += popen( 'ls -1 '+inpaths[n]+'/*/'+outfilename ).read().split('\n')[:-1]
 		for outfile in outfiles:
 			print 'Reading in ... '+outfile
 			assert( exists( outfile ) )
