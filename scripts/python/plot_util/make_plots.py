@@ -52,7 +52,6 @@ def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], targ
 	# get nplots, nrows, ncols
 	nplots = noutfiles
 	assert( nplots )
-        print nplots
 	if landscape:
 		if nplots < 3: 	  nrows = 1
 		else: 			  nrows = 3
