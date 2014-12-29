@@ -2,13 +2,8 @@
 
 ##########################################################
 
-from sys import exit
 from os.path import exists, dirname, basename, abspath
-from os import popen
 import matplotlib.pyplot as plt
-import matplotlib.colors as colors
-import matplotlib.cm as cmx
-from matplotlib.backends.backend_pdf import PdfPages
 import numpy as np
 from make_plots_util import *
 
@@ -20,8 +15,10 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites
 	which_target = []
 	outfiles_list = []
 
-	if not colorcode: colorcode = [ (0.0, 0.0, 0.0, 1.0), (1.0, 0.0, 0.0, 1.0) ]
-	if len( colorcode ) < len( inpaths ): colorcode = jet( len( inpaths ) )
+	if not colorcode: 
+		colorcode = [ (0.0, 0.0, 0.0, 1.0), (1.0, 0.0, 0.0, 1.0) ]
+	if len(colorcode) < len(inpaths): 
+		colorcode = jet( len(inpaths) )
 
 	if targets[0] != '':
 		target_names = targets
@@ -32,10 +29,11 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites
 		print "Target: "+target
 
 	inpaths = map( lambda x: abspath(x), inpaths )
+	base_inpaths = map( lambda x: basename(x), inpaths )
 
 	for n in xrange( len(inpaths) ):
 		assert( exists( inpaths[n] ) )
-		outfiles = popen( 'ls -1 '+inpaths[n]+'/*/'+outfilename ).read().split('\n')[:-1]
+		outfiles = get_outfiles( inpaths[n], outfilename )
 		for outfile in outfiles:
 			print 'Reading in ... '+outfile
 			assert( exists( outfile ) )
@@ -46,40 +44,24 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites
 
 	###################################################
 
-	# print out runtimes, stored in the silent files
+	# get and print out runtimes, stored in the silent files
 	show_times( inpaths, data, noutfiles, target_names, which_target )
-
+	times_list = get_times( inpaths, data, noutfiles, target_names, which_target )
+	
 	###################################################
 
-	# get nplots, nrows, ncols
-	nplots = noutfiles
-	assert( nplots )
-	if landscape:
-		if nplots < 3: 	  nrows = 1
-		else: 			  nrows = 3
-	else:
-		if nplots < 3: 	  nrows = nplots
-		elif nplots < 12: nrows = 4
-		else:  		      nrows = 5
-	ncols = np.ceil( nplots / float( nrows ) )
-
 	# setup pdf file name, and PdfPages handle
-	pdfname = basename( inpaths[0] )
-	if len( inpaths ) > 1:
-		for k in xrange( 1, len( inpaths ) ): pdfname += '_vs_' + basename( inpaths[k] )
-	fullpdfname = get_path_to_dir('stepwise_benchmark') + '/Figures/' + pdfname # + '.pdf'
-	if landscape:	fullpdfname += '_landscape.pdf'
-	else:			fullpdfname += '.pdf'
-	print '\nMaking figure in: %s\n' % fullpdfname
-	pp = PdfPages( fullpdfname )
+	pp = setup_pdf_page( base_inpaths, landscape=landscape )
+	
+	# get nplots, nrows, ncols, figwidth, figheight
+	( nplots, nrows, ncols, figwidth, figheight ) = get_figure_dimensions( noutfiles, landscape=landscape )
 
 	# set up figure, adjust properties
 	fig = plt.figure(1)
-	if landscape:	fig.set_size_inches(11,8.5)
-	else:			fig.set_size_inches(8.5,11)
+	fig.set_size_inches( figwidth, figheight )
 
 	# iterate over runs
-	for n in xrange( len( inpaths ) ):
+	for n in xrange( len(inpaths) ):
 
 		# initialize plot index
 		plot_idx = 0
@@ -87,10 +69,15 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites
 		# iterate over targets
 		for target in target_names:
 
+			# get run_time from times_list
+			run_time = times_list[n][plot_idx]
+
 			# add subplot, if scores are available
 			plot_idx += 1
-			try: data[n][ target ]
-			except:	continue
+			try: 
+				data[n][target]
+			except:	
+				continue
 			ax = fig.add_subplot( nrows, ncols, plot_idx )
 
 			# get data
@@ -98,44 +85,52 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites
 			[ xvar_data, yvar_data ] = [ list(d) for d in zip( *[ ( score[xvar_idx], score[yvar_idx] ) for score in data[n][ target ].scores] ) ]
 
 			# plot data
-			ax.plot( xvar_data, yvar_data, marker='.', markersize=4, color=colorcode[n], linestyle=' ', label=basename(inpaths[n]) )
+			plot_label = '%d +/- %d' %( run_time.mean, run_time.stdev ) 
+			ax.plot( xvar_data, yvar_data, marker='.', markersize=4, color=colorcode[n], linestyle=' ', label=plot_label )
 			ax.plot( [1 for y in plt.ylim()], plt.ylim(), color='black', linestyle=':')
 			ax.plot( [2 for y in plt.ylim()], plt.ylim(), color='black')
 
 			# set axes limits
-			if not scale:	ax.set_xlim( 0, 16 )
+			if not scale:	
+				ax.set_xlim( 0, 16 )
 
 			# set title and axes lables
-			if landscape:	ax.set_title( get_title(target), fontsize='small', weight='bold' )
-			else:			ax.set_title( get_title(target), fontsize='medium', weight='bold' )
-			if ( ( np.mod( plot_idx, ncols ) == 1 ) or ( ncols == 1 ) ):
-				if landscape:	ax.set_ylabel( yvar, fontsize='small' )
-				else:			ax.set_ylabel( yvar, fontsize='medium' )
-			if ( ( np.floor( (plot_idx-1) / ncols ) == nrows-1 ) or ( nrows == 1 ) ):
-				if landscape:	ax.set_xlabel( xvar, fontsize='small' )
-				else:			ax.set_xlabel( xvar, fontsize='medium' )
+			if landscape:	
+				ax.set_title( get_title(target), fontsize='small', weight='bold' )
+			else:			
+				ax.set_title( get_title(target), fontsize='medium', weight='bold' )
+			ax.set_ylabel( yvar, fontsize=6 )
+			ax.set_xlabel( xvar, fontsize=6 )
 
 			# adjust axis properties
-			for tick in ax.xaxis.get_ticklabels():	tick.set_fontsize(6)
-			for tick in ax.yaxis.get_ticklabels():	tick.set_fontsize(6)
+			for tick in ax.xaxis.get_ticklabels():	
+				tick.set_fontsize(6)
+			for tick in ax.yaxis.get_ticklabels():	
+				tick.set_fontsize(6)
 
-			# setup legend
-			if ( plot_idx == nplots ): # == 3 ):
-				if (nplots == 1):
-					legend = ax.legend(shadow=True)
-				else:
-					legend = ax.legend(loc=9, bbox_to_anchor=(0.5,-0.1) )#, shadow=True)
-				for label in legend.get_texts():	label.set_fontsize(8)
-				for label in legend.get_lines():	label.set_linewidth(.5)
+			# setup times sublegends
+			time_legend = ax.legend(loc=4, numpoints=1, prop={'size':6} )
+
+			# setup global legend based on inpaths
+			( handles, labels ) = ax.get_legend_handles_labels()
+			if (plot_idx == 1 or nplots < 3):
+				legend = ax.legend(handles, base_inpaths[:n+1], loc=1, numpoints=1, prop={'size':6})
+				plt.gca().add_artist(time_legend)
 
 	# adjust spacing of plots on figure
-	if landscape:	plt.subplots_adjust(bottom=.1, left=.05, right=.98, top=.90, hspace=.5)
-	else:			plt.subplots_adjust(bottom=.05, left=.08, right=.95, top=.95, hspace=.35)
+	if landscape:	
+		plt.subplots_adjust(bottom=.1, left=.05, right=.98, top=.90, hspace=.5)
+	else:			
+		plt.subplots_adjust(bottom=.05, left=.08, right=.95, top=.95, wspace=.3, hspace=.6)
+
+	# print date to figure ( bottom_right = (0.99, 0.01); top_right = (0.99, 0.98) )
+	plt.figtext(0.99, 0.01, get_date(), horizontalalignment='right') 
 
 	# save as pdf and close, show plot if show=True
 	pp.savefig()
 	pp.close()
-	if show:	plt.show()
+	if show:	
+		plt.show()
 
 	return
 
