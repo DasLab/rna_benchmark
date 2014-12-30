@@ -10,7 +10,7 @@ import subprocess
 
 ##########################################################
 
-def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites.txt','favorites2.txt'], targets=[''], colorcode=None, xvar='rms_fill', yvar='score', scale=False, show=False, landscape=False ):
+def make_plots( inpaths, outfilenames=['swm_rebuild.out'], target_files=['favorites.txt','favorites2.txt'], targets=[''], colorcode=None, xvar='rms_fill', yvar='score', scale=False, show=False, landscape=False ):
 
 	data = []
 	which_target = []
@@ -33,13 +33,16 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites
 	base_inpaths = map( lambda x: basename(x), inpaths )
 
 	for n in xrange( len(inpaths) ):
+		outfiles = []
+		outfiles_actual = []
 		assert( exists( inpaths[n] ) )
-		outfiles = get_outfiles( inpaths[n], outfilename )
+    	for outfilename in outfilenames:
+        	outfiles += get_outfiles( inpaths[n], outfilename )
 		for outfile in outfiles:
-                        if outfile.find( '.out' ) > 0 and outfile.replace( '.out','.sc' ) in outfiles: continue
-			print 'Reading in ... '+outfile
-			assert( exists( outfile ) )
-                        outfiles_actual.append( outfile )
+			if outfile.find( '.out' ) > 0 and outfile.replace( '.out','.sc' ) in outfiles:	continue
+        	print 'Reading in ... '+outfile
+        	assert( exists( outfile ) )
+        	outfiles_actual.append( outfile )
 		which_target.append( map( lambda x: target_names.index( basename( dirname( x ) ) ), outfiles_actual ) )
 		data.append( dict([ (target_names[ which_target[n][k] ], load_score_data(outfiles_actual[k])) for k in xrange( len(outfiles_actual) ) ]) )
 		outfiles_list.append( outfiles_actual )
@@ -162,7 +165,7 @@ if __name__=='__main__':
 
 	parser = argparse.ArgumentParser(description='Make plots of scores from silent files.')
 	parser.add_argument('inpaths', nargs='+', help='List of paths too silent files.')
-	parser.add_argument('-outfilename', nargs='*', help='Name of silent file.', default=['swm_rebuild.out','swm_rebuild.sc'])
+	parser.add_argument('-outfilenames', nargs='*', help='Name of silent file.', default=['swm_rebuild.out','swm_rebuild.sc'])
 	parser.add_argument('-target_files', nargs='+', help='List of additional target files.', default=['favorites.txt','favorites2.txt'])
 	parser.add_argument('-targets', nargs='+', help='List of targets.', default=[''])
 	parser.add_argument('-xvar', help='Name of x variable.', default='rms_fill')
@@ -172,5 +175,5 @@ if __name__=='__main__':
 	parser.add_argument('--show', help='show plot after it is created.', action='store_true')
 	args=parser.parse_args()
 
-	make_plots( args.inpaths, outfilename=args.outfilename, target_files=args.target_files, targets=args.targets, xvar=args.xvar, yvar=args.yvar, scale=args.scale, show=args.show, landscape=args.landscape )
+	make_plots( args.inpaths, outfilenames=args.outfilenames, target_files=args.target_files, targets=args.targets, xvar=args.xvar, yvar=args.yvar, scale=args.scale, show=args.show, landscape=args.landscape )
 
