@@ -122,7 +122,6 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites
         		color=colorcode[n], fontsize=fontsize
         	)
 
-
 			# setup global legend based on inpaths
 			( handles, labels ) = ax.get_legend_handles_labels()
 			if (plot_idx == 1 or nplots < 3):
