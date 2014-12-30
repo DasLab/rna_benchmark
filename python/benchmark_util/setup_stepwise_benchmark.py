@@ -27,20 +27,16 @@ parser.add_argument('-j','--njobs', default='10', type=int, help='Number of core
 parser.add_argument('--swa', action='store_true', help='Additional flag for setting up SWA runs.')
 parser.add_argument('--extra_min_res_off', action='store_true', help='Additional flag for turning extra_min_res off.')
 parser.add_argument('--save_times_off', action='store_true', help='Additional flag for turning save_times flag off.')
-parser.add_argument('-nslaves', default='0', type=int, help='Number of nodes to queue.')
 parser.add_argument('--path_to_rosetta', default='', help='Path to working copy of rosetta.')
 parser.add_argument('-v', '--verbose', help="increase output verbosity", action="store_true")
 args = parser.parse_args()
 
 #####################################################################################################################
-if args.swa and not args.nslaves:
-    # set default nslaves to 150 for SWA jobs 
-    nslaves = 150
-elif not args.nslaves:
-    # set default nslaves to 10 for SWM jobs
-    nslaves = 10
+if args.swa and args.njobs == 10:
+    # set default njobs to 150 for SWA jobs 
+    njobs = 150
 else:
-    nslaves = args.nslaves 
+    njobs = args.njobs 
 
 
 # get path to rosetta, required for now
@@ -370,7 +366,7 @@ for name in names:
         fid_submit.write( SWA_DAGMAN_TOOLS+'/dagman/submit_DAG_job.py' )
         fid_submit.write( ' -master_wall_time %d' % 72 ) #args.nhours )
         fid_submit.write( ' -master_memory_reserve 2048' )
-        fid_submit.write( ' -num_slave_nodes %d' % nslaves )
+        fid_submit.write( ' -num_slave_nodes %d' % njobs )
         fid_submit.write( ' -dagman_file rna_build.dag' )
         fid_submit.close()
 
@@ -434,7 +430,7 @@ for name in names:
         print '\nSetting up submission files for: ', name
         CWD = getcwd()
         chdir( name )
-        system( 'rosetta_submit.py README_SWM SWM %d %d -save_logs' % (nslaves, args.nhours) )
+        system( 'rosetta_submit.py README_SWM SWM %d %d -save_logs' % (njobs, args.nhours) )
         chdir( CWD )
 
         fid_qsub.write( 'cd %s; source qsubMINI; cd %s\n' % ( name, CWD ) )
