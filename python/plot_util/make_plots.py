@@ -10,7 +10,7 @@ import subprocess
 
 ##########################################################
 
-def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], target_files=['favorites.txt','favorites2.txt'], targets=[''], colorcode=None, xvars=['rms_fill'], yvars=['score'], scale=False ):
+def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], target_files=['favorites.txt','favorites2.txt'], targets=[''], colorcode=None, xvars=['rms_fill'], yvars=['score'] ):
 
 	data = []
 	which_target = []
@@ -108,8 +108,7 @@ def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], targ
 			ax.plot( [2 for y in plt.ylim()], plt.ylim(), color='black')
 
 			# set axes limits
-			if not scale:	
-				ax.set_xlim( 0, 16 )
+			ax.set_xlim( 0, 16 )
 
 			# set title and axes labels		
 			ax.set_title( get_title(target), fontsize='medium', weight='bold' )
@@ -172,8 +171,7 @@ if __name__=='__main__':
 	parser.add_argument('-targets', nargs='+', help='List of targets.', default=[''])
 	parser.add_argument('-xvar', nargs='*', help='Name of x variable(s).', default=['rms_fill'])
 	parser.add_argument('-yvar', nargs='*', help='Name of y variable(s).', default=['score'])
-	parser.add_argument('--scale', help='scale plot axes.', action='store_true')
 	args=parser.parse_args()
 
-	make_plots( args.inpaths, outfilenames=args.outfilenames, target_files=args.target_files, targets=args.targets, xvars=args.xvar, yvars=args.yvar, scale=args.scale )
+	make_plots( args.inpaths, outfilenames=args.outfilenames, target_files=args.target_files, targets=args.targets, xvars=args.xvar, yvars=args.yvar )
 
