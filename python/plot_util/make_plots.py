@@ -85,7 +85,8 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites
 			[ xvar_data, yvar_data ] = [ list(d) for d in zip( *[ ( score[xvar_idx], score[yvar_idx] ) for score in data[n][ target ].scores] ) ]
 
 			# plot data
-			plot_label = '%d +/- %d' %( run_time.mean, run_time.stdev ) 
+			time_label = '%5.0f +/- %4.0f' %( run_time.mean, run_time.stdev ) 
+			plot_label = time_label
 			ax.plot( xvar_data, yvar_data, marker='.', markersize=4, color=colorcode[n], linestyle=' ', label=plot_label )
 			ax.plot( [1 for y in plt.ylim()], plt.ylim(), color='black', linestyle=':')
 			ax.plot( [2 for y in plt.ylim()], plt.ylim(), color='black')
@@ -94,7 +95,7 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites
 			if not scale:	
 				ax.set_xlim( 0, 16 )
 
-			# set title and axes lables
+			# set title and axes labels
 			if landscape:	
 				ax.set_title( get_title(target), fontsize='small', weight='bold' )
 			else:			
@@ -109,13 +110,24 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites
 				tick.set_fontsize(6)
 
 			# setup times sublegends
-			time_legend = ax.legend(loc=4, numpoints=1, prop={'size':6} )
+			#time_legend = ax.legend(loc=4, numpoints=1, prop={'size':6} )
+			fontsize = 6
+			ax.text( 
+				0.92, 
+				(0.10*len(inpaths)) - (0.015*fontsize*n), 
+				time_label,
+        		verticalalignment='bottom', 
+        		horizontalalignment='right',
+        		transform=ax.transAxes,
+        		color=colorcode[n], fontsize=fontsize
+        	)
+
 
 			# setup global legend based on inpaths
 			( handles, labels ) = ax.get_legend_handles_labels()
 			if (plot_idx == 1 or nplots < 3):
 				legend = ax.legend(handles, base_inpaths[:n+1], loc=1, numpoints=1, prop={'size':6})
-				plt.gca().add_artist(time_legend)
+				#plt.gca().add_artist(time_legend)
 
 	# adjust spacing of plots on figure
 	if landscape:	
