@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 
 import string
@@ -13,7 +13,7 @@ from rna_server_conversions import get_all_stems, join_sequence
 from get_surrounding_res import get_surrounding_res_tag
 from setup_stepwise_benchmark_util import *
 from sys import argv, exit
-
+import subprocess
 
 #####################################################################################################################
 
@@ -23,6 +23,7 @@ parser.add_argument("user_input_runs", nargs='*',help='specify particular cases 
 default_extra_flags_benchmark = 'extra_flags_benchmark.txt'
 parser.add_argument('-extra_flags', default=default_extra_flags_benchmark, help='Filename of text file with extra_flags for all cases.')
 parser.add_argument('-nhours', default='16', type=int, help='Number of hours to queue each job.')
+parser.add_argument('-j','--njobs', default='10', type=int, help='Number of cores for each job.')
 parser.add_argument('--swa', action='store_true', help='Additional flag for setting up SWA runs.')
 parser.add_argument('--extra_min_res_off', action='store_true', help='Additional flag for turning extra_min_res off.')
 parser.add_argument('--save_times_off', action='store_true', help='Additional flag for turning save_times flag off.')
@@ -210,6 +211,8 @@ for name in names:
         print command
         system( command )
 
+    # following is now 'hard-coded' into Rosetta option '-motif_mode'
+    # deprecate this python block in 2015 after testing -- rd2014
     L = len( sequence_joined )
     terminal_res[ name ] = []
     extra_min_res[ name ] = []
@@ -225,6 +228,7 @@ for name in names:
         if ( ( prev_moving and not next_moving and not right_before_chainbreak ) or \
              ( next_moving and not prev_moving and not right_after_chainbreak ) ):
             extra_min_res[ name ].append( m )
+    if not '-motif_mode\n' in extra_flags_benchmark: extra_flags_benchmark.append( '-motif_mode\n' )
 
 
     # create fasta
@@ -298,7 +302,10 @@ for name in names:
 
 
 # write qsubMINIs, READMEs and SUBMITs
-fid_qsub = open( 'qsubMINI', 'w' )
+qsub_file = 'qsubMINI'
+hostname = subprocess.check_output( 'hostname' )
+if hostname.find( 'stampede' ) > 0: qsub_file = 'qsubMPI'
+fid_qsub = open( qsub_file, 'w' )
 for name in names:
 
     dirname = name

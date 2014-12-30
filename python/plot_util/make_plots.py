@@ -6,6 +6,7 @@ from os.path import exists, dirname, basename, abspath
 import matplotlib.pyplot as plt
 import numpy as np
 from make_plots_util import *
+import subprocess
 
 ##########################################################
 
@@ -35,11 +36,13 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites
 		assert( exists( inpaths[n] ) )
 		outfiles = get_outfiles( inpaths[n], outfilename )
 		for outfile in outfiles:
+                        if outfile.find( '.out' ) > 0 and outfile.replace( '.out','.sc' ) in outfiles: continue
 			print 'Reading in ... '+outfile
 			assert( exists( outfile ) )
-		which_target.append( map( lambda x: target_names.index( basename( dirname( x ) ) ), outfiles ) )
-		data.append( dict([ (target_names[ which_target[n][k] ], load_score_data(outfiles[k])) for k in xrange( len(outfiles) ) ]) )
-		outfiles_list.append( outfiles )
+                        outfiles_actual.append( outfile )
+		which_target.append( map( lambda x: target_names.index( basename( dirname( x ) ) ), outfiles_actual ) )
+		data.append( dict([ (target_names[ which_target[n][k] ], load_score_data(outfiles_actual[k])) for k in xrange( len(outfiles_actual) ) ]) )
+		outfiles_list.append( outfiles_actual )
 	noutfiles = np.max( map( lambda x: len(x), outfiles_list ) )
 
 	###################################################
@@ -143,6 +146,11 @@ def make_plots( inpaths, outfilename='swm_rebuild.out', target_files=['favorites
 	if show:	
 		plt.show()
 
+        try:
+                subprocess.call( ['open',fullpdfname] ) # works nicely on a mac.
+        except:
+                pass
+
 	return
 
 ##########################################################
@@ -153,8 +161,8 @@ if __name__=='__main__':
 	import argparse
 
 	parser = argparse.ArgumentParser(description='Make plots of scores from silent files.')
-	parser.add_argument('inpaths', nargs='+', help='List of paths to silent files.')
-	parser.add_argument('-outfilename', help='Name of silent file.', default='swm_rebuild.out')
+	parser.add_argument('inpaths', nargs='+', help='List of paths too silent files.')
+	parser.add_argument('-outfilename', nargs='*', help='Name of silent file.', default=['swm_rebuild.out','swm_rebuild.sc'])
 	parser.add_argument('-target_files', nargs='+', help='List of additional target files.', default=['favorites.txt','favorites2.txt'])
 	parser.add_argument('-targets', nargs='+', help='List of targets.', default=[''])
 	parser.add_argument('-xvar', help='Name of x variable.', default='rms_fill')
@@ -165,3 +173,4 @@ if __name__=='__main__':
 	args=parser.parse_args()
 
 	make_plots( args.inpaths, outfilename=args.outfilename, target_files=args.target_files, targets=args.targets, xvar=args.xvar, yvar=args.yvar, scale=args.scale, show=args.show, landscape=args.landscape )
+
