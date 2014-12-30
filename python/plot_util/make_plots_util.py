@@ -181,24 +181,17 @@ def get_times( inpaths, data, noutfiles, target_names, which_target ):
 
 ###########################################################
 
-def get_figure_dimensions( noutfiles, landscape=False ):
+def get_figure_dimensions( noutfiles ):
 	nplots = noutfiles
 	assert( nplots )
-	if landscape:
-		if nplots < 3: 	  
-			nrows = 1
-		else:
-			nrows = 3
-	else:
-		if nplots < 3: 	  
-			nrows = nplots
-		elif nplots < 12: 
-			nrows = 4
-		else:  		      
-			nrows = 5
+	if nplots < 3: 	  
+		nrows = nplots
+	elif nplots <= 12: 
+		nrows = 4
+	else:  		      
+		nrows = 5
 	ncols = np.ceil( nplots / float( nrows ) )
-
-	if landscape:	
+	if ( nplots == 1 or nrows < ncols ):
 		figwidth = 11
 		figheight = 8.5
 	else:			
@@ -209,13 +202,9 @@ def get_figure_dimensions( noutfiles, landscape=False ):
 
 ###########################################################
 
-def setup_pdf_page( base_inpaths, landscape=False, verbose=True ):
-	pdfname = string.join(base_inpaths, '_vs_') 
+def setup_pdf_page( base_inpaths ):
+	pdfname = string.join(base_inpaths, '_vs_') + '.pdf'
 	fullpdfname = get_path_to_dir(['stepwise_benchmark','benchmark']) + '/Figures/' + pdfname 
-	if landscape:	
-		fullpdfname += '_landscape.pdf'
-	else:			
-		fullpdfname += '.pdf'
 	print '\nMaking figure in: %s\n' % fullpdfname
 	pp = PdfPages( fullpdfname )
 	return ( pp, fullpdfname )

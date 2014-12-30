@@ -10,7 +10,7 @@ import subprocess
 
 ##########################################################
 
-def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], target_files=['favorites.txt','favorites2.txt'], targets=[''], colorcode=None, xvars=['rms_fill'], yvars=['score'], scale=False, landscape=False ):
+def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], target_files=['favorites.txt','favorites2.txt'], targets=[''], colorcode=None, xvars=['rms_fill'], yvars=['score'], scale=False ):
 
 	data = []
 	which_target = []
@@ -57,10 +57,10 @@ def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], targ
 	###################################################
 
 	# setup pdf file name, and PdfPages handle
-	( pp, fullpdfname ) = setup_pdf_page( base_inpaths, landscape=landscape )
+	( pp, fullpdfname ) = setup_pdf_page( base_inpaths )
 	
 	# get nplots, nrows, ncols, figwidth, figheight
-	( nplots, nrows, ncols, figwidth, figheight ) = get_figure_dimensions( noutfiles, landscape=landscape )
+	( nplots, nrows, ncols, figwidth, figheight ) = get_figure_dimensions( noutfiles )
 
 	# set up figure, adjust properties
 	fig = plt.figure(1)
@@ -111,18 +111,13 @@ def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], targ
 			if not scale:	
 				ax.set_xlim( 0, 16 )
 
-			# set title and axes labels
-			if landscape:	
-				ax.set_title( get_title(target), fontsize='small', weight='bold' )
-			else:			
-				ax.set_title( get_title(target), fontsize='medium', weight='bold' )
+			# set title and axes labels		
+			ax.set_title( get_title(target), fontsize='medium', weight='bold' )
 			ax.set_ylabel( string.join(yvars, ', '), fontsize=6 )
 			ax.set_xlabel( string.join(xvars, ', '), fontsize=6 )
 
 			# adjust axis properties
-			for tick in ax.xaxis.get_ticklabels():	
-				tick.set_fontsize(6)
-			for tick in ax.yaxis.get_ticklabels():	
+			for tick in ( ax.xaxis.get_ticklabels() + ax.yaxis.get_ticklabels() ):	
 				tick.set_fontsize(6)
 
 			# setup times sublegends
@@ -143,13 +138,13 @@ def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], targ
 				legend = ax.legend(handles, base_inpaths[:n+1], loc=1, numpoints=1, prop={'size':6})
 
 	# adjust spacing of plots on figure
-	if landscape:	
+	if ( nplots == 1 or nrows < ncols ): # landscape
 		plt.subplots_adjust(bottom=.1, left=.05, right=.98, top=.90, hspace=.5)
 	else:			
-		plt.subplots_adjust(bottom=.05, left=.08, right=.95, top=.95, wspace=.3, hspace=.6)
+		plt.subplots_adjust(bottom=.075, left=.08, right=.95, top=.95, wspace=.3, hspace=.5)
 
 	# print date to figure ( bottom_right = (0.99, 0.01); top_right = (0.99, 0.98) )
-	plt.figtext(0.99, 0.01, get_date(), horizontalalignment='right') 
+	plt.figtext(0.95, 0.02, get_date(), horizontalalignment='right') 
 
 	# save as pdf and close
 	pp.savefig()
@@ -178,8 +173,7 @@ if __name__=='__main__':
 	parser.add_argument('-xvar', nargs='*', help='Name of x variable(s).', default=['rms_fill'])
 	parser.add_argument('-yvar', nargs='*', help='Name of y variable(s).', default=['score'])
 	parser.add_argument('--scale', help='scale plot axes.', action='store_true')
-	parser.add_argument('--landscape', help='orientation of figure.', action='store_true')
 	args=parser.parse_args()
 
-	make_plots( args.inpaths, outfilenames=args.outfilenames, target_files=args.target_files, targets=args.targets, xvars=args.xvar, yvars=args.yvar, scale=args.scale, landscape=args.landscape )
+	make_plots( args.inpaths, outfilenames=args.outfilenames, target_files=args.target_files, targets=args.targets, xvars=args.xvar, yvars=args.yvar, scale=args.scale )
 
