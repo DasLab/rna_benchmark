@@ -32,15 +32,24 @@ class TimeData(object):
 		self.stdev = None
 
 	def update_stats(self):
-		assert( len(self.times) )
-		self.mean = np.mean( np.array( self.times ) )
-		self.stdev = np.std( np.array( self.times ) )
+		if self.times_found():
+			self.mean = np.mean( np.array( self.times ) )
+			self.stdev = np.std( np.array( self.times ) )
+		else:
+			self.mean = None
+			self.stdev = None 
 
+	def times_found(self):
+		return ( len(self.times) > 0.0 ) 
 
 ##########################################################
 
 def get_outfiles( inpath, outfilename ):
-	outfiles = popen( 'ls -1 '+inpath+'/*/'+outfilename ).read().split('\n')[:-1]
+	outfiles = popen( 'ls -1 '+inpath+'/*/'+outfilename ).read()
+	if 'ls:' in outfiles: # catch bad calls
+		outfiles = [] 
+	else: 
+		outfiles = outfiles.split('\n')[:-1]
 	return outfiles
 
 ##########################################################
@@ -119,16 +128,22 @@ def get_target_names_from_file( filename, target_names ):
 ###########################################################
 
 def get_path_to_dir( dirnames ):
-        for dirname in dirnames:
-                pwd = popen( 'pwd' ).readline()[:-1].split( '/' )
-                if dirname not in pwd: continue
-                return string.join( pwd[:pwd.index( dirname )+1], '/' )
+	for dirname in dirnames:
+		pwd = popen( 'pwd' ).readline()[:-1].split( '/' )
+		if dirname not in pwd: continue
+		return string.join( pwd[:pwd.index( dirname )+1], '/' )
 
 ###########################################################
 
 def show_times( inpaths, data, noutfiles, target_names, which_target ):
 	times_list = get_times( inpaths, data, noutfiles, target_names, which_target )
 	for k in xrange( len(target_names) ):
+		times_found = False
+		for n in xrange( len( inpaths ) ):
+			if times_list[n][k].times_found():
+				times_found = True
+		if not times_found: continue
+
 		print '\n %-6s%33s' % ( 'TARGET', target_names[k] )
 		for n in xrange( len(inpaths) ):
 			run_time = times_list[n][k]
@@ -153,7 +168,7 @@ def get_times( inpaths, data, noutfiles, target_names, which_target ):
 				time_idx = data[n][ target ].score_labels.index( time_label )
 				time_data.times = np.array( [ score[time_idx] for score in data[n][ target ].scores ], dtype = 'float_' )
 			except:
-				time_data.times = np.array( [ 0.0 for score in xrange( noutfiles ) ], dtype = 'float_' ) 
+				time_data.times = [] 
 			time_data.update_stats()
 			times.append( time_data )
 		times_list.append( times )
@@ -191,14 +206,14 @@ def get_figure_dimensions( noutfiles, landscape=False ):
 
 def setup_pdf_page( base_inpaths, landscape=False, verbose=True ):
 	pdfname = string.join(base_inpaths, '_vs_') 
-	fullpdfname = get_path_to_dir('stepwise_benchmark') + '/Figures/' + pdfname 
+	fullpdfname = get_path_to_dir(['stepwise_benchmark','benchmark']) + '/Figures/' + pdfname 
 	if landscape:	
 		fullpdfname += '_landscape.pdf'
 	else:			
 		fullpdfname += '.pdf'
 	print '\nMaking figure in: %s\n' % fullpdfname
 	pp = PdfPages( fullpdfname )
-	return pp
+	return ( pp, fullpdfname )
 
 ###########################################################
 

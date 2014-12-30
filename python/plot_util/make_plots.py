@@ -10,7 +10,7 @@ import subprocess
 
 ##########################################################
 
-def make_plots( inpaths, outfilenames=['swm_rebuild.out'], target_files=['favorites.txt','favorites2.txt'], targets=[''], colorcode=None, xvar='rms_fill', yvar='score', scale=False, show=False, landscape=False ):
+def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], target_files=['favorites.txt','favorites2.txt'], targets=[''], colorcode=None, xvar='rms_fill', yvar='score', scale=False, show=False, landscape=False ):
 
 	data = []
 	which_target = []
@@ -33,11 +33,11 @@ def make_plots( inpaths, outfilenames=['swm_rebuild.out'], target_files=['favori
 	base_inpaths = map( lambda x: basename(x), inpaths )
 
 	for n in xrange( len(inpaths) ):
-		outfiles = []
-		outfiles_actual = []
 		assert( exists( inpaths[n] ) )
+		outfiles = []
     	for outfilename in outfilenames:
         	outfiles += get_outfiles( inpaths[n], outfilename )
+		outfiles_actual = []
 		for outfile in outfiles:
 			if outfile.find( '.out' ) > 0 and outfile.replace( '.out','.sc' ) in outfiles:	continue
         	print 'Reading in ... '+outfile
@@ -57,7 +57,7 @@ def make_plots( inpaths, outfilenames=['swm_rebuild.out'], target_files=['favori
 	###################################################
 
 	# setup pdf file name, and PdfPages handle
-	pp = setup_pdf_page( base_inpaths, landscape=landscape )
+	( pp, fullpdfname ) = setup_pdf_page( base_inpaths, landscape=landscape )
 	
 	# get nplots, nrows, ncols, figwidth, figheight
 	( nplots, nrows, ncols, figwidth, figheight ) = get_figure_dimensions( noutfiles, landscape=landscape )
@@ -69,17 +69,13 @@ def make_plots( inpaths, outfilenames=['swm_rebuild.out'], target_files=['favori
 	# iterate over runs
 	for n in xrange( len(inpaths) ):
 
-		# initialize plot index
-		plot_idx = 0
-
 		# iterate over targets
-		for target in target_names:
+		for plot_idx, target in enumerate(target_names, start=1):
 
 			# get run_time from times_list
-			run_time = times_list[n][plot_idx]
+			run_time = times_list[n][plot_idx-1]
 
 			# add subplot, if scores are available
-			plot_idx += 1
 			try: 
 				data[n][target]
 			except:	
@@ -91,8 +87,11 @@ def make_plots( inpaths, outfilenames=['swm_rebuild.out'], target_files=['favori
 			[ xvar_data, yvar_data ] = [ list(d) for d in zip( *[ ( score[xvar_idx], score[yvar_idx] ) for score in data[n][ target ].scores] ) ]
 
 			# plot data
-			time_label = '%5.0f +/- %4.0f' %( run_time.mean, run_time.stdev ) 
-			plot_label = time_label
+			if run_time.times_found():
+				time_label = '%5.0f +/- %4.0f' %( run_time.mean, run_time.stdev )
+			else:
+				time_label = ''
+			plot_label = base_inpaths[n]
 			ax.plot( xvar_data, yvar_data, marker='.', markersize=4, color=colorcode[n], linestyle=' ', label=plot_label )
 			ax.plot( [1 for y in plt.ylim()], plt.ylim(), color='black', linestyle=':')
 			ax.plot( [2 for y in plt.ylim()], plt.ylim(), color='black')
@@ -116,7 +115,6 @@ def make_plots( inpaths, outfilenames=['swm_rebuild.out'], target_files=['favori
 				tick.set_fontsize(6)
 
 			# setup times sublegends
-			#time_legend = ax.legend(loc=4, numpoints=1, prop={'size':6} )
 			fontsize = 6
 			ax.text( 
 				0.92, 
@@ -132,7 +130,6 @@ def make_plots( inpaths, outfilenames=['swm_rebuild.out'], target_files=['favori
 			( handles, labels ) = ax.get_legend_handles_labels()
 			if (plot_idx == 1 or nplots < 3):
 				legend = ax.legend(handles, base_inpaths[:n+1], loc=1, numpoints=1, prop={'size':6})
-				#plt.gca().add_artist(time_legend)
 
 	# adjust spacing of plots on figure
 	if landscape:	
@@ -149,10 +146,11 @@ def make_plots( inpaths, outfilenames=['swm_rebuild.out'], target_files=['favori
 	if show:	
 		plt.show()
 
-        try:
-                subprocess.call( ['open',fullpdfname] ) # works nicely on a mac.
-        except:
-                pass
+	# open pdf 
+	try:
+		subprocess.call( ['open',fullpdfname] ) # works nicely on a mac.
+	except:
+		pass
 
 	return
 
