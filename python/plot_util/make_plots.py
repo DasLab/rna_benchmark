@@ -10,7 +10,7 @@ import subprocess
 
 ##########################################################
 
-def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], target_files=['favorites.txt','favorites2.txt'], targets=[''], colorcode=None, xvars=['rms_fill'], yvars=['score'], scale=False, show=False, landscape=False ):
+def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], target_files=['favorites.txt','favorites2.txt'], targets=[''], colorcode=None, xvars=['rms_fill'], yvars=['score'], scale=False, landscape=False ):
 
 	data = []
 	which_target = []
@@ -151,11 +151,9 @@ def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], targ
 	# print date to figure ( bottom_right = (0.99, 0.01); top_right = (0.99, 0.98) )
 	plt.figtext(0.99, 0.01, get_date(), horizontalalignment='right') 
 
-	# save as pdf and close, show plot if show=True
+	# save as pdf and close
 	pp.savefig()
 	pp.close()
-	if show:	
-		plt.show()
 
 	# open pdf 
 	try:
@@ -181,8 +179,7 @@ if __name__=='__main__':
 	parser.add_argument('-yvar', nargs='*', help='Name of y variable(s).', default=['score'])
 	parser.add_argument('--scale', help='scale plot axes.', action='store_true')
 	parser.add_argument('--landscape', help='orientation of figure.', action='store_true')
-	parser.add_argument('--show', help='show plot after it is created.', action='store_true')
 	args=parser.parse_args()
 
-	make_plots( args.inpaths, outfilenames=args.outfilenames, target_files=args.target_files, targets=args.targets, xvars=args.xvar, yvars=args.yvar, scale=args.scale, show=args.show, landscape=args.landscape )
+	make_plots( args.inpaths, outfilenames=args.outfilenames, target_files=args.target_files, targets=args.targets, xvars=args.xvar, yvars=args.yvar, scale=args.scale, landscape=args.landscape )
 
