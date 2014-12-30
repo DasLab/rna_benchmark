@@ -10,7 +10,7 @@ import subprocess
 
 ##########################################################
 
-def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], target_files=['favorites.txt','favorites2.txt'], targets=[''], colorcode=None, xvar='rms_fill', yvar='score', scale=False, show=False, landscape=False ):
+def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], target_files=['favorites.txt','favorites2.txt'], targets=[''], colorcode=None, xvars=['rms_fill'], yvars=['score'], scale=False, show=False, landscape=False ):
 
 	data = []
 	which_target = []
@@ -83,7 +83,18 @@ def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], targ
 			ax = fig.add_subplot( nrows, ncols, plot_idx )
 
 			# get data
-			( xvar_idx , yvar_idx  ) = data[n][ target ].score_labels.index( xvar ) , data[n][ target ].score_labels.index( yvar )
+			for xvar in xvars:
+				if xvar not in data[n][target].score_labels: continue
+				xvar_idx = data[n][target].score_labels.index( xvar )
+				break
+			assert( xvar_idx > -1 )
+
+			for yvar in yvars:
+				if yvar not in data[n][target].score_labels: continue
+				yvar_idx = data[n][target].score_labels.index( yvar )
+				break
+			assert( yvar_idx > -1 )
+			
 			[ xvar_data, yvar_data ] = [ list(d) for d in zip( *[ ( score[xvar_idx], score[yvar_idx] ) for score in data[n][ target ].scores] ) ]
 
 			# plot data
@@ -105,8 +116,8 @@ def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], targ
 				ax.set_title( get_title(target), fontsize='small', weight='bold' )
 			else:			
 				ax.set_title( get_title(target), fontsize='medium', weight='bold' )
-			ax.set_ylabel( yvar, fontsize=6 )
-			ax.set_xlabel( xvar, fontsize=6 )
+			ax.set_ylabel( string.join(yvars, ', '), fontsize=6 )
+			ax.set_xlabel( string.join(xvars, ', '), fontsize=6 )
 
 			# adjust axis properties
 			for tick in ax.xaxis.get_ticklabels():	
@@ -166,12 +177,12 @@ if __name__=='__main__':
 	parser.add_argument('-outfilenames', nargs='*', help='Name of silent file.', default=['swm_rebuild.out','swm_rebuild.sc'])
 	parser.add_argument('-target_files', nargs='+', help='List of additional target files.', default=['favorites.txt','favorites2.txt'])
 	parser.add_argument('-targets', nargs='+', help='List of targets.', default=[''])
-	parser.add_argument('-xvar', help='Name of x variable.', default='rms_fill')
-	parser.add_argument('-yvar', help='Name of y variable.', default='score')
+	parser.add_argument('-xvar', nargs='*', help='Name of x variable(s).', default=['rms_fill'])
+	parser.add_argument('-yvar', nargs='*', help='Name of y variable(s).', default=['score'])
 	parser.add_argument('--scale', help='scale plot axes.', action='store_true')
 	parser.add_argument('--landscape', help='orientation of figure.', action='store_true')
 	parser.add_argument('--show', help='show plot after it is created.', action='store_true')
 	args=parser.parse_args()
 
-	make_plots( args.inpaths, outfilenames=args.outfilenames, target_files=args.target_files, targets=args.targets, xvar=args.xvar, yvar=args.yvar, scale=args.scale, show=args.show, landscape=args.landscape )
+	make_plots( args.inpaths, outfilenames=args.outfilenames, target_files=args.target_files, targets=args.targets, xvars=args.xvar, yvars=args.yvar, scale=args.scale, show=args.show, landscape=args.landscape )
 
