@@ -147,7 +147,12 @@ def show_times( inpaths, data, noutfiles, target_names, which_target ):
 		print '\n %-6s%33s' % ( 'TARGET', target_names[k] )
 		for n in xrange( len(inpaths) ):
 			run_time = times_list[n][k]
-			print ' Run %d                    %5.0f +/- %4.0f' % ( n+1, run_time.mean, run_time.stdev )
+			if run_time.times_found():
+				print ' Run %d                    %5.0f +/- %4.0f' % ( n+1, run_time.mean, run_time.stdev )
+			else:
+				print ' Run %d %33s' % ( n+1, 'N/A' )
+
+	if not times_found:	return
 	print '\n'
 	for n in xrange( len(inpaths) ):
 		print ' Run %d: %s' % ( n+1, basename( inpaths[n] ) )

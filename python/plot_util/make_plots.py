@@ -35,15 +35,15 @@ def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], targ
 	for n in xrange( len(inpaths) ):
 		assert( exists( inpaths[n] ) )
 		outfiles = []
-    	for outfilename in outfilenames:
-        	outfiles += get_outfiles( inpaths[n], outfilename )
+		for outfilename in outfilenames:
+			outfiles += get_outfiles( inpaths[n], outfilename )
 		outfiles_actual = []
 		for outfile in outfiles:
 			if outfile.find( '.out' ) > 0 and outfile.replace( '.out','.sc' ) in outfiles:	continue
-        	print 'Reading in ... '+outfile
-        	assert( exists( outfile ) )
-        	outfiles_actual.append( outfile )
-		which_target.append( map( lambda x: target_names.index( basename( dirname( x ) ) ), outfiles_actual ) )
+			print 'Reading in ... '+outfile
+			assert( exists( outfile ) )
+			outfiles_actual.append( outfile )
+	  	which_target.append( map( lambda x: target_names.index( basename( dirname( x ) ) ), outfiles_actual ) )
 		data.append( dict([ (target_names[ which_target[n][k] ], load_score_data(outfiles_actual[k])) for k in xrange( len(outfiles_actual) ) ]) )
 		outfiles_list.append( outfiles_actual )
 	noutfiles = np.max( map( lambda x: len(x), outfiles_list ) )
