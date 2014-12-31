@@ -174,4 +174,3 @@ if __name__=='__main__':
 	args=parser.parse_args()
 
 	make_plots( args.inpaths, outfilenames=args.outfilenames, target_files=args.target_files, targets=args.targets, xvars=args.xvar, yvars=args.yvar )
-

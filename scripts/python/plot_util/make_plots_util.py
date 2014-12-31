@@ -78,10 +78,8 @@ def load_score_data( file ):
 	)
 	scores = popen( command ).read().split('\n')[:-1]
 	scores = [ score.split() for score in scores ]
-
 	data.scores = scores
 	data.score_labels = score_labels
-
 	return data
 
 ##########################################################
@@ -222,7 +220,7 @@ def jet( size ):
 ###########################################################
 
 def get_title( target ):
-	names = get_path_to_dir(['stepwise_benchmark','benchmark']) + '/python/plot_util/titles.txt'
+	names = get_path_to_dir(['stepwise_benchmark','benchmark']) + '/scripts/python/plot_util/titles.txt'
 	try:
 		lines = open( names, 'r' ).readlines()
 	except:
