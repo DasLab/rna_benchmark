@@ -12,59 +12,60 @@ import subprocess
 
 def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], target_files=['favorites.txt','favorites2.txt'], targets=['*'], colorcode=None, xvars=['rms_fill'], yvars=['score'] ):
 
+	# initialize lists
 	data = []
 	which_target = []
 	outfiles_list = []
+	bad_inpaths = []
 
-	if not colorcode: 
+	# Get absolute paths of inpaths
+	inpaths = map( lambda x: abspath(x), inpaths )
+
+	# Get colorcode for plotting
+	if not colorcode:
 		colorcode = [ (0.0, 0.0, 0.0, 1.0), (1.0, 0.0, 0.0, 1.0) ]
-	if len(colorcode) < len(inpaths): 
+	if len(colorcode) < len(inpaths):
 		colorcode = jet( len(inpaths) )
 
+	# Get target_names
 	if targets[0] != '*':
 		target_names = targets
 	else:
 		target_names = get_target_names( target_files )
 
+	# Print target_names
 	for target in target_names:
 		print "Target: "+target
 
-	inpaths = map( lambda x: abspath(x), inpaths )
-	base_inpaths = map( lambda x: basename(x), inpaths )
-
-	for n in xrange( len(inpaths) ):
-		assert( exists( inpaths[n] ) )
-		outfiles = []
-		for outfilename in outfilenames:
-			outfiles += get_outfiles( inpaths[n], outfilename, targets=targets )
-		outfiles_actual = []
-		for outfile in outfiles:
-			if outfile.find( '.out' ) > 0 and outfile.replace( '.out','.sc' ) in outfiles:	continue
-			print 'Reading in ... '+outfile
-			assert( exists( outfile ) )
-			outfiles_actual.append( outfile )
+	# Check all inpaths for outfiles, get outfiles/data
+	for n, inpath in enumerate(inpaths):
+		assert( exists( inpath ) )
+		outfiles_actual = get_outfiles( inpath, target_names, outfilenames )
+		if not len(outfiles_actual):  bad_inpaths.append( inpath )
 	  	which_target.append( map( lambda x: target_names.index( basename( dirname( x ) ) ), outfiles_actual ) )
 		data.append( dict([ (target_names[ which_target[n][k] ], load_score_data(outfiles_actual[k])) for k in xrange( len(outfiles_actual) ) ]) )
 		outfiles_list.append( outfiles_actual )
+	
+	# Remove empty items from list
+	which_target = [item for item in which_target if len(item)]
+	data = [item for item in data if len(item)]
+	outfiles_list = [item for item in outfiles_list if len(item)]
+
+	# Remove inpath from inpaths if no outfile found for targets in inpath
+	inpaths = [ path for path in inpaths if path not in bad_inpaths ] 	
+	base_inpaths = map( lambda x: basename(x), inpaths )
+
+	# Get the max number of outfiles to be plotted for a single inpath  
 	noutfiles = np.max( map( lambda x: len(x), outfiles_list ) )
 
 	###################################################
 
 	# get and print out runtimes, stored in the silent files
-	show_times( inpaths, data, noutfiles, target_names, which_target )
-	times_list = get_times( inpaths, data, noutfiles, target_names, which_target )
-	
-	###################################################
+	times_list = get_times( inpaths, data, noutfiles, target_names, which_target, verbose=True )
 
-	# setup pdf file name, and PdfPages handle
-	( pp, fullpdfname ) = setup_pdf_page( base_inpaths )
-	
-	# get nplots, nrows, ncols, figwidth, figheight
-	( nplots, nrows, ncols, figwidth, figheight ) = get_figure_dimensions( noutfiles )
-
-	# set up figure, adjust properties
-	fig = plt.figure(1)
-	fig.set_size_inches( figwidth, figheight )
+	# setup pdf and figure, return handles
+	( pp, fullpdfname ) = setup_pdf_page( base_inpaths, targets )
+	( fig, nplots, nrows, ncols ) = setup_figure( noutfiles )
 
 	# iterate over runs
 	for n in xrange( len(inpaths) ):
@@ -72,88 +73,60 @@ def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], targ
 		# iterate over targets
 		for plot_idx, target in enumerate(target_names, start=1):
 
-			# get run_time from times_list
-			run_time = times_list[n][plot_idx-1]
-
-			# add subplot, if scores are available
-			try: 
-				data[n][target]
-			except:	
-				continue
+			# get subplot, if data exists for target
+			if target not in data[n].keys(): continue
 			ax = fig.add_subplot( nrows, ncols, plot_idx )
 
-			# get data
+			# get index of first xvar/yvar found in score_labels
+			score_labels = data[n][target].score_labels
 			for xvar in xvars:
-				if xvar not in data[n][target].score_labels: continue
-				xvar_idx = data[n][target].score_labels.index( xvar )
-				break
-			assert( xvar_idx > -1 )
-
+				xvar_idx = score_labels.index( xvar ) if xvar in score_labels else -1 
+				if xvar_idx > -1:  break
 			for yvar in yvars:
-				if yvar not in data[n][target].score_labels: continue
-				yvar_idx = data[n][target].score_labels.index( yvar )
-				break
-			assert( yvar_idx > -1 )
-			
+				yvar_idx = score_labels.index( yvar ) if yvar in score_labels else -1 
+				if yvar_idx > -1:  break
+
+			# get data from scores using xvar_idx and yvar_idx
+			assert( xvar_idx > -1 and yvar_idx > -1 )
 			[ xvar_data, yvar_data ] = [ list(d) for d in zip( *[ ( score[xvar_idx], score[yvar_idx] ) for score in data[n][ target ].scores] ) ]
 
-			# plot data
-			if run_time.times_found():
-				time_label = '%5.0f +/- %4.0f' %( run_time.mean, run_time.stdev )
-			else:
-				time_label = ''
-			plot_label = base_inpaths[n]
-			ax.plot( xvar_data, yvar_data, marker='.', markersize=4, color=colorcode[n], linestyle=' ', label=plot_label )
+			# plot data, and reference lines (x=1, x=2)
+			ax.plot( xvar_data, yvar_data, marker='.', markersize=4, color=colorcode[n], linestyle=' ', label=base_inpaths[n] )
 			ax.plot( [1 for y in plt.ylim()], plt.ylim(), color='black', linestyle=':')
 			ax.plot( [2 for y in plt.ylim()], plt.ylim(), color='black')
-
-			# set axes limits
 			ax.set_xlim( 0, 16 )
 
-			# set title and axes labels		
+			# set title and axes labels, adjust axis properties
 			ax.set_title( get_title(target), fontsize='medium', weight='bold' )
 			ax.set_ylabel( string.join(yvars, ', '), fontsize=6 )
 			ax.set_xlabel( string.join(xvars, ', '), fontsize=6 )
+			for ticklabel in ax.yaxis.get_ticklabels()+ax.xaxis.get_ticklabels():
+				ticklabel.set_fontsize(6)
 
-			# adjust axis properties
-			for tick in ( ax.xaxis.get_ticklabels() + ax.yaxis.get_ticklabels() ):	
-				tick.set_fontsize(6)
-
-			# setup times sublegends
-			fontsize = 6
-			ax.text( 
-				0.92, 
-				(0.10*len(inpaths)) - (0.015*fontsize*n), 
-				time_label,
-        		verticalalignment='bottom', 
-        		horizontalalignment='right',
-        		transform=ax.transAxes,
-        		color=colorcode[n], fontsize=fontsize
-        	)
+			# print times in plots (if available)
+			if times_list[n][plot_idx-1].times_found():
+				xpos, ypos = 0.92, (0.10*len(inpaths)) - (0.015*6*n)
+				ax.text( xpos, ypos, times_list[n][plot_idx-1].get_label(), 
+						 verticalalignment='bottom', horizontalalignment='right', 
+						 transform=ax.transAxes, color=colorcode[n], fontsize=6 )
 
 			# setup global legend based on inpaths
-			( handles, labels ) = ax.get_legend_handles_labels()
 			if (plot_idx == 1 or nplots < 3):
-				legend = ax.legend(handles, base_inpaths[:n+1], loc=1, numpoints=1, prop={'size':6})
+				legend = ax.legend(loc=1, numpoints=1, prop={'size':6})
 
-	# adjust spacing of plots on figure
-	if ( nplots == 1 or nrows < ncols ): # landscape
-		plt.subplots_adjust(bottom=.1, left=.05, right=.98, top=.90, hspace=.5)
-	else:			
-		plt.subplots_adjust(bottom=.075, left=.08, right=.95, top=.95, wspace=.3, hspace=.5)
-
-	# print date to figure ( bottom_right = (0.99, 0.01); top_right = (0.99, 0.98) )
-	plt.figtext(0.95, 0.02, get_date(), horizontalalignment='right') 
+	# finalize (adjust spacing, print date)
+	finalize_figure( nplots, nrows, ncols )
 
 	# save as pdf and close
 	pp.savefig()
 	pp.close()
 
-	# open pdf 
-	try:
-		subprocess.call( ['open',fullpdfname] ) # works nicely on a mac.
-	except:
-		pass
+	# open pdf
+	out, err = subprocess.Popen(['uname'], stdout=subprocess.PIPE).communicate()
+	if 'Darwin' in out:
+		subprocess.call(['open',fullpdfname])
+	if 'Linux' in out:
+		subprocess.call(['xdg-open',fullpdfname])
 
 	return
 
