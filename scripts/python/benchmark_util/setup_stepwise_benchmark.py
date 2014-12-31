@@ -27,7 +27,6 @@ parser.add_argument('-j','--njobs', default='10', type=int, help='Number of core
 parser.add_argument('--swa', action='store_true', help='Additional flag for setting up SWA runs.')
 parser.add_argument('--extra_min_res_off', action='store_true', help='Additional flag for turning extra_min_res off.')
 parser.add_argument('--save_times_off', action='store_true', help='Additional flag for turning save_times flag off.')
-parser.add_argument('-slave_nodes', default='150', type=int, help='Number of nodes to queue.')
 parser.add_argument('--path_to_rosetta', default='', help='Path to working copy of rosetta.')
 parser.add_argument('-v', '--verbose', help="increase output verbosity", action="store_true")
 args = parser.parse_args()
