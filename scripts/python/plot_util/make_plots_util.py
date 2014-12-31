@@ -44,8 +44,10 @@ class TimeData(object):
 
 ##########################################################
 
-def get_outfiles( inpath, outfilename ):
-	outfiles = popen( 'ls -1 '+inpath+'/*/'+outfilename ).read()
+def get_outfiles( inpath, outfilename, targets=['*'] ):
+	outfiles = ''
+	for target in targets:
+		outfiles += popen( 'ls -1 '+inpath+'/'+target+'/'+outfilename ).read() 
 	if 'ls:' in outfiles: # catch bad calls
 		outfiles = [] 
 	else: 
