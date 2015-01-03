@@ -385,7 +385,6 @@ for name in names:
         fid.write( '-fasta %s.fasta\n' % name )
         fid.write( '-cycles 200\n' )
         fid.write( '-nstruct 20\n' )
-        fid.write( '-intermolecular_frequency 0.0\n' )
         if not args.save_times_off:
             fid.write( '-save_times\n' )
 

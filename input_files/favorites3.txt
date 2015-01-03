@@ -1,0 +1,15 @@
+Name:          gaaa_minor_fixed
+Sequence:      ccgaaagg,gaccu,agguu
+Secstruct:     ((....)),(((((,)))))
+Working_res:   P:58-65,Q:2-6,Q:46-50
+Input_res:     P:58-59,P:64-65,Q:2-6,Q:46-50
+Native:        2oiu_RNA.pdb
+Extra_flags:   -extra_min_jump_res P:64 Q:49
+
+Name:          gaaa_minor_free
+Sequence:      ccgaaagg,gaccu,agguu
+Secstruct:     ((....)),(((((,)))))
+Working_res:   P:58-65,Q:2-6,Q:46-50
+Input_res:     -
+Native:        2oiu_RNA.pdb
+Extra_flags:   -jump_res P:63 Q:48
