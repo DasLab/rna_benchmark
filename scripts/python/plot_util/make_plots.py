@@ -128,11 +128,6 @@ def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], targ
 	if 'Linux' in out:
 		subprocess.call(['xdg-open',fullpdfname])
 
-        try:
-                subprocess.call( ['open',fullpdfname] ) # works nicely on a mac.
-        except:
-                pass
-
 	return
 
 ##########################################################
