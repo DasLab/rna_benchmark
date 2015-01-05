@@ -2,135 +2,131 @@
 
 ##########################################################
 
-from sys import exit
 from os.path import exists, dirname, basename, abspath
-from os import popen
 import matplotlib.pyplot as plt
-import matplotlib.colors as colors
-import matplotlib.cm as cmx
-from matplotlib.backends.backend_pdf import PdfPages
 import numpy as np
 from make_plots_util import *
 import subprocess
 
 ##########################################################
 
-def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], target_files=['favorites.txt','favorites2.txt'], colorcode=None, xvar='rms_fill', yvar='score', scale=False, show=False, landscape=False ):
+def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], target_files=['favorites.txt','favorites2.txt'], targets=['*'], colorcode=None, xvars=['rms_fill'], yvars=['score'] ):
 
+	# initialize lists
 	data = []
 	which_target = []
 	outfiles_list = []
+	bad_inpaths = []
 
-	if not colorcode: colorcode = [ (0.0, 0.0, 0.0, 1.0), (1.0, 0.0, 0.0, 1.0) ]
-	if len( colorcode ) < len( inpaths ): colorcode = jet( len( inpaths ) )
-	target_names = get_target_names( target_files )
+	# Get absolute paths of inpaths
 	inpaths = map( lambda x: abspath(x), inpaths )
 
-	for n in xrange( len(inpaths) ):
-		assert( exists( inpaths[n] ) )
-                outfiles = []
-                for outfilename in outfilenames:
-                        outfiles += popen( 'ls -1 '+inpaths[n]+'/*/'+outfilename ).read().split('\n')[:-1]
-                outfiles_actual = []
-		for outfile in outfiles:
-                        if outfile.find( '.out' ) > 0 and outfile.replace( '.out','.sc' ) in outfiles: continue
-			print 'Reading in ... '+outfile
-			assert( exists( outfile ) )
-                        outfiles_actual.append( outfile )
-		which_target.append( map( lambda x: target_names.index( basename( dirname( x ) ) ), outfiles_actual ) )
+	# Get colorcode for plotting
+	if not colorcode:
+		colorcode = [ (0.0, 0.0, 0.0, 1.0), (1.0, 0.0, 0.0, 1.0) ]
+	if len(colorcode) < len(inpaths):
+		colorcode = jet( len(inpaths) )
+
+	# Get target_names
+	if targets[0] != '*':
+		target_names = targets
+	else:
+		target_names = get_target_names( target_files )
+
+	# Print target_names
+	for target in target_names:
+		print "Target: "+target
+
+	# Check all inpaths for outfiles, get outfiles/data
+	for n, inpath in enumerate(inpaths):
+		assert( exists( inpath ) )
+		outfiles_actual = get_outfiles( inpath, target_names, outfilenames )
+		if not len(outfiles_actual):  bad_inpaths.append( inpath )
+	  	which_target.append( map( lambda x: target_names.index( basename( dirname( x ) ) ), outfiles_actual ) )
 		data.append( dict([ (target_names[ which_target[n][k] ], load_score_data(outfiles_actual[k])) for k in xrange( len(outfiles_actual) ) ]) )
 		outfiles_list.append( outfiles_actual )
+	
+	# Remove empty items from list
+	which_target = [item for item in which_target if len(item)]
+	data = [item for item in data if len(item)]
+	outfiles_list = [item for item in outfiles_list if len(item)]
+
+	# Remove inpath from inpaths if no outfile found for targets in inpath
+	inpaths = [ path for path in inpaths if path not in bad_inpaths ] 	
+	base_inpaths = map( lambda x: basename(x), inpaths )
+
+	# Get the max number of outfiles to be plotted for a single inpath  
 	noutfiles = np.max( map( lambda x: len(x), outfiles_list ) )
 
 	###################################################
 
-	# print out runtimes, stored in the silent files
-	show_times( inpaths, data, noutfiles, target_names, which_target )
+	# get and print out runtimes, stored in the silent files
+	times_list = get_times( inpaths, data, noutfiles, target_names, which_target, verbose=True )
 
-	###################################################
-
-	# get nplots, nrows, ncols
-	nplots = noutfiles
-	assert( nplots )
-	if landscape:
-		if nplots < 3: 	  nrows = 1
-		else: 			  nrows = 3
-	else:
-		if nplots < 3: 	  nrows = nplots
-		elif nplots < 12: nrows = 4
-		else:  		      nrows = 5
-	ncols = np.ceil( nplots / float( nrows ) )
-
-	# setup pdf file name, and PdfPages handle
-	pdfname = basename( inpaths[0] )
-	if len( inpaths ) > 1:
-		for k in xrange( 1, len( inpaths ) ): pdfname += '_vs_' + basename( inpaths[k] )
-	fullpdfname = get_path_to_dir( ['stepwise_benchmark','benchmark'] ) + '/Figures/' + pdfname # + '.pdf'
-	if landscape:	fullpdfname += '_landscape.pdf'
-	else:			fullpdfname += '.pdf'
-	print '\nMaking figure in: %s\n' % fullpdfname
-	pp = PdfPages( fullpdfname )
-
-	# set up figure, adjust properties
-	fig = plt.figure(1)
-	if landscape:	fig.set_size_inches(11,8.5)
-	else:			fig.set_size_inches(8.5,11)
+	# setup pdf and figure, return handles
+	( pp, fullpdfname ) = setup_pdf_page( base_inpaths, targets )
+	( fig, nplots, nrows, ncols ) = setup_figure( noutfiles )
 
 	# iterate over runs
-	for n in xrange( len( inpaths ) ):
-
-		# initialize plot index
-		plot_idx = 0
+	for n in xrange( len(inpaths) ):
 
 		# iterate over targets
-		for target in target_names:
+		for plot_idx, target in enumerate(target_names, start=1):
 
-			# add subplot, if scores are available
-			try: data[n][ target ]
-			except:	continue
-			plot_idx += 1
+			# get subplot, if data exists for target
+			if target not in data[n].keys(): continue
 			ax = fig.add_subplot( nrows, ncols, plot_idx )
 
-			# get data
-			( xvar_idx , yvar_idx  ) = data[n][ target ].score_labels.index( xvar ) , data[n][ target ].score_labels.index( yvar )
+			# get index of first xvar/yvar found in score_labels
+			score_labels = data[n][target].score_labels
+			for xvar in xvars:
+				xvar_idx = score_labels.index( xvar ) if xvar in score_labels else -1 
+				if xvar_idx > -1:  break
+			for yvar in yvars:
+				yvar_idx = score_labels.index( yvar ) if yvar in score_labels else -1 
+				if yvar_idx > -1:  break
+
+			# get data from scores using xvar_idx and yvar_idx
+			assert( xvar_idx > -1 and yvar_idx > -1 )
 			[ xvar_data, yvar_data ] = [ list(d) for d in zip( *[ ( score[xvar_idx], score[yvar_idx] ) for score in data[n][ target ].scores] ) ]
 
-			# plot data
-			ax.plot( xvar_data, yvar_data, marker='.', markersize=5, color=colorcode[n], linestyle=' ', label=basename(inpaths[n]) )
+			# plot data, and reference lines (x=1, x=2)
+			ax.plot( xvar_data, yvar_data, marker='.', markersize=4, color=colorcode[n], linestyle=' ', label=base_inpaths[n] )
 			ax.plot( [1 for y in plt.ylim()], plt.ylim(), color='black', linestyle=':')
 			ax.plot( [2 for y in plt.ylim()], plt.ylim(), color='black')
+			ax.set_xlim( 0, 16 )
 
-			# set axes limits
-			if not scale:	ax.set_xlim( 0, 16 )
+			# set title and axes labels, adjust axis properties
+			ax.set_title( get_title(target), fontsize='medium', weight='bold' )
+			ax.set_ylabel( string.join(yvars, ', '), fontsize=6 )
+			ax.set_xlabel( string.join(xvars, ', '), fontsize=6 )
+			for ticklabel in ax.yaxis.get_ticklabels()+ax.xaxis.get_ticklabels():
+				ticklabel.set_fontsize(6)
 
-			# set title and axes lables
-			if landscape:	ax.set_title( get_title(target), fontsize='small', weight='bold' )
-			else:			ax.set_title( get_title(target), fontsize='medium', weight='bold' )
-			if ( ( np.mod( plot_idx, ncols ) == 1 ) or ( ncols == 1 ) ):
-				if landscape:	ax.set_ylabel( yvar, fontsize='small' )
-				else:			ax.set_ylabel( yvar, fontsize='medium' )
-			if ( ( np.floor( (plot_idx-1) / ncols ) == nrows-1 ) or ( nrows == 1 ) ):
-				if landscape:	ax.set_xlabel( xvar, fontsize='small' )
-				else:			ax.set_xlabel( xvar, fontsize='medium' )
+			# print times in plots (if available)
+			if times_list[n][plot_idx-1].times_found():
+				xpos, ypos = 0.92, (0.10*len(inpaths)) - (0.015*6*n)
+				ax.text( xpos, ypos, times_list[n][plot_idx-1].get_label(), 
+						 verticalalignment='bottom', horizontalalignment='right', 
+						 transform=ax.transAxes, color=colorcode[n], fontsize=6 )
 
-			# adjust axis properties
-			for tick in ax.xaxis.get_ticklabels():	tick.set_fontsize(6)
-			for tick in ax.yaxis.get_ticklabels():	tick.set_fontsize(6)
+			# setup global legend based on inpaths
+			if (plot_idx == 1 or nplots < 3):
+				legend = ax.legend(loc=1, numpoints=1, prop={'size':6})
 
-			# setup legend
-			if ( plot_idx == 3 ):
-				legend = ax.legend(shadow=True)
-				for label in legend.get_texts():	label.set_fontsize(8)
-				for label in legend.get_lines():	label.set_linewidth(.5)
+	# finalize (adjust spacing, print date)
+	finalize_figure( nplots, nrows, ncols )
 
-	# adjust spacing of plots on figure
-	if landscape:	plt.subplots_adjust(bottom=.1, left=.05, right=.98, top=.90, hspace=.5)
-	else:			plt.subplots_adjust(bottom=.05, left=.08, right=.95, top=.95, hspace=.35)
-
-	# save as pdf and close, show plot if show=True
+	# save as pdf and close
 	pp.savefig()
 	pp.close()
-	if show:	plt.show()
+
+	# open pdf
+	out, err = subprocess.Popen(['uname'], stdout=subprocess.PIPE).communicate()
+	if 'Darwin' in out:
+		subprocess.call(['open',fullpdfname])
+	if 'Linux' in out:
+		subprocess.call(['xdg-open',fullpdfname])
 
         try:
                 subprocess.call( ['open',fullpdfname] ) # works nicely on a mac.
@@ -148,13 +144,11 @@ if __name__=='__main__':
 
 	parser = argparse.ArgumentParser(description='Make plots of scores from silent files.')
 	parser.add_argument('inpaths', nargs='+', help='List of paths too silent files.')
-	parser.add_argument('-outfilename', nargs='*', help='Name of silent file.', default=['swm_rebuild.out','swm_rebuild.sc'])
+	parser.add_argument('-outfilenames', nargs='*', help='Name of silent file.', default=['swm_rebuild.out','swm_rebuild.sc'])
 	parser.add_argument('-target_files', nargs='+', help='List of additional target files.', default=['favorites.txt','favorites2.txt'])
-	parser.add_argument('-xvar', help='Name of x variable.', default='rms_fill')
-	parser.add_argument('-yvar', help='Name of y variable.', default='score')
-	parser.add_argument('--scale', help='scale plot axes.', action='store_true')
-	parser.add_argument('--landscape', help='orientation of figure.', action='store_true')
-	parser.add_argument('--show', help='show plot after it is created.', action='store_true')
+	parser.add_argument('-targets', nargs='+', help='List of targets.', default=['*'])
+	parser.add_argument('-xvar', nargs='*', help='Name of x variable(s).', default=['rms_fill'])
+	parser.add_argument('-yvar', nargs='*', help='Name of y variable(s).', default=['score'])
 	args=parser.parse_args()
 
-	make_plots( args.inpaths, outfilenames=args.outfilename, target_files=args.target_files, xvar=args.xvar, yvar=args.yvar, scale=args.scale, show=args.show, landscape=args.landscape )
+	make_plots( args.inpaths, outfilenames=args.outfilenames, target_files=args.target_files, targets=args.targets, xvars=args.xvar, yvars=args.yvar )
