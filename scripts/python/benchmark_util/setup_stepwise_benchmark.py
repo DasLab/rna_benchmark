@@ -226,7 +226,6 @@ for name in names:
             extra_min_res[ name ].append( m )
     if not '-motif_mode\n' in extra_flags_benchmark: extra_flags_benchmark.append( '-motif_mode\n' )
 
-
     # create fasta
     fasta[ name ] = '%s/%s.fasta' % (inpath,name)
     if not exists( fasta[ name ] ):
@@ -431,6 +430,7 @@ for name in names:
         chdir( name )
 
         system( 'rosetta_submit.py README_SWM SWM %d %d -save_logs' % (njobs, args.nhours ) )
+
         chdir( CWD )
 
         fid_qsub.write( 'cd %s; source %s; cd %s\n' % ( name, qsub_file,  CWD ) )
