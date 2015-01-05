@@ -27,12 +27,17 @@ parser.add_argument('-j','--njobs', default='10', type=int, help='Number of core
 parser.add_argument('--swa', action='store_true', help='Additional flag for setting up SWA runs.')
 parser.add_argument('--extra_min_res_off', action='store_true', help='Additional flag for turning extra_min_res off.')
 parser.add_argument('--save_times_off', action='store_true', help='Additional flag for turning save_times flag off.')
-parser.add_argument('-slave_nodes', default='150', type=int, help='Number of nodes to queue.')
 parser.add_argument('--path_to_rosetta', default='', help='Path to working copy of rosetta.')
 parser.add_argument('-v', '--verbose', help="increase output verbosity", action="store_true")
 args = parser.parse_args()
 
 #####################################################################################################################
+if args.swa and args.njobs == 10:
+    # set default njobs to 150 for SWA jobs 
+    njobs = 150
+else:
+    njobs = args.njobs 
+
 
 # get path to rosetta, required for now
 ROSETTA=args.path_to_rosetta
@@ -226,8 +231,10 @@ for name in names:
     if not exists( fasta[ name ] ):
         fid = open( fasta[ name ], 'w' )
         assert( len( sequences ) == len( working_res_blocks ) )
+        ### splitting up sequence in fasta may cause errors in SWA runs
         #for n in range( len( sequences ) ): fid.write( '>%s %s\n%s\n' % (name,working_res_blocks[n],sequences[n]) )
-        fid.write( popen( 'pdb2fasta.py %s' % (  working_native[ name ] ) ).read() )
+        #fid.write( popen( 'pdb2fasta.py %s' % (  working_native[ name ] ) ).read() )
+        fid.write( '>%s %s\n%s\n' % ( name,string.join(working_res_blocks,' '),string.join(sequences,'') ) )
         fid.close()
 
 
@@ -319,27 +326,28 @@ for name in names:
         fid.write( ' -sample_res %s' % loop_res[ name ][ 'swa' ] )
 
         # case-specific extra flags
-        if ( len( extra_flags[name] ) > 0 ) and ( extra_flags[ name ] != '-' ) : fid.write( ' %s' % extra_flags[name] )
+        if ( len( extra_flags[name] ) > 0 ) and ( extra_flags[ name ] != '-' ) :
+            #fid.write( '%s\n' % extra_flags[name] )
+            for flag in extra_flags[name].split('-'):
+                if not len( flag ): continue
+                flag = flag.replace('true','True').replace('false','False')
+                fid.write( ' -%s' % flag )
 
         # extra flags for whole benchmark
         weights_file = ''
         if extra_flags_benchmark:
             for flag in extra_flags_benchmark:
                 if ( '#' in flag ): continue
+                flag = flag.replace('true','True').replace('false','False')
                 if ( '-analytic_etable_evaluation' in flag ): continue ### SWM Specific
                 if ( '-score:weights' in flag ):
                     flag = flag.replace( '-score:weights', '-force_field_file' )
                     weights_file = string.split( flag )[1]
                 if ( '-score:rna_torsion_potential' in flag ):
                     flag = flag.replace( '-score:rna_torsion_potential', '-rna_torsion_potential_folder' )
-                if ( '-VDW_rep_screen_info' in flag ):
-                    if ( 'True' in flag ):
-                        flag = flag.replace( 'True', VDW_rep_screen_info[ name ] ) #-VDW_rep_screen_info 1zih_RNA.pdb
-                    elif ( 'true' in flag ):
-                        flag = flag.replace( 'true', VDW_rep_screen_info[ name ] ) #-VDW_rep_screen_info 1zih_RNA.pdb
-                    else:
-                        continue
-                    flag = flag.replace('\n', ' -apply_VDW_rep_delete_matching_res False')
+                if ( '-VDW_rep_screen_info True' in flag ):
+                    flag = flag.replace( 'True', VDW_rep_screen_info[ name ] ) #-VDW_rep_screen_info 1zih_RNA.pdb
+                    flag = flag + ' -apply_VDW_rep_delete_matching_res False'
                 flag = ' '+flag.replace( '\n', '' )
                 fid.write( flag )
         if len( weights_file ) > 0:
@@ -356,7 +364,7 @@ for name in names:
         fid_submit.write( SWA_DAGMAN_TOOLS+'/dagman/submit_DAG_job.py' )
         fid_submit.write( ' -master_wall_time %d' % 72 ) #args.nhours )
         fid_submit.write( ' -master_memory_reserve 2048' )
-        fid_submit.write( ' -num_slave_nodes %d' % args.slave_nodes )
+        fid_submit.write( ' -num_slave_nodes %d' % njobs )
         fid_submit.write( ' -dagman_file rna_build.dag' )
         fid_submit.close()
 
@@ -390,22 +398,23 @@ for name in names:
             fid.write( '-save_times\n' )
 
         # case-specific extra flags
-        if ( len( extra_flags[name] ) > 0 ) and ( extra_flags[ name ] != '-' ) : fid.write( '%s\n' % extra_flags[name] )
+        if ( len( extra_flags[name] ) > 0 ) and ( extra_flags[ name ] != '-' ) :
+            #fid.write( '%s\n' % extra_flags[name] )
+            for flag in extra_flags[name].split('-'):
+                if not len( flag ): continue
+                flag = flag.replace('True','true').replace('False','false')
+                fid.write( '-%s\n' % flag )
 
         # extra flags for whole benchmark
         weights_file = ''
         if extra_flags_benchmark:
             for flag in extra_flags_benchmark:
                 if ( '#' in flag ): continue
+                flag = flag.replace('True','true').replace('False','false')
                 if ( '-single_stranded_loop_mode' in flag ): continue ### SWA Specific
                 if ( '-score:weights' in flag ): weights_file = string.split( flag )[1]
-                if ( '-VDW_rep_screen_info' in flag ):
-                    if ( 'True' in flag ):
-                        flag = flag.replace( 'True', basename( VDW_rep_screen_info[ name ] ) )#-VDW_rep_screen_info 1zih_RNA.pdb
-                    elif ( 'true' in flag ):
-                        flag = flag.replace( 'true', basename( VDW_rep_screen_info[ name ] ) )#-VDW_rep_screen_info 1zih_RNA.pdb
-                    else:
-                        continue
+                if ( '-VDW_rep_screen_info true' in flag ):
+                    flag = flag.replace( 'true', basename( VDW_rep_screen_info[ name ] ) )#-VDW_rep_screen_info 1zih_RNA.pdb
                 fid.write( flag )
 
         if len( weights_file ) > 0:
@@ -419,7 +428,9 @@ for name in names:
         print '\nSetting up submission files for: ', name
         CWD = getcwd()
         chdir( name )
-        system( 'rosetta_submit.py README_SWM SWM %d %d -save_logs' % (args.njobs, args.nhours ) )
+
+        system( 'rosetta_submit.py README_SWM SWM %d %d -save_logs' % (njobs, args.nhours ) )
+
         chdir( CWD )
 
         fid_qsub.write( 'cd %s; source %s; cd %s\n' % ( name, qsub_file,  CWD ) )
