@@ -213,12 +213,20 @@ def setup_figure( noutfiles ):
 
 ###########################################################
 
-def finalize_figure( nplots, nrows, ncols ):
+def finalize_figure( fig, nplots, nrows, ncols ):
+	# adjust spacing of plots on figure
 	if ( nplots == 1 or nrows < ncols ): # landscape
 		plt.subplots_adjust(bottom=.1, left=.05, right=.98, top=.90, hspace=.5)
 	else:
-		plt.subplots_adjust(bottom=.075, left=.08, right=.95, top=.95, wspace=.3, hspace=.5)
+		plt.subplots_adjust(bottom=.1, left=.08, right=.95, top=.95, wspace=.3, hspace=.35)
+	
+	# get date printed to figure
 	plt.figtext(0.95, 0.02, get_date(), horizontalalignment='right')
+	
+	# setup global legend based on inpaths
+	plot_idx = nplots - ( ncols - 1 )
+	ax = fig.add_subplot( nrows, ncols, plot_idx)
+	legend = ax.legend(bbox_to_anchor=(0., .0, 1., -.225), loc=9, numpoints=1, prop={'size':10})
 	return
 
 ###########################################################

@@ -110,12 +110,8 @@ def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], targ
 						 verticalalignment='bottom', horizontalalignment='right', 
 						 transform=ax.transAxes, color=colorcode[n], fontsize=6 )
 
-			# setup global legend based on inpaths
-			if (plot_idx == 1 or nplots < 3):
-				legend = ax.legend(loc=1, numpoints=1, prop={'size':6})
-
 	# finalize (adjust spacing, print date)
-	finalize_figure( nplots, nrows, ncols )
+	finalize_figure( fig, nplots, nrows, ncols )
 
 	# save as pdf and close
 	pp.savefig()
