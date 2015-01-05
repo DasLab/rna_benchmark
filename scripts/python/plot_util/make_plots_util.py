@@ -191,7 +191,7 @@ def get_times( inpaths, data, noutfiles, target_names, which_target, verbose=Fal
 def get_figure_dimensions( noutfiles ):
 	nplots = noutfiles
 	assert( nplots )
-	if nplots < 3: 	  
+	if nplots <= 3: 	  
 		nrows = nplots
 	elif nplots <= 12: 
 		nrows = 4
@@ -227,6 +227,7 @@ def finalize_figure( fig, nplots, nrows, ncols ):
 	plot_idx = nplots - ( ncols - 1 )
 	ax = fig.add_subplot( nrows, ncols, plot_idx)
 	legend = ax.legend(bbox_to_anchor=(0., .0, 1., -.225), loc=9, numpoints=1, prop={'size':10})
+	#legend = ax.legend(bbox_to_anchor=(0.5,-.225), loc=9, numpoints=1, prop={'size':10})
 	return
 
 ###########################################################

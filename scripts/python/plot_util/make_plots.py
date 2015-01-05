@@ -76,7 +76,8 @@ def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], targ
 
 			# get subplot, if data exists for target
 			if target not in data[n].keys(): continue
-			ax = fig.add_subplot( nrows, ncols, plot_idx )
+			plot_idx_wrapped = 1 + plot_idx % (nrows*ncols)
+			ax = fig.add_subplot( nrows, ncols, plot_idx_wrapped )
 
 			# get index of first xvar/yvar found in score_labels
 			score_labels = data[n][target].score_labels

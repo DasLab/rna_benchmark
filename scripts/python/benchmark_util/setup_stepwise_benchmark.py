@@ -298,9 +298,10 @@ for name in names:
 
 # write qsubMINIs, READMEs and SUBMITs
 qsub_file = 'qsubMINI'
-hostname = subprocess.check_output( 'hostname' )
+hostname, hostname_err = subprocess.Popen(['hostname'], stdout=subprocess.PIPE).communicate()
 if hostname.find( 'stampede' ) > 0: qsub_file = 'qsubMPI'
 fid_qsub = open( qsub_file, 'w' )
+
 for name in names:
 
     dirname = name
@@ -340,6 +341,7 @@ for name in names:
                 if ( '#' in flag ): continue
                 flag = flag.replace('true','True').replace('false','False')
                 if ( '-analytic_etable_evaluation' in flag ): continue ### SWM Specific
+                if ( '-motif_mode' in flag ): continue ### SWM Specific
                 if ( '-score:weights' in flag ):
                     flag = flag.replace( '-score:weights', '-force_field_file' )
                     weights_file = string.split( flag )[1]
