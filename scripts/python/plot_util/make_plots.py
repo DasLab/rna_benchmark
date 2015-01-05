@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from make_plots_util import *
 import subprocess
+from matplotlib.font_manager import FontProperties
 
 ##########################################################
 
@@ -45,17 +46,17 @@ def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], targ
 	  	which_target.append( map( lambda x: target_names.index( basename( dirname( x ) ) ), outfiles_actual ) )
 		data.append( dict([ (target_names[ which_target[n][k] ], load_score_data(outfiles_actual[k])) for k in xrange( len(outfiles_actual) ) ]) )
 		outfiles_list.append( outfiles_actual )
-	
+
 	# Remove empty items from list
 	which_target = [item for item in which_target if len(item)]
 	data = [item for item in data if len(item)]
 	outfiles_list = [item for item in outfiles_list if len(item)]
 
 	# Remove inpath from inpaths if no outfile found for targets in inpath
-	inpaths = [ path for path in inpaths if path not in bad_inpaths ] 	
+	inpaths = [ path for path in inpaths if path not in bad_inpaths ]
 	base_inpaths = map( lambda x: basename(x), inpaths )
 
-	# Get the max number of outfiles to be plotted for a single inpath  
+	# Get the max number of outfiles to be plotted for a single inpath
 	noutfiles = np.max( map( lambda x: len(x), outfiles_list ) )
 
 	###################################################
@@ -80,10 +81,10 @@ def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], targ
 			# get index of first xvar/yvar found in score_labels
 			score_labels = data[n][target].score_labels
 			for xvar in xvars:
-				xvar_idx = score_labels.index( xvar ) if xvar in score_labels else -1 
+				xvar_idx = score_labels.index( xvar ) if xvar in score_labels else -1
 				if xvar_idx > -1:  break
 			for yvar in yvars:
-				yvar_idx = score_labels.index( yvar ) if yvar in score_labels else -1 
+				yvar_idx = score_labels.index( yvar ) if yvar in score_labels else -1
 				if yvar_idx > -1:  break
 
 			# get data from scores using xvar_idx and yvar_idx
@@ -104,11 +105,14 @@ def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], targ
 				ticklabel.set_fontsize(6)
 
 			# print times in plots (if available)
+                        monospace_font = FontProperties()
+                        monospace_font.set_family( 'monospace' )
 			if times_list[n][plot_idx-1].times_found():
 				xpos, ypos = 0.92, (0.10*len(inpaths)) - (0.015*6*n)
-				ax.text( xpos, ypos, times_list[n][plot_idx-1].get_label(), 
-						 verticalalignment='bottom', horizontalalignment='right', 
-						 transform=ax.transAxes, color=colorcode[n], fontsize=6 )
+				ax.text( xpos, ypos, times_list[n][plot_idx-1].get_label(),
+						 verticalalignment='bottom', horizontalalignment='right',
+						 transform=ax.transAxes, color=colorcode[n], fontsize=6,
+                                                 fontproperties = monospace_font )
 
 			# setup global legend based on inpaths
 			if (plot_idx == 1 or nplots < 3):
