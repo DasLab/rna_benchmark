@@ -22,8 +22,6 @@ for target in targets:
 			print '%-23s = %d' % (res_key, res_count)
 
 	# get number of jobs submitted
-	#njobs = len( open(target+'/ALL_SLAVE_JOB_IDS.txt', 'r' ).readlines() )
-	#print '%-23s = %d' % ('num_slave_jobs', njobs)
 	for sub_key in ['num_slave_nodes']:
 		submit_args = open(target+'/SUBMIT_SWA', 'r').read().split('-')
 		for arg in submit_args:
