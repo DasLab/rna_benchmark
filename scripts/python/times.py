@@ -12,6 +12,7 @@ else:
 for target in targets:
 	print '\n%s' % target
 	
+	# get number of loop and input residues
 	for res_key in ['rmsd_res','input_res']:
 		lines = open(target+'/README_SETUP.py', 'r').readlines()
 		for line in lines:
@@ -20,10 +21,21 @@ for target in targets:
 			res_count = len(res_list)
 			print '%-23s = %d' % (res_key, res_count)
 
+	# get number of jobs submitted
+	#njobs = len( open(target+'/ALL_SLAVE_JOB_IDS.txt', 'r' ).readlines() )
+	#print '%-23s = %d' % ('num_slave_jobs', njobs)
+	for sub_key in ['num_slave_nodes']:
+		submit_args = open(target+'/SUBMIT_SWA', 'r').read().split('-')
+		for arg in submit_args:
+			if sub_key not in arg: continue
+			sub_arg = arg.split()[1]
+			print '%-23s = %s' % (sub_key, sub_arg)
+
+
+	# get cpu and wall times
 	for time_key in ['resources_used.cput', 'resources_used.walltime']:
-		command = "grep %s %s/LOG_DEBUG_QSTAT_FULL.txt" % (time_key,target)
-		lines = popen( command ).readlines()
 		total_seconds = 0.0
+		lines = open(target+'/LOG_DEBUG_QSTAT_FULL.txt', 'r').readlines()
 		for line in lines:
 			if time_key not in line or '=' not in line: continue
 			[hh,mm,ss] = line.split()[2].split(':')
