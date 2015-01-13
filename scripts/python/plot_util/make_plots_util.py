@@ -191,8 +191,10 @@ def get_times( inpaths, data, noutfiles, target_names, which_target, verbose=Fal
 def get_figure_dimensions( noutfiles ):
 	nplots = noutfiles
 	assert( nplots )
-	if nplots <= 3: 	  
+	if nplots <= 6: 	  
 		nrows = nplots
+	elif nplots <= 9:
+		nrows = 3
 	elif nplots <= 12: 
 		nrows = 4
 	else:  		      
@@ -218,10 +220,10 @@ def finalize_figure( fig, nplots, nrows, ncols ):
 	if ( nplots == 1 or nrows < ncols ): # landscape
 		plt.subplots_adjust(bottom=.1, left=.05, right=.98, top=.90, hspace=.5)
 	else:
-		plt.subplots_adjust(bottom=.1, left=.08, right=.95, top=.95, wspace=.3, hspace=.35)
+		plt.subplots_adjust(bottom=.1, left=.08, right=.95, top=.95, wspace=.3, hspace=.5)
 	
 	# get date printed to figure
-	plt.figtext(0.95, 0.02, get_date(), horizontalalignment='right')
+	#plt.figtext(0.95, 0.02, get_date(), horizontalalignment='right')
 	
 	# setup global legend based on inpaths
 	plot_idx = nplots - ( ncols - 1 )
