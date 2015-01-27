@@ -1,3 +1,3 @@
-./SETUP 1MIS
+##./SETUP 1MIS
 
 ../../scripts/python/benchmark_util/setup_stepwise_benchmark_info_file_from_seq_file.py ../tandemGA.seq -native 1mis_RNA.pdb --overwrite --verbose

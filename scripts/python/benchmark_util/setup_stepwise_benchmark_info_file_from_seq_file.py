@@ -102,14 +102,14 @@ for name in names:
 	start1, stop1 = 31, 38
 	start2, stop2 = 45, 52
 	sliced_sequences = [ init_sequence[ name ][start1:stop1+1], init_sequence[ name ][start2:stop2+1] ]
-	sequence[ name ] = string.join( sliced_sequences , ',').lower()
+	sequence[ name ] = string.join( sliced_sequences , '').lower()
 
 	# hardcoding secstruct for tandemGA
-	secstruct[ name ] = '(((..(((,)))..)))'
+	secstruct[ name ] = '(((..((()))..)))'
 
 	# get native using rna_thread
 	native_template = args.native_template
-	native[ name ] = basename( native_template.replace( '.pdb', '_%s.pdb' % name ) )
+	native[ name ] = basename( native_template.replace( '.pdb', '_%s.pdb' % name.replace('tandemGA-','') ) )
 	if not exists( native[ name ] ):
 		rna_thread_cmdline = ['rna_thread', '-s', native_template, '-seq', sequence[ name ].replace(',','') , '-o', native[ name ] ] 
 		#print 'running: ', string.join(rna_thread_cmdline, ' ')
