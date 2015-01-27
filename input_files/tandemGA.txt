@@ -1,0 +1,288 @@
+Name:          tandemGA-01-aGAa-uGAu
+Sequence:      cuagaaug,caugauag
+Secstruct:     (((..(((,)))..)))
+Working_res:   A:1-16
+Input_res:     -
+Native:        1mis_RNA_tandemGA-01-aGAa-uGAu.pdb
+Extra_flags:   -
+
+Name:          tandemGA-02-aGAu-aGAu
+Sequence:      cuagauug,caagauag
+Secstruct:     (((..(((,)))..)))
+Working_res:   A:1-16
+Input_res:     -
+Native:        1mis_RNA_tandemGA-02-aGAu-aGAu.pdb
+Extra_flags:   -
+
+Name:          tandemGA-03-uGAa-uGAa
+Sequence:      cuugaaug,caugaaag
+Secstruct:     (((..(((,)))..)))
+Working_res:   A:1-16
+Input_res:     -
+Native:        1mis_RNA_tandemGA-03-uGAa-uGAa.pdb
+Extra_flags:   -
+
+Name:          tandemGA-04-uGAu-aGAa
+Sequence:      cuugauug,caagaaag
+Secstruct:     (((..(((,)))..)))
+Working_res:   A:1-16
+Input_res:     -
+Native:        1mis_RNA_tandemGA-04-uGAu-aGAa.pdb
+Extra_flags:   -
+
+Name:          tandemGA-05-aGAc-gGAu
+Sequence:      cuagacug,caggauag
+Secstruct:     (((..(((,)))..)))
+Working_res:   A:1-16
+Input_res:     -
+Native:        1mis_RNA_tandemGA-05-aGAc-gGAu.pdb
+Extra_flags:   -
+
+Name:          tandemGA-06-aGAg-cGAu
+Sequence:      cuagagug,cacgauag
+Secstruct:     (((..(((,)))..)))
+Working_res:   A:1-16
+Input_res:     -
+Native:        1mis_RNA_tandemGA-06-aGAg-cGAu.pdb
+Extra_flags:   -
+
+Name:          tandemGA-07-uGAc-gGAa
+Sequence:      cuugacug,caggaaag
+Secstruct:     (((..(((,)))..)))
+Working_res:   A:1-16
+Input_res:     -
+Native:        1mis_RNA_tandemGA-07-uGAc-gGAa.pdb
+Extra_flags:   -
+
+Name:          tandemGA-08-uGAg-cGAa
+Sequence:      cuugagug,cacgaaag
+Secstruct:     (((..(((,)))..)))
+Working_res:   A:1-16
+Input_res:     -
+Native:        1mis_RNA_tandemGA-08-uGAg-cGAa.pdb
+Extra_flags:   -
+
+Name:          tandemGA-09-aGAg-uGAu
+Sequence:      cuagagug,caugauag
+Secstruct:     (((..(((,)))..)))
+Working_res:   A:1-16
+Input_res:     -
+Native:        1mis_RNA_tandemGA-09-aGAg-uGAu.pdb
+Extra_flags:   -
+
+Name:          tandemGA-10-aGAu-gGAu
+Sequence:      cuagauug,caggauag
+Secstruct:     (((..(((,)))..)))
+Working_res:   A:1-16
+Input_res:     -
+Native:        1mis_RNA_tandemGA-10-aGAu-gGAu.pdb
+Extra_flags:   -
+
+Name:          tandemGA-11-uGAg-uGAa
+Sequence:      cuugagug,caugaaag
+Secstruct:     (((..(((,)))..)))
+Working_res:   A:1-16
+Input_res:     -
+Native:        1mis_RNA_tandemGA-11-uGAg-uGAa.pdb
+Extra_flags:   -
+
+Name:          tandemGA-12-uGAu-gGAa
+Sequence:      cuugauug,caggaaag
+Secstruct:     (((..(((,)))..)))
+Working_res:   A:1-16
+Input_res:     -
+Native:        1mis_RNA_tandemGA-12-uGAu-gGAa.pdb
+Extra_flags:   -
+
+Name:          tandemGA-13-cGAa-uGAg
+Sequence:      cucgaaug,caugagag
+Secstruct:     (((..(((,)))..)))
+Working_res:   A:1-16
+Input_res:     -
+Native:        1mis_RNA_tandemGA-13-cGAa-uGAg.pdb
+Extra_flags:   -
+
+Name:          tandemGA-14-cGAu-aGAg
+Sequence:      cucgauug,caagagag
+Secstruct:     (((..(((,)))..)))
+Working_res:   A:1-16
+Input_res:     -
+Native:        1mis_RNA_tandemGA-14-cGAu-aGAg.pdb
+Extra_flags:   -
+
+Name:          tandemGA-15-gGAa-uGAc
+Sequence:      cuggaaug,caugacag
+Secstruct:     (((..(((,)))..)))
+Working_res:   A:1-16
+Input_res:     -
+Native:        1mis_RNA_tandemGA-15-gGAa-uGAc.pdb
+Extra_flags:   -
+
+Name:          tandemGA-16-gGAu-aGAc
+Sequence:      cuggauug,caagacag
+Secstruct:     (((..(((,)))..)))
+Working_res:   A:1-16
+Input_res:     -
+Native:        1mis_RNA_tandemGA-16-gGAu-aGAc.pdb
+Extra_flags:   -
+
+Name:          tandemGA-17-cGAc-gGAg
+Sequence:      cucgacug,caggagag
+Secstruct:     (((..(((,)))..)))
+Working_res:   A:1-16
+Input_res:     -
+Native:        1mis_RNA_tandemGA-17-cGAc-gGAg.pdb
+Extra_flags:   -
+
+Name:          tandemGA-18-cGAg-cGAg
+Sequence:      cucgagug,cacgagag
+Secstruct:     (((..(((,)))..)))
+Working_res:   A:1-16
+Input_res:     -
+Native:        1mis_RNA_tandemGA-18-cGAg-cGAg.pdb
+Extra_flags:   -
+
+Name:          tandemGA-19-gGAc-gGAc
+Sequence:      cuggacug,caggacag
+Secstruct:     (((..(((,)))..)))
+Working_res:   A:1-16
+Input_res:     -
+Native:        1mis_RNA_tandemGA-19-gGAc-gGAc.pdb
+Extra_flags:   -
+
+Name:          tandemGA-20-gGAg-cGAc
+Sequence:      cuggagug,cacgacag
+Secstruct:     (((..(((,)))..)))
+Working_res:   A:1-16
+Input_res:     -
+Native:        1mis_RNA_tandemGA-20-gGAg-cGAc.pdb
+Extra_flags:   -
+
+Name:          tandemGA-21-cGAg-uGAg
+Sequence:      cucgagug,caugagag
+Secstruct:     (((..(((,)))..)))
+Working_res:   A:1-16
+Input_res:     -
+Native:        1mis_RNA_tandemGA-21-cGAg-uGAg.pdb
+Extra_flags:   -
+
+Name:          tandemGA-22-cGAu-gGAg
+Sequence:      cucgauug,caggagag
+Secstruct:     (((..(((,)))..)))
+Working_res:   A:1-16
+Input_res:     -
+Native:        1mis_RNA_tandemGA-22-cGAu-gGAg.pdb
+Extra_flags:   -
+
+Name:          tandemGA-23-gGAg-uGAc
+Sequence:      cuggagug,caugacag
+Secstruct:     (((..(((,)))..)))
+Working_res:   A:1-16
+Input_res:     -
+Native:        1mis_RNA_tandemGA-23-gGAg-uGAc.pdb
+Extra_flags:   -
+
+Name:          tandemGA-24-gGAu-gGAc
+Sequence:      cuggauug,caggacag
+Secstruct:     (((..(((,)))..)))
+Working_res:   A:1-16
+Input_res:     -
+Native:        1mis_RNA_tandemGA-24-gGAu-gGAc.pdb
+Extra_flags:   -
+
+Name:          tandemGA-25-gGAa-uGAu
+Sequence:      cuggaaug,caugauag
+Secstruct:     (((..(((,)))..)))
+Working_res:   A:1-16
+Input_res:     -
+Native:        1mis_RNA_tandemGA-25-gGAa-uGAu.pdb
+Extra_flags:   -
+
+Name:          tandemGA-26-gGAu-aGAu
+Sequence:      cuggauug,caagauag
+Secstruct:     (((..(((,)))..)))
+Working_res:   A:1-16
+Input_res:     -
+Native:        1mis_RNA_tandemGA-26-gGAu-aGAu.pdb
+Extra_flags:   -
+
+Name:          tandemGA-27-uGAa-uGAg
+Sequence:      cuugaaug,caugagag
+Secstruct:     (((..(((,)))..)))
+Working_res:   A:1-16
+Input_res:     -
+Native:        1mis_RNA_tandemGA-27-uGAa-uGAg.pdb
+Extra_flags:   -
+
+Name:          tandemGA-28-uGAu-aGAg
+Sequence:      cuugauug,caagagag
+Secstruct:     (((..(((,)))..)))
+Working_res:   A:1-16
+Input_res:     -
+Native:        1mis_RNA_tandemGA-28-uGAu-aGAg.pdb
+Extra_flags:   -
+
+Name:          tandemGA-29-gGAc-gGAu
+Sequence:      cuggacug,caggauag
+Secstruct:     (((..(((,)))..)))
+Working_res:   A:1-16
+Input_res:     -
+Native:        1mis_RNA_tandemGA-29-gGAc-gGAu.pdb
+Extra_flags:   -
+
+Name:          tandemGA-30-gGAg-cGAu
+Sequence:      cuggagug,cacgauag
+Secstruct:     (((..(((,)))..)))
+Working_res:   A:1-16
+Input_res:     -
+Native:        1mis_RNA_tandemGA-30-gGAg-cGAu.pdb
+Extra_flags:   -
+
+Name:          tandemGA-31-uGAc-gGAg
+Sequence:      cuugacug,caggagag
+Secstruct:     (((..(((,)))..)))
+Working_res:   A:1-16
+Input_res:     -
+Native:        1mis_RNA_tandemGA-31-uGAc-gGAg.pdb
+Extra_flags:   -
+
+Name:          tandemGA-32-uGAg-cGAg
+Sequence:      cuugagug,cacgagag
+Secstruct:     (((..(((,)))..)))
+Working_res:   A:1-16
+Input_res:     -
+Native:        1mis_RNA_tandemGA-32-uGAg-cGAg.pdb
+Extra_flags:   -
+
+Name:          tandemGA-33-gGAg-uGAu
+Sequence:      cuggagug,caugauag
+Secstruct:     (((..(((,)))..)))
+Working_res:   A:1-16
+Input_res:     -
+Native:        1mis_RNA_tandemGA-33-gGAg-uGAu.pdb
+Extra_flags:   -
+
+Name:          tandemGA-34-gGAu-gGAu
+Sequence:      cuggauug,caggauag
+Secstruct:     (((..(((,)))..)))
+Working_res:   A:1-16
+Input_res:     -
+Native:        1mis_RNA_tandemGA-34-gGAu-gGAu.pdb
+Extra_flags:   -
+
+Name:          tandemGA-35-uGAg-uGAg
+Sequence:      cuugagug,caugagag
+Secstruct:     (((..(((,)))..)))
+Working_res:   A:1-16
+Input_res:     -
+Native:        1mis_RNA_tandemGA-35-uGAg-uGAg.pdb
+Extra_flags:   -
+
+Name:          tandemGA-36-uGAu-gGAg
+Sequence:      cuugauug,caggagag
+Secstruct:     (((..(((,)))..)))
+Working_res:   A:1-16
+Input_res:     -
+Native:        1mis_RNA_tandemGA-36-uGAu-gGAg.pdb
+Extra_flags:   -
+
