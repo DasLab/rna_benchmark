@@ -1,8 +1,8 @@
 Name:          5P_j12_leadzyme
-Sequence:      g,ccgagc,gag
+Sequence:      g,gag,g,ccgagc,gag,g
 Secstruct:     -
-Working_res:   D:46,E:22-27,F:44-46
-Input_res:     D:46,E:22,E:27,F:44-46
+Working_res:   A:24,C:24-26,D:46,E:22-27,F:44-46,G:24
+Input_res:     A:24,C:24-26,D:46,E:22,E:27,F:44-46,G:24
 Native:        1nuj_RNA.pdb
 Extra_flags:   -
 
@@ -31,10 +31,10 @@ Native:        2r8s_RNA.pdb
 Extra_flags:   -
 
 Name:          hepatitis_C_virus_ires_IIa
-Sequence:      ggaacuac,ug,gc
+Sequence:      ggaacuac,ug,gc,a,a
 Secstruct:     -
-Working_res:   A:51-58,B:106-107,B:110-111
-Input_res:     A:51-52,A:58,B:106-107,B:110-111
+Working_res:   A:51-58,B:106-107,B:110-111,C:53,C:57
+Input_res:     A:51-52,A:58,B:106-107,B:110-111,C:53,C:57
 Native:        2pn4_RNA.pdb
 Extra_flags:   -
 
