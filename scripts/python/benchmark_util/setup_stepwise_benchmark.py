@@ -29,14 +29,17 @@ parser.add_argument('--extra_min_res_off', action='store_true', help='Additional
 parser.add_argument('--save_times_off', action='store_true', help='Additional flag for turning save_times flag off.')
 parser.add_argument('--path_to_rosetta', default='', help='Path to working copy of rosetta.')
 parser.add_argument('-v', '--verbose', help="increase output verbosity", action="store_true")
+parser.add_argument('-motif_mode_off', help="temporary hack for turning off hardcoded '-motif_mode' flag", action="store_true")
 args = parser.parse_args()
 
 #####################################################################################################################
+motif_mode_off = ( args.motif_mode_off or args.swa )
+
 if args.swa and args.njobs == 10:
-    # set default njobs to 150 for SWA jobs 
+    # set default njobs to 150 for SWA jobs
     njobs = 150
 else:
-    njobs = args.njobs 
+    njobs = args.njobs
 
 
 # get path to rosetta, required for now
@@ -55,7 +58,7 @@ SWA_DAGMAN_TOOLS=ROSETTA+'/tools/SWA_RNA_python/SWA_dagman_python/'
 
 # get extra_flags_benchmark
 VDW_rep_screen_info_flag_found = False
-
+cycles_flag_found = False
 if len (args.extra_flags) > 0:
     if exists( args.extra_flags ):
         extra_flags_benchmark = open( args.extra_flags ).readlines()
@@ -63,6 +66,10 @@ if len (args.extra_flags) > 0:
         for flag in extra_flags_benchmark:
             if ( '-VDW_rep_screen_info' in flag ):
                 VDW_rep_screen_info_flag_found = True
+                continue
+            if ( '-cycles' in flag ):
+                cycles_flag_found = True
+                continue
 
     else:
         extra_flags_benchmark = None
@@ -224,7 +231,8 @@ for name in names:
         if ( ( prev_moving and not next_moving and not right_before_chainbreak ) or \
              ( next_moving and not prev_moving and not right_after_chainbreak ) ):
             extra_min_res[ name ].append( m )
-    if not '-motif_mode\n' in extra_flags_benchmark: extra_flags_benchmark.append( '-motif_mode\n' )
+    if not '-motif_mode\n' in extra_flags_benchmark and not motif_mode_off:
+        extra_flags_benchmark.append( '-motif_mode\n' )
 
     # create fasta
     fasta[ name ] = '%s/%s.fasta' % (inpath,name)
@@ -393,7 +401,8 @@ for name in names:
         if ( len( input_pdbs[ name ] ) == 0 ):
             fid.write( '-superimpose_over_all\n' ) # RMSD over everything -- better test since helices are usually native
         fid.write( '-fasta %s.fasta\n' % name )
-        fid.write( '-cycles 200\n' )
+        if not cycles_flag_found:
+            fid.write( '-cycles 200\n' )
         fid.write( '-nstruct 20\n' )
         fid.write( '-intermolecular_frequency 0.0\n' )
         if not args.save_times_off:
