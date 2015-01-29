@@ -200,7 +200,7 @@ print 'COLS: ', columns
 
 save_fig_dir = '../../../Figures/'
 run_dir = basename(os.getcwd())
-fullpdfname = save_fig_dir + 'DMS_reactivity_predictions_'+run_dir+'.pdf'
+fullpdfname = save_fig_dir + 'DMS_reactivity_predictions_'+run_dir+('_%d_decoys'%ndecoys)+'.pdf'
 
 print '\nMaking figure in: %s\n' % fullpdfname
 pp = PdfPages( fullpdfname )
@@ -221,7 +221,7 @@ ax.set_xticklabels(columns, minor=False, fontsize=12)
 ax.set_yticklabels(rows, minor=False, fontsize=12)
 ax.set_aspect('equal')
 
-plt.text(0.5,1.08, 'DMS Reactivity Predictions',
+plt.text(0.5,1.25, 'DMS Reactivity Predictions\n\n%s' % run_dir,
 		 fontsize=14,
 		 horizontalalignment='center',
 		 transform=ax.transAxes
