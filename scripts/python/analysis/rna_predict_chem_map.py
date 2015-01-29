@@ -161,15 +161,10 @@ for target in targets:
 	### return to run directory
 	os.chdir( homedir )
 	
-#data = []
 for target, DMS_mean_mean_per_res in DMS_reactivity_per_target.iteritems():
 	print '\n', target
-	#data_col = []
 	for idx, DMS_mean_per_res in DMS_mean_mean_per_res.iteritems():
 		print str(idx)+':',DMS_mean_per_res
-		#data_col.append( DMS_mean_per_res )
-	#data.append(data_col)
-
 
 ###############################################################################
 
@@ -181,11 +176,6 @@ for res_idx in residues:
 	for target in sorted(DMS_reactivity_per_target):
 		data_row.append(DMS_reactivity_per_target[ target ][ res_idx ])
 	data.append(np.array(data_row))
-#for res_idx, DMS_mean_per_res in DMS_reactivity_per_target[ targets[0] ].iteritems():
-#	data_row = []
-#	for target, DMS_mean_mean_per_res in DMS_reactivity_per_target.iteritems():
-#		data_row.append( DMS_mean_mean_per_res[ res_idx ] )
-#	data.append( np.array( data_row ))
 data = np.array(list(reversed(data)))
 
 import matplotlib.pyplot as plt 
@@ -211,15 +201,18 @@ fig.set_size_inches(11, 8.5)
 
 plt.pcolor(data, cmap=plt.get_cmap('Blues'))
 plt.colorbar( orientation='horizontal')
-plt.xticks(np.arange(0,len(columns))+0.5,columns)
-plt.yticks(np.arange(0,len(rows))+0.5,rows)
+plt.xticks(np.arange(0,len(columns))+0.5)
+plt.yticks(np.arange(0,len(rows))+0.5)
+
+ax.set_xlim(0,len(columns))
+ax.set_ylim(0,len(rows))
 
 ax.xaxis.tick_top()
 ax.yaxis.tick_left()
 
 ax.set_xticklabels(columns, minor=False, fontsize=12)
 ax.set_yticklabels(rows, minor=False, fontsize=12)
-ax.set_aspect('equal')
+ax.set_aspect( 1 ) #'equal')
 
 plt.text(0.5,1.25, 'DMS Reactivity Predictions\n\n%s' % run_dir,
 		 fontsize=14,
