@@ -55,6 +55,7 @@ if len(path_to_rosetta_exe):
 
 ###############################################################################
 
+DMS_reactivity_per_target = {}
 for target in targets:
 	
 	### print current target
@@ -134,9 +135,79 @@ for target in targets:
 	assert(sum([exists(f) for f in dms_txt_files]) == len(dms_txt_files)) 
 	print string.join(dms_txt_files, '\n')
 
+
+	### find average mean DMS reactivites at each residue
+	DMS_mean_sum_per_res = {}
+	DMS_mean_mean_per_res = {}
+	for dms_txt_file in dms_txt_files:
+		dms_txt_file_lines = open(dms_txt_file,  'r' ).readlines()
+		col_names = dms_txt_file_lines[0].split()
+		for idx,line in enumerate(dms_txt_file_lines[1:],start=1):
+			cols = line.split()
+			chain = cols[0]
+			resid = cols[1]
+			DMS_mean = float(cols[2])
+			chain_resid = chain + ':' + resid
+			if idx in DMS_mean_sum_per_res.keys():
+				DMS_mean_sum_per_res[ idx ] += DMS_mean
+			else:
+				DMS_mean_sum_per_res[ idx ] = DMS_mean
+
+	for idx, DMS_mean_sum in DMS_mean_sum_per_res.iteritems():
+		DMS_mean_mean_per_res[ idx ] = DMS_mean_sum / len(dms_txt_files)
+
+	DMS_reactivity_per_target[ target ] = DMS_mean_mean_per_res
+
 	### return to run directory
 	os.chdir( homedir )
 	
+for target, DMS_mean_mean_per_res in DMS_reactivity_per_target.iteritems():
+	print '\n', target
+
+	for idx, DMS_mean_per_res in DMS_mean_mean_per_res.iteritems():
+		print str(idx)+':',DMS_mean_per_res
+
+###
+### PRINT HEAT MAP OF DATA
+###
+
+'''
+(y = residues)
+1  -|
+2  -|
+3  -|    *  *  *     *  *  *     *  *  *  *  *  *  *
+4  -|
+5  -| *  *     *  *  *  *  *  *  *  *  *  *  *  *  *
+6  -| *  *  *  *  *  *     *  *  *  *     *  *     *
+7  -|
+8  -|
+9  -|
+10 -|
+11 -| *     *  *  *  *  *  *  *  *  *     *  *  *  *
+12 -|
+13 -| *  *  *     *  *     *  *     *  *  *  *     *
+14 -|
+15 -|
+16 -|________________________________________________
+	  01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16
+	  					(x = targets)
+
+WHERE: * == mean represented as some color / value
+
+
+
+'''
+
+
+
+
+
+
+
+
+
+
+
 
 
 

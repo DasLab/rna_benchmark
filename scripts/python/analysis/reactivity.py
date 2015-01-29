@@ -18,8 +18,8 @@ args = parser.parse_args()
 #print 'residues: ', residues
 
 reactive_res_atom_types = { 
-	'A' : [ 'N1' ],
-	'C' : [ 'N3' ]
+	'A' : [ 'N1' ]#,
+	#'C' : [ 'N3' ]
 }
 
 
