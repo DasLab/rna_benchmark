@@ -1,0 +1,1 @@
+../../../scripts/python/benchmark_util/setup_stepwise_benchmark.py ../../../input_files/tandemGAfree.txt -nhours 48 -motif_mode_off
