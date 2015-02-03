@@ -1,15 +1,15 @@
-#!/usr/bin/python
+#!/usr/local/bin/python
 
 ###############################################################################
 
 import argparse
 import numpy as np
 import subprocess
-from glob import glob 
+from glob import glob
 import os
 from os.path import basename, dirname, exists, isfile, isdir
 import string
-from sys import exit 
+from sys import exit
 
 ###############################################################################
 
@@ -28,13 +28,13 @@ args = parser.parse_args()
 This script is a wrapper for rna_predict_chem_map, a Rosetta application
 
 TODO:
-1. cd < target directory > 
+1. cd < target directory >
 2. easy_cat.py SWM, if swm_rebuild.out not found, extract 20 lowest energy pdbs
 3. Call rna_predict_chem_map on 20 lowest energy pdbs
 4. Analyze output (.DMS files) and calculate statistics for target (swm_rebuild.out.10.pdb.DMS.txt)
 5. Save statistics for target
 6. cd ..
-7. Plot prediction statistics/maps for all targets 
+7. Plot prediction statistics/maps for all targets
 
 '''
 
@@ -44,7 +44,7 @@ homedir = os.getcwd()
 if args.targets == ['*']:
 	targets = [dir for dir in glob('*') if isdir(dir)]
 else:
-	targets = args.targets  
+	targets = args.targets
 silent_file = args.silent_file
 ndecoys = int(args.ndecoys)
 analysis_dir = args.analysis_dir
@@ -56,12 +56,13 @@ if len(path_to_rosetta_exe):
 ###############################################################################
 
 DMS_reactivity_per_target = {}
+reactive_residues_per_target = {}
 for target in targets:
-	
+
 	### print current target
 	print '\n', target
 
-	### go into target directory 
+	### go into target directory
 	os.chdir(target)
 	print os.getcwd()
 
@@ -88,7 +89,7 @@ for target in targets:
 	assert(exists(silent_file))
 
 	### append target name to silent_file name
-	target_silent_file = target + '_' + silent_file 
+	target_silent_file = target + '_' + silent_file
 	while not(exists(target_silent_file)):
 		cmdline = ['cp',silent_file,target_silent_file]
 		out,err = subprocess.Popen(cmdline, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
@@ -102,7 +103,7 @@ for target in targets:
 	target_pdbs = [target_silent_file + '.%d.pdb' % idx for idx in xrange(1,ndecoys+1)]
 	assert(len(target_pdbs) == ndecoys)
 	while not (sum([exists(f) for f in target_pdbs]) == len(target_pdbs)):
-		cmdline = ['extract_lowscore_decoys.py', target_silent_file,str(ndecoys)] 
+		cmdline = ['extract_lowscore_decoys.py', target_silent_file,str(ndecoys)]
 		out,err = subprocess.Popen(cmdline, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
 		if not (sum([exists(f) for f in target_pdbs]) == len(target_pdbs)):
 			print 'CMDLINE:', cmdline
@@ -114,7 +115,7 @@ for target in targets:
 	print string.join(target_pdbs, '\n')
 
 
-	### NOTE: might be smarter to wrap everything above in an init() function or separate 
+	### NOTE: might be smarter to wrap everything above in an init() function or separate
 	### post-processing script.
 	### NOTE: could check for DMS files before running everything above
 
@@ -131,14 +132,15 @@ for target in targets:
 				print 'OUT:', out
 				print 'ERROR:', err
 		assert(exists(dms_txt_file))
-		print dms_txt_file	
-	assert(sum([exists(f) for f in dms_txt_files]) == len(dms_txt_files)) 
+		print dms_txt_file
+	assert(sum([exists(f) for f in dms_txt_files]) == len(dms_txt_files))
 	print string.join(dms_txt_files, '\n')
 
 
 	### find average mean DMS reactivites at each residue
 	DMS_mean_sum_per_res = {}
 	DMS_mean_mean_per_res = {}
+	reactive_residues = {}
 	for dms_txt_file in dms_txt_files:
 		dms_txt_file_lines = open(dms_txt_file,  'r' ).readlines()
 		col_names = dms_txt_file_lines[0].split()
@@ -153,14 +155,23 @@ for target in targets:
 			else:
 				DMS_mean_sum_per_res[ idx ] = DMS_mean
 
+			if idx in reactive_residues.keys():
+				reactive_residues[ idx ] += ( DMS_mean > 1.0 ) 
+			else:
+				reactive_residues[ idx ] = ( DMS_mean > 1.0 )
+			
 	for idx, DMS_mean_sum in DMS_mean_sum_per_res.iteritems():
 		DMS_mean_mean_per_res[ idx ] = DMS_mean_sum / len(dms_txt_files)
 
 	DMS_reactivity_per_target[ target ] = DMS_mean_mean_per_res
+	reactive_residues_per_target[ target ] = reactive_residues
+
+
+
 
 	### return to run directory
 	os.chdir( homedir )
-	
+
 for target, DMS_mean_mean_per_res in DMS_reactivity_per_target.iteritems():
 	print '\n', target
 	for idx, DMS_mean_per_res in DMS_mean_mean_per_res.iteritems():
@@ -178,7 +189,7 @@ for res_idx in residues:
 	data.append(np.array(data_row))
 data = np.array(list(reversed(data)))
 
-import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 
 rows = list(reversed(residues))
@@ -186,7 +197,7 @@ columns = [ x for x in xrange(1, len(DMS_reactivity_per_target.keys())+1)]
 
 print 'DATA: ', data
 print 'ROWS: ', rows
-print 'COLS: ', columns 
+print 'COLS: ', columns
 
 save_fig_dir = '../../../Figures/'
 run_dir = basename(os.getcwd())
@@ -235,7 +246,10 @@ if 'Linux' in out:
 	subprocess.call(['xdg-open',fullpdfname])
 
 
+for target in sorted(reactive_residues_per_target):
+	print '\n', target
+	reactive_residues = reactive_residues_per_target[ target ]
 
-
-
-
+	for idx, reactivity in reactive_residues.iteritems():
+		if reactivity > 0:
+			print '%d: %d/%d' % (idx,reactivity,ndecoys)
