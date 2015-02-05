@@ -133,11 +133,18 @@ for name in names:
 			rna_thread_cmdline = ['rna_thread', '-s', native_template, '-seq', sequence[ name ].replace(',','') , '-o', native[ name ] ] 
 			out, err = subprocess.Popen( rna_thread_cmdline, stdout=subprocess.PIPE, stderr=subprocess.PIPE ).communicate()
 	else:
-		native[ name ] = '%s_NATIVE.pdb' % name
+		native[ name ] = '%s_native.pdb' % name.lower()
 		if not exists( native[ name ] ):
-			rna_helix_cmdline = ['rna_helix', '-seq', sequence[ name ].replace(',',''), '-o', native[ name ] ] 
+			chainid_str = ''
+			rna_helix_cmdline = ['rna_helix','-o', native[ name ] ] 
+			for chainidx, seq in enumerate(sequence[ name ].split(',')):
+				rna_helix_cmdline.append('-seq')
+				rna_helix_cmdline.append(seq)
+				chainid_str += ''.join([ ['A','B','C','D','E','F'][chainidx] for res in seq])
 			out, err = subprocess.Popen( rna_helix_cmdline, stdout=subprocess.PIPE, stderr=subprocess.PIPE ).communicate()
-
+			make_rna_rosetta_ready_cmdline = ['make_rna_rosetta_ready.py', native[ name ], '-reassign_chainids', chainid_str ]
+			out, err = subprocess.Popen( make_rna_rosetta_ready_cmdline, stdout=subprocess.PIPE, stderr=subprocess.PIPE ).communicate()
+			native[ name ] = native[ name ].lower().replace('.pdb', '_RNA.pdb')
 
 	# get working res
 	native_pdb_info = read_pdb( native[ name ] ) # ( coords, pdb_lines, sequence, chains, residues )
