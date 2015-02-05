@@ -1,8 +1,8 @@
 Name:          mismatchAA-01
-Sequence:      auacuagaau
-Secstruct:     (........)
-Working_res:   1-10
+Sequence:      auacu,agaau
+Secstruct:     (....,....)
+Working_res:   A:1-5,B:6-10
 Input_res:     -
-Native:        mismatchAA-01_NATIVE.pdb
+Native:        mismatchaa-01_native_RNA.pdb
 Extra_flags:   -
 
