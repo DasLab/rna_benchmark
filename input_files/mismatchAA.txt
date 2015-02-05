@@ -1,0 +1,8 @@
+Name:          mismatchAA-01
+Sequence:      auacuagaau
+Secstruct:     (........)
+Working_res:   1-10
+Input_res:     -
+Native:        mismatchAA-01_NATIVE.pdb
+Extra_flags:   -
+
