@@ -126,19 +126,29 @@ for name in names:
 	assert( len(secstruct[ name ]) == len(sequence[ name ]) )
 
 	# get native using rna_thread
-	native_template = args.native_template
-	native[ name ] = basename( native_template.replace( '.pdb', '_%s.pdb' % name.replace(args.common_name,'') ) )
-	if not exists( native[ name ] ):
-		rna_thread_cmdline = ['rna_thread', '-s', native_template, '-seq', sequence[ name ].replace(',','') , '-o', native[ name ] ] 
-		out, err = subprocess.Popen( rna_thread_cmdline, stdout=subprocess.PIPE, stderr=subprocess.PIPE ).communicate()
+	if args.native_template:
+		native_template = args.native_template
+		native[ name ] = basename( native_template.replace( '.pdb', '_%s.pdb' % name.replace(args.common_name,'') ) )
+		if not exists( native[ name ] ):
+			rna_thread_cmdline = ['rna_thread', '-s', native_template, '-seq', sequence[ name ].replace(',','') , '-o', native[ name ] ] 
+			out, err = subprocess.Popen( rna_thread_cmdline, stdout=subprocess.PIPE, stderr=subprocess.PIPE ).communicate()
+	else:
+		native[ name ] = '%s_NATIVE.pdb' % name
+		if not exists( native[ name ] ):
+			rna_helix_cmdline = ['rna_helix', '-seq', sequence[ name ].replace(',',''), '-o', native[ name ] ] 
+			out, err = subprocess.Popen( rna_helix_cmdline, stdout=subprocess.PIPE, stderr=subprocess.PIPE ).communicate()
+
 
 	# get working res
 	native_pdb_info = read_pdb( native[ name ] ) # ( coords, pdb_lines, sequence, chains, residues )
 	working_chains = native_pdb_info[3]
 	working_residues = native_pdb_info[4]
-	working_res[ name ] = make_tag_with_dashes_and_commas( working_residues, working_chains )
+	if len(filter(lambda x: x != ' ', working_chains)):
+		working_res[ name ] = make_tag_with_dashes_and_commas( working_residues, working_chains )
+	else:
+		working_res[ name ] = make_tag_with_dashes_and_commas( working_residues )
 
-	
+
 	# print output to terminal if verbose flag on
 	if args.verbose:
 		print '%-15s%s' % ( 'Name:'       , name                )
