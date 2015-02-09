@@ -62,7 +62,7 @@ assert( exists( inpath ) )
 
 # read in loop motifs information & get any missing information.
 if args.verbose:	print '\nReading file: %s' % seq_file
-for seq_file_line in open( seq_file ).readlines():
+for line_idx, seq_file_line in enumerate(open( seq_file ).readlines()):
 
     if seq_file_line[0] == '#' : continue
     seq_file_line = seq_file_line.split('#')[0] # remove comments
@@ -71,16 +71,21 @@ for seq_file_line in open( seq_file ).readlines():
     
     assert( len( cols ) < 4 )
 
-    name = cols[0]
+    if len(cols) > 1:
+    	name = cols[0]
+    	init_sequence[ name ] = cols[1]
+    else:
+  		name = '%s-%03d-' % (seq_file.split('/')[-1].replace('.seq',''), line_idx+1)
+  		name += cols[0].replace('+','-').replace(',','-')
+  		init_sequence[ name ] = cols[0].replace('+',',')
+
     assert( name not in names )
-    
     names.append( name )
-    init_sequence[ name ] = cols[1]
 
     if len(cols) > 2:
     	init_secstruct[ name ] = cols[2]
     else:
-    	init_secstruct[ name ] = None
+    	init_secstruct[ name ] = args.secstruct
 
     if args.verbose:
     	print name
@@ -119,37 +124,38 @@ for name in names:
 	#secstruct[ name ] = '(((..((()))..)))'
 	if init_secstruct[ name ]:
 		secstruct[ name ] = init_secstruct[ name ]
-	elif args.secstruct:
-		secstruct[ name ] = args.secstruct
 	else:
 		secstruct[ name ] = string.join(['.' for nt in sequence[ name ] ], '')
 	assert( len(secstruct[ name ]) == len(sequence[ name ]) )
 
 	# get native using rna_thread
+	native[ name ] = 'NATIVE_%s.pdb' % sequence[ name ].replace(',','_').upper()
 	if args.native_template:
 		native_template = args.native_template
-		native[ name ] = basename( native_template.replace( '.pdb', '_%s.pdb' % name.replace(args.common_name,'') ) )
+		#native[ name ] = basename( native_template.replace( '.pdb', '_%s.pdb' % name.replace(args.common_name,'') ) )
 		if not exists( native[ name ] ):
 			rna_thread_cmdline = ['rna_thread', '-s', native_template, '-seq', sequence[ name ].replace(',','') , '-o', native[ name ] ] 
 			out, err = subprocess.Popen( rna_thread_cmdline, stdout=subprocess.PIPE, stderr=subprocess.PIPE ).communicate()
 	else:
 		### TODO: need to fix naming of native_pdb
 		### TODO: go over most recent changes 
-		native[ name ] = 'NATIVE_%s.pdb' % sequence[ name ].replace(',','').upper()
+		#native[ name ] = 'NATIVE_%s.pdb' % sequence[ name ].replace(',','_').upper()
 		if not exists( native[ name ] ):
-			chainid_str = ''
 			rna_helix_cmdline = ['rna_helix','-o', native[ name ] ] 
 			for chainidx, seq in enumerate(sequence[ name ].split(',')):
 				rna_helix_cmdline.append('-seq')
 				rna_helix_cmdline.append(seq)
-				chainid_str += ''.join([ ['A','B','C','D','E','F'][chainidx] for res in seq])
 			out, err = subprocess.Popen( rna_helix_cmdline, stdout=subprocess.PIPE, stderr=subprocess.PIPE ).communicate()
-			make_rna_rosetta_ready_cmdline = ['make_rna_rosetta_ready.py', native[ name ], '-reassign_chainids', chainid_str ]
-			out, err = subprocess.Popen( make_rna_rosetta_ready_cmdline, stdout=subprocess.PIPE, stderr=subprocess.PIPE ).communicate()
-			rna_rosetta_ready_native = out.split()[-1] #native[ name ].lower().replace('.pdb', '_RNA.pdb')
-			mv_cmdline = ['mv',rna_rosetta_ready_native,native[ name ]]
-			out, err = subprocess.Popen( mv_cmdline, stdout=subprocess.PIPE, stderr=subprocess.PIPE ).communicate()
-
+		
+	assert( exists( native[ name ] ) )
+	chainid_str = ''
+	for chainidx, seq in enumerate(sequence[ name ].split(',')):
+		chainid_str += ''.join([ ['A','B','C','D','E','F'][chainidx] for res in seq])
+	make_rna_rosetta_ready_cmdline = ['make_rna_rosetta_ready.py', native[ name ], '-reassign_chainids', chainid_str ]
+	out, err = subprocess.Popen( make_rna_rosetta_ready_cmdline, stdout=subprocess.PIPE, stderr=subprocess.PIPE ).communicate()
+	rna_rosetta_ready_native = out.split()[-1] #native[ name ].lower().replace('.pdb', '_RNA.pdb')
+	mv_cmdline = ['mv',rna_rosetta_ready_native,native[ name ]]
+	out, err = subprocess.Popen( mv_cmdline, stdout=subprocess.PIPE, stderr=subprocess.PIPE ).communicate()
 
 	# get working res
 	native_pdb_info = read_pdb( native[ name ] ) # ( coords, pdb_lines, sequence, chains, residues )

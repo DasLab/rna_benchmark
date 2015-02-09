@@ -240,9 +240,9 @@ for name in names:
         fid = open( fasta[ name ], 'w' )
         assert( len( sequences ) == len( working_res_blocks ) )
         ### splitting up sequence in fasta may cause errors in SWA runs
-        #for n in range( len( sequences ) ): fid.write( '>%s %s\n%s\n' % (name,working_res_blocks[n],sequences[n]) )
+        for n in range( len( sequences ) ): fid.write( '>%s %s\n%s\n' % (name,working_res_blocks[n],sequences[n]) )
         #fid.write( popen( 'pdb2fasta.py %s' % (  working_native[ name ] ) ).read() )
-        fid.write( '>%s %s\n%s\n' % ( name,string.join(working_res_blocks,' '),string.join(sequences,'') ) )
+        #fid.write( '>%s %s\n%s\n' % ( name,string.join(working_res_blocks,' '),string.join(sequences,'') ) )
         fid.close()
 
 
@@ -396,13 +396,13 @@ for name in names:
             fid.write( '-terminal_res %s  \n' % make_tag_with_conventional_numbering( terminal_res[ name ], resnums[ name ], chains[ name ] ) )
         if len( extra_min_res[ name ] ) > 0 and not args.extra_min_res_off: ### Turn extra_min_res off for SWM when comparing to SWA
             fid.write( '-extra_min_res %s \n' % make_tag_with_conventional_numbering( extra_min_res[ name ], resnums[ name ], chains[ name ] ) )
-        if ( len( input_pdbs[ name ] ) == 0 ):
-            fid.write( '-superimpose_over_all\n' ) # RMSD over everything -- better test since helices are usually native
+        #if ( len( input_pdbs[ name ] ) == 0 ):
+        #    fid.write( '-superimpose_over_all\n' ) # RMSD over everything -- better test since helices are usually native
         fid.write( '-fasta %s.fasta\n' % name )
         if not cycles_flag_found:
             fid.write( '-cycles 200\n' )
         fid.write( '-nstruct 20\n' )
-        fid.write( '-intermolecular_frequency 0.0\n' )
+        #fid.write( '-intermolecular_frequency 0.0\n' )
         if not args.save_times_off:
             fid.write( '-save_times\n' )
 
