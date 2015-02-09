@@ -21,6 +21,9 @@ parser.add_argument('-silent_file', default='swm_rebuild.out')
 parser.add_argument('-ndecoys', default=20)
 parser.add_argument('-analysis_dir',default='analysis')
 parser.add_argument('-path_to_rosetta_exe',default='')
+parser.add_argument('-make_rna_chemical_map', action='store_true')
+parser.add_argument('-plot_seqpos_error', action='store_true')
+parser.add_argument('-error_seqpos', nargs='*', default=None)
 args = parser.parse_args()
 
 ###############################################################################
@@ -42,7 +45,7 @@ if len(path_to_rosetta_exe):
 rdat = RDATFile()
 target_mean_seqpos_reactivity = {}
 
-for target in targets:
+for target_idx, target in enumerate(targets, start=1):
 
 	### print current target
 	print '\n', target
@@ -115,14 +118,36 @@ for target in targets:
 			print 'ERROR:', err
 	assert(len(filter(lambda x: exists(x), rdat_files)) == len(rdat_files))
 
-	target_mean_seqpos_reactivity[ target ] = rdat.mean_seqpos_reactivity(rdat_files, return_sample_idx=1, verbose=True)
+	target_mean_seqpos_reactivity[ target_idx ] = rdat.mean_seqpos_reactivity(rdat_files, return_sample_idx=1, verbose=True)
 	### return to run directory
 	os.chdir( homedir )
 
 
 
+rdat_fout = 'TEST.DMS.rdat'
+rdat.write_data(rdat_fout, target_mean_seqpos_reactivity)
+
+
+
+'''
+USE:
+../../../scripts/python/analysis/rna_experimental_chem_map.py -rdat_file TEST.DMS.rdat -make_rna_chemical_map -plot_seqpos_error -error_seqpo 5 13
+
+
+rdat_fname = basename( os.getcwd() ).replace('rna_res_level_energy4_','')
+
 ### After data has been collected for all targets ... make plots?
-rdat.make_rna_chemical_map(target_mean_seqpos_reactivity, ndecoys=ndecoys)
+if args.make_rna_chemical_map:
+	pdfname = rdat_fname + '_DMS_Predictions_Chemical_Map.pdf' 
+	title = pdfname.replace('_',' ').replace('.pdf','')
+	make_rna_chemical_map(target_mean_seqpos_reactivity, fullpdfname=pdfname, title=title)
 
 
-
+if args.plot_seqpos_error:
+	pdfname = rdat_fname + '_Predictions_Error.pdf'
+	title = pdfname.replace('_',' ').replace('.pdf','') 
+	assert( args.error_seqpos )
+	error_seqpos1 = int(args.error_seqpos[0])
+	error_seqpos2 = int(args.error_seqpos[-1])
+	plot_seqpos_error(target_mean_seqpos_reactivity, error_seqpos1, error_seqpos2, fullpdfname=pdfname, title=title)
+'''
