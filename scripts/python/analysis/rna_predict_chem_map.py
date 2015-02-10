@@ -123,8 +123,7 @@ for target_idx, target in enumerate(targets, start=1):
 	os.chdir( homedir )
 
 
-
-rdat_fout = 'TEST.DMS.rdat'
+rdat_fout = basename(os.getcwd()) + '_DMS.rdat' #'TEST.DMS.rdat'
 rdat.write_data(rdat_fout, target_mean_seqpos_reactivity)
 
 
