@@ -30,6 +30,7 @@ parser.add_argument('--save_times_off', action='store_true', help='Additional fl
 parser.add_argument('--path_to_rosetta', default='', help='Path to working copy of rosetta.')
 parser.add_argument('-v', '--verbose', help="increase output verbosity", action="store_true")
 parser.add_argument('-motif_mode_off', help="temporary hack for turning off hardcoded '-motif_mode' flag", action="store_true")
+parser.add_argument('--save_logs', help="save .out and .err logs for each job.", action="store_true")
 args = parser.parse_args()
 
 #####################################################################################################################
@@ -437,7 +438,10 @@ for name in names:
         CWD = getcwd()
         chdir( name )
 
-        system( 'rosetta_submit.py README_SWM SWM %d %d -save_logs' % (njobs, args.nhours ) )
+        rosetta_submit_cmd = 'rosetta_submit.py README_SWM SWM %d %d' % (njobs, args.nhours ) 
+        if args.save_logs:
+            rosetta_submit_cmd += ' -save_logs'
+        system( rosetta_submit_cmd )
 
         chdir( CWD )
 
