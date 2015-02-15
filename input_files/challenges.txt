@@ -123,7 +123,7 @@ Extra_flags:   -align_pdb ALIGN_2bp_p2p9_4P8Z.pdb -rmsd_screen 4.0
 Name:          hammerhead_3WJ_cat
 Sequence:      agcugaugagu,acgaaac,guccu
 Secstruct:     ((.......((,))...((,)).))
-Working_res:   A:13-23,A:34-40,B:47-51
+Working_res:   A:13-23,A:34-40,B:4-8
 Input_res:     -
 Native:        2oeu_RNA.pdb
 Extra_flags:   -
@@ -131,7 +131,7 @@ Extra_flags:   -
 Name:          hammerhead_3WJ_cat_fixed
 Sequence:      agcugaugagu,acgaaac,guccu
 Secstruct:     ((.......((,))...((,)).))
-Working_res:   A:13-23,A:34-40,B:47-51
+Working_res:   A:13-23,A:34-40,B:4-8
 Input_res:     A:13-14,A:22-23,A:34-35,A:39-40,B:47-48,B:50-51
 Native:        2oeu_RNA.pdb
 Extra_flags:   -
@@ -155,8 +155,8 @@ Extra_flags:   -
 Name:          hammerhead_tert_fixed
 Sequence:      guacua,cccaaauagg,uauc
 Secstruct:     (...((,((......)),)).)
-Working_res:   A:5-10,A:24-33,B:54-57
-Input_res:     A:9-10,A:24-25,A:32-33,B:54-55
+Working_res:   A:5-10,A:24-33,B:11-14
+Input_res:     A:9-10,A:24-25,A:32-33,B:11-12
 Native:        2oeu_RNA.pdb
 Extra_flags:   -
 
