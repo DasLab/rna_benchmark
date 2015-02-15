@@ -1,0 +1,121 @@
+
+Name:          kiss_add_PK_dock
+Sequence:      aaugauaugguuu,agccuuaaacu
+Secstruct:     ((......[[.)),((]].....))
+Working_res:   X:29-41,X:58-68
+Input_res:     -
+Native:        1y26_RNA.pdb
+Extra_flags:   -align_pdb ALIGN_2bp_tl_tr_2r8s_RNA.pdb -rmsd_screen 2.0
+
+Name:          just_tr_P4P6
+Sequence:      ccuaaguc,gauaugg
+Secstruct:     ((...(((,)))..))
+Working_res:   R:222-229,R:245-251
+Input_res:     -
+Native:        2r8s_RNA.pdb
+Extra_flags:   -
+
+Name:          tl_tr_P4P6_dock
+Sequence:      gggaaacu,ccuaaguc,gauaugg
+Secstruct:     ((....)),((...(((,)))..))
+Working_res:   R:148-155,R:222-229,R:245-251
+Input_res:     -
+Native:        2r8s_RNA.pdb
+Extra_flags:   -align_pdb ALIGN_2bp_tl_tr_2r8s_RNA.pdb -rmsd_screen 4.0
+
+Name:          tl_tr_P4P6_inclGA
+Sequence:      gggaaacu,ccuaaguc,gauaugg
+Secstruct:     ((....)),((...(((,)))..))
+Working_res:   R:148-155,R:222-229,R:245-251
+Input_res:     R:148-150,R:153-155,R:222-223,R:250-251
+Native:        2r8s_RNA.pdb
+Extra_flags:   -
+
+Name:          tl_tr_R1_inclGA
+Sequence:      gggaac,ccuguguc,gaaucugg
+Secstruct:     (....),((....((,))....))
+Working_res:   A:1-6,B:1-8,C:1-8
+Input_res:     A:1-2,A:5-6,B:1-2,C:7-8
+Native:        swm_rebuild_forcebulge_CSA100.out.1_REBUILD_BULGE.out.1.pdb
+Extra_flags:   -bulge_res C:4
+
+#Name:          gaaa_minor_fixed
+#Sequence:      ccgaaagg,gaccu,agguu
+#Secstruct:     ((....)),(((((,)))))
+#Working_res:   P:58-65,Q:2-6,Q:46-50
+#Input_res:     P:58-59,P:64-65,Q:2-6,Q:46-50
+#Native:        2oiu_RNA.pdb
+#Extra_flags:   -extra_min_jump_res P:64 Q:49 -align_pdb ALIGN_2bp_2oiu_RNA.pdb -rmsd_screen 2.0
+
+Name:          gaaa_minor_dock
+Sequence:      ccgaaagg,gaccu,agguu
+Secstruct:     ((....)),(((((,)))))
+Working_res:   P:58-65,Q:2-6,Q:46-50
+Input_res:     -
+Native:        2oiu_RNA.pdb
+Extra_flags:   -jump_res P:63 Q:48 -align_pdb ALIGN_2bp_2oiu_RNA.pdb -rmsd_screen 2.0
+
+Name:          cg_helix
+Sequence:      cgcg,cgcg
+Secstruct:     (...,...)
+Working_res:   A:1-4,B:1-4
+Input_res:     -
+Native:        cgcg_helix.pdb
+Extra_flags:   -sample_sugar_res A:1-4 B:1-4 
+
+Name:          cg_helix_Zform
+Sequence:      cgcg,cgcg
+Secstruct:     (...,...)
+Working_res:   A:1-4,B:1-4
+Input_res:     -
+Native:        ZDNA_2ACJ.pdb
+Extra_flags:   -sample_sugar_res A:1-4 B:1-4  -force_syn_chi_res_list A:2 A:4 B:2 B:4
+
+Name:          P5b_connect
+Sequence:      agucucaggggaaacuuugagaug
+Secstruct:     ........................
+Working_res:   A:140-163
+Input_res:     A:140,A:150-153,A:163
+Native:        1gid_RNAA.pdb
+Extra_flags:   -
+
+Name:          kink_turn_free
+Sequence:      guggagg,ccgaugaaac
+Secstruct:     ((...((,))......))
+Working_res:   A:16-22,30-39
+Input_res:     -
+Native:        2gis_RNA.pdb
+Extra_flags:   -
+
+Name:          hiv_rre
+Sequence:      cgggcg,cgguacg
+Secstruct:     ((..((,))...))
+Working_res:   A:45-50,B:69-75
+Input_res:     -
+Native:        1csl_RNA.pdb
+Extra_flags:   -
+
+Name:          t_loop
+Sequence:      g,gguucgauucc
+Secstruct:     .,((.......))
+Working_res:   A:18,A:52-62
+Input_res:     -
+Native:        3l0u_RNA.pdb
+Extra_flags:   -
+#Extra_flags:  -jump_res A:18 A:55 
+
+Name:          gir1_p2.1p5_kiss
+Sequence:      ggcuaaucacc,gggacgaucc
+Secstruct:     ((....[[.)),((...]].))
+Working_res:   A:22-32,A:76-85
+Input_res:     -
+Native:        4P8Z.pdb
+Extra_flags:   -align_pdb ALIGN_2bp_p2.1p5_4P8Z.pdb -rmsd_screen 4.0
+
+Name:          gir1_p2p9_gaaa_minor
+Sequence:      uggguu,ccgaaagg,aagaca
+Secstruct:     ((..((,((....)),))..))
+Working_res:   A:4-9,A:156-163,A:180-185
+Input_res:     -
+Native:        4P8Z.pdb
+Extra_flags:   -align_pdb ALIGN_2bp_p2p9_4P8Z.pdb -rmsd_screen 4.0
