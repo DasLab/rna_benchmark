@@ -277,3 +277,64 @@ def plot_seqpos_error(reactivity_data, seqpos1, seqpos2, fullpdfname=None, title
 
 	# open pdf
 	open_figure(fullpdfname)
+
+
+def scatter_plot_experimental_vs_prediction( experimental_data, prediction_data, exp_seqpos_list, pred_seqpos_list, fullpdfname=None, title=None ):
+
+	print '\nMaking figure in: %s\n' % fullpdfname
+	pp = PdfPages( fullpdfname )
+
+	fig = plt.figure()
+
+	# one plot per seqpos
+	for idx, pred_seqpos in enumerate(pred_seqpos_list):
+
+		exp_seqpos = exp_seqpos_list[ idx ]
+
+		ax = fig.add_subplot( len(pred_seqpos_list), 1, idx+1 )
+
+		print 'pred_seqpos =', pred_seqpos
+		print 'exp_seqpos = ', exp_seqpos 
+
+		for pred_fname in prediction_data.keys():
+			pred_data = prediction_data[ pred_fname ]
+
+			print 'pred_fname = ', pred_fname
+
+			pred_sample_idx_list = sorted(pred_data.keys())
+
+			pred_seqpos_data = []
+			for sample_idx in pred_sample_idx_list:
+				pred_seqpos_data.append(pred_data[ sample_idx ][ pred_seqpos ])
+			pred_seqpos_data = np.array(pred_seqpos_data)
+
+
+			for exp_fname in experimental_data.keys():
+				exp_data = experimental_data[ exp_fname ]
+
+				print 'exp_fname = ', exp_fname
+				
+				exp_sample_idx_list = sorted(exp_data.keys())
+
+				exp_seqpos_data = []
+				for sample_idx in exp_sample_idx_list:
+					exp_seqpos_data.append(exp_data[ sample_idx ][ exp_seqpos ])
+				exp_seqpos_data = np.array(exp_seqpos_data)
+
+
+				ax.plot( pred_seqpos_data, exp_seqpos_data, marker='x', markersize=4, linestyle=' ' )
+				ax.xlim(0,3)
+				ax.ylim(0,3)
+				ax.plot( plt.xlim(), plt.ylim(), color='black')
+				plt.xlabel('Prediction (Seqpos %s)' % str(pred_seqpos), fontsize=12)
+				plt.ylabel('Experimental (Seqpos %s)' % str(exp_seqpos), fontsize=12)
+
+
+
+
+	# save as pdf and close
+	pp.savefig()
+	pp.close()
+
+	# open pdf
+	open_figure(fullpdfname)
