@@ -21,7 +21,7 @@ To set up a new benchmark run
 -----------------------------
 (Look  inside `ref/` for checked in examples)
 - Make sure you have rosetta compiled and rna_tools setup. Follow directions <a href="https://www.rosettacommons.org/docs/latest/RNA-tools.html">here</a>.
-- Setup stepwise_benchmark tools. Edit the path to `stepwise_benchmark` in `./INSTALL`, and run `source ./INSTALL`.
+- Edit the path to `stepwise_benchmark` in `INSTALL`, and run `source ./INSTALL`.
 - Go inside `new/`
 - Create a new folder with a descriptive name like `rna_res_level_energy_rnatorsion1_synGbonus`
 - Create `extra_flags_benchmark.txt` that describes the interesting new flags in your run.
