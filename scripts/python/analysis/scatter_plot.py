@@ -37,7 +37,10 @@ if len(args.exp_rdat_files) and len(args.pred_rdat_files):
 	for rdat_file in args.pred_rdat_files:
 		prediction_data[ rdat_file ] = rdat.get_reactivity(rdat_file)
 
+	exp_seqpos = map(lambda x: int(x), args.exp_seqpos)
+	pred_seqpos = map(lambda x: int(x), args.pred_seqpos)
+
 	pdfname = 'experimental_vs_prediction_scatter_plot.pdf'
 	title = basename( pdfname.replace('_',' ').replace('.pdf','') )
 
-	scatter_plot_experimental_vs_prediction( experimental_data, prediction_data, args.exp_seqpos, args.pred_seqpos, fullpdfname=pdfname, title=title )
+	scatter_plot_experimental_vs_prediction( experimental_data, prediction_data, exp_seqpos, pred_seqpos, fullpdfname=pdfname, title=title )

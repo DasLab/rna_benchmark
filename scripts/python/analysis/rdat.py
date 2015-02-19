@@ -285,6 +285,7 @@ def scatter_plot_experimental_vs_prediction( experimental_data, prediction_data,
 	pp = PdfPages( fullpdfname )
 
 	fig = plt.figure()
+	fig.set_size_inches(8.5, 11)
 
 	# one plot per seqpos
 	for idx, pred_seqpos in enumerate(pred_seqpos_list):
@@ -321,13 +322,20 @@ def scatter_plot_experimental_vs_prediction( experimental_data, prediction_data,
 					exp_seqpos_data.append(exp_data[ sample_idx ][ exp_seqpos ])
 				exp_seqpos_data = np.array(exp_seqpos_data)
 
-
-				ax.plot( pred_seqpos_data, exp_seqpos_data, marker='x', markersize=4, linestyle=' ' )
-				ax.xlim(0,3)
-				ax.ylim(0,3)
+				ax.plot( pred_seqpos_data, exp_seqpos_data, marker='x', markersize=4, linestyle=' ', label=exp_fname)
+				ax.set_xlim(0,2.5)
+				ax.set_ylim(0,2.5)
 				ax.plot( plt.xlim(), plt.ylim(), color='black')
-				plt.xlabel('Prediction (Seqpos %s)' % str(pred_seqpos), fontsize=12)
-				plt.ylabel('Experimental (Seqpos %s)' % str(exp_seqpos), fontsize=12)
+				
+				if pred_seqpos == 5: title = "Seqpos 5'-A"
+				elif pred_seqpos == 13: title = "Seqpos 3'-A"
+				else:	title = 'Seqpos %s' % pred_seqpos
+				ax.set_title( title, fontsize=16, weight='bold' )
+				ax.set_xlabel('Prediction (seqpos %s)' % str(pred_seqpos), fontsize=12)
+				ax.set_ylabel('Experimental (seqpos %s)' % str(exp_seqpos), fontsize=12)
+				legend = ax.legend(numpoints=1)
+
+				plt.subplots_adjust(hspace=0.35, wspace=0.35)
 
 
 
