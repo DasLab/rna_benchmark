@@ -1,4 +1,4 @@
-export STEPWISE_BENCHMARK=~/src/stepwise_benchmark/
+export STEPWISE_BENCHMARK=/path/to/stepwise_benchmark/
 
 #Runs the commands
 python $STEPWISE_BENCHMARK/sym_link.py
