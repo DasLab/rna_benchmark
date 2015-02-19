@@ -55,7 +55,7 @@ class RDATFile:
 				self.header.append(line)
 				continue
 			if 'ANNOTATION' in line:
-				#self.annotation = line.split()[1:]
+				self.annotation = line.split()[1:]
 				self.header.append(line)
 				continue
 			if 'SEQPOS' in line:
@@ -79,14 +79,16 @@ class RDATFile:
 					self.reactivity_error[ sample_idx ][ idx ] = float(reactivity_error)
 				continue
 
-	def write_data(self, filename, data):
+	def write_data(self, filename, data, headers):
 		fout = open(filename, 'w')
-		fout.write(string.join(self.header,'\n') + '\n\n')
+		if not headers:
+			fout.write(string.join(self.header,'\n') + '\n\n')
 		for sample_idx in sorted(data.keys()):
-			fout.write('REACTIVITY:%s' % str(sample_idx) )
+			if headers:
+				fout.write('\n' + string.join(headers[ sample_idx ], '\n'))
+			fout.write('\nREACTIVITY:%s' % str(sample_idx) )
 			for seqpos_idx in sorted( data[ sample_idx ].keys()):
 				fout.write( '\t%f' % data[ sample_idx ][ seqpos_idx ] )
-			fout.write('\n')
 		fout.close()
 
 
@@ -346,3 +348,5 @@ def scatter_plot_experimental_vs_prediction( experimental_data, prediction_data,
 
 	# open pdf
 	open_figure(fullpdfname)
+
+

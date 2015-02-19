@@ -44,6 +44,7 @@ if len(path_to_rosetta_exe):
 ###############################################################################
 rdat = RDATFile()
 target_mean_seqpos_reactivity = {}
+rdat_headers = {}
 
 for target_idx, target in enumerate(targets, start=1):
 
@@ -119,12 +120,13 @@ for target_idx, target in enumerate(targets, start=1):
 	assert(len(filter(lambda x: exists(x), rdat_files)) == len(rdat_files))
 
 	target_mean_seqpos_reactivity[ target_idx ] = rdat.mean_seqpos_reactivity(rdat_files, return_sample_idx=1, verbose=True)
+	rdat_headers[ target_idx ] = rdat.header
 	### return to run directory
 	os.chdir( homedir )
 
 
 rdat_fout = basename(os.getcwd()) + '_DMS.rdat' #'TEST.DMS.rdat'
-rdat.write_data(rdat_fout, target_mean_seqpos_reactivity)
+rdat.write_data(rdat_fout, target_mean_seqpos_reactivity, rdat_headers)
 
 
 
