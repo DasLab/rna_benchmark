@@ -1,0 +1,9 @@
+export STEPWISE_BENCHMARK=~/src/stepwise_benchmark/
+
+#Runs the commands
+python $STEPWISE_BENCHMARK/sym_link.py
+
+#Add the following lines to your ~/.bashrc
+export PATH=$PATH:$STEPWISE_BENCHMARK/bin/
+export PYTHONPATH=$PYTHONPATH:$STEPWISE_BENCHMARK/bin/
+
