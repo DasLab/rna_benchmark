@@ -27,7 +27,7 @@ To set up a new benchmark run
 - Create `extra_flags_benchmark.txt` that describes the interesting new flags in your run.
 - Create a `README_SETUP` with a command-line to setup the benchmark like:
 ```
-setup_stepwise_benchmark.py <favorites.txt>
+setup_stepwise_benchmark.py ../../input_files/<favorites.txt>
 ```
  and run it with `source README_SETUP`. You should see subdirectories with all the target names and input files.
 - If you are on `biox3`, you can type `source qsubMINI` to queue up all the jobs.
