@@ -17,13 +17,13 @@ What's in here
 
 `input_files/` holds input PDBs, and text files like `favorites.txt`, which define motifs for benchmark, including sequence, secondary structure, reference PDBs, etc.
 
-To set up stepwise_benchmark tools 
-----------------------------------
+Setting up benchmark tools  
+--------------------------
 - Make sure you have rosetta compiled and rna_tools setup. Follow directions <a href="https://www.rosettacommons.org/docs/latest/RNA-tools.html">here</a>.
 - Edit the path to your copy of `stepwise_benchmark` in `INSTALL` and run `source ./INSTALL`
 
-To set up a new benchmark run
------------------------------
+Setting up a new benchmark run
+------------------------------
 (Look  inside `ref/` for checked in examples)
 - Go inside `new/`
 - Create a new folder with a descriptive name like `rna_res_level_energy_rnatorsion1_synGbonus`
