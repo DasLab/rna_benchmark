@@ -40,7 +40,7 @@ setup_stepwise_benchmark.py ../../input_files/<favorites.txt>
 easy_cat.py SWM
 ```
 to concatenate models from various subdirectories for each target.
-- Copy or rsync files to your local computer to run MATLAB.
+- Copy or rsync files to your local computer for visualization.
 
 Visualizing benchmark runs
 --------------------------
