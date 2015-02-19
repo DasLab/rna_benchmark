@@ -44,17 +44,13 @@ to concatenate models from various subdirectories for each target.
 
 Visualizing benchmark runs
 --------------------------
-Plotting with MATLAB
-- In the `scripts/matlab/` directory, you can compare two runs by running a command like:
-```
-make_plots( {'../new/rna_res_level_energy_rnatorsion1_novirtualo2prime_synGbonus_suitenessbonus','../new/rna_res_level_energy_rnatorsion1_novirtualo2prime_synGbonus_suitenessbonus_varypolarHgeom'} );
-```
 Plotting with Python
 - In the `new/` directory, you can compare two runs by running a command like:
 ```
 make_plots.py rna_res_level_energy4 rna_res_level_energy_rnatorsion1 
 ```
-- In the `scripts/python/` directory, you can compare two runs by running a command like:
+Plotting with MATLAB
+- In the `scripts/matlab/` directory, you can compare two runs by running a command like:
 ```
-make_plots.py ../../new/rna_res_level_energy4 ../../new/rna_res_level_energy_rnatorsion1 
+make_plots( {'../new/rna_res_level_energy_rnatorsion1_novirtualo2prime_synGbonus_suitenessbonus','../new/rna_res_level_energy_rnatorsion1_novirtualo2prime_synGbonus_suitenessbonus_varypolarHgeom'} );
 ```
