@@ -20,7 +20,6 @@ What's in here
 Setting up benchmark tools  
 --------------------------
 - Make sure you have rosetta compiled and rna_tools setup. Follow directions <a href="https://www.rosettacommons.org/docs/latest/RNA-tools.html">here</a>.
-- Edit the path to your local copy of `stepwise_benchmark` in `stepwise_benchmark/INSTALL`. 
 - Run `source ./INSTALL` from inside the `stepwise_benchmark/` directory.
 
 Setting up a new benchmark run
