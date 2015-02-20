@@ -195,7 +195,7 @@ def make_rna_chemical_map(reactivity_data, fullpdfname=None, title=None, ndecoys
 	fig.set_size_inches(11, 8.5)
 
 	plt.pcolor(data, cmap=plt.get_cmap('Greys'))
-	plt.clim(0,2)
+	plt.clim(0,2.0)
 	plt.colorbar( orientation='horizontal')
 	plt.xticks(np.arange(0,len(columns))+0.5)
 	plt.yticks(np.arange(0,len(rows))+0.5)

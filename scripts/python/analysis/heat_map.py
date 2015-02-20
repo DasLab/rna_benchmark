@@ -75,10 +75,12 @@ for idx, line in enumerate(seqfile,start=1):
 plot_idx = 0
 for file_idx, rdat_file in enumerate( (args.exp_rdat_files + args.pred_rdat_files), start=1):
 
-	print 'rdat_file = ', rdat_file
+	print 'rdat_file:', rdat_file
 	reactivity_data = rdat.get_reactivity(rdat_file)
 
-	if len(rdat.sequence) > 20:
+	# need a better way of identifying whether experimental or prediction
+	# so we know which seqpos to use
+	if 'MgCl2' in rdat_file or 'NaCl' in rdat_file:
 		seqpos_list = [ 36, 50 ]
 	else:
 		seqpos_list = [ 5, 13 ]
@@ -86,6 +88,7 @@ for file_idx, rdat_file in enumerate( (args.exp_rdat_files + args.pred_rdat_file
 	for idx, seqpos in enumerate(seqpos_list,start=1):
 
 		plot_idx += 1
+		print 'seqpos:', seqpos
 		#print plot_idx
 		# VARIABLES TO BE DETERMINE
 		#for sample_idx in flanking_bps.keys():
@@ -101,13 +104,14 @@ for file_idx, rdat_file in enumerate( (args.exp_rdat_files + args.pred_rdat_file
 		for sample_idx in flanking_bps.keys():
 			yidx = y_bps_axis.index( flanking_bps[ sample_idx ][0] )
 			xidx = x_bps_axis.index( flanking_bps[ sample_idx ][1] )
-			data[ yidx ][ xidx ] += reactivity_data[ sample_idx ][ seqpos ]
+			data[ yidx ][ xidx ] = reactivity_data[ sample_idx ][ seqpos ]
 
 		data = np.array( data )
-		#print data 
+		print data 
 
 		ax = fig.add_subplot( ncols, nrows, plot_idx )
 		plt.pcolor(data, cmap=plt.get_cmap('Greys'))
+		plt.clim(0.0,2.0)
 		plt.xticks(np.arange(0,len(x_bps_axis))+0.5)
 		plt.yticks(np.arange(0,len(y_bps_axis))+0.5)
 		#ax.xaxis.tick_top()
