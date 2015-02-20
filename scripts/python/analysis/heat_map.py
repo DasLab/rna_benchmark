@@ -27,30 +27,12 @@ args = parser.parse_args()
 
 rdat = RDATFile()
 
-
 seqfile = open( args.seqfile ).readlines()
-
-#experimental_data = {}
-#prediction_data = {}
-
-#for rdat_file in args.exp_rdat_files:
-#	experimental_data[ rdat_file ] = rdat.get_reactivity(rdat_file)
-
-#for rdat_file in args.pred_rdat_files:
-#	prediction_data[ rdat_file ] = rdat.get_reactivity(rdat_file)
-
-#exp_seqpos_list = map(lambda x: int(x), args.exp_seqpos)
-#pred_seqpos_list = map(lambda x: int(x), args.pred_seqpos)
+rdat_files = args.exp_rdat_files + args.pred_rdat_files
 
 pdfname = 'flanking_bp_heat_maps.pdf'
 title = basename( pdfname.replace('_',' ').replace('.pdf','') )
 
-########################################################################################
-#flanking_bp_heat_maps( exp_seqfile, pred_seqfile, experimental_data, prediction_data, exp_seqpos, pred_seqpos, fullpdfname=pdfname, title=title )
-########################################################################################
-########################################################################################
-#def flanking_bp_heat_maps( exp_seqfile, pred_seqfile, experimental_data, prediction_data, exp_seqpos_list, pred_seqpos_list, fullpdfname=None, title=None ):
-########################################################################################
 fullpdfname = pdfname
 print '\nMaking figure in: %s\n' % fullpdfname
 pp = PdfPages( fullpdfname )
@@ -58,8 +40,8 @@ pp = PdfPages( fullpdfname )
 fig = plt.figure()
 fig.set_size_inches(8.5, 11)
 
-nrows = 2
-ncols = 3
+nrows = len(args.pred_seqpos)
+ncols = len(rdat_files)
 
 # get flanking base pairs of each sample
 flanking_bps = {}
@@ -73,7 +55,8 @@ for idx, line in enumerate(seqfile,start=1):
 	flanking_bps[ idx ] = ( fbp1, fbp2 )
 
 plot_idx = 0
-for file_idx, rdat_file in enumerate( (args.exp_rdat_files + args.pred_rdat_files), start=1):
+experimental = False
+for file_idx, rdat_file in enumerate( rdat_files, start=1):
 
 	print 'rdat_file:', rdat_file
 	reactivity_data = rdat.get_reactivity(rdat_file)
@@ -81,9 +64,20 @@ for file_idx, rdat_file in enumerate( (args.exp_rdat_files + args.pred_rdat_file
 	# need a better way of identifying whether experimental or prediction
 	# so we know which seqpos to use
 	if 'MgCl2' in rdat_file or 'NaCl' in rdat_file:
-		seqpos_list = [ 36, 50 ]
+		seqpos_list = args.exp_seqpos #[ 36, 50 ]
+		experimental = True 
 	else:
-		seqpos_list = [ 5, 13 ]
+		seqpos_list = args.pred_seqpos #[ 5, 13 ]
+		experimental = False 
+
+	seqpos_list = [int(x) for x in seqpos_list]
+
+	top_bp = (seqpos_list[0]-2, seqpos_list[1]+1)
+	bot_bp = (seqpos_list[0]+1, seqpos_list[1]-2)
+
+	rxdatalist = [ reactivity_data[x][y] for y in seqpos_list for x in reactivity_data.keys()]
+	cmin = min(rxdatalist)
+	cmax = max(rxdatalist)
 
 	for idx, seqpos in enumerate(seqpos_list,start=1):
 
@@ -111,26 +105,29 @@ for file_idx, rdat_file in enumerate( (args.exp_rdat_files + args.pred_rdat_file
 
 		ax = fig.add_subplot( ncols, nrows, plot_idx )
 		plt.pcolor(data, cmap=plt.get_cmap('Greys'))
-		plt.clim(0.0,2.0)
+		print 'MIN: ', cmin
+		print 'MAX: ', cmax 
+		plt.clim(cmin,cmax)
+		plt.colorbar()
 		plt.xticks(np.arange(0,len(x_bps_axis))+0.5)
 		plt.yticks(np.arange(0,len(y_bps_axis))+0.5)
 		#ax.xaxis.tick_top()
 		#ax.yaxis.tick_left()
 
-		ax.set_xticklabels( x_bps_axis, minor=False, fontsize=12)
-		ax.set_yticklabels( y_bps_axis, minor=False, fontsize=12)
+		ax.set_xticklabels( [x.upper() for x in x_bps_axis], minor=False, fontsize=8, weight='bold')
+		ax.set_yticklabels( [x.upper() for x in y_bps_axis], minor=False, fontsize=8, weight='bold')
 		ax.set_aspect( 1 )
 
-		ax.set_xlabel('Bottom Base Pair')
-		ax.set_ylabel('Top Base Pair')
+		ax.set_xlabel('Base Pair (%d,%d)' % (bot_bp[0],bot_bp[1]), fontsize=10 )
+		ax.set_ylabel('Base Pair (%d,%d)' % (top_bp[0],top_bp[1]), fontsize=10 )
 
-		title = rdat_file.replace('.rdat','').replace('_',' ')
+		title = rdat_file.replace('.rdat','').replace('_',' ').replace('DMS','')
 		if idx == 1:
-			title += " (Seqpos 5'-A)"
+			title += " [5'-A]"#(%d)" % seqpos
 		else:
-			title += " (Seqpos 3'-A)"
+			title += " [3'-A]"#%d" % seqpos
 
-		ax.set_title(title, fontsize=8, weight='bold')
+		ax.set_title(title, fontsize=10, weight='bold')
 
 		plt.subplots_adjust(hspace=0.35, wspace=0.35)
 
