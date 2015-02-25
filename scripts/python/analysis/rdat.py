@@ -55,7 +55,7 @@ class RDATFile:
 				self.header.append(line)
 				continue
 			if 'ANNOTATION' in line:
-				#self.annotation = line.split()[1:]
+				self.annotation = line.split()[1:]
 				self.header.append(line)
 				continue
 			if 'SEQPOS' in line:
@@ -79,14 +79,16 @@ class RDATFile:
 					self.reactivity_error[ sample_idx ][ idx ] = float(reactivity_error)
 				continue
 
-	def write_data(self, filename, data):
+	def write_data(self, filename, data, headers):
 		fout = open(filename, 'w')
-		fout.write(string.join(self.header,'\n') + '\n\n')
+		if not headers:
+			fout.write(string.join(self.header,'\n') + '\n\n')
 		for sample_idx in sorted(data.keys()):
-			fout.write('REACTIVITY:%s' % str(sample_idx) )
+			if headers:
+				fout.write('\n' + string.join(headers[ sample_idx ], '\n'))
+			fout.write('\nREACTIVITY:%s' % str(sample_idx) )
 			for seqpos_idx in sorted( data[ sample_idx ].keys()):
 				fout.write( '\t%f' % data[ sample_idx ][ seqpos_idx ] )
-			fout.write('\n')
 		fout.close()
 
 
@@ -102,23 +104,18 @@ class RDATFile:
 		print self.reactivity_error
 
 
-	def total_seqpos_reactivity(self, rdat_files, slice_seqpos=None):
-		total_seqpos_reactivity = {}
+	def total_seqpos_reactivity(self, rdat_files):
+		reactivity_totals = {}
 		for rdat_file in rdat_files:
-			self.load(rdat_file)
-			for sample_idx in sorted(self.reactivity.keys()):
-				if not sample_idx in total_seqpos_reactivity.keys():
-					total_seqpos_reactivity[ sample_idx ] = {}
-				for seqpos_idx in sorted(self.reactivity[ sample_idx ].keys()):
-					if slice_seqpos:
-						if seqpos_idx not in slice_seqpos:
-							continue 
-					seqpos_reactivity = self.reactivity[ sample_idx ][ seqpos_idx ]
-					if not seqpos_idx in total_seqpos_reactivity[ sample_idx ].keys():
-						total_seqpos_reactivity[ sample_idx ][ seqpos_idx ] = seqpos_reactivity
-					else:
-						total_seqpos_reactivity[ sample_idx ][ seqpos_idx ] += seqpos_reactivity
-		return total_seqpos_reactivity
+			reactivity = self.get_reactivity(rdat_file)
+			for sample_idx in reactivity.keys():
+				if not sample_idx in reactivity_totals.keys():
+					reactivity_totals[ sample_idx ] = {}
+				for seqpos_idx in reactivity[ sample_idx ].keys():
+					if not seqpos_idx in reactivity_totals[ sample_idx ].keys():
+						reactivity_totals[ sample_idx ][ seqpos_idx ] = 0.0
+					reactivity_totals[ sample_idx ][ seqpos_idx ] += reactivity[ sample_idx ][ seqpos_idx ]
+		return reactivity_totals
 
 	def mean_seqpos_reactivity(self, rdat_files, return_sample_idx=None, verbose=False):
 		mean_seqpos_reactivity = self.total_seqpos_reactivity(rdat_files)					
@@ -133,18 +130,27 @@ class RDATFile:
 					print '%-10d  %f' %( seqpos_idx, mean_seqpos_reactivity[ sample_idx ][ seqpos_idx ] )
 		if return_sample_idx:
 			return mean_seqpos_reactivity[ return_sample_idx ]
-		else:
-			return mean_seqpos_reactivity
+		return mean_seqpos_reactivity
 
-	def seqpos_reactivity(self, rdat_file, slice_seqpos=None, verbose=False):
-		seqpos_reactivity = self.total_seqpos_reactivity([rdat_file], slice_seqpos=slice_seqpos)				
-		for sample_idx in sorted(seqpos_reactivity.keys()):
-			if verbose:
-				print 'SAMPLE:', sample_idx
-				print 'SEQPOS_IDX  MEAN_REACTIVITY'
-				for seqpos_idx in list(reversed(sorted(seqpos_reactivity[ sample_idx ].keys()))):
-					print '%-10d  %f' %( seqpos_idx, seqpos_reactivity[ sample_idx ][ seqpos_idx ] )
-		return seqpos_reactivity
+	def get_reactivity(self, rdat_file, seqpos_list=None):
+		self.load(rdat_file)
+		reactivity = self.reactivity
+		if seqpos_list:
+			for sample_idx in reactivity.keys():
+				for seqpos_idx in reactivity[ sample_idx ].keys():
+					if seqpos_idx in seqpos_list: continue
+					del( reactivity[ sample_idx ][ seqpos_idx ] )
+		return reactivity
+
+	def get_reactivity_error(self, rdat_file, seqpos_list=None):
+		self.load(rdat_file)
+		reactivity_error = self.reactivity_error
+		if seqpos_list:
+			for sample_idx in reactivity_error.keys():
+				for seqpos_idx in reactivity_error[ sample_idx ].keys():
+					if seqpos_idx in seqpos_list: continue
+					del( reactivity_error[ sample_idx ][ seqpos_idx ] )
+		return reactivity_error
 
 ###############################################################################
 # PLOTTING UTIL
@@ -157,19 +163,19 @@ def open_figure(fullpdfname):
 	if 'Linux' in out:
 		subprocess.call(['xdg-open',fullpdfname])
 
-def make_rna_chemical_map(seqpos_reactivity_data, fullpdfname=None, title=None, ndecoys=None):
+def make_rna_chemical_map(reactivity_data, fullpdfname=None, title=None, ndecoys=None):
 
-	sample_idx_list = sorted(seqpos_reactivity_data.keys())
-	seqpos_idx_list = sorted(seqpos_reactivity_data[ sample_idx_list[0] ].keys())	
+	sample_idx_list = sorted(reactivity_data.keys())
+	seqpos_idx_list = sorted(reactivity_data[ sample_idx_list[0] ].keys())	
 	
 	data = []
 	for seqpos_idx in seqpos_idx_list:
-		seqpos_data = [ seqpos_reactivity_data[ x ][ seqpos_idx ] for x in sample_idx_list ]
+		seqpos_data = [ reactivity_data[ x ][ seqpos_idx ] for x in sample_idx_list ]
 		data.append(np.array(seqpos_data)) 
 	data = np.array(data)
 
 	rows = seqpos_idx_list
-	columns = [x for x in xrange(1, len(seqpos_reactivity_data.keys())+1)]
+	columns = [x for x in xrange(1, len(reactivity_data.keys())+1)]
 
 	#print 'DATA: ', data
 	#print 'ROWS: ', rows
@@ -189,7 +195,7 @@ def make_rna_chemical_map(seqpos_reactivity_data, fullpdfname=None, title=None, 
 	fig.set_size_inches(11, 8.5)
 
 	plt.pcolor(data, cmap=plt.get_cmap('Greys'))
-	plt.clim(0,2)
+	plt.clim(0,2.0)
 	plt.colorbar( orientation='horizontal')
 	plt.xticks(np.arange(0,len(columns))+0.5)
 	plt.yticks(np.arange(0,len(rows))+0.5)
@@ -221,16 +227,16 @@ def make_rna_chemical_map(seqpos_reactivity_data, fullpdfname=None, title=None, 
 	# open pdf
 	open_figure(fullpdfname)
 
-def plot_seqpos_error(seqpos_reactivity_data, seqpos1, seqpos2, fullpdfname=None, title=None, ndecoys=None):
+def plot_seqpos_error(reactivity_data, seqpos1, seqpos2, fullpdfname=None, title=None, ndecoys=None):
 
-	sample_idx_list = sorted(seqpos_reactivity_data.keys())
-	seqpos_idx_list = sorted(seqpos_reactivity_data[ sample_idx_list[0] ].keys())	
+	sample_idx_list = sorted(reactivity_data.keys())
+	seqpos_idx_list = sorted(reactivity_data[ sample_idx_list[0] ].keys())	
 
 	seqpos1_data = []
 	seqpos2_data = []
 	for sample_idx in sample_idx_list:
-		seqpos1_data.append(seqpos_reactivity_data[ sample_idx ][ seqpos1 ])
-		seqpos2_data.append(seqpos_reactivity_data[ sample_idx ][ seqpos2 ])
+		seqpos1_data.append(reactivity_data[ sample_idx ][ seqpos1 ])
+		seqpos2_data.append(reactivity_data[ sample_idx ][ seqpos2 ])
 
 	seqpos1_data = np.array(seqpos1_data)
 	seqpos2_data = np.array(seqpos2_data)
@@ -273,3 +279,74 @@ def plot_seqpos_error(seqpos_reactivity_data, seqpos1, seqpos2, fullpdfname=None
 
 	# open pdf
 	open_figure(fullpdfname)
+
+
+def scatter_plot_experimental_vs_prediction( experimental_data, prediction_data, exp_seqpos_list, pred_seqpos_list, fullpdfname=None, title=None ):
+
+	print '\nMaking figure in: %s\n' % fullpdfname
+	pp = PdfPages( fullpdfname )
+
+	fig = plt.figure()
+	fig.set_size_inches(8.5, 11)
+
+	# one plot per seqpos
+	for idx, pred_seqpos in enumerate(pred_seqpos_list):
+
+		exp_seqpos = exp_seqpos_list[ idx ]
+
+		ax = fig.add_subplot( len(pred_seqpos_list), 1, idx+1 )
+
+		print 'pred_seqpos =', pred_seqpos
+		print 'exp_seqpos = ', exp_seqpos 
+
+		for pred_fname in prediction_data.keys():
+			pred_data = prediction_data[ pred_fname ]
+
+			print 'pred_fname = ', pred_fname
+
+			pred_sample_idx_list = sorted(pred_data.keys())
+
+			pred_seqpos_data = []
+			for sample_idx in pred_sample_idx_list:
+				pred_seqpos_data.append(pred_data[ sample_idx ][ pred_seqpos ])
+			pred_seqpos_data = np.array(pred_seqpos_data)
+
+
+			for exp_fname in experimental_data.keys():
+				exp_data = experimental_data[ exp_fname ]
+
+				print 'exp_fname = ', exp_fname
+				
+				exp_sample_idx_list = sorted(exp_data.keys())
+
+				exp_seqpos_data = []
+				for sample_idx in exp_sample_idx_list:
+					exp_seqpos_data.append(exp_data[ sample_idx ][ exp_seqpos ])
+				exp_seqpos_data = np.array(exp_seqpos_data)
+
+				ax.plot( pred_seqpos_data, exp_seqpos_data, marker='x', markersize=4, linestyle=' ', label=exp_fname)
+				ax.set_xlim(0,2.5)
+				ax.set_ylim(0,2.5)
+				ax.plot( plt.xlim(), plt.ylim(), color='black')
+				
+				if pred_seqpos == 5: title = "Seqpos 5'-A"
+				elif pred_seqpos == 13: title = "Seqpos 3'-A"
+				else:	title = 'Seqpos %s' % pred_seqpos
+				ax.set_title( title, fontsize=16, weight='bold' )
+				ax.set_xlabel('Prediction (seqpos %s)' % str(pred_seqpos), fontsize=12)
+				ax.set_ylabel('Experimental (seqpos %s)' % str(exp_seqpos), fontsize=12)
+				legend = ax.legend(numpoints=1)
+
+				plt.subplots_adjust(hspace=0.35, wspace=0.35)
+
+
+
+
+	# save as pdf and close
+	pp.savefig()
+	pp.close()
+
+	# open pdf
+	open_figure(fullpdfname)
+
+
