@@ -60,6 +60,7 @@ SWA_DAGMAN_TOOLS=ROSETTA+'/tools/SWA_RNA_python/SWA_dagman_python/'
 # get extra_flags_benchmark
 VDW_rep_screen_info_flag_found = False
 cycles_flag_found = False
+nstruct_flag_found = False
 if len (args.extra_flags) > 0:
     if exists( args.extra_flags ):
         extra_flags_benchmark = open( args.extra_flags ).readlines()
@@ -71,7 +72,8 @@ if len (args.extra_flags) > 0:
             if ( '-cycles' in flag ):
                 cycles_flag_found = True
                 continue
-
+            if ( '-nstruct' in flag ):
+                nstruct_flag_found = True
     else:
         extra_flags_benchmark = []
         print 'Did not find ', args.extra_flags, ' so not using any extra flags for the benchmark'
@@ -403,7 +405,8 @@ for name in names:
         fid.write( '-fasta %s.fasta\n' % name )
         if not cycles_flag_found:
             fid.write( '-cycles 200\n' )
-        fid.write( '-nstruct 20\n' )
+        if not nstruct_flag_found:
+            fid.write( '-nstruct 20\n' )
         #fid.write( '-intermolecular_frequency 0.0\n' )
         if not args.save_times_off:
             fid.write( '-save_times\n' )
@@ -439,7 +442,7 @@ for name in names:
         CWD = getcwd()
         chdir( name )
 
-        rosetta_submit_cmd = 'rosetta_submit.py README_SWM SWM %d %d' % (njobs, args.nhours ) 
+        rosetta_submit_cmd = 'rosetta_submit.py README_SWM SWM %d %d' % (njobs, args.nhours )
         if args.save_logs:
             rosetta_submit_cmd += ' -save_logs'
         system( rosetta_submit_cmd )
