@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-
 import string
 import argparse
 from os.path import exists,basename,dirname,expandvars
@@ -95,6 +94,8 @@ bps = ['au','ua','gc','cg','ug','gu']
 info_file = args.info_file
 assert( len( info_file ) > 0 )
 assert( '.txt' in info_file )
+if not exists( info_file ): info_file = dirname(argv[ 0 ]) + "/../../../input_files/" + info_file
+print info_file
 assert( exists( info_file ) )
 
 
@@ -297,8 +298,9 @@ for name in names:
 
 # write qsubMINIs, READMEs and SUBMITs
 qsub_file = 'qsubMINI'
-hostname = subprocess.check_output( 'hostname' )
-if hostname.find( 'stampede' ) > 0: qsub_file = 'qsubMPI'
+if "check_output" in dir( subprocess ): # python versions. ugh.
+    hostname = subprocess.check_output( 'hostname' )
+    if hostname.find( 'stampede' ) > 0: qsub_file = 'qsubMPI'
 fid_qsub = open( qsub_file, 'w' )
 for name in names:
 
