@@ -29,14 +29,18 @@ parser.add_argument('--extra_min_res_off', action='store_true', help='Additional
 parser.add_argument('--save_times_off', action='store_true', help='Additional flag for turning save_times flag off.')
 parser.add_argument('--path_to_rosetta', default='', help='Path to working copy of rosetta.')
 parser.add_argument('-v', '--verbose', help="increase output verbosity", action="store_true")
+parser.add_argument('-motif_mode_off', help="temporary hack for turning off hardcoded '-motif_mode' flag", action="store_true")
+parser.add_argument('--save_logs', help="save .out and .err logs for each job.", action="store_true")
 args = parser.parse_args()
 
 #####################################################################################################################
+motif_mode_off = ( args.motif_mode_off or args.swa )
+
 if args.swa and args.njobs == 10:
-    # set default njobs to 150 for SWA jobs 
+    # set default njobs to 150 for SWA jobs
     njobs = 150
 else:
-    njobs = args.njobs 
+    njobs = args.njobs
 
 
 # get path to rosetta, required for now
@@ -55,7 +59,8 @@ SWA_DAGMAN_TOOLS=ROSETTA+'/tools/SWA_RNA_python/SWA_dagman_python/'
 
 # get extra_flags_benchmark
 VDW_rep_screen_info_flag_found = False
-
+cycles_flag_found = False
+nstruct_flag_found = False
 if len (args.extra_flags) > 0:
     if exists( args.extra_flags ):
         extra_flags_benchmark = open( args.extra_flags ).readlines()
@@ -63,9 +68,14 @@ if len (args.extra_flags) > 0:
         for flag in extra_flags_benchmark:
             if ( '-VDW_rep_screen_info' in flag ):
                 VDW_rep_screen_info_flag_found = True
-
+                continue
+            if ( '-cycles' in flag ):
+                cycles_flag_found = True
+                continue
+            if ( '-nstruct' in flag ):
+                nstruct_flag_found = True
     else:
-        extra_flags_benchmark = None
+        extra_flags_benchmark = []
         print 'Did not find ', args.extra_flags, ' so not using any extra flags for the benchmark'
         assert ( args.extra_flags == default_extra_flags_benchmark )
 
@@ -224,7 +234,8 @@ for name in names:
         if ( ( prev_moving and not next_moving and not right_before_chainbreak ) or \
              ( next_moving and not prev_moving and not right_after_chainbreak ) ):
             extra_min_res[ name ].append( m )
-    if not '-motif_mode\n' in extra_flags_benchmark: extra_flags_benchmark.append( '-motif_mode\n' )
+    if not '-motif_mode\n' in extra_flags_benchmark and not motif_mode_off:
+        extra_flags_benchmark.append( '-motif_mode\n' )
 
     # create fasta
     fasta[ name ] = '%s/%s.fasta' % (inpath,name)
@@ -232,9 +243,9 @@ for name in names:
         fid = open( fasta[ name ], 'w' )
         assert( len( sequences ) == len( working_res_blocks ) )
         ### splitting up sequence in fasta may cause errors in SWA runs
-        #for n in range( len( sequences ) ): fid.write( '>%s %s\n%s\n' % (name,working_res_blocks[n],sequences[n]) )
+        for n in range( len( sequences ) ): fid.write( '>%s %s\n%s\n' % (name,working_res_blocks[n],sequences[n]) )
         #fid.write( popen( 'pdb2fasta.py %s' % (  working_native[ name ] ) ).read() )
-        fid.write( '>%s %s\n%s\n' % ( name,string.join(working_res_blocks,' '),string.join(sequences,'') ) )
+        #fid.write( '>%s %s\n%s\n' % ( name,string.join(working_res_blocks,' '),string.join(sequences,'') ) )
         fid.close()
 
 
@@ -335,21 +346,21 @@ for name in names:
 
         # extra flags for whole benchmark
         weights_file = ''
-        if extra_flags_benchmark:
-            for flag in extra_flags_benchmark:
-                if ( '#' in flag ): continue
-                flag = flag.replace('true','True').replace('false','False')
-                if ( '-analytic_etable_evaluation' in flag ): continue ### SWM Specific
-                if ( '-score:weights' in flag ):
-                    flag = flag.replace( '-score:weights', '-force_field_file' )
-                    weights_file = string.split( flag )[1]
-                if ( '-score:rna_torsion_potential' in flag ):
-                    flag = flag.replace( '-score:rna_torsion_potential', '-rna_torsion_potential_folder' )
-                if ( '-VDW_rep_screen_info True' in flag ):
-                    flag = flag.replace( 'True', VDW_rep_screen_info[ name ] ) #-VDW_rep_screen_info 1zih_RNA.pdb
-                    flag = flag + ' -apply_VDW_rep_delete_matching_res False'
-                flag = ' '+flag.replace( '\n', '' )
-                fid.write( flag )
+        for flag in extra_flags_benchmark:
+            if ( '#' in flag ): continue
+            flag = flag.replace('true','True').replace('false','False')
+            if ( '-analytic_etable_evaluation' in flag ): continue ### SWM Specific
+            if ( '-motif_mode' in flag ): continue ### SWM Specific
+            if ( '-score:weights' in flag ):
+                flag = flag.replace( '-score:weights', '-force_field_file' )
+                weights_file = string.split( flag )[1]
+            if ( '-score:rna_torsion_potential' in flag ):
+                flag = flag.replace( '-score:rna_torsion_potential', '-rna_torsion_potential_folder' )
+            if ( '-VDW_rep_screen_info True' in flag ):
+                flag = flag.replace( 'True', VDW_rep_screen_info[ name ] ) #-VDW_rep_screen_info 1zih_RNA.pdb
+                flag = flag + ' -apply_VDW_rep_delete_matching_res False'
+            flag = ' '+flag.replace( '\n', '' )
+            fid.write( flag )
         if len( weights_file ) > 0:
             if not exists( weights_file ):
                 weights_file = ROSETTA_DB+'/scoring/weights/'+weights_file
@@ -388,12 +399,14 @@ for name in names:
             fid.write( '-terminal_res %s  \n' % make_tag_with_conventional_numbering( terminal_res[ name ], resnums[ name ], chains[ name ] ) )
         if len( extra_min_res[ name ] ) > 0 and not args.extra_min_res_off: ### Turn extra_min_res off for SWM when comparing to SWA
             fid.write( '-extra_min_res %s \n' % make_tag_with_conventional_numbering( extra_min_res[ name ], resnums[ name ], chains[ name ] ) )
-        if ( len( input_pdbs[ name ] ) == 0 ):
-            fid.write( '-superimpose_over_all\n' ) # RMSD over everything -- better test since helices are usually native
+        #if ( len( input_pdbs[ name ] ) == 0 ):
+        #    fid.write( '-superimpose_over_all\n' ) # RMSD over everything -- better test since helices are usually native
         fid.write( '-fasta %s.fasta\n' % name )
-        fid.write( '-cycles 200\n' )
-        fid.write( '-nstruct 20\n' )
-        fid.write( '-intermolecular_frequency 0.0\n' )
+        if not cycles_flag_found:
+            fid.write( '-cycles 200\n' )
+        if not nstruct_flag_found:
+            fid.write( '-nstruct 20\n' )
+        #fid.write( '-intermolecular_frequency 0.0\n' )
         if not args.save_times_off:
             fid.write( '-save_times\n' )
 
@@ -407,15 +420,14 @@ for name in names:
 
         # extra flags for whole benchmark
         weights_file = ''
-        if extra_flags_benchmark:
-            for flag in extra_flags_benchmark:
-                if ( '#' in flag ): continue
-                flag = flag.replace('True','true').replace('False','false')
-                if ( '-single_stranded_loop_mode' in flag ): continue ### SWA Specific
-                if ( '-score:weights' in flag ): weights_file = string.split( flag )[1]
-                if ( '-VDW_rep_screen_info true' in flag ):
-                    flag = flag.replace( 'true', basename( VDW_rep_screen_info[ name ] ) )#-VDW_rep_screen_info 1zih_RNA.pdb
-                fid.write( flag )
+        for flag in extra_flags_benchmark:
+            if ( '#' in flag ): continue
+            flag = flag.replace('True','true').replace('False','false')
+            if ( '-single_stranded_loop_mode' in flag ): continue ### SWA Specific
+            if ( '-score:weights' in flag ): weights_file = string.split( flag )[1]
+            if ( '-VDW_rep_screen_info true' in flag ):
+                flag = flag.replace( 'true', basename( VDW_rep_screen_info[ name ] ) )#-VDW_rep_screen_info 1zih_RNA.pdb
+            fid.write( flag )
 
         if len( weights_file ) > 0:
             if not exists( weights_file ):
@@ -429,7 +441,10 @@ for name in names:
         CWD = getcwd()
         chdir( name )
 
-        system( 'rosetta_submit.py README_SWM SWM %d %d -save_logs' % (njobs, args.nhours ) )
+        rosetta_submit_cmd = 'rosetta_submit.py README_SWM SWM %d %d' % (njobs, args.nhours )
+        if args.save_logs:
+            rosetta_submit_cmd += ' -save_logs'
+        system( rosetta_submit_cmd )
 
         chdir( CWD )
 
