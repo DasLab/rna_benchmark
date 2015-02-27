@@ -99,7 +99,10 @@ def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], targ
 			ax.set_xlim( 0, 16 )
 
 			# set title and axes labels, adjust axis properties
-			ax.set_title( get_title(target), fontsize='medium', weight='bold' )
+			title_fontsize = 'medium'
+			if nplots > 20:
+				title_fontsize = 6
+			ax.set_title( get_title(target), fontsize=title_fontsize, weight='bold' )
 			ax.set_ylabel( string.join(yvars, ', '), fontsize=6 )
 			ax.set_xlabel( string.join(xvars, ', '), fontsize=6 )
 			for ticklabel in ax.yaxis.get_ticklabels()+ax.xaxis.get_ticklabels():
