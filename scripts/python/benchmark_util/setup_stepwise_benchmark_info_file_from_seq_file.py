@@ -17,6 +17,8 @@ import subprocess
 parser = argparse.ArgumentParser(description='Setup motif info text files to be read by setup_stepwise_benchmark.py')
 parser.add_argument('seq_file', help='text file with names and sequences, in same directory as input_files/ (e.g., "input_files/favorites.loops")',default=None )
 parser.add_argument('-native_template', help='initial native pdb for threading sequence and creating unique native pdbs', default=None)
+parser.add_argument('-secstruct', help='secondary structure if known', default=None)
+parser.add_argument('-common_name', help='common name in targets', default=' ')
 parser.add_argument('--overwrite', help="overwrite existing info file", action="store_true")	
 parser.add_argument('-v', '--verbose', help="increase output verbosity", action="store_true")	
 args = parser.parse_args()
@@ -34,6 +36,7 @@ input_res = {}
 extra_flags = {}
 fasta = {}
 init_sequence = {}
+init_secstruct = {}
 
 
 # make sure that seq_file is specified correctly and exists
@@ -65,7 +68,8 @@ for seq_file_line in open( seq_file ).readlines():
     seq_file_line = seq_file_line.split('#')[0] # remove comments
 
     cols = string.split( seq_file_line.replace( '\n','' ) )
-    assert( len( cols ) == 2 )
+    
+    assert( len( cols ) < 4 )
 
     name = cols[0]
     assert( name not in names )
@@ -73,9 +77,15 @@ for seq_file_line in open( seq_file ).readlines():
     names.append( name )
     init_sequence[ name ] = cols[1]
 
+    if len(cols) > 2:
+    	init_secstruct[ name ] = cols[2]
+    else:
+    	init_secstruct[ name ] = None
+
     if args.verbose:
     	print name
     	print init_sequence[ name ]
+    	print init_secstruct[ name ]
     	print 
 
 # check that each dictionary is the same size
@@ -99,20 +109,27 @@ for name in names:
 
 	# hardcoding sequence reading for tandemGA
 	## get start stop from init_native??
-	start1, stop1 = 31, 38
-	start2, stop2 = 45, 52
-	sliced_sequences = [ init_sequence[ name ][start1:stop1+1], init_sequence[ name ][start2:stop2+1] ]
-	sequence[ name ] = string.join( sliced_sequences , ',').lower()
+	#start1, stop1 = 31, 38
+	#start2, stop2 = 45, 52
+	#sliced_sequences = [ init_sequence[ name ][start1:stop1+1], init_sequence[ name ][start2:stop2+1] ]
+	#sequence[ name ] = string.join( sliced_sequences , '').lower()
+	sequence[ name ] = init_sequence[ name ].lower()
 
 	# hardcoding secstruct for tandemGA
-	secstruct[ name ] = '(((..(((,)))..)))'
+	#secstruct[ name ] = '(((..((()))..)))'
+	if init_secstruct[ name ]:
+		secstruct[ name ] = init_secstruct[ name ]
+	elif args.secstruct:
+		secstruct[ name ] = args.secstruct
+	else:
+		secstruct[ name ] = string.join(['.' for nt in sequence[ name ] ], '')
+	assert( len(secstruct[ name ]) == len(sequence[ name ]) )
 
 	# get native using rna_thread
 	native_template = args.native_template
-	native[ name ] = basename( native_template.replace( '.pdb', '_%s.pdb' % name ) )
+	native[ name ] = basename( native_template.replace( '.pdb', '_%s.pdb' % name.replace(args.common_name,'') ) )
 	if not exists( native[ name ] ):
 		rna_thread_cmdline = ['rna_thread', '-s', native_template, '-seq', sequence[ name ].replace(',','') , '-o', native[ name ] ] 
-		#print 'running: ', string.join(rna_thread_cmdline, ' ')
 		out, err = subprocess.Popen( rna_thread_cmdline, stdout=subprocess.PIPE, stderr=subprocess.PIPE ).communicate()
 
 	# get working res
