@@ -72,7 +72,7 @@ if len (args.extra_flags) > 0:
                 continue
 
     else:
-        extra_flags_benchmark = None
+        extra_flags_benchmark = []
         print 'Did not find ', args.extra_flags, ' so not using any extra flags for the benchmark'
         assert ( args.extra_flags == default_extra_flags_benchmark )
 
@@ -343,21 +343,21 @@ for name in names:
 
         # extra flags for whole benchmark
         weights_file = ''
-        if extra_flags_benchmark:
-            for flag in extra_flags_benchmark:
-                if ( '#' in flag ): continue
-                flag = flag.replace('true','True').replace('false','False')
-                if ( '-analytic_etable_evaluation' in flag ): continue ### SWM Specific
-                if ( '-score:weights' in flag ):
-                    flag = flag.replace( '-score:weights', '-force_field_file' )
-                    weights_file = string.split( flag )[1]
-                if ( '-score:rna_torsion_potential' in flag ):
-                    flag = flag.replace( '-score:rna_torsion_potential', '-rna_torsion_potential_folder' )
-                if ( '-VDW_rep_screen_info True' in flag ):
-                    flag = flag.replace( 'True', VDW_rep_screen_info[ name ] ) #-VDW_rep_screen_info 1zih_RNA.pdb
-                    flag = flag + ' -apply_VDW_rep_delete_matching_res False'
-                flag = ' '+flag.replace( '\n', '' )
-                fid.write( flag )
+        for flag in extra_flags_benchmark:
+            if ( '#' in flag ): continue
+            flag = flag.replace('true','True').replace('false','False')
+            if ( '-analytic_etable_evaluation' in flag ): continue ### SWM Specific
+            if ( '-motif_mode' in flag ): continue ### SWM Specific
+            if ( '-score:weights' in flag ):
+                flag = flag.replace( '-score:weights', '-force_field_file' )
+                weights_file = string.split( flag )[1]
+            if ( '-score:rna_torsion_potential' in flag ):
+                flag = flag.replace( '-score:rna_torsion_potential', '-rna_torsion_potential_folder' )
+            if ( '-VDW_rep_screen_info True' in flag ):
+                flag = flag.replace( 'True', VDW_rep_screen_info[ name ] ) #-VDW_rep_screen_info 1zih_RNA.pdb
+                flag = flag + ' -apply_VDW_rep_delete_matching_res False'
+            flag = ' '+flag.replace( '\n', '' )
+            fid.write( flag )
         if len( weights_file ) > 0:
             if not exists( weights_file ):
                 weights_file = ROSETTA_DB+'/scoring/weights/'+weights_file
@@ -416,15 +416,14 @@ for name in names:
 
         # extra flags for whole benchmark
         weights_file = ''
-        if extra_flags_benchmark:
-            for flag in extra_flags_benchmark:
-                if ( '#' in flag ): continue
-                flag = flag.replace('True','true').replace('False','false')
-                if ( '-single_stranded_loop_mode' in flag ): continue ### SWA Specific
-                if ( '-score:weights' in flag ): weights_file = string.split( flag )[1]
-                if ( '-VDW_rep_screen_info true' in flag ):
-                    flag = flag.replace( 'true', basename( VDW_rep_screen_info[ name ] ) )#-VDW_rep_screen_info 1zih_RNA.pdb
-                fid.write( flag )
+        for flag in extra_flags_benchmark:
+            if ( '#' in flag ): continue
+            flag = flag.replace('True','true').replace('False','false')
+            if ( '-single_stranded_loop_mode' in flag ): continue ### SWA Specific
+            if ( '-score:weights' in flag ): weights_file = string.split( flag )[1]
+            if ( '-VDW_rep_screen_info true' in flag ):
+                flag = flag.replace( 'true', basename( VDW_rep_screen_info[ name ] ) )#-VDW_rep_screen_info 1zih_RNA.pdb
+            fid.write( flag )
 
         if len( weights_file ) > 0:
             if not exists( weights_file ):
