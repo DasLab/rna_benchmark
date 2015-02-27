@@ -1,0 +1,14 @@
+#Get path to stepwise_benchmark
+DIR="$( cd "$( dirname $0 )" && pwd )"
+while [ "$( basename $DIR )" != "stepwise_benchmark" ]; do
+	DIR=$( basename $( dirname $DIR ) )
+done
+export STEPWISE_BENCHMARK=$DIR
+
+#Runs the commands
+python $STEPWISE_BENCHMARK/sym_link.py
+
+#Update paths
+export PATH=$PATH:$STEPWISE_BENCHMARK/bin/
+export PYTHONPATH=$PYTHONPATH:$STEPWISE_BENCHMARK/bin/
+
