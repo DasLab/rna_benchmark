@@ -195,8 +195,11 @@ def get_figure_dimensions( noutfiles ):
 		nrows = nplots
 	elif nplots <= 12: 
 		nrows = 4
-	else:  		      
+	elif nplots <= 20:
 		nrows = 5
+	else:
+		nrows = 6
+
 	ncols = np.ceil( nplots / float( nrows ) )
 	return ( nplots, nrows, ncols ) 
 
@@ -222,11 +225,16 @@ def finalize_figure( fig, nplots, nrows, ncols ):
 	
 	# get date printed to figure
 	plt.figtext(0.95, 0.02, get_date(), horizontalalignment='right')
-	
+
+
 	# setup global legend based on inpaths
+	legend_size = 10
+	if nplots > 20:
+		legend_size = 6
 	plot_idx = nplots - ( ncols - 1 )
 	ax = fig.add_subplot( nrows, ncols, plot_idx)
-	legend = ax.legend(bbox_to_anchor=(0., .0, 1., -.225), loc=9, numpoints=1, prop={'size':10})
+	legend = ax.legend(bbox_to_anchor=(0., .0, 1., -.225), loc=9, numpoints=1, prop={'size':legend_size})
+	#legend = ax.legend(bbox_to_anchor=(0.5,-.225), loc=9, numpoints=1, prop={'size':10})
 	return
 
 ###########################################################

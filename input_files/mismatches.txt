@@ -1,0 +1,3344 @@
+Name:          mismatches-001-AUACU-GGAAU
+Sequence:      auacu,ggaau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUACU_GGAAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-002-AUACU-GGCAU
+Sequence:      auacu,ggcau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUACU_GGCAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-003-AUUCU-GGUAU
+Sequence:      auucu,gguau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUUCU_GGUAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-004-AUUCU-GGCAU
+Sequence:      auucu,ggcau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUUCU_GGCAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-005-AUGCU-GGAAU
+Sequence:      augcu,ggaau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUGCU_GGAAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-006-AUGCU-GGGAU
+Sequence:      augcu,gggau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUGCU_GGGAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-007-AUCCU-GGAAU
+Sequence:      auccu,ggaau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUCCU_GGAAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-008-AUCCU-GGUAU
+Sequence:      auccu,gguau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUCCU_GGUAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-009-AUCCU-GGCAU
+Sequence:      auccu,ggcau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUCCU_GGCAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-010-AUACU-AGAAU
+Sequence:      auacu,agaau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUACU_AGAAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-011-AUACU-AGCAU
+Sequence:      auacu,agcau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUACU_AGCAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-012-AUUCU-AGUAU
+Sequence:      auucu,aguau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUUCU_AGUAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-013-AUUCU-AGCAU
+Sequence:      auucu,agcau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUUCU_AGCAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-014-AUGCU-AGAAU
+Sequence:      augcu,agaau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUGCU_AGAAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-015-AUGCU-AGGAU
+Sequence:      augcu,aggau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUGCU_AGGAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-016-AUCCU-AGAAU
+Sequence:      auccu,agaau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUCCU_AGAAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-017-AUCCU-AGUAU
+Sequence:      auccu,aguau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUCCU_AGUAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-018-AUCCU-AGCAU
+Sequence:      auccu,agcau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUCCU_AGCAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-019-AUAUA-UAAAU
+Sequence:      auaua,uaaau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUAUA_UAAAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-020-AUAUA-UAGAU
+Sequence:      auaua,uagau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUAUA_UAGAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-021-AUAUA-UACAU
+Sequence:      auaua,uacau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUAUA_UACAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-022-AUUUA-UAUAU
+Sequence:      auuua,uauau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUUUA_UAUAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-023-AUUUA-UACAU
+Sequence:      auuua,uacau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUUUA_UACAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-024-AUGUA-UAAAU
+Sequence:      augua,uaaau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUGUA_UAAAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-025-AUGUA-UAGAU
+Sequence:      augua,uagau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUGUA_UAGAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-026-AUCUA-UAAAU
+Sequence:      aucua,uaaau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUCUA_UAAAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-027-AUCUA-UAUAU
+Sequence:      aucua,uauau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUCUA_UAUAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-028-AUCUA-UACAU
+Sequence:      aucua,uacau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUCUA_UACAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-029-GAAUU-AAAUC
+Sequence:      gaauu,aaauc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAAUU_AAAUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-030-GAAUU-AAGUC
+Sequence:      gaauu,aaguc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAAUU_AAGUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-031-GAAUU-AACUC
+Sequence:      gaauu,aacuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAAUU_AACUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-032-GAUUU-AAUUC
+Sequence:      gauuu,aauuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAUUU_AAUUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-033-GAUUU-AACUC
+Sequence:      gauuu,aacuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAUUU_AACUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-034-GAGUU-AAAUC
+Sequence:      gaguu,aaauc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAGUU_AAAUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-035-GAGUU-AAGUC
+Sequence:      gaguu,aaguc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAGUU_AAGUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-036-GACUU-AAAUC
+Sequence:      gacuu,aaauc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GACUU_AAAUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-037-GACUU-AAUUC
+Sequence:      gacuu,aauuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GACUU_AAUUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-038-GACUU-AACUC
+Sequence:      gacuu,aacuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GACUU_AACUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-039-AUAAG-CUAAU
+Sequence:      auaag,cuaau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUAAG_CUAAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-040-AUAAG-CUGAU
+Sequence:      auaag,cugau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUAAG_CUGAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-041-AUAAG-CUCAU
+Sequence:      auaag,cucau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUAAG_CUCAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-042-AUUAG-CUUAU
+Sequence:      auuag,cuuau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUUAG_CUUAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-043-AUUAG-CUCAU
+Sequence:      auuag,cucau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUUAG_CUCAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-044-AUGAG-CUAAU
+Sequence:      augag,cuaau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUGAG_CUAAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-045-AUGAG-CUGAU
+Sequence:      augag,cugau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUGAG_CUGAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-046-AUCAG-CUAAU
+Sequence:      aucag,cuaau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUCAG_CUAAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-047-AUCAG-CUUAU
+Sequence:      aucag,cuuau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUCAG_CUUAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-048-AUCAG-CUCAU
+Sequence:      aucag,cucau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUCAG_CUCAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-049-CAAUG-CAGUG
+Sequence:      caaug,cagug
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CAAUG_CAGUG.pdb
+Extra_flags:   -
+
+Name:          mismatches-050-CAAUG-CACUG
+Sequence:      caaug,cacug
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CAAUG_CACUG.pdb
+Extra_flags:   -
+
+Name:          mismatches-051-CAUUG-CAUUG
+Sequence:      cauug,cauug
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CAUUG_CAUUG.pdb
+Extra_flags:   -
+
+Name:          mismatches-052-CAUUG-CACUG
+Sequence:      cauug,cacug
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CAUUG_CACUG.pdb
+Extra_flags:   -
+
+Name:          mismatches-053-CAGUG-CAAUG
+Sequence:      cagug,caaug
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CAGUG_CAAUG.pdb
+Extra_flags:   -
+
+Name:          mismatches-054-CAGUG-CAGUG
+Sequence:      cagug,cagug
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CAGUG_CAGUG.pdb
+Extra_flags:   -
+
+Name:          mismatches-055-CACUG-CAAUG
+Sequence:      cacug,caaug
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CACUG_CAAUG.pdb
+Extra_flags:   -
+
+Name:          mismatches-056-CACUG-CAUUG
+Sequence:      cacug,cauug
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CACUG_CAUUG.pdb
+Extra_flags:   -
+
+Name:          mismatches-057-CACUG-CACUG
+Sequence:      cacug,cacug
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CACUG_CACUG.pdb
+Extra_flags:   -
+
+Name:          mismatches-058-UGACC-GGACA
+Sequence:      ugacc,ggaca
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UGACC_GGACA.pdb
+Extra_flags:   -
+
+Name:          mismatches-059-UGACC-GGGCA
+Sequence:      ugacc,gggca
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UGACC_GGGCA.pdb
+Extra_flags:   -
+
+Name:          mismatches-060-UGACC-GGCCA
+Sequence:      ugacc,ggcca
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UGACC_GGCCA.pdb
+Extra_flags:   -
+
+Name:          mismatches-061-UGUCC-GGUCA
+Sequence:      ugucc,gguca
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UGUCC_GGUCA.pdb
+Extra_flags:   -
+
+Name:          mismatches-062-UGUCC-GGCCA
+Sequence:      ugucc,ggcca
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UGUCC_GGCCA.pdb
+Extra_flags:   -
+
+Name:          mismatches-063-UGGCC-GGGCA
+Sequence:      uggcc,gggca
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UGGCC_GGGCA.pdb
+Extra_flags:   -
+
+Name:          mismatches-064-UGCCC-GGACA
+Sequence:      ugccc,ggaca
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UGCCC_GGACA.pdb
+Extra_flags:   -
+
+Name:          mismatches-065-UGCCC-GGUCA
+Sequence:      ugccc,gguca
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UGCCC_GGUCA.pdb
+Extra_flags:   -
+
+Name:          mismatches-066-UGCCC-GGCCA
+Sequence:      ugccc,ggcca
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UGCCC_GGCCA.pdb
+Extra_flags:   -
+
+Name:          mismatches-067-GCAUU-AAAGC
+Sequence:      gcauu,aaagc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GCAUU_AAAGC.pdb
+Extra_flags:   -
+
+Name:          mismatches-068-GCAUU-AAGGC
+Sequence:      gcauu,aaggc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GCAUU_AAGGC.pdb
+Extra_flags:   -
+
+Name:          mismatches-069-GCAUU-AACGC
+Sequence:      gcauu,aacgc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GCAUU_AACGC.pdb
+Extra_flags:   -
+
+Name:          mismatches-070-GCUUU-AAUGC
+Sequence:      gcuuu,aaugc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GCUUU_AAUGC.pdb
+Extra_flags:   -
+
+Name:          mismatches-071-GCUUU-AACGC
+Sequence:      gcuuu,aacgc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GCUUU_AACGC.pdb
+Extra_flags:   -
+
+Name:          mismatches-072-GCGUU-AAAGC
+Sequence:      gcguu,aaagc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GCGUU_AAAGC.pdb
+Extra_flags:   -
+
+Name:          mismatches-073-GCGUU-AAGGC
+Sequence:      gcguu,aaggc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GCGUU_AAGGC.pdb
+Extra_flags:   -
+
+Name:          mismatches-074-GCCUU-AAAGC
+Sequence:      gccuu,aaagc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GCCUU_AAAGC.pdb
+Extra_flags:   -
+
+Name:          mismatches-075-GCCUU-AAUGC
+Sequence:      gccuu,aaugc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GCCUU_AAUGC.pdb
+Extra_flags:   -
+
+Name:          mismatches-076-GCCUU-AACGC
+Sequence:      gccuu,aacgc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GCCUU_AACGC.pdb
+Extra_flags:   -
+
+Name:          mismatches-077-CGACA-UGACG
+Sequence:      cgaca,ugacg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CGACA_UGACG.pdb
+Extra_flags:   -
+
+Name:          mismatches-078-CGACA-UGGCG
+Sequence:      cgaca,uggcg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CGACA_UGGCG.pdb
+Extra_flags:   -
+
+Name:          mismatches-079-CGACA-UGCCG
+Sequence:      cgaca,ugccg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CGACA_UGCCG.pdb
+Extra_flags:   -
+
+Name:          mismatches-080-CGUCA-UGUCG
+Sequence:      cguca,ugucg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CGUCA_UGUCG.pdb
+Extra_flags:   -
+
+Name:          mismatches-081-CGUCA-UGCCG
+Sequence:      cguca,ugccg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CGUCA_UGCCG.pdb
+Extra_flags:   -
+
+Name:          mismatches-082-CGGCA-UGACG
+Sequence:      cggca,ugacg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CGGCA_UGACG.pdb
+Extra_flags:   -
+
+Name:          mismatches-083-CGGCA-UGGCG
+Sequence:      cggca,uggcg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CGGCA_UGGCG.pdb
+Extra_flags:   -
+
+Name:          mismatches-084-CGCCA-UGACG
+Sequence:      cgcca,ugacg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CGCCA_UGACG.pdb
+Extra_flags:   -
+
+Name:          mismatches-085-CGCCA-UGUCG
+Sequence:      cgcca,ugucg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CGCCA_UGUCG.pdb
+Extra_flags:   -
+
+Name:          mismatches-086-CGCCA-UGCCG
+Sequence:      cgcca,ugccg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CGCCA_UGCCG.pdb
+Extra_flags:   -
+
+Name:          mismatches-087-CCAGC-GCAGG
+Sequence:      ccagc,gcagg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CCAGC_GCAGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-088-CCAGC-GCGGG
+Sequence:      ccagc,gcggg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CCAGC_GCGGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-089-CCAGC-GCCGG
+Sequence:      ccagc,gccgg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CCAGC_GCCGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-090-CCUGC-GCCGG
+Sequence:      ccugc,gccgg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CCUGC_GCCGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-091-CCGGC-GCAGG
+Sequence:      ccggc,gcagg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CCGGC_GCAGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-092-CCGGC-GCGGG
+Sequence:      ccggc,gcggg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CCGGC_GCGGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-093-CCCGC-GCAGG
+Sequence:      cccgc,gcagg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CCCGC_GCAGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-094-CCCGC-GCUGG
+Sequence:      cccgc,gcugg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CCCGC_GCUGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-095-CCCGC-GCCGG
+Sequence:      cccgc,gccgg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CCCGC_GCCGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-096-GCAGU-ACAGC
+Sequence:      gcagu,acagc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GCAGU_ACAGC.pdb
+Extra_flags:   -
+
+Name:          mismatches-097-GCAGU-ACGGC
+Sequence:      gcagu,acggc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GCAGU_ACGGC.pdb
+Extra_flags:   -
+
+Name:          mismatches-098-GCAGU-ACCGC
+Sequence:      gcagu,accgc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GCAGU_ACCGC.pdb
+Extra_flags:   -
+
+Name:          mismatches-099-GCUGU-ACUGC
+Sequence:      gcugu,acugc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GCUGU_ACUGC.pdb
+Extra_flags:   -
+
+Name:          mismatches-100-GCUGU-ACCGC
+Sequence:      gcugu,accgc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GCUGU_ACCGC.pdb
+Extra_flags:   -
+
+Name:          mismatches-101-GCGGU-ACAGC
+Sequence:      gcggu,acagc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GCGGU_ACAGC.pdb
+Extra_flags:   -
+
+Name:          mismatches-102-GCGGU-ACGGC
+Sequence:      gcggu,acggc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GCGGU_ACGGC.pdb
+Extra_flags:   -
+
+Name:          mismatches-103-GCCGU-ACAGC
+Sequence:      gccgu,acagc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GCCGU_ACAGC.pdb
+Extra_flags:   -
+
+Name:          mismatches-104-GCCGU-ACUGC
+Sequence:      gccgu,acugc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GCCGU_ACUGC.pdb
+Extra_flags:   -
+
+Name:          mismatches-105-GCCGU-ACCGC
+Sequence:      gccgu,accgc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GCCGU_ACCGC.pdb
+Extra_flags:   -
+
+Name:          mismatches-106-AAACG-CGAUU
+Sequence:      aaacg,cgauu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AAACG_CGAUU.pdb
+Extra_flags:   -
+
+Name:          mismatches-107-AAACG-CGCUU
+Sequence:      aaacg,cgcuu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AAACG_CGCUU.pdb
+Extra_flags:   -
+
+Name:          mismatches-108-AAUCG-CGUUU
+Sequence:      aaucg,cguuu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AAUCG_CGUUU.pdb
+Extra_flags:   -
+
+Name:          mismatches-109-AAUCG-CGCUU
+Sequence:      aaucg,cgcuu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AAUCG_CGCUU.pdb
+Extra_flags:   -
+
+Name:          mismatches-110-AAGCG-CGAUU
+Sequence:      aagcg,cgauu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AAGCG_CGAUU.pdb
+Extra_flags:   -
+
+Name:          mismatches-111-AAGCG-CGGUU
+Sequence:      aagcg,cgguu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AAGCG_CGGUU.pdb
+Extra_flags:   -
+
+Name:          mismatches-112-AACCG-CGAUU
+Sequence:      aaccg,cgauu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AACCG_CGAUU.pdb
+Extra_flags:   -
+
+Name:          mismatches-113-AACCG-CGUUU
+Sequence:      aaccg,cguuu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AACCG_CGUUU.pdb
+Extra_flags:   -
+
+Name:          mismatches-114-AACCG-CGCUU
+Sequence:      aaccg,cgcuu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AACCG_CGCUU.pdb
+Extra_flags:   -
+
+Name:          mismatches-115-GGAAG-CUACC
+Sequence:      ggaag,cuacc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GGAAG_CUACC.pdb
+Extra_flags:   -
+
+Name:          mismatches-116-GAAGA-UCAUC
+Sequence:      gaaga,ucauc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAAGA_UCAUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-117-AAAAU-AUAUU
+Sequence:      aaaau,auauu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AAAAU_AUAUU.pdb
+Extra_flags:   -
+
+Name:          mismatches-118-AGAUC-GAACU
+Sequence:      agauc,gaacu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGAUC_GAACU.pdb
+Extra_flags:   -
+
+Name:          mismatches-119-GAACC-GGAUC
+Sequence:      gaacc,ggauc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAACC_GGAUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-120-UCAUG-UGAGA
+Sequence:      ucaug,ugaga
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UCAUG_UGAGA.pdb
+Extra_flags:   -
+
+Name:          mismatches-121-GAAAG-CUAUC
+Sequence:      gaaag,cuauc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAAAG_CUAUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-122-AAAGA-UCAUU
+Sequence:      aaaga,ucauu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AAAGA_UCAUU.pdb
+Extra_flags:   -
+
+Name:          mismatches-123-AGAAU-AUACU
+Sequence:      agaau,auacu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGAAU_AUACU.pdb
+Extra_flags:   -
+
+Name:          mismatches-124-GAAUC-GAAUC
+Sequence:      gaauc,gaauc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAAUC_GAAUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-125-AUACC-GGAAU
+Sequence:      auacc,ggaau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUACC_GGAAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-126-UCACU-GGAGA
+Sequence:      ucacu,ggaga
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UCACU_GGAGA.pdb
+Extra_flags:   -
+
+Name:          mismatches-127-CCAUG-UGAGG
+Sequence:      ccaug,ugagg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CCAUG_UGAGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-128-CUAGG-CUAGG
+Sequence:      cuagg,cuagg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CUAGG_CUAGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-129-GAAAA-UUAUC
+Sequence:      gaaaa,uuauc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAAAA_UUAUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-130-AAAAG-CUAUU
+Sequence:      aaaag,cuauu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AAAAG_CUAUU.pdb
+Extra_flags:   -
+
+Name:          mismatches-131-AGAGA-UCACU
+Sequence:      agaga,ucacu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGAGA_UCACU.pdb
+Extra_flags:   -
+
+Name:          mismatches-132-GAAAU-AUAUC
+Sequence:      gaaau,auauc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAAAU_AUAUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-133-AUAUC-GAAAU
+Sequence:      auauc,gaaau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUAUC_GAAAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-134-UCACC-GGAGA
+Sequence:      ucacc,ggaga
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UCACC_GGAGA.pdb
+Extra_flags:   -
+
+Name:          mismatches-135-CCACU-GGAGG
+Sequence:      ccacu,ggagg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CCACU_GGAGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-136-CUAUG-UGAGG
+Sequence:      cuaug,ugagg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CUAUG_UGAGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-137-UGAGG-CUAUG
+Sequence:      ugagg,cuaug
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UGAGG_CUAUG.pdb
+Extra_flags:   -
+
+Name:          mismatches-138-AUAUG-UAAGU
+Sequence:      auaug,uaagu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUAUG_UAAGU.pdb
+Extra_flags:   -
+
+Name:          mismatches-139-GAAGA-UCGUC
+Sequence:      gaaga,ucguc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAAGA_UCGUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-140-AAAAU-AUGUU
+Sequence:      aaaau,auguu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AAAAU_AUGUU.pdb
+Extra_flags:   -
+
+Name:          mismatches-141-AGAUC-GAGCU
+Sequence:      agauc,gagcu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGAUC_GAGCU.pdb
+Extra_flags:   -
+
+Name:          mismatches-142-GAACC-GGGUC
+Sequence:      gaacc,ggguc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAACC_GGGUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-143-CCAGG-CUGGG
+Sequence:      ccagg,cuggg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CCAGG_CUGGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-144-GAAAG-CUGUC
+Sequence:      gaaag,cuguc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAAAG_CUGUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-145-AAAGA-UCGUU
+Sequence:      aaaga,ucguu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AAAGA_UCGUU.pdb
+Extra_flags:   -
+
+Name:          mismatches-146-AGAAU-AUGCU
+Sequence:      agaau,augcu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGAAU_AUGCU.pdb
+Extra_flags:   -
+
+Name:          mismatches-147-GAAUC-GAGUC
+Sequence:      gaauc,gaguc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAAUC_GAGUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-148-UCACU-GGGGA
+Sequence:      ucacu,gggga
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UCACU_GGGGA.pdb
+Extra_flags:   -
+
+Name:          mismatches-149-CUAGG-CUGGG
+Sequence:      cuagg,cuggg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CUAGG_CUGGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-150-GAAAA-UUGUC
+Sequence:      gaaaa,uuguc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAAAA_UUGUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-151-AAAAG-CUGUU
+Sequence:      aaaag,cuguu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AAAAG_CUGUU.pdb
+Extra_flags:   -
+
+Name:          mismatches-152-AGAGA-UCGCU
+Sequence:      agaga,ucgcu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGAGA_UCGCU.pdb
+Extra_flags:   -
+
+Name:          mismatches-153-GAAAU-AUGUC
+Sequence:      gaaau,auguc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAAAU_AUGUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-154-AUAUC-GAGAU
+Sequence:      auauc,gagau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUAUC_GAGAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-155-UCACC-GGGGA
+Sequence:      ucacc,gggga
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UCACC_GGGGA.pdb
+Extra_flags:   -
+
+Name:          mismatches-156-CCACU-GGGGG
+Sequence:      ccacu,ggggg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CCACU_GGGGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-157-CUAUG-UGGGG
+Sequence:      cuaug,ugggg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CUAUG_UGGGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-158-GGAAG-CUCCC
+Sequence:      ggaag,cuccc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GGAAG_CUCCC.pdb
+Extra_flags:   -
+
+Name:          mismatches-159-GAAGA-UCCUC
+Sequence:      gaaga,uccuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAAGA_UCCUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-160-AAAAU-AUCUU
+Sequence:      aaaau,aucuu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AAAAU_AUCUU.pdb
+Extra_flags:   -
+
+Name:          mismatches-161-AGAUC-GACCU
+Sequence:      agauc,gaccu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGAUC_GACCU.pdb
+Extra_flags:   -
+
+Name:          mismatches-162-GAACC-GGCUC
+Sequence:      gaacc,ggcuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAACC_GGCUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-163-UCAUG-UGCGA
+Sequence:      ucaug,ugcga
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UCAUG_UGCGA.pdb
+Extra_flags:   -
+
+Name:          mismatches-164-CCAGG-CUCGG
+Sequence:      ccagg,cucgg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CCAGG_CUCGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-165-GAAAG-CUCUC
+Sequence:      gaaag,cucuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAAAG_CUCUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-166-AAAGA-UCCUU
+Sequence:      aaaga,uccuu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AAAGA_UCCUU.pdb
+Extra_flags:   -
+
+Name:          mismatches-167-AGAAU-AUCCU
+Sequence:      agaau,auccu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGAAU_AUCCU.pdb
+Extra_flags:   -
+
+Name:          mismatches-168-GAAUC-GACUC
+Sequence:      gaauc,gacuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAAUC_GACUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-169-AUACC-GGCAU
+Sequence:      auacc,ggcau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUACC_GGCAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-170-UCACU-GGCGA
+Sequence:      ucacu,ggcga
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UCACU_GGCGA.pdb
+Extra_flags:   -
+
+Name:          mismatches-171-CCAUG-UGCGG
+Sequence:      ccaug,ugcgg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CCAUG_UGCGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-172-CUAGG-CUCGG
+Sequence:      cuagg,cucgg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CUAGG_CUCGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-173-GAAAA-UUCUC
+Sequence:      gaaaa,uucuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAAAA_UUCUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-174-AAAAG-CUCUU
+Sequence:      aaaag,cucuu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AAAAG_CUCUU.pdb
+Extra_flags:   -
+
+Name:          mismatches-175-AGAGA-UCCCU
+Sequence:      agaga,ucccu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGAGA_UCCCU.pdb
+Extra_flags:   -
+
+Name:          mismatches-176-GAAAU-AUCUC
+Sequence:      gaaau,aucuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAAAU_AUCUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-177-AUAUC-GACAU
+Sequence:      auauc,gacau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUAUC_GACAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-178-UCACC-GGCGA
+Sequence:      ucacc,ggcga
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UCACC_GGCGA.pdb
+Extra_flags:   -
+
+Name:          mismatches-179-CCACU-GGCGG
+Sequence:      ccacu,ggcgg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CCACU_GGCGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-180-CUAUG-UGCGG
+Sequence:      cuaug,ugcgg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CUAUG_UGCGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-181-GGUAG-CUUCC
+Sequence:      gguag,cuucc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GGUAG_CUUCC.pdb
+Extra_flags:   -
+
+Name:          mismatches-182-GAUGA-UCUUC
+Sequence:      gauga,ucuuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAUGA_UCUUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-183-AAUAU-AUUUU
+Sequence:      aauau,auuuu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AAUAU_AUUUU.pdb
+Extra_flags:   -
+
+Name:          mismatches-184-AGUUC-GAUCU
+Sequence:      aguuc,gaucu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGUUC_GAUCU.pdb
+Extra_flags:   -
+
+Name:          mismatches-185-GAUCC-GGUUC
+Sequence:      gaucc,gguuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAUCC_GGUUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-186-CCUGG-CUUGG
+Sequence:      ccugg,cuugg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CCUGG_CUUGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-187-GAUAG-CUUUC
+Sequence:      gauag,cuuuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAUAG_CUUUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-188-AAUGA-UCUUU
+Sequence:      aauga,ucuuu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AAUGA_UCUUU.pdb
+Extra_flags:   -
+
+Name:          mismatches-189-AGUAU-AUUCU
+Sequence:      aguau,auucu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGUAU_AUUCU.pdb
+Extra_flags:   -
+
+Name:          mismatches-190-GAUUC-GAUUC
+Sequence:      gauuc,gauuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAUUC_GAUUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-191-AUUCC-GGUAU
+Sequence:      auucc,gguau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUUCC_GGUAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-192-UCUCU-GGUGA
+Sequence:      ucucu,gguga
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UCUCU_GGUGA.pdb
+Extra_flags:   -
+
+Name:          mismatches-193-CUUGG-CUUGG
+Sequence:      cuugg,cuugg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CUUGG_CUUGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-194-GAUAA-UUUUC
+Sequence:      gauaa,uuuuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAUAA_UUUUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-195-AAUAG-CUUUU
+Sequence:      aauag,cuuuu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AAUAG_CUUUU.pdb
+Extra_flags:   -
+
+Name:          mismatches-196-AGUGA-UCUCU
+Sequence:      aguga,ucucu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGUGA_UCUCU.pdb
+Extra_flags:   -
+
+Name:          mismatches-197-GAUAU-AUUUC
+Sequence:      gauau,auuuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAUAU_AUUUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-198-AUUUC-GAUAU
+Sequence:      auuuc,gauau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUUUC_GAUAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-199-UCUCC-GGUGA
+Sequence:      ucucc,gguga
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UCUCC_GGUGA.pdb
+Extra_flags:   -
+
+Name:          mismatches-200-CCUCU-GGUGG
+Sequence:      ccucu,ggugg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CCUCU_GGUGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-201-CUUUG-UGUGG
+Sequence:      cuuug,ugugg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CUUUG_UGUGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-202-UGUGG-CUUUG
+Sequence:      ugugg,cuuug
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UGUGG_CUUUG.pdb
+Extra_flags:   -
+
+Name:          mismatches-203-GGUAG-CUCCC
+Sequence:      gguag,cuccc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GGUAG_CUCCC.pdb
+Extra_flags:   -
+
+Name:          mismatches-204-GAUGA-UCCUC
+Sequence:      gauga,uccuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAUGA_UCCUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-205-AAUAU-AUCUU
+Sequence:      aauau,aucuu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AAUAU_AUCUU.pdb
+Extra_flags:   -
+
+Name:          mismatches-206-AGUUC-GACCU
+Sequence:      aguuc,gaccu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGUUC_GACCU.pdb
+Extra_flags:   -
+
+Name:          mismatches-207-GAUCC-GGCUC
+Sequence:      gaucc,ggcuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAUCC_GGCUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-208-UCUUG-UGCGA
+Sequence:      ucuug,ugcga
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UCUUG_UGCGA.pdb
+Extra_flags:   -
+
+Name:          mismatches-209-CCUGG-CUCGG
+Sequence:      ccugg,cucgg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CCUGG_CUCGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-210-GAUAG-CUCUC
+Sequence:      gauag,cucuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAUAG_CUCUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-211-AAUGA-UCCUU
+Sequence:      aauga,uccuu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AAUGA_UCCUU.pdb
+Extra_flags:   -
+
+Name:          mismatches-212-AGUAU-AUCCU
+Sequence:      aguau,auccu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGUAU_AUCCU.pdb
+Extra_flags:   -
+
+Name:          mismatches-213-GAUUC-GACUC
+Sequence:      gauuc,gacuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAUUC_GACUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-214-AUUCC-GGCAU
+Sequence:      auucc,ggcau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUUCC_GGCAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-215-UCUCU-GGCGA
+Sequence:      ucucu,ggcga
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UCUCU_GGCGA.pdb
+Extra_flags:   -
+
+Name:          mismatches-216-CCUUG-UGCGG
+Sequence:      ccuug,ugcgg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CCUUG_UGCGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-217-CUUGG-CUCGG
+Sequence:      cuugg,cucgg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CUUGG_CUCGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-218-GAUAA-UUCUC
+Sequence:      gauaa,uucuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAUAA_UUCUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-219-AAUAG-CUCUU
+Sequence:      aauag,cucuu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AAUAG_CUCUU.pdb
+Extra_flags:   -
+
+Name:          mismatches-220-AGUGA-UCCCU
+Sequence:      aguga,ucccu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGUGA_UCCCU.pdb
+Extra_flags:   -
+
+Name:          mismatches-221-GAUAU-AUCUC
+Sequence:      gauau,aucuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAUAU_AUCUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-222-AUUUC-GACAU
+Sequence:      auuuc,gacau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUUUC_GACAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-223-UCUCC-GGCGA
+Sequence:      ucucc,ggcga
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UCUCC_GGCGA.pdb
+Extra_flags:   -
+
+Name:          mismatches-224-CCUCU-GGCGG
+Sequence:      ccucu,ggcgg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CCUCU_GGCGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-225-CUUUG-UGCGG
+Sequence:      cuuug,ugcgg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CUUUG_UGCGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-226-UGUGG-CUCUG
+Sequence:      ugugg,cucug
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UGUGG_CUCUG.pdb
+Extra_flags:   -
+
+Name:          mismatches-227-GAGGA-UCAUC
+Sequence:      gagga,ucauc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAGGA_UCAUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-228-AAGAU-AUAUU
+Sequence:      aagau,auauu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AAGAU_AUAUU.pdb
+Extra_flags:   -
+
+Name:          mismatches-229-AGGUC-GAACU
+Sequence:      agguc,gaacu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGGUC_GAACU.pdb
+Extra_flags:   -
+
+Name:          mismatches-230-GAGCC-GGAUC
+Sequence:      gagcc,ggauc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAGCC_GGAUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-231-UCGUG-UGAGA
+Sequence:      ucgug,ugaga
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UCGUG_UGAGA.pdb
+Extra_flags:   -
+
+Name:          mismatches-232-CCGGG-CUAGG
+Sequence:      ccggg,cuagg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CCGGG_CUAGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-233-GAGAG-CUAUC
+Sequence:      gagag,cuauc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAGAG_CUAUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-234-AAGGA-UCAUU
+Sequence:      aagga,ucauu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AAGGA_UCAUU.pdb
+Extra_flags:   -
+
+Name:          mismatches-235-AUGCC-GGAAU
+Sequence:      augcc,ggaau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUGCC_GGAAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-236-UCGCU-GGAGA
+Sequence:      ucgcu,ggaga
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UCGCU_GGAGA.pdb
+Extra_flags:   -
+
+Name:          mismatches-237-CCGUG-UGAGG
+Sequence:      ccgug,ugagg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CCGUG_UGAGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-238-CUGGG-CUAGG
+Sequence:      cuggg,cuagg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CUGGG_CUAGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-239-GAGAA-UUAUC
+Sequence:      gagaa,uuauc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAGAA_UUAUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-240-AAGAG-CUAUU
+Sequence:      aagag,cuauu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AAGAG_CUAUU.pdb
+Extra_flags:   -
+
+Name:          mismatches-241-AGGGA-UCACU
+Sequence:      aggga,ucacu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGGGA_UCACU.pdb
+Extra_flags:   -
+
+Name:          mismatches-242-GAGAU-AUAUC
+Sequence:      gagau,auauc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAGAU_AUAUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-243-AUGUC-GAAAU
+Sequence:      auguc,gaaau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUGUC_GAAAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-244-UCGCC-GGAGA
+Sequence:      ucgcc,ggaga
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UCGCC_GGAGA.pdb
+Extra_flags:   -
+
+Name:          mismatches-245-CCGCU-GGAGG
+Sequence:      ccgcu,ggagg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CCGCU_GGAGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-246-GAGGA-UCGUC
+Sequence:      gagga,ucguc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAGGA_UCGUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-247-AAGAU-AUGUU
+Sequence:      aagau,auguu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AAGAU_AUGUU.pdb
+Extra_flags:   -
+
+Name:          mismatches-248-AGGUC-GAGCU
+Sequence:      agguc,gagcu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGGUC_GAGCU.pdb
+Extra_flags:   -
+
+Name:          mismatches-249-GAGCC-GGGUC
+Sequence:      gagcc,ggguc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAGCC_GGGUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-250-UCGUG-UGGGA
+Sequence:      ucgug,uggga
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UCGUG_UGGGA.pdb
+Extra_flags:   -
+
+Name:          mismatches-251-CCGGG-CUGGG
+Sequence:      ccggg,cuggg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CCGGG_CUGGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-252-GAGAG-CUGUC
+Sequence:      gagag,cuguc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAGAG_CUGUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-253-AAGGA-UCGUU
+Sequence:      aagga,ucguu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AAGGA_UCGUU.pdb
+Extra_flags:   -
+
+Name:          mismatches-254-AGGAU-AUGCU
+Sequence:      aggau,augcu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGGAU_AUGCU.pdb
+Extra_flags:   -
+
+Name:          mismatches-255-GAGUC-GAGUC
+Sequence:      gaguc,gaguc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAGUC_GAGUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-256-AUGCC-GGGAU
+Sequence:      augcc,gggau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUGCC_GGGAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-257-UCGCU-GGGGA
+Sequence:      ucgcu,gggga
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UCGCU_GGGGA.pdb
+Extra_flags:   -
+
+Name:          mismatches-258-CCGUG-UGGGG
+Sequence:      ccgug,ugggg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CCGUG_UGGGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-259-CUGGG-CUGGG
+Sequence:      cuggg,cuggg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CUGGG_CUGGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-260-GAGAA-UUGUC
+Sequence:      gagaa,uuguc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAGAA_UUGUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-261-AAGAG-CUGUU
+Sequence:      aagag,cuguu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AAGAG_CUGUU.pdb
+Extra_flags:   -
+
+Name:          mismatches-262-AGGGA-UCGCU
+Sequence:      aggga,ucgcu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGGGA_UCGCU.pdb
+Extra_flags:   -
+
+Name:          mismatches-263-GAGAU-AUGUC
+Sequence:      gagau,auguc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAGAU_AUGUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-264-AUGUC-GAGAU
+Sequence:      auguc,gagau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUGUC_GAGAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-265-UCGCC-GGGGA
+Sequence:      ucgcc,gggga
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UCGCC_GGGGA.pdb
+Extra_flags:   -
+
+Name:          mismatches-266-CCGCU-GGGGG
+Sequence:      ccgcu,ggggg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CCGCU_GGGGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-267-CUGUG-UGGGG
+Sequence:      cugug,ugggg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CUGUG_UGGGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-268-UGGGG-CUGUG
+Sequence:      ugggg,cugug
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UGGGG_CUGUG.pdb
+Extra_flags:   -
+
+Name:          mismatches-269-GGCAG-CUACC
+Sequence:      ggcag,cuacc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GGCAG_CUACC.pdb
+Extra_flags:   -
+
+Name:          mismatches-270-GACGA-UCAUC
+Sequence:      gacga,ucauc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GACGA_UCAUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-271-AACAU-AUAUU
+Sequence:      aacau,auauu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AACAU_AUAUU.pdb
+Extra_flags:   -
+
+Name:          mismatches-272-AGCUC-GAACU
+Sequence:      agcuc,gaacu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGCUC_GAACU.pdb
+Extra_flags:   -
+
+Name:          mismatches-273-GACCC-GGAUC
+Sequence:      gaccc,ggauc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GACCC_GGAUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-274-UCCUG-UGAGA
+Sequence:      uccug,ugaga
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UCCUG_UGAGA.pdb
+Extra_flags:   -
+
+Name:          mismatches-275-CCCGG-CUAGG
+Sequence:      cccgg,cuagg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CCCGG_CUAGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-276-GACAG-CUAUC
+Sequence:      gacag,cuauc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GACAG_CUAUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-277-AACGA-UCAUU
+Sequence:      aacga,ucauu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AACGA_UCAUU.pdb
+Extra_flags:   -
+
+Name:          mismatches-278-AGCAU-AUACU
+Sequence:      agcau,auacu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGCAU_AUACU.pdb
+Extra_flags:   -
+
+Name:          mismatches-279-GACUC-GAAUC
+Sequence:      gacuc,gaauc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GACUC_GAAUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-280-AUCCC-GGAAU
+Sequence:      auccc,ggaau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUCCC_GGAAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-281-UCCCU-GGAGA
+Sequence:      ucccu,ggaga
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UCCCU_GGAGA.pdb
+Extra_flags:   -
+
+Name:          mismatches-282-CCCUG-UGAGG
+Sequence:      cccug,ugagg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CCCUG_UGAGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-283-CUCGG-CUAGG
+Sequence:      cucgg,cuagg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CUCGG_CUAGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-284-GACAA-UUAUC
+Sequence:      gacaa,uuauc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GACAA_UUAUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-285-AACAG-CUAUU
+Sequence:      aacag,cuauu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AACAG_CUAUU.pdb
+Extra_flags:   -
+
+Name:          mismatches-286-AGCGA-UCACU
+Sequence:      agcga,ucacu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGCGA_UCACU.pdb
+Extra_flags:   -
+
+Name:          mismatches-287-GACAU-AUAUC
+Sequence:      gacau,auauc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GACAU_AUAUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-288-AUCUC-GAAAU
+Sequence:      aucuc,gaaau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUCUC_GAAAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-289-UCCCC-GGAGA
+Sequence:      ucccc,ggaga
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UCCCC_GGAGA.pdb
+Extra_flags:   -
+
+Name:          mismatches-290-CCCCU-GGAGG
+Sequence:      ccccu,ggagg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CCCCU_GGAGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-291-CUGGG-CUGAG
+Sequence:      cuggg,cugag
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CUGGG_CUGAG.pdb
+Extra_flags:   -
+
+Name:          mismatches-292-UGCGG-CUAUG
+Sequence:      ugcgg,cuaug
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UGCGG_CUAUG.pdb
+Extra_flags:   -
+
+Name:          mismatches-293-GGCAG-CUUCC
+Sequence:      ggcag,cuucc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GGCAG_CUUCC.pdb
+Extra_flags:   -
+
+Name:          mismatches-294-GACGA-UCUUC
+Sequence:      gacga,ucuuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GACGA_UCUUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-295-AACAU-AUUUU
+Sequence:      aacau,auuuu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AACAU_AUUUU.pdb
+Extra_flags:   -
+
+Name:          mismatches-296-AGCUC-GAUCU
+Sequence:      agcuc,gaucu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGCUC_GAUCU.pdb
+Extra_flags:   -
+
+Name:          mismatches-297-GACCC-GGUUC
+Sequence:      gaccc,gguuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GACCC_GGUUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-298-UCCUG-UGUGA
+Sequence:      uccug,uguga
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UCCUG_UGUGA.pdb
+Extra_flags:   -
+
+Name:          mismatches-299-CCCGG-CUUGG
+Sequence:      cccgg,cuugg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CCCGG_CUUGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-300-GACAG-CUUUC
+Sequence:      gacag,cuuuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GACAG_CUUUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-301-AACGA-UCUUU
+Sequence:      aacga,ucuuu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AACGA_UCUUU.pdb
+Extra_flags:   -
+
+Name:          mismatches-302-AGCAU-AUUCU
+Sequence:      agcau,auucu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGCAU_AUUCU.pdb
+Extra_flags:   -
+
+Name:          mismatches-303-GACUC-GAUUC
+Sequence:      gacuc,gauuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GACUC_GAUUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-304-AUCCC-GGUAU
+Sequence:      auccc,gguau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUCCC_GGUAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-305-UCCCU-GGUGA
+Sequence:      ucccu,gguga
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UCCCU_GGUGA.pdb
+Extra_flags:   -
+
+Name:          mismatches-306-CCCUG-UGUGG
+Sequence:      cccug,ugugg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CCCUG_UGUGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-307-CUCGG-CUUGG
+Sequence:      cucgg,cuugg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CUCGG_CUUGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-308-GACAA-UUUUC
+Sequence:      gacaa,uuuuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GACAA_UUUUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-309-AACAG-CUUUU
+Sequence:      aacag,cuuuu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AACAG_CUUUU.pdb
+Extra_flags:   -
+
+Name:          mismatches-310-AGCGA-UCUCU
+Sequence:      agcga,ucucu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGCGA_UCUCU.pdb
+Extra_flags:   -
+
+Name:          mismatches-311-GACAU-AUUUC
+Sequence:      gacau,auuuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GACAU_AUUUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-312-AUCUC-GAUAU
+Sequence:      aucuc,gauau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUCUC_GAUAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-313-UCCCC-GGUGA
+Sequence:      ucccc,gguga
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UCCCC_GGUGA.pdb
+Extra_flags:   -
+
+Name:          mismatches-314-CCCCU-GGUGG
+Sequence:      ccccu,ggugg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CCCCU_GGUGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-315-CUCUG-UGUGG
+Sequence:      cucug,ugugg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CUCUG_UGUGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-316-UGCGG-CUUUG
+Sequence:      ugcgg,cuuug
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UGCGG_CUUUG.pdb
+Extra_flags:   -
+
+Name:          mismatches-317-GGCAG-CUCCC
+Sequence:      ggcag,cuccc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GGCAG_CUCCC.pdb
+Extra_flags:   -
+
+Name:          mismatches-318-GACGA-UCCUC
+Sequence:      gacga,uccuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GACGA_UCCUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-319-AACAU-AUCUU
+Sequence:      aacau,aucuu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AACAU_AUCUU.pdb
+Extra_flags:   -
+
+Name:          mismatches-320-AGCUC-GACCU
+Sequence:      agcuc,gaccu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGCUC_GACCU.pdb
+Extra_flags:   -
+
+Name:          mismatches-321-GACCC-GGCUC
+Sequence:      gaccc,ggcuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GACCC_GGCUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-322-UCCUG-UGCGA
+Sequence:      uccug,ugcga
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UCCUG_UGCGA.pdb
+Extra_flags:   -
+
+Name:          mismatches-323-CCCGG-CUCGG
+Sequence:      cccgg,cucgg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CCCGG_CUCGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-324-GACAG-CUCUC
+Sequence:      gacag,cucuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GACAG_CUCUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-325-AACGA-UCCUU
+Sequence:      aacga,uccuu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AACGA_UCCUU.pdb
+Extra_flags:   -
+
+Name:          mismatches-326-AGCAU-AUCCU
+Sequence:      agcau,auccu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGCAU_AUCCU.pdb
+Extra_flags:   -
+
+Name:          mismatches-327-GACUC-GACUC
+Sequence:      gacuc,gacuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GACUC_GACUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-328-AUCCC-GGCAU
+Sequence:      auccc,ggcau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUCCC_GGCAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-329-UCCCU-GGCGA
+Sequence:      ucccu,ggcga
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UCCCU_GGCGA.pdb
+Extra_flags:   -
+
+Name:          mismatches-330-CCCUG-UGCGG
+Sequence:      cccug,ugcgg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CCCUG_UGCGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-331-GACAA-UUCUC
+Sequence:      gacaa,uucuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GACAA_UUCUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-332-AACAG-CUCUU
+Sequence:      aacag,cucuu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AACAG_CUCUU.pdb
+Extra_flags:   -
+
+Name:          mismatches-333-AGCGA-UCCCU
+Sequence:      agcga,ucccu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGCGA_UCCCU.pdb
+Extra_flags:   -
+
+Name:          mismatches-334-GACAU-AUCUC
+Sequence:      gacau,aucuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GACAU_AUCUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-335-AUCUC-GACAU
+Sequence:      aucuc,gacau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUCUC_GACAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-336-UCCCC-GGCGA
+Sequence:      ucccc,ggcga
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UCCCC_GGCGA.pdb
+Extra_flags:   -
+
+Name:          mismatches-337-CCCCU-GGCGG
+Sequence:      ccccu,ggcgg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CCCCU_GGCGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-338-CUCUG-UGCGG
+Sequence:      cucug,ugcgg
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_CUCUG_UGCGG.pdb
+Extra_flags:   -
+
+Name:          mismatches-339-UGCGG-CUCUG
+Sequence:      ugcgg,cucug
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UGCGG_CUCUG.pdb
+Extra_flags:   -
+
+Name:          mismatches-340-GAGUC-GAAUC
+Sequence:      gaguc,gaauc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAGUC_GAAUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-341-UGGGG-CUAUG
+Sequence:      ugggg,cuaug
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UGGGG_CUAUG.pdb
+Extra_flags:   -
+
+Name:          mismatches-342-AGACU-GGACU
+Sequence:      agacu,ggacu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGACU_GGACU.pdb
+Extra_flags:   -
+
+Name:          mismatches-343-GAAUG-UGAUC
+Sequence:      gaaug,ugauc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAAUG_UGAUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-344-AGACC-GGACU
+Sequence:      agacc,ggacu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGACC_GGACU.pdb
+Extra_flags:   -
+
+Name:          mismatches-345-GAACU-GGAUC
+Sequence:      gaacu,ggauc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAACU_GGAUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-346-AUAUG-UGAAU
+Sequence:      auaug,ugaau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUAUG_UGAAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-347-AGACU-GGGCU
+Sequence:      agacu,gggcu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGACU_GGGCU.pdb
+Extra_flags:   -
+
+Name:          mismatches-348-GAAUG-UGGUC
+Sequence:      gaaug,ugguc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAAUG_UGGUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-349-AGACC-GGGCU
+Sequence:      agacc,gggcu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGACC_GGGCU.pdb
+Extra_flags:   -
+
+Name:          mismatches-350-GAACU-GGGUC
+Sequence:      gaacu,ggguc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAACU_GGGUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-351-AGACU-GGCCU
+Sequence:      agacu,ggccu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGACU_GGCCU.pdb
+Extra_flags:   -
+
+Name:          mismatches-352-AGACC-GGCCU
+Sequence:      agacc,ggccu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGACC_GGCCU.pdb
+Extra_flags:   -
+
+Name:          mismatches-353-GAACU-GGCUC
+Sequence:      gaacu,ggcuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAACU_GGCUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-354-AUAUG-UGCAU
+Sequence:      auaug,ugcau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUAUG_UGCAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-355-AGUCU-GGUCU
+Sequence:      agucu,ggucu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGUCU_GGUCU.pdb
+Extra_flags:   -
+
+Name:          mismatches-356-GAUUG-UGUUC
+Sequence:      gauug,uguuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAUUG_UGUUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-357-AGUCC-GGUCU
+Sequence:      agucc,ggucu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGUCC_GGUCU.pdb
+Extra_flags:   -
+
+Name:          mismatches-358-GAUCU-GGUUC
+Sequence:      gaucu,gguuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAUCU_GGUUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-359-AUUUG-UGUAU
+Sequence:      auuug,uguau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUUUG_UGUAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-360-AGUCU-GGCCU
+Sequence:      agucu,ggccu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGUCU_GGCCU.pdb
+Extra_flags:   -
+
+Name:          mismatches-361-AGUCC-GGCCU
+Sequence:      agucc,ggccu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGUCC_GGCCU.pdb
+Extra_flags:   -
+
+Name:          mismatches-362-GAUCU-GGCUC
+Sequence:      gaucu,ggcuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAUCU_GGCUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-363-AUUUG-UGCAU
+Sequence:      auuug,ugcau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUUUG_UGCAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-364-AGGCU-GGACU
+Sequence:      aggcu,ggacu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGGCU_GGACU.pdb
+Extra_flags:   -
+
+Name:          mismatches-365-AGGCC-GGACU
+Sequence:      aggcc,ggacu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGGCC_GGACU.pdb
+Extra_flags:   -
+
+Name:          mismatches-366-GAGCU-GGAUC
+Sequence:      gagcu,ggauc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAGCU_GGAUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-367-AGGCU-GGGCU
+Sequence:      aggcu,gggcu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGGCU_GGGCU.pdb
+Extra_flags:   -
+
+Name:          mismatches-368-GAGUG-UGGUC
+Sequence:      gagug,ugguc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAGUG_UGGUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-369-AGGCC-GGGCU
+Sequence:      aggcc,gggcu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGGCC_GGGCU.pdb
+Extra_flags:   -
+
+Name:          mismatches-370-GAGCU-GGGUC
+Sequence:      gagcu,ggguc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAGCU_GGGUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-371-AUGUG-UGGAU
+Sequence:      augug,uggau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUGUG_UGGAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-372-AGCCU-GGACU
+Sequence:      agccu,ggacu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGCCU_GGACU.pdb
+Extra_flags:   -
+
+Name:          mismatches-373-GACUG-UGAUC
+Sequence:      gacug,ugauc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GACUG_UGAUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-374-AGCCC-GGACU
+Sequence:      agccc,ggacu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGCCC_GGACU.pdb
+Extra_flags:   -
+
+Name:          mismatches-375-GACCU-GGAUC
+Sequence:      gaccu,ggauc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GACCU_GGAUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-376-AUCUG-UGAAU
+Sequence:      aucug,ugaau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUCUG_UGAAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-377-AGCCU-GGUCU
+Sequence:      agccu,ggucu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGCCU_GGUCU.pdb
+Extra_flags:   -
+
+Name:          mismatches-378-GACUG-UGUUC
+Sequence:      gacug,uguuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GACUG_UGUUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-379-AGCCC-GGUCU
+Sequence:      agccc,ggucu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGCCC_GGUCU.pdb
+Extra_flags:   -
+
+Name:          mismatches-380-GACCU-GGUUC
+Sequence:      gaccu,gguuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GACCU_GGUUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-381-AUCUG-UGUAU
+Sequence:      aucug,uguau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUCUG_UGUAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-382-AGCCU-GGCCU
+Sequence:      agccu,ggccu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGCCU_GGCCU.pdb
+Extra_flags:   -
+
+Name:          mismatches-383-GACUG-UGCUC
+Sequence:      gacug,ugcuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GACUG_UGCUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-384-AGCCC-GGCCU
+Sequence:      agccc,ggccu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGCCC_GGCCU.pdb
+Extra_flags:   -
+
+Name:          mismatches-385-GACCU-GGCUC
+Sequence:      gaccu,ggcuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GACCU_GGCUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-386-AUCUG-UGCAU
+Sequence:      aucug,ugcau
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AUCUG_UGCAU.pdb
+Extra_flags:   -
+
+Name:          mismatches-387-GAAUG-UGCUC
+Sequence:      gaaug,ugcuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAAUG_UGCUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-388-GAUUG-UGCUC
+Sequence:      gauug,ugcuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAUUG_UGCUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-389-AGACU-AGACU
+Sequence:      agacu,agacu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGACU_AGACU.pdb
+Extra_flags:   -
+
+Name:          mismatches-390-GAACU-AGAUC
+Sequence:      gaacu,agauc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAACU_AGAUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-391-UCACU-AGAGA
+Sequence:      ucacu,agaga
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UCACU_AGAGA.pdb
+Extra_flags:   -
+
+Name:          mismatches-392-AGACU-AGGCU
+Sequence:      agacu,aggcu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGACU_AGGCU.pdb
+Extra_flags:   -
+
+Name:          mismatches-393-UCACU-AGGGA
+Sequence:      ucacu,aggga
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UCACU_AGGGA.pdb
+Extra_flags:   -
+
+Name:          mismatches-394-AGACU-AGCCU
+Sequence:      agacu,agccu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGACU_AGCCU.pdb
+Extra_flags:   -
+
+Name:          mismatches-395-GAACU-AGCUC
+Sequence:      gaacu,agcuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAACU_AGCUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-396-UCACU-AGCGA
+Sequence:      ucacu,agcga
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UCACU_AGCGA.pdb
+Extra_flags:   -
+
+Name:          mismatches-397-AGUCU-AGUCU
+Sequence:      agucu,agucu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGUCU_AGUCU.pdb
+Extra_flags:   -
+
+Name:          mismatches-398-GAUCU-AGUUC
+Sequence:      gaucu,aguuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAUCU_AGUUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-399-UCUCU-AGUGA
+Sequence:      ucucu,aguga
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UCUCU_AGUGA.pdb
+Extra_flags:   -
+
+Name:          mismatches-400-AGUCU-AGCCU
+Sequence:      agucu,agccu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGUCU_AGCCU.pdb
+Extra_flags:   -
+
+Name:          mismatches-401-GAUCU-AGCUC
+Sequence:      gaucu,agcuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAUCU_AGCUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-402-UCUCU-AGCGA
+Sequence:      ucucu,agcga
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UCUCU_AGCGA.pdb
+Extra_flags:   -
+
+Name:          mismatches-403-AGGCU-AGACU
+Sequence:      aggcu,agacu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGGCU_AGACU.pdb
+Extra_flags:   -
+
+Name:          mismatches-404-GAGCU-AGAUC
+Sequence:      gagcu,agauc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAGCU_AGAUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-405-UCGCU-AGAGA
+Sequence:      ucgcu,agaga
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UCGCU_AGAGA.pdb
+Extra_flags:   -
+
+Name:          mismatches-406-AGGCU-AGGCU
+Sequence:      aggcu,aggcu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGGCU_AGGCU.pdb
+Extra_flags:   -
+
+Name:          mismatches-407-GAGCU-AGGUC
+Sequence:      gagcu,agguc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAGCU_AGGUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-408-UCGCU-AGGGA
+Sequence:      ucgcu,aggga
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UCGCU_AGGGA.pdb
+Extra_flags:   -
+
+Name:          mismatches-409-AGCCU-AGACU
+Sequence:      agccu,agacu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGCCU_AGACU.pdb
+Extra_flags:   -
+
+Name:          mismatches-410-GACCU-AGAUC
+Sequence:      gaccu,agauc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GACCU_AGAUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-411-UCCCU-AGAGA
+Sequence:      ucccu,agaga
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UCCCU_AGAGA.pdb
+Extra_flags:   -
+
+Name:          mismatches-412-AGCCU-AGUCU
+Sequence:      agccu,agucu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGCCU_AGUCU.pdb
+Extra_flags:   -
+
+Name:          mismatches-413-GACCU-AGUUC
+Sequence:      gaccu,aguuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GACCU_AGUUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-414-UCCCU-AGUGA
+Sequence:      ucccu,aguga
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UCCCU_AGUGA.pdb
+Extra_flags:   -
+
+Name:          mismatches-415-AGCCU-AGCCU
+Sequence:      agccu,agccu
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_AGCCU_AGCCU.pdb
+Extra_flags:   -
+
+Name:          mismatches-416-GACCU-AGCUC
+Sequence:      gaccu,agcuc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GACCU_AGCUC.pdb
+Extra_flags:   -
+
+Name:          mismatches-417-UCCCU-AGCGA
+Sequence:      ucccu,agcga
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_UCCCU_AGCGA.pdb
+Extra_flags:   -
+
+Name:          mismatches-418-GAACU-AGGUC
+Sequence:      gaacu,agguc
+Secstruct:     ((.((,)).))
+Working_res:   A:1-5,B:6-10
+Input_res:     -
+Native:        NATIVE_GAACU_AGGUC.pdb
+Extra_flags:   -
+

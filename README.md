@@ -13,22 +13,24 @@ What's in here
 
 `new/` will hold new benchmark runs -- will not be checked in, however
 
-`matlab/` holds some scripts for visualizing runs
+`scripts/` holds some scripts for visualizing runs
 
-`input_files` holds input PDBs
+`input_files/` holds input PDBs, and text files like `favorites.txt`, which define motifs for benchmark, including sequence, secondary structure, reference PDBs, etc.
 
-Text files like `favorites.txt` define motifs for benchmark, including sequence, secondary structure, reference PDBs, etc.
-
-To set up a new benchmark run
------------------------------
-(Look  inside `ref/` for checked in examples)
+Setting up benchmark tools  
+--------------------------
 - Make sure you have rosetta compiled and rna_tools setup. Follow directions <a href="https://www.rosettacommons.org/docs/latest/RNA-tools.html">here</a>.
+- Run `source ./INSTALL` from inside the `stepwise_benchmark/` directory.
+
+Setting up a new benchmark run
+------------------------------
+(Look  inside `ref/` for checked in examples)
 - Go inside `new/`
 - Create a new folder with a descriptive name like `rna_res_level_energy_rnatorsion1_synGbonus`
 - Create `extra_flags_benchmark.txt` that describes the interesting new flags in your run.
 - Create a `README_SETUP` with a command-line to setup the benchmark like:
 ```
-setup_stepwise_benchmark.py <favorites.txt>
+setup_stepwise_benchmark.py ../../input_files/<favorites.txt>
 ```
  and run it with `source README_SETUP`. You should see subdirectories with all the target names and input files.
 - If you are on `biox3`, you can type `source qsubMINI` to queue up all the jobs.
@@ -37,9 +39,17 @@ setup_stepwise_benchmark.py <favorites.txt>
 easy_cat.py SWM
 ```
 to concatenate models from various subdirectories for each target.
-- Copy or rsync files to your local computer to run MATLAB.
-- In the `matlab/` directory, you can compare two runs by running a command like:
+- Copy or rsync files to your local computer for visualization.
+
+Visualizing benchmark runs
+--------------------------
+Plotting with Python
+- In the `new/` directory, you can compare two runs by running a command like:
+```
+make_plots.py rna_res_level_energy4 rna_res_level_energy_rnatorsion1 
+```
+Plotting with MATLAB
+- In the `scripts/matlab/` directory, you can compare two runs by running a command like:
 ```
 make_plots( {'../new/rna_res_level_energy_rnatorsion1_novirtualo2prime_synGbonus_suitenessbonus','../new/rna_res_level_energy_rnatorsion1_novirtualo2prime_synGbonus_suitenessbonus_varypolarHgeom'} );
 ```
-NOTE: Might be worth moving this script to pylab for portability.
