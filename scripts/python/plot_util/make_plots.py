@@ -11,7 +11,7 @@ from matplotlib.font_manager import FontProperties
 
 ##########################################################
 
-def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], target_files=['favorites.txt','favorites2.txt'], targets=['*'], colorcode=None, xvars=['rms_fill'], yvars=['score'] ):
+def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], target_files=['favorites.txt','favorites2.txt','challenges.txt'], targets=['*'], colorcode=None, xvars=['rms_fill'], yvars=['score'] ):
 
 	# initialize lists
 	data = []
@@ -141,7 +141,7 @@ if __name__=='__main__':
 	parser = argparse.ArgumentParser(description='Make plots of scores from silent files.')
 	parser.add_argument('inpaths', nargs='+', help='List of paths too silent files.')
 	parser.add_argument('-outfilenames', nargs='*', help='Name of silent file.', default=['swm_rebuild.out','swm_rebuild.sc'])
-	parser.add_argument('-target_files', nargs='+', help='List of additional target files.', default=['favorites.txt','favorites2.txt'])
+	parser.add_argument('-target_files', nargs='+', help='List of additional target files.', default=['favorites.txt','favorites2.txt','challenges.txt'])
 	parser.add_argument('-targets', nargs='+', help='List of targets.', default=['*'])
 	parser.add_argument('-xvar', nargs='*', help='Name of x variable(s).', default=['rms_fill'])
 	parser.add_argument('-yvar', nargs='*', help='Name of y variable(s).', default=['score'])
