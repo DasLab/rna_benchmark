@@ -67,7 +67,7 @@ for line_idx, seq_file_line in enumerate(open( seq_file ).readlines()):
     if seq_file_line[0] == '#' : continue
     seq_file_line = seq_file_line.split('#')[0] # remove comments
 
-    cols = string.split( seq_file_line.replace( '\n','' ) )
+    cols = string.split( seq_file_line.replace('\n','').replace('+',',') )
     
     assert( len( cols ) < 4 )
 
@@ -76,8 +76,8 @@ for line_idx, seq_file_line in enumerate(open( seq_file ).readlines()):
     	init_sequence[ name ] = cols[1]
     else:
   		name = '%s-%03d-' % (seq_file.split('/')[-1].replace('.seq',''), line_idx+1)
-  		name += cols[0].replace('+','-').replace(',','-')
-  		init_sequence[ name ] = cols[0].replace('+',',')
+  		name += cols[0].replace(',','-')
+  		init_sequence[ name ] = cols[0]
 
     assert( name not in names )
     names.append( name )
