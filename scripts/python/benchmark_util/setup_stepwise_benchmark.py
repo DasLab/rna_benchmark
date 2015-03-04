@@ -216,6 +216,7 @@ for name in names:
             make_tag_with_conventional_numbering( helix_resnum, resnums[ name ], chains[ name ] ) )
         print command
         system( command )
+        
 
     # following is now 'hard-coded' into Rosetta option '-motif_mode'
     # deprecate this python block in 2015 after testing -- rd2014

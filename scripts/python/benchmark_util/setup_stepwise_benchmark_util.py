@@ -6,6 +6,7 @@ import string
 from os.path import exists
 from os import system
 from make_tag import make_tag_with_dashes
+import subprocess
 
 #####################################################################################################################
 
@@ -54,3 +55,17 @@ def get_align_res( screen_pdb, working_pdb, working_fixed_res ):
     if len( working_align_res ):    working_align_res_tag = make_tag_with_dashes( working_align_res )
     else:   working_align_res_tag = '0-0'
     return ( screen_align_res_tag, working_align_res_tag )
+
+#####################################################################################################################
+
+def make_rna_rosetta_ready( pdb_file, sequence, reassign_chainids=True, allowed_chains=string.ascii_uppercase ):
+    make_rna_rosetta_ready_cmdline = [ 'make_rna_rosetta_ready.py', pdb_file ]
+    if reassign_chainids:
+        chainid_str = ''
+        for chainidx, seq in enumerate(sequence.split(',')):
+            chainid_str += ''.join([ allowed_chains[chainidx] for res in seq ])
+        make_rna_rosetta_ready_cmdline += [ '-reassign_chainids', chainid_str ]
+    out, err = subprocess.Popen( make_rna_rosetta_ready_cmdline, stdout=subprocess.PIPE, stderr=subprocess.PIPE ).communicate()
+    rna_rosetta_ready_native = out.split()[-1] #native[ name ].lower().replace('.pdb', '_RNA.pdb')
+    mv_cmdline = [ 'mv', rna_rosetta_ready_native, pdb_file ]
+    out, err = subprocess.Popen( mv_cmdline, stdout=subprocess.PIPE, stderr=subprocess.PIPE ).communicate()
