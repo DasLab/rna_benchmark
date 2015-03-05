@@ -309,9 +309,9 @@ for name in names:
 
 # write qsubMINIs, READMEs and SUBMITs
 qsub_file = 'qsubMINI'
-hostname = subprocess.check_output( 'hostname' )
-if hostname.find( 'stampede' ) > 0: qsub_file = 'qsubMPI'
-if hostname.find( 'sherlock' ) > 0: qsub_file = 'qsubMPI'
+hostname, hostname_err = subprocess.Popen(['hostname'], stdout=subprocess.PIPE).communicate()
+if hostname.find( 'stampede' ) > -1: qsub_file = 'qsubMPI'
+if hostname.find( 'sherlock' ) > -1: qsub_file = 'qsubMPI'
 fid_qsub = open( qsub_file, 'w' )
 for name in names:
 
