@@ -216,7 +216,7 @@ for name in names:
             make_tag_with_conventional_numbering( helix_resnum, resnums[ name ], chains[ name ] ) )
         print command
         system( command )
-        
+
 
     # following is now 'hard-coded' into Rosetta option '-motif_mode'
     # deprecate this python block in 2015 after testing -- rd2014
@@ -312,7 +312,7 @@ for name in names:
 qsub_file = 'qsubMINI'
 hostname, hostname_err = subprocess.Popen(['hostname'], stdout=subprocess.PIPE).communicate()
 if hostname.find( 'stampede' ) > -1: qsub_file = 'qsubMPI'
-if hostname.find( 'sherlock' ) > -1: qsub_file = 'qsubMPI'
+if hostname.find( 'sherlock' ) > -1: qsub_file = 'sbatchMINI'
 fid_qsub = open( qsub_file, 'w' )
 
 for name in names:
