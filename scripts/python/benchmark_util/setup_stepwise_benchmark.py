@@ -217,6 +217,7 @@ for name in names:
         print command
         system( command )
 
+
     # following is now 'hard-coded' into Rosetta option '-motif_mode'
     # deprecate this python block in 2015 after testing -- rd2014
     L = len( sequence_joined )
@@ -309,8 +310,9 @@ for name in names:
 
 # write qsubMINIs, READMEs and SUBMITs
 qsub_file = 'qsubMINI'
-hostname = subprocess.check_output( 'hostname' )
-if hostname.find( 'stampede' ) > 0: qsub_file = 'qsubMPI'
+hostname, hostname_err = subprocess.Popen(['hostname'], stdout=subprocess.PIPE).communicate()
+if hostname.find( 'stampede' ) > -1: qsub_file = 'qsubMPI'
+if hostname.find( 'sherlock' ) > -1: qsub_file = 'sbatchMINI'
 fid_qsub = open( qsub_file, 'w' )
 for name in names:
 
