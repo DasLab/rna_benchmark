@@ -340,7 +340,7 @@ for name in names:
             for infile in start_files:  fid.write( ' %s' % (basename(infile) ) )
         if len( native[ name ] ) > 0:
             fid.write( ' -native_pdb %s' % basename( working_native[name] ) )
-        fid.write( ' -fasta %s.fasta' %  name )
+        fid.write( ' -fasta %s' %  basename( fasta[ name ] ) )
         fid.write( ' -sample_res %s' % loop_res[ name ][ 'swa' ] )
 
         # case-specific extra flags
@@ -408,7 +408,7 @@ for name in names:
             fid.write( '-extra_min_res %s \n' % make_tag_with_conventional_numbering( extra_min_res[ name ], resnums[ name ], chains[ name ] ) )
         #if ( len( input_pdbs[ name ] ) == 0 ):
         #    fid.write( '-superimpose_over_all\n' ) # RMSD over everything -- better test since helices are usually native
-        fid.write( '-fasta %s.fasta\n' % name )
+        fid.write( '-fasta %s\n' % basename( fasta[ name ] ) )
         if not cycles_flag_found:
             fid.write( '-cycles 200\n' )
         if not nstruct_flag_found:
