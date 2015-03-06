@@ -3,9 +3,26 @@
 #####################################################################################################################
 
 import string
+from subprocess import Popen, PIPE
 from os.path import exists
 from os import system
 from make_tag import make_tag_with_dashes
+
+#####################################################################################################################
+
+def safe_submit( command, allow_retry=False, max_retry=3 ):
+    if isinstance(command, str):
+        command = string.split(command)
+    assert( isinstance(command, list) )
+    if not allow_retry: 
+        max_retry = 1
+    for attempt in xrange(max_retry):
+        stdout, stderr = Popen(command, stdout=PIPE, stderr=PIPE).communicate()
+        if not stderr or not len(stderr):
+            return stdout
+        print "STDOUT:", stdout
+        print "STDERR:", stderr
+    return -1
 
 #####################################################################################################################
 

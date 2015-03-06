@@ -4,7 +4,7 @@
 import string
 import argparse
 from os.path import exists,basename,dirname,expandvars
-from os import system, getcwd, chdir, popen
+from os import system, getcwd, chdir, popen, uname
 from make_tag import *
 from parse_options import get_resnum_chain
 from parse_tag import parse_tag
@@ -310,9 +310,9 @@ for name in names:
 
 # write qsubMINIs, READMEs and SUBMITs
 qsub_file = 'qsubMINI'
-hostname, hostname_err = subprocess.Popen(['hostname'], stdout=subprocess.PIPE).communicate()
-if hostname.find( 'stampede' ) > -1: qsub_file = 'qsubMPI'
-if hostname.find( 'sherlock' ) > -1: qsub_file = 'sbatchMINI'
+hostname = uname()[1]
+if 'stampede' in hostname: qsub_file = 'qsubMPI'
+if 'sherlock' in hostname or 'sh-' in hostname: qsub_file = 'sbatchMINI'
 fid_qsub = open( qsub_file, 'w' )
 for name in names:
 
