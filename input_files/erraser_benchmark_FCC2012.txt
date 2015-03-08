@@ -1,0 +1,45 @@
+Name:          guanine_riboswitch
+Sequence:      -
+Secstruct:     -
+Working_res:   -
+Input_res:     -
+Native:        1U8D.pdb
+Extra_flags:   -map 1U8D_cell.ccp4 -map_reso 1.95
+
+Name:          rna_pseudoknot
+Sequence:      -
+Secstruct:     -
+Working_res:   -
+Input_res:     -
+Native:        2A43.pdb
+Extra_flags:   -map 2A43_cell.ccp4 -map_reso 1.34
+
+
+Name:          sam_I_riboswitch
+Sequence:      -
+Secstruct:     -
+Working_res:   -
+Input_res:     -
+Native:        2GIS.pdb
+Extra_flags:   -map 2GIS_cell.ccp4 -map_reso 2.9
+
+Name:          hcv_ires_subdomain_IIa
+Sequence:      -
+Secstruct:     -
+Working_res:   -
+Input_res:     -
+Native:        2PN3.pdb
+Extra_flags:   -map 2PN3_cell.ccp4 -map_reso 2.9
+
+Name:          sam_I_riboswitch_2gna_mutant
+Sequence:      -
+Secstruct:     -
+Working_res:   -
+Input_res:     -
+Native:        2YGH.pdb
+Extra_flags:   -map 2YGH_cell.ccp4 -map_reso 2.6
+
+
+
+
+
