@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 
-
 import string
 import argparse
 from os.path import exists,basename,dirname,expandvars
-from os import system, getcwd, chdir, popen
+from os import system, getcwd, chdir, popen, uname
 from make_tag import *
 from parse_options import get_resnum_chain
 from parse_tag import parse_tag
@@ -105,6 +104,8 @@ bps = ['au','ua','gc','cg','ug','gu']
 info_file = args.info_file
 assert( len( info_file ) > 0 )
 assert( '.txt' in info_file )
+if not exists( info_file ): info_file = dirname(argv[ 0 ]) + "/../../../input_files/" + info_file
+print info_file
 assert( exists( info_file ) )
 
 
@@ -225,10 +226,10 @@ for name in names:
     extra_min_res[ name ] = []
     for m in range( 1, L+1 ):
         if ( m not in input_resnum_fullmodel ): continue
-        prev_moving = ( m - 1 not in input_resnum_fullmodel ) and ( m != 1 )
-        next_moving = ( m + 1 not in input_resnum_fullmodel ) and ( m != L )
         right_before_chainbreak = ( m == L or m in chainbreak_pos )
         right_after_chainbreak  = ( m == 1 or m - 1 in chainbreak_pos )
+        prev_moving = ( m - 1 not in input_resnum_fullmodel ) and ( m != 1 ) and not right_after_chainbreak
+        next_moving = ( m + 1 not in input_resnum_fullmodel ) and ( m != L ) and not right_before_chainbreak
         if ( ( right_after_chainbreak and not next_moving ) or \
              ( right_before_chainbreak and not prev_moving ) ):
             terminal_res[ name ].append( m )
@@ -248,7 +249,6 @@ for name in names:
         #fid.write( popen( 'pdb2fasta.py %s' % (  working_native[ name ] ) ).read() )
         #fid.write( '>%s %s\n%s\n' % ( name,string.join(working_res_blocks,' '),string.join(sequences,'') ) )
         fid.close()
-
 
     # get sample loop res
     loop_res[ name ] = {}
@@ -310,9 +310,9 @@ for name in names:
 
 # write qsubMINIs, READMEs and SUBMITs
 qsub_file = 'qsubMINI'
-hostname, hostname_err = subprocess.Popen(['hostname'], stdout=subprocess.PIPE).communicate()
+hostname = uname()[1]
 if hostname.find( 'stampede' ) > -1: qsub_file = 'qsubMPI'
-if hostname.find( 'sherlock' ) > -1: qsub_file = 'sbatchMINI'
+if hostname.find( 'sh' ) > -1: qsub_file = 'sbatchMINI'
 fid_qsub = open( qsub_file, 'w' )
 for name in names:
 
@@ -415,10 +415,21 @@ for name in names:
         # case-specific extra flags
         if ( len( extra_flags[name] ) > 0 ) and ( extra_flags[ name ] != '-' ) :
             #fid.write( '%s\n' % extra_flags[name] )
-            for flag in extra_flags[name].split('-'):
-                if not len( flag ): continue
-                flag = flag.replace('True','true').replace('False','false')
-                fid.write( '-%s\n' % flag )
+            cols = extra_flags[ name ].split( ' ' )
+            if '-align_pdb' in cols:
+                align_pdb = cols[ cols.index( '-align_pdb' )+1 ]
+                assert( exists( inpath+'/'+align_pdb ) )
+                system( 'cp %s/%s %s' % (inpath, align_pdb, name ) )
+
+            for m in range( len( cols ) ):
+                col = cols[ m ]
+                if len( col ) == 0: continue
+                col = col.replace('True','true').replace('False','false')
+                if ( col[ 0 ] == '-' ):
+                    fid.write( '\n'+col )
+                else:
+                    fid.write( ' ' + col  )
+            if len( cols ) > 0: fid.write( '\n' )
 
         # extra flags for whole benchmark
         weights_file = ''
