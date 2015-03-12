@@ -2,7 +2,7 @@ Name:          guanine_riboswitch
 Sequence:      -
 Secstruct:     -
 Working_res:   -
-Input_res:     -
+Input_res:     A:33-37,A:61,A:65
 Native:        1U8D.pdb
 Extra_flags:   -map 1U8D_cell.ccp4 -map_reso 1.95
 
