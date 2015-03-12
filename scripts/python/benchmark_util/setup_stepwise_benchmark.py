@@ -316,7 +316,10 @@ for name in names:
 qsub_file = 'qsubMINI'
 hostname = uname()[1]
 if 'stampede' in hostname: qsub_file = 'qsubMPI'
-if 'sherlock' in hostname or 'sh-' in hostname: qsub_file = 'sbatchMINI'
+if 'sherlock' in hostname or 'sh-' in hostname: 
+    qsub_file = 'sbatchMINI'
+    if args.nhours > 48: 
+        args.nhours = 48
 fid_qsub = open( qsub_file, 'w' )
 
 for name in names:
@@ -380,7 +383,7 @@ for name in names:
         CWD = getcwd()
         fid_submit = open( dirname+'/SUBMIT_SWA', 'w' )
         fid_submit.write( SWA_DAGMAN_TOOLS+'/dagman/submit_DAG_job.py' )
-        fid_submit.write( ' -master_wall_time %d' % 72 ) #args.nhours )
+        fid_submit.write( ' -master_wall_time %d' % args.nhours )
         fid_submit.write( ' -master_memory_reserve 2048' )
         fid_submit.write( ' -num_slave_nodes %d' % njobs )
         fid_submit.write( ' -dagman_file rna_build.dag' )
@@ -402,10 +405,11 @@ for name in names:
             fid.write( '\n' )
         if len( native[ name ] ) > 0:
             fid.write( '-native %s\n' % basename( working_native[name] ) )
-        if len( terminal_res[ name ] ) > 0:
-            fid.write( '-terminal_res %s  \n' % make_tag_with_conventional_numbering( terminal_res[ name ], resnums[ name ], chains[ name ] ) )
-        if len( extra_min_res[ name ] ) > 0 and not args.extra_min_res_off: ### Turn extra_min_res off for SWM when comparing to SWA
-            fid.write( '-extra_min_res %s \n' % make_tag_with_conventional_numbering( extra_min_res[ name ], resnums[ name ], chains[ name ] ) )
+        if args.motif_mode_off:
+            if len( terminal_res[ name ] ) > 0:
+                fid.write( '-terminal_res %s  \n' % make_tag_with_conventional_numbering( terminal_res[ name ], resnums[ name ], chains[ name ] ) )
+            if len( extra_min_res[ name ] ) > 0 and not args.extra_min_res_off: ### Turn extra_min_res off for SWM when comparing to SWA
+                fid.write( '-extra_min_res %s \n' % make_tag_with_conventional_numbering( extra_min_res[ name ], resnums[ name ], chains[ name ] ) )
         #if ( len( input_pdbs[ name ] ) == 0 ):
         #    fid.write( '-superimpose_over_all\n' ) # RMSD over everything -- better test since helices are usually native
         fid.write( '-fasta %s\n' % basename( fasta[ name ] ) )
