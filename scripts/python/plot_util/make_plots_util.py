@@ -113,7 +113,7 @@ def get_date():
 def get_target_names( target_files ):
 	target_names = []
 	for file_name in target_files:
-		if '..' not in file_name:	file_name = get_path_to_dir(['stepwise_benchmark','benchmark']) + '/input_files/' + file_name
+		if '..' not in file_name:	file_name = get_path_to_dir(['stepwise_benchmark','benchmark']) + '/input_files/' + basename(file_name)
 		target_names = get_target_names_from_file( file_name, target_names )
 	return target_names
 
@@ -229,7 +229,7 @@ def finalize_figure( fig, nplots, nrows, ncols ):
 	plt.figtext(0.95, 0.02, get_date(), horizontalalignment='right')
 
 	# setup global legend based on inpaths
-	legend_size = 10
+	legend_size = 6
 	if nplots > 20:
 		legend_size = 6
 	plot_idx = nplots - ( ncols - 1 )

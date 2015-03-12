@@ -11,7 +11,7 @@ from matplotlib.font_manager import FontProperties
 
 ##########################################################
 
-def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], target_files=['favorites.txt','favorites2.txt'], targets=['*'], colorcode=None, xvars=['rms_fill'], yvars=['score'] ):
+def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc', 'region_FINAL.out'], target_files=['favorites.txt','favorites2.txt'], targets=['*'], colorcode=None, xvars=['rms_fill', 'NAT_rmsd'], yvars=['score'] ):
 
 	# initialize lists
 	data = []
@@ -68,6 +68,9 @@ def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], targ
 	( pp, fullpdfname ) = setup_pdf_page( base_inpaths, targets )
 	( fig, nplots, nrows, ncols ) = setup_figure( noutfiles )
 
+	xlabels = []
+	ylabels = []
+
 	# iterate over runs
 	for n in xrange( len(inpaths) ):
 
@@ -83,10 +86,16 @@ def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], targ
 			score_labels = data[n][target].score_labels
 			for xvar in xvars:
 				xvar_idx = score_labels.index( xvar ) if xvar in score_labels else -1
-				if xvar_idx > -1:  break
+				if xvar_idx > -1:
+					if not xvar in xlabels:
+						xlabels.append( xvar )
+					break
 			for yvar in yvars:
 				yvar_idx = score_labels.index( yvar ) if yvar in score_labels else -1
-				if yvar_idx > -1:  break
+				if yvar_idx > -1:
+					if not yvar in ylabels:
+						ylabels.append( yvar )
+					break
 
 			# get data from scores using xvar_idx and yvar_idx
 			assert( xvar_idx > -1 and yvar_idx > -1 )
@@ -103,8 +112,8 @@ def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], targ
 			if nplots > 20:
 				title_fontsize = 6
 			ax.set_title( get_title(target), fontsize=title_fontsize, weight='bold' )
-			ax.set_ylabel( string.join(yvars, ', '), fontsize=6 )
-			ax.set_xlabel( string.join(xvars, ', '), fontsize=6 )
+			ax.set_ylabel( string.join(ylabels, ', '), fontsize=6 )
+			ax.set_xlabel( string.join(xlabels, ', '), fontsize=6 )
 			for ticklabel in ax.yaxis.get_ticklabels()+ax.xaxis.get_ticklabels():
 				ticklabel.set_fontsize(6)
 
@@ -143,10 +152,10 @@ if __name__=='__main__':
 
 	parser = argparse.ArgumentParser(description='Make plots of scores from silent files.')
 	parser.add_argument('inpaths', nargs='+', help='List of paths too silent files.')
-	parser.add_argument('-outfilenames', nargs='*', help='Name of silent file.', default=['swm_rebuild.out','swm_rebuild.sc'])
+	parser.add_argument('-outfilenames', nargs='*', help='Name of silent file.', default=['swm_rebuild.out','swm_rebuild.sc','region_FINAL.out'])
 	parser.add_argument('-target_files', nargs='+', help='List of additional target files.', default=['favorites.txt','favorites2.txt'])
 	parser.add_argument('-targets', nargs='+', help='List of targets.', default=['*'])
-	parser.add_argument('-xvar', nargs='*', help='Name of x variable(s).', default=['rms_fill'])
+	parser.add_argument('-xvar', nargs='*', help='Name of x variable(s).', default=['rms_fill','NAT_rmsd'])
 	parser.add_argument('-yvar', nargs='*', help='Name of y variable(s).', default=['score'])
 	args=parser.parse_args()
 
