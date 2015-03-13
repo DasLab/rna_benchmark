@@ -140,6 +140,7 @@ for name in names:
         flag = flag.replace('true','True').replace('false','False')
         fid.write( ' %s' % flag.replace('\n','') )
 
+    fid.write(' ')
     fid.close()
 
     print '\nSetting up submission files for: ', name
