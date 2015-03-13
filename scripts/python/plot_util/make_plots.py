@@ -11,7 +11,13 @@ from matplotlib.font_manager import FontProperties
 
 ##########################################################
 
-def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc', 'region_FINAL.out'], target_files=['favorites.txt','favorites2.txt'], targets=['*'], colorcode=None, xvars=['rms_fill', 'NAT_rmsd'], yvars=['score'] ):
+def make_plots( inpaths,
+		outfilenames=['swm_rebuild.out','swm_rebuild.sc', 'region_FINAL.out'],
+		target_files=['favorites.txt','favorites2.txt'],
+		targets=['*'],
+		colorcode=None,
+		xvars=['rms_fill', 'NAT_rmsd'],
+		yvars=['score']):
 
 	# initialize lists
 	data = []
@@ -102,9 +108,22 @@ def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc', 'regi
 			[ xvar_data, yvar_data ] = [ list(d) for d in zip( *[ ( score[xvar_idx], score[yvar_idx] ) for score in data[n][ target ].scores] ) ]
 
 			# plot data, and reference lines (x=1, x=2)
-			ax.plot( xvar_data, yvar_data, marker='.', markersize=4, color=colorcode[n], linestyle=' ', label=base_inpaths[n] )
-			ax.plot( [1 for y in plt.ylim()], plt.ylim(), color='black', linestyle=':')
-			ax.plot( [2 for y in plt.ylim()], plt.ylim(), color='black')
+			ax.plot( xvar_data,
+				 yvar_data,
+				 marker='.',
+				 markersize=4,
+				 color=colorcode[n],
+				 linestyle=' ',
+				 label=base_inpaths[n] )
+
+			ax.plot( [1 for y in plt.ylim()],
+				 plt.ylim(),
+				 color='black',
+				 linestyle=':')
+			ax.plot( [2 for y in plt.ylim()],
+				 plt.ylim(),
+				 color='black')
+
 			ax.set_xlim( 0, 16 )
 
 			# set title and axes labels, adjust axis properties
@@ -122,10 +141,15 @@ def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc', 'regi
                         monospace_font.set_family( 'monospace' )
 			if times_list[n][plot_idx-1].times_found():
 				xpos, ypos = 0.92, (0.10*len(inpaths)) - (0.015*6*n)
-				ax.text( xpos, ypos, times_list[n][plot_idx-1].get_label(),
-						 verticalalignment='bottom', horizontalalignment='right',
-						 transform=ax.transAxes, color=colorcode[n], fontsize=6,
-                                                 fontproperties = monospace_font )
+				ax.text( xpos,
+					 ypos,
+					 times_list[n][plot_idx-1].get_label(),
+					 verticalalignment='bottom',
+					 horizontalalignment='right',
+					 transform=ax.transAxes,
+					 color=colorcode[n],
+					 fontsize=6,
+                                         fontproperties=monospace_font )
 
 	# finalize (adjust spacing, print date)
 	finalize_figure( fig, nplots, nrows, ncols )
@@ -157,6 +181,7 @@ if __name__=='__main__':
 	parser.add_argument('-targets', nargs='+', help='List of targets.', default=['*'])
 	parser.add_argument('-xvar', nargs='*', help='Name of x variable(s).', default=['rms_fill','NAT_rmsd'])
 	parser.add_argument('-yvar', nargs='*', help='Name of y variable(s).', default=['score'])
+
 	args=parser.parse_args()
 
-	make_plots( args.inpaths, outfilenames=args.outfilenames, target_files=args.target_files, targets=args.targets, xvars=args.xvar, yvars=args.yvar )
+	make_plots( args.inpaths, outfilenames=args.outfilenames, target_files=args.target_files, targets=args.targets, xvars=args.xvar, yvars=args.yvar)
