@@ -31,9 +31,13 @@ ROSETTA=args.path_to_rosetta
 if ( not len( ROSETTA ) ) or ( not exists( ROSETTA ) ):
     ROSETTA=expandvars( '$ROSETTA' )
     if ( not len( ROSETTA ) ) or ( not exists( ROSETTA ) ):
-        print 'WARNING: $ROSETTA must be defined as the path to a working rosetta repository!!!'
-        print 'Export this variable, by putting the following in your .bashrc or .zshrc:'
-        print 'export ROSETTA=/path/to/rosetta/\n'
+        print 
+        print '######################################################################'
+        print 'WARNING: $ROSETTA must be defined as the path to rosetta!!!'
+        print 'Export this variable, by putting the following in your .bashrc:'
+        print 'export ROSETTA=/path/to/rosetta/'
+        print '######################################################################'
+        print
         exit(0)
 assert( exists( ROSETTA ) )
 ROSETTA_DB=ROSETTA+'/main/database/'
@@ -43,31 +47,33 @@ ERRASER_TOOLS=ROSETTA+'/tools/ERRASER/'
 CWD = getcwd()
 chdir( ERRASER_TOOLS )
 
-command = ['phenix.rna_validate']
-out, err = subprocess.Popen( command,
+command = 'phenix.rna_validate'
+out, err = subprocess.Popen( command, shell=True,
                              stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE ).communicate()
 if (err and len(err)) or ('command not found' in out): 
-    print command
-    print out
-    print err
+    print 'COMMAND: '+command
+    print 'OUTPUT: '+out
+    print 'ERROR: '+err
     print
+    print '######################################################################'
     print 'Make sure you have properly downloaded and installed PHENIX!!!'
-    print '1. Download and install PHENIX from http://www.phenix-online.org/. PHENIX is free for academic users.'
-    print '2. Ensure you have correctly setup PHENIX. As a check, run the following command:' 
+    print '1. Download and install PHENIX from http://www.phenix-online.org/.'
+    print '2. Ensure you have correctly setup PHENIX, run the following command:' 
     print '   $ phenix.rna_validate'
-assert( not err and not len(err) and not ('command not found' in out))
+    print '######################################################################'
+    print 
+    exit(0)
 
-command =  ['./convert_to_phenix.python']
-out, err = subprocess.Popen( command,
+command = './convert_to_phenix.python'
+out, err = subprocess.Popen( command, shell=True,
                              stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE ).communicate()
 if (err and len(err)): 
-    print command
-    print out
-    print err
-assert( not err and not len(err) )
-
+    print 'COMMAND: '+command
+    print 'OUTPUT: '+out
+    print 'ERROR: '+err
+    exit(0)
 chdir( CWD )
 
 
