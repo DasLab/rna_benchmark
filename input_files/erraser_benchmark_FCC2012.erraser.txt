@@ -2,7 +2,7 @@ Name:			guanine_riboswitch
 Input_pdb:		1U8D.pdb
 Map_file:		1U8D_cell.ccp4
 Map_reso:		1.95
-Fixed_res:		A:33-37,A:61,A:65
+Fixed_res:		-
 Extra_flags:	-
 
 Name:			rna_pseudoknot
