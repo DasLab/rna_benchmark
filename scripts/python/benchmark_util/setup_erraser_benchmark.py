@@ -39,6 +39,40 @@ assert( exists( ROSETTA ) )
 ROSETTA_DB=ROSETTA+'/main/database/'
 ERRASER_TOOLS=ROSETTA+'/tools/ERRASER/'
 
+# make sure phenix is setup and python version is correct
+CWD = getcwd()
+chdir( ERRASER_TOOLS )
+
+command = ['phenix.rna_validate']
+out, err = subprocess.Popen( command,
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE ).communicate()
+if (err and len(err)) or ('command not found' in out): 
+    print command
+    print out
+    print err
+    print
+    print 'Make sure you have properly downloaded and installed PHENIX!!!'
+    print '1. Download and install PHENIX from http://www.phenix-online.org/. PHENIX is free for academic users.'
+    print '2. Ensure you have correctly setup PHENIX. As a check, run the following command:' 
+    print '   $ phenix.rna_validate'
+assert( not err and not len(err) and not ('command not found' in out))
+
+command =  ['./convert_to_phenix.python']
+out, err = subprocess.Popen( command,
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE ).communicate()
+if (err and len(err)): 
+    print command
+    print out
+    print err
+assert( not err and not len(err) )
+
+chdir( CWD )
+
+
+
+
 
 # get extra_flags_benchmark
 if len (args.extra_flags) > 0:
@@ -146,7 +180,7 @@ for name in names:
     print '\nSetting up submission files for: ', name
     CWD = getcwd()
     chdir( name )
-    rosetta_submit_cmd = 'rosetta_submit.py README_ERRASER OUT %d %d' % (args.njobs, args.nhours )
+    rosetta_submit_cmd = 'rosetta_submit.py README_ERRASER ERRASER %d %d' % (args.njobs, args.nhours )
     if args.save_logs:
         rosetta_submit_cmd += ' -save_logs'
     system( rosetta_submit_cmd )
