@@ -92,7 +92,7 @@ for info_file_line in open( info_file ).readlines():
     if   cols[0] == 'Input_pdb:'   :    input_pdb  [ name ] = cols[1]
     elif cols[0] == 'Map_file:'    :    map_file   [ name ] = cols[1]
     elif cols[0] == 'Map_reso:'    :    map_reso   [ name ] = cols[1]
-    elif cols[0] == 'Fixed_res:'   :    fixed_res  [ name ] = cols[1].replace(':','') #erraser format A:33 --> A33 
+    elif cols[0] == 'Fixed_res:'   :    fixed_res  [ name ] = cols[1].replace(':','').replace(',',' ') #erraser format A:33 --> A33 
     elif cols[0] == 'Extra_flags:' :    extra_flags[ name ] = string.join( cols[1:] )
 
 
@@ -120,7 +120,7 @@ for name in names:
 
     # SETUP for ERRASER
     fid = open( '%s/README_ERRASER' % name, 'w' )
-    fid.write( 'erraser.py' )
+    fid.write( '%s/erraser.py' % ERRASER_TOOLS )
     fid.write( ' -pdb %s' % input_pdb[ name ] )
     fid.write( ' -map %s' % map_file[ name ] )
     if len(map_reso[ name ]) > 0 and map_reso[ name ] != '-':
@@ -145,7 +145,7 @@ for name in names:
     print '\nSetting up submission files for: ', name
     CWD = getcwd()
     chdir( name )
-    rosetta_submit_cmd = 'rosetta_submit.py README_ERRASER OUT %d %d' % (njobs, args.nhours )
+    rosetta_submit_cmd = 'rosetta_submit.py README_ERRASER OUT %d %d' % (args.njobs, args.nhours )
     if args.save_logs:
         rosetta_submit_cmd += ' -save_logs'
     system( rosetta_submit_cmd )
