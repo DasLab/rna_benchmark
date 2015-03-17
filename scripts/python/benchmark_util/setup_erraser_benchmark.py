@@ -51,21 +51,22 @@ command = 'phenix.rna_validate'
 out, err = subprocess.Popen( command, shell=True,
                              stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE ).communicate()
-if (err and len(err)) or ('command not found' in out): 
-    print 'COMMAND: '+command
-    print 'OUTPUT: '+out
-    print 'ERROR: '+err
-    print
-    print '######################################################################'
-    print 'Make sure you have properly downloaded and installed PHENIX!!!'
-    print '1. Download and install PHENIX from http://www.phenix-online.org/.'
-    print '2. Ensure you have correctly setup PHENIX, run the following command:' 
-    print '   $ phenix.rna_validate'
-    print '######################################################################'
-    print 
-    exit(0)
+if (err and len(err)):
+    if not ('Usage:' in err or 'Usage:' in out): 
+        print 'COMMAND: '+command
+        print 'OUTPUT: '+out
+        print 'ERROR: '+err
+        print
+        print '######################################################################'
+        print 'Make sure you have properly downloaded and installed PHENIX!!!'
+        print '1. Download and install PHENIX from http://www.phenix-online.org/.'
+        print '2. Ensure you have correctly setup PHENIX, run the following command:' 
+        print '   $ phenix.rna_validate'
+        print '######################################################################'
+        print 
+        exit(0)
 
-command = './convert_to_phenix.python'
+command = './convert_to_phenix_python'
 out, err = subprocess.Popen( command, shell=True,
                              stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE ).communicate()
