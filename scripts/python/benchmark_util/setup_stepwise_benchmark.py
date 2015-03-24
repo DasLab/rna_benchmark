@@ -53,6 +53,7 @@ if ( not len( ROSETTA ) ) or ( not exists( ROSETTA ) ):
         print 'export ROSETTA=/path/to/rosetta/\n'
         exit(0)
 assert( exists( ROSETTA ) )
+ROSETTA_BIN=ROSETTA+'/main/source/bin/'
 ROSETTA_DB=ROSETTA+'/main/database/'
 SWA_DAGMAN_TOOLS=ROSETTA+'/tools/SWA_RNA_python/SWA_dagman_python/'
 
@@ -316,9 +317,9 @@ for name in names:
 qsub_file = 'qsubMINI'
 hostname = uname()[1]
 if 'stampede' in hostname: qsub_file = 'qsubMPI'
-if 'sherlock' in hostname or 'sh-' in hostname: 
+if 'sherlock' in hostname or 'sh-' in hostname:
     qsub_file = 'sbatchMINI'
-    if args.nhours > 48: 
+    if args.nhours > 48:
         args.nhours = 48
 fid_qsub = open( qsub_file, 'w' )
 
@@ -395,7 +396,7 @@ for name in names:
     else:
 
         fid = open( '%s/README_SWM' % name, 'w' )
-        fid.write( 'stepwise @flags -out:file:silent swm_rebuild.out\n' )
+        fid.write( ROSETTA_BIN + 'stepwise @flags -out:file:silent swm_rebuild.out\n' )
         fid.close()
 
         fid = open( '%s/flags' % name, 'w' )
