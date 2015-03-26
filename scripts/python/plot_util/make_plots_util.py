@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 import matplotlib.cm as cmx
 import numpy as np
+from datetime import datetime
 
 ##########################################################
 
@@ -240,17 +241,25 @@ def finalize_figure( fig, nplots, nrows, ncols ):
 
 ###########################################################
 
-def setup_pdf_page( base_inpaths, targets ):
-	pdfname = ''
-	if targets[0] != '*':
-		if len(targets) > 3:
-			pdfname += '%d_targets_' % len(targets)
+def setup_pdf_page( base_inpaths, targets, pdfname = None ):
+	if not pdfname:
+		targets_str = string.join(targets, '_').replace('*', '')
+		inpath_str = string.join(base_inpaths, '_vs_')
+		pdfname = targets_str + '_' + inpath_str
+	pdfname += '.pdf' if '.pdf' not in pdfname else ''
+	figure_dir = get_path_to_dir(['stepwise_benchmark','benchmark']) + '/Figures/'
+	fullpdfname = figure_dir + pdfname
+	try:
+		pp = PdfPages( fullpdfname )
+	except IOError as err:
+		if 'File name too long' in err.args:
+			datetime_str = datetime.now().strftime("%Y%m%d-%H%M%S")
+			fullpdfname = figure_dir + 'make_plots_' + datetime_str + '.pdf'
+			pp = PdfPages( fullpdfname )
 		else:
-			pdfname += '%s_' % string.join(targets, '_')
-	pdfname += string.join(base_inpaths, '_vs_') + '.pdf'
-	fullpdfname = get_path_to_dir(['stepwise_benchmark','benchmark']) + '/Figures/' + pdfname
+			print "\nIOError", err
+			exit(-1)
 	print '\nMaking figure in: %s\n' % fullpdfname
-	pp = PdfPages( fullpdfname )
 	return ( pp, fullpdfname )
 
 ###########################################################

@@ -11,13 +11,7 @@ from matplotlib.font_manager import FontProperties
 
 ##########################################################
 
-def make_plots( inpaths,
-		outfilenames=['swm_rebuild.out','swm_rebuild.sc', 'region_FINAL.out'],
-		target_files=['favorites.txt','favorites2.txt'],
-		targets=['*'],
-		colorcode=None,
-		xvars=['rms_fill', 'NAT_rmsd'],
-		yvars=['score']):
+def make_plots( inpaths, outfilenames, target_files, targets, xvars, yvars, pdfname ):
 
 	# initialize lists
 	data = []
@@ -29,8 +23,7 @@ def make_plots( inpaths,
 	inpaths = map( lambda x: abspath(x), inpaths )
 
 	# Get colorcode for plotting
-	if not colorcode:
-		colorcode = [ (0.0, 0.0, 0.0, 1.0), (1.0, 0.0, 0.0, 1.0) ]
+	colorcode = [ (0.0, 0.0, 0.0, 1.0), (1.0, 0.0, 0.0, 1.0) ]
 	if len(colorcode) < len(inpaths):
 		colorcode = jet( len(inpaths) )
 
@@ -71,7 +64,7 @@ def make_plots( inpaths,
 	times_list = get_times( inpaths, data, noutfiles, target_names, which_target, verbose=True )
 
 	# setup pdf and figure, return handles
-	( pp, fullpdfname ) = setup_pdf_page( base_inpaths, targets )
+	( pp, fullpdfname ) = setup_pdf_page( base_inpaths, targets, pdfname=pdfname )
 	( fig, nplots, nrows, ncols ) = setup_figure( noutfiles )
 
 	xlabels = []
@@ -174,14 +167,48 @@ if __name__=='__main__':
 
 	import argparse
 
-	parser = argparse.ArgumentParser(description='Make plots of scores from silent files.')
-	parser.add_argument('inpaths', nargs='+', help='List of paths too silent files.')
-	parser.add_argument('-outfilenames', nargs='*', help='Name of silent file.', default=['swm_rebuild.out','swm_rebuild.sc','region_FINAL.out'])
-	parser.add_argument('-target_files', nargs='+', help='List of additional target files.', default=['favorites.txt','favorites2.txt'])
-	parser.add_argument('-targets', nargs='+', help='List of targets.', default=['*'])
-	parser.add_argument('-xvar', nargs='*', help='Name of x variable(s).', default=['rms_fill','NAT_rmsd'])
-	parser.add_argument('-yvar', nargs='*', help='Name of y variable(s).', default=['score'])
-
+	parser = argparse.ArgumentParser(description='Plot scores from silent files.')
+	parser.add_argument('inpaths',
+			    nargs='+',
+			    help='List of paths too silent files.'
+			    )
+	parser.add_argument('-outfilenames',
+			    nargs='*',
+			    help='Name of silent file.',
+			    default=['swm_rebuild.out',
+				     'swm_rebuild.sc',
+				     'region_FINAL.out']
+			    )
+	parser.add_argument('-target_files',
+			    nargs='+',
+			    help='List of additional target files.',
+			    default=['favorites.txt','favorites2.txt']
+			    )
+	parser.add_argument('-targets',
+			    nargs='+',
+			    help='List of targets.',
+			    default=['*'])
+	parser.add_argument('-xvar',
+			    nargs='*',
+			    help='Name of x variable(s).',
+			    default=['rms_fill','NAT_rmsd']
+			    )
+	parser.add_argument('-yvar',
+			    nargs='*',
+			    help='Name of y variable(s).',
+			    default=['score']
+			    )
+	parser.add_argument('-o','--pdfname',
+			    help='File name to save as pdf.',
+			    default=None
+			    )
 	args=parser.parse_args()
 
-	make_plots( args.inpaths, outfilenames=args.outfilenames, target_files=args.target_files, targets=args.targets, xvars=args.xvar, yvars=args.yvar)
+
+	make_plots( args.inpaths,
+		    args.outfilenames,
+		    args.target_files,
+		    args.targets,
+		    args.xvar,
+		    args.yvar,
+		    args.pdfname )
