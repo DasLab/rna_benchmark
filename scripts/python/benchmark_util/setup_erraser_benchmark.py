@@ -97,6 +97,7 @@ map_file = {}
 map_reso = {}
 fixed_res = {}
 extra_flags = {}
+reference_pdb = {}
 
 
 # make sure the info file is specified correctly and exists
@@ -129,11 +130,12 @@ for info_file_line in open( info_file ).readlines():
 
     if ( len( args.user_input_runs ) > 0 ) and ( name not in args.user_input_runs ): continue
 
-    if   cols[0] == 'Input_pdb:'   :    input_pdb  [ name ] = cols[1]
-    elif cols[0] == 'Map_file:'    :    map_file   [ name ] = cols[1]
-    elif cols[0] == 'Map_reso:'    :    map_reso   [ name ] = cols[1]
-    elif cols[0] == 'Fixed_res:'   :    fixed_res  [ name ] = cols[1].replace(':','').replace(',',' ') #erraser format A:33 --> A33 
-    elif cols[0] == 'Extra_flags:' :    extra_flags[ name ] = string.join( cols[1:] )
+    if   cols[0] == 'Input_pdb:'    :    input_pdb    [ name ] = cols[1]
+    elif cols[0] == 'Map_file:'     :    map_file     [ name ] = cols[1]
+    elif cols[0] == 'Map_reso:'     :    map_reso     [ name ] = cols[1]
+    elif cols[0] == 'Fixed_res:'    :    fixed_res    [ name ] = cols[1].replace(':','').replace(',',' ') #erraser format A:33 --> A33 
+    elif cols[0] == 'Extra_flags:'  :    extra_flags  [ name ] = string.join( cols[1:] )
+    elif cols[0] == 'Reference_pdb:':    reference_pdb[ name ] = cols[1]
 
 
 # check that each dictionary is the same size
@@ -151,12 +153,15 @@ for name in names:
 
     dirname = name
     if not exists( dirname ): 
-        system( 'mkdir '+dirname )
+        system( 'mkdir ' + dirname )
 
     # move all required files to the correct directory
-    start_files = [ input_pdb[ name ], map_file[ name ] ]
+    start_files = [ input_pdb[ name ], map_file[ name ], reference_pdb[ name ] ]
     for start_file in start_files:
-        system( 'cp %s/%s %s/ ' % ( inpath, start_file, dirname ) )
+        inpath_start_file = '%s/%s' % (inpath, start_file)
+        if not exists( inpath_start_file ): 
+            continue
+        system( 'cp %s %s/ ' % ( inpath_start_file, dirname ) )
 
     # SETUP for ERRASER
     fid = open( '%s/README_ERRASER' % name, 'w' )
