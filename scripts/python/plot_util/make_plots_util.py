@@ -243,9 +243,9 @@ def finalize_figure( fig, nplots, nrows, ncols ):
 
 def setup_pdf_page( base_inpaths, targets, pdfname = None ):
 	if not pdfname:
-		targets_str = string.join(targets, '_').replace('*', '')
-		inpath_str = string.join(base_inpaths, '_vs_')
-		pdfname = targets_str + '_' + inpath_str
+		pdfname = string.join(targets, '_').replace('*', '')
+		pdfname += '_' + string.join(base_inpaths, '_vs_')
+		pdfname = pdfname if pdfname[0] != '_' else pdfname[1:]
 	pdfname += '.pdf' if '.pdf' not in pdfname else ''
 	figure_dir = get_path_to_dir(['stepwise_benchmark','benchmark']) + '/Figures/'
 	fullpdfname = figure_dir + pdfname
