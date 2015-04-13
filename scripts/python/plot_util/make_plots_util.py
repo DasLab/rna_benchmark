@@ -52,9 +52,9 @@ class TimeData(object):
 
 ##########################################################
 
-def get_outfiles( inpath, target_names, outfilenames ):
+def get_outfiles( inpath, targets, outfilenames ):
 	outfiles = []
-	for target in target_names:
+	for target in targets:
 		for outfilename in outfilenames:
 			command = ['ls', '-1', string.join([inpath, target, outfilename], '/')]
 			out, err = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
@@ -72,40 +72,45 @@ def get_outfiles( inpath, target_names, outfilenames ):
 
 def load_score_data( file ):
 	data = ScoreData()
-	for line in open( file, 'r' ).readlines():
-		if len( line ) < 2: return []
-		cols = line.split()
-		if len( cols ) > 0 and cols[0] == 'SCORE:':
-			score_labels = cols[1:len( cols )-1]
+	if not exists( file ):
+		return False
+	with open( file, 'r' ) as f:
+		for l in f:
+			if 'SCORE:' not in l: continue
+			data.score_labels = l.strip().split()[1:-1]
 			break
-	keyword = 'SCORE'
-	scorenums = [ str(x) for x in xrange( 2, len( score_labels )+2 ) ]
+	if not data.score_labels:
+		return False
+	scorenums = [str(x) for x in xrange(2,len(data.score_labels)+2)]
 	command = (
-			'grep '+keyword+' '+file
-			+ ' | awk \'{print $'+string.join( scorenums, ',$' )+'}\''
-			+ ' | grep -v inp'
-			+ ' | grep -v R'
-			+ ' | grep -v H'
-			+ ' | grep -v score'
-			+ ' | grep -v pdb'
-			+ ' | grep -v descr'
-			+ ' | grep -v total'
-			+ ' | grep -v S_'
+		'grep SCORE ' + file
+		+ ' | awk \'{print $'+',$'.join(scorenums)+'}\''
+		+ ' | grep -v inp'
+		+ ' | grep -v R'
+		+ ' | grep -v H'
+		+ ' | grep -v score'
+		+ ' | grep -v pdb'
+		+ ' | grep -v descr'
+		+ ' | grep -v total'
+		+ ' | grep -v S_'
 	)
-	scores = popen( command ).read().split('\n')[:-1]
-	scores = [ score.split() for score in scores ]
-	data.scores = scores
-	data.score_labels = score_labels
+	data.scores = [s.strip().split() for s in popen(command).xreadlines()]
+	return data
+
+##########################################################
+
+def load_data( inpaths, targets, outfilenames ):
+	data = {}
+	for inpath_idx, inpath in enumerate(inpaths):
+		outfiles = get_outfiles( inpath, targets, outfilenames )
+		if not len(outfiles): 
+			continue
+		data[ inpath ] = dict( [(basename(dirname(file)), load_score_data(file)) for file in outfiles] )
 	return data
 
 ##########################################################
 
 def get_date():
-	### Option 1: use datetime
-	#from datetime import date
-	#today = date.today()
-	#current_date = "%d/%d/%d" % ( today.month, today.day, today.year )
-	### Option 2: use popen( 'date' )
 	current_date = popen( 'date' ).read().replace('\n','')
 	return current_date
 
@@ -140,17 +145,14 @@ def get_path_to_dir( dirnames ):
 
 ###########################################################
 
-def show_times( inpaths, data, noutfiles, target_names, which_target, times=None ):
+def show_times( inpaths, data, noutfiles, target_names, times=None ):
 	if not times:
-		times_list = get_times( inpaths, data, noutfiles, target_names, which_target, verbose=False )
+		times_list = get_times( inpaths, data, noutfiles, target_names, verbose=False )
 	else:
 		times_list = times
 	for k in xrange( len(target_names) ):
-		times_found = False
-		for n in xrange( len( inpaths ) ):
-			if times_list[n][k].times_found():
-				times_found = True
-		if not times_found: continue
+		if not any ( t[k].times_found() for t in times_list ):
+			continue
 		print '\n %-31s%8s' % ( target_names[k], 'CPU Time' )
 		for n in xrange( len(inpaths) ):
 			run_time = times_list[n][k]
@@ -158,33 +160,32 @@ def show_times( inpaths, data, noutfiles, target_names, which_target, times=None
 				print ' Run %d                    %5.0f +/- %4.0f' % ( n+1, run_time.mean, run_time.stdev )
 			else:
 				print ' Run %d %33s' % ( n+1, 'N/A' )
-	if not times_found:	return
 	print '\n'
-	for n in xrange( len(inpaths) ):
-		print ' Run %d: %s' % ( n+1, basename( inpaths[n] ) )
+	for inpath_idx, inpath in enumerate(inpaths):
+		print ' Run %d: %s' % (inpath_idx, basename(inpath))
 	return
-
+	
 ###########################################################
 
-def get_times( inpaths, data, noutfiles, target_names, which_target, verbose=False ):
+def get_times( inpaths, data, noutfiles, target_names, verbose=False ):
 	time_label = 'time'
 	times_list = []
-	for n in xrange( len( inpaths )):
+	for inpath_idx, inpath in enumerate(inpaths):
 		times = []
 		for target in target_names:
 			time_data = TimeData()
-			time_data.inpath = inpaths[n]
+			time_data.inpath = inpath
 			time_data.target = target
 			try:
-				time_idx = data[n][ target ].score_labels.index( time_label )
-				time_data.times = np.array( [ score[time_idx] for score in data[n][ target ].scores ], dtype = 'float_' )
+				time_idx = data[ inpath ][ target ].score_labels.index( time_label )
+				time_data.times = np.array( [ score[time_idx] for score in data[ inpath ][ target ].scores ], dtype = 'float_' )
 			except:
 				time_data.times = []
 			time_data.update_stats()
 			times.append( time_data )
 		times_list.append( times )
 	if verbose:
-		show_times( inpaths, data, noutfiles, target_names, which_target, times=times_list )
+		show_times( inpaths, data, noutfiles, target_names, times=times_list )
 	return times_list
 
 ###########################################################
@@ -202,7 +203,6 @@ def get_figure_dimensions( noutfiles ):
 		nrows = 5
 	else:
 		nrows = 6
-
 	ncols = np.ceil( nplots / float( nrows ) )
 	return ( nplots, nrows, ncols )
 
@@ -241,14 +241,18 @@ def finalize_figure( fig, nplots, nrows, ncols ):
 
 ###########################################################
 
-def setup_pdf_page( base_inpaths, targets, pdfname = None ):
+def setup_pdf_page( inpaths, targets, pdfname = None ):
+	inpaths = [basename(x) for x in inpaths]
 	if not pdfname:
-		pdfname = string.join(targets, '_').replace('*', '')
-		pdfname += '_' + string.join(base_inpaths, '_vs_')
+		pdfname = '_'.join(targets)
+		pdfname += '_' + '_vs_'.join(inpaths)
 		pdfname = pdfname if pdfname[0] != '_' else pdfname[1:]
 	pdfname += '.pdf' if '.pdf' not in pdfname else ''
-	figure_dir = get_path_to_dir(['stepwise_benchmark','benchmark']) + '/Figures/'
-	fullpdfname = figure_dir + pdfname
+	if './' in pdfname:
+		fullpdfname = pdfname
+	else:
+		figure_dir = get_path_to_dir(['stepwise_benchmark','benchmark']) + '/Figures/'
+		fullpdfname = figure_dir + pdfname
 	try:
 		pp = PdfPages( fullpdfname )
 	except IOError as err:
@@ -264,13 +268,13 @@ def setup_pdf_page( base_inpaths, targets, pdfname = None ):
 
 ###########################################################
 
-def jet( size ):
-	#cmap = plt.get_cmap( 'jet' )
+def get_colorcode( size ):
+	if size <= 2:
+		return [(0.0, 0.0, 0.0, 1.0), (1.0, 0.0, 0.0, 1.0)]
 	cmap = plt.get_cmap( 'hot' )
 	cnorm = colors.Normalize( vmin=0, vmax=size )
 	scalar_map = cmx.ScalarMappable( norm=cnorm, cmap=cmap )
-	colorcode = [ scalar_map.to_rgba( x ) for x in xrange( size ) ]
-	return colorcode
+	return [ scalar_map.to_rgba( x ) for x in xrange( size ) ]
 
 ###########################################################
 

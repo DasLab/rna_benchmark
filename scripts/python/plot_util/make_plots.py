@@ -2,7 +2,7 @@
 
 ##########################################################
 
-from os.path import exists, dirname, basename, abspath
+from os.path import exists, dirname, basename, abspath, isdir
 import matplotlib.pyplot as plt
 import numpy as np
 from make_plots_util import *
@@ -13,101 +13,83 @@ from matplotlib.font_manager import FontProperties
 
 def make_plots( inpaths, outfilenames, target_files, targets, xvars, yvars, pdfname ):
 
-	# initialize lists
-	data = []
-	which_target = []
-	outfiles_list = []
-	bad_inpaths = []
-
-	# Get absolute paths of inpaths
-	inpaths = map( lambda x: abspath(x), inpaths )
-
-	# Get colorcode for plotting
-	colorcode = [ (0.0, 0.0, 0.0, 1.0), (1.0, 0.0, 0.0, 1.0) ]
-	if len(colorcode) < len(inpaths):
-		colorcode = jet( len(inpaths) )
-
-	# Get target_names
-	if targets[0] != '*':
-		target_names = targets
-	else:
-		target_names = get_target_names( target_files )
-
-	# Print target_names
-	for target in target_names:
+	# Initialize/Check args
+	inpaths = [abspath(x) for x in inpaths if exists(x) and isdir(x)]
+	targets = targets if targets[0] != '*' else get_target_names( target_files )
+	for target in targets:
 		print "Target: "+target
 
-	# Check all inpaths for outfiles, get outfiles/data
-	for n, inpath in enumerate(inpaths):
-		assert( exists( inpath ) )
-		outfiles_actual = get_outfiles( inpath, target_names, outfilenames )
-		if not len(outfiles_actual):  bad_inpaths.append( inpath )
-	  	which_target.append( map( lambda x: target_names.index( basename( dirname( x ) ) ), outfiles_actual ) )
-		data.append( dict([ (target_names[ which_target[n][k] ], load_score_data(outfiles_actual[k])) for k in xrange( len(outfiles_actual) ) ]) )
-		outfiles_list.append( outfiles_actual )
+	# Load data for all targets in all inpaths
+	data = load_data( inpaths, targets, outfilenames )
+	inpaths = data.keys()
+	noutfiles = np.max([len(d) for d in data.values()])
 
-	# Remove empty items from list
-	which_target = [item for item in which_target if len(item)]
-	data = [item for item in data if len(item)]
-	outfiles_list = [item for item in outfiles_list if len(item)]
-
-	# Remove inpath from inpaths if no outfile found for targets in inpath
-	inpaths = [ path for path in inpaths if path not in bad_inpaths ]
-	base_inpaths = map( lambda x: basename(x), inpaths )
-
-	# Get the max number of outfiles to be plotted for a single inpath
-	noutfiles = np.max( map( lambda x: len(x), outfiles_list ) )
+	# get and print out runtimes, stored in the silent files
+	times_list = get_times( inpaths, data, noutfiles, targets, verbose=True )
 
 	###################################################
 
-	# get and print out runtimes, stored in the silent files
-	times_list = get_times( inpaths, data, noutfiles, target_names, which_target, verbose=True )
-
 	# setup pdf and figure, return handles
-	( pp, fullpdfname ) = setup_pdf_page( base_inpaths, targets, pdfname=pdfname )
+	( pp, fullpdfname ) = setup_pdf_page( inpaths, targets, pdfname=pdfname )
 	( fig, nplots, nrows, ncols ) = setup_figure( noutfiles )
+	colorcode = get_colorcode( len(inpaths) )
 
 	xlabels = []
 	ylabels = []
 
-	# iterate over runs
-	for n in xrange( len(inpaths) ):
+	# iterate over targets
+	for plot_idx, target in enumerate(targets, start=1):
 
-		# iterate over targets
-		for plot_idx, target in enumerate(target_names, start=1):
+		# make sure target is in data for atleast one inpath
+		if not any ( target in d.keys() for d in data.values() ): continue
+		
+		# get subplot, if data exists for target
+		plot_idx_wrapped = 1 + (plot_idx - 1) % (nrows*ncols)
+		ax = fig.add_subplot( nrows, ncols, plot_idx_wrapped )
 
-			# get subplot, if data exists for target
-			if target not in data[n].keys(): continue
-			plot_idx_wrapped = 1 + (plot_idx - 1) % (nrows*ncols)
-			ax = fig.add_subplot( nrows, ncols, plot_idx_wrapped )
+		# iterate over runs
+		for inpath_idx, inpath in enumerate(inpaths):
+		
+			# plot run, if data exists
+			if target not in data[inpath].keys():
+				ax.plot( None,
+					 None,
+					 marker='.',
+					 markersize=4,
+					 color=colorcode[inpath_idx],
+					 linestyle=' ',
+					 label=basename(inpath) )
+				continue
 
 			# get index of first xvar/yvar found in score_labels
-			score_labels = data[n][target].score_labels
+			score_labels = data[inpath][target].score_labels
 			for xvar in xvars:
 				xvar_idx = score_labels.index( xvar ) if xvar in score_labels else -1
-				if xvar_idx > -1:
-					if not xvar in xlabels:
-						xlabels.append( xvar )
-					break
+				if xvar_idx == -1:
+					continue 
+				if not xvar in xlabels:
+					xlabels.append( xvar )
+				break
 			for yvar in yvars:
 				yvar_idx = score_labels.index( yvar ) if yvar in score_labels else -1
-				if yvar_idx > -1:
-					if not yvar in ylabels:
-						ylabels.append( yvar )
-					break
+				if yvar_idx == -1:
+					continue 
+				if not yvar in ylabels:
+					ylabels.append( yvar )
+				break
 
 			# get data from scores using xvar_idx and yvar_idx
 			assert( xvar_idx > -1 and yvar_idx > -1 )
-			[ xvar_data, yvar_data ] = [ list(d) for d in zip( *[ ( score[xvar_idx], score[yvar_idx] ) for score in data[n][ target ].scores] ) ]
+			[ xvar_data, yvar_data ] = [ list(d) for d in zip( *[ ( score[xvar_idx], score[yvar_idx] ) for score in data[inpath][ target ].scores] ) ]
 
 			# plot data, and reference lines (x=1, x=2)
 			ax.plot( xvar_data,
 				 yvar_data,
 				 marker='.',
 				 markersize=4,
-				 color=colorcode[n],
+				 color=colorcode[inpath_idx],
 				 linestyle=' ',
-				 label=base_inpaths[n] )
+				 label=basename(inpath) )
 
 			ax.plot( [1 for y in plt.ylim()],
 				 plt.ylim(),
@@ -130,17 +112,17 @@ def make_plots( inpaths, outfilenames, target_files, targets, xvars, yvars, pdfn
 				ticklabel.set_fontsize(6)
 
 			# print times in plots (if available)
-                        monospace_font = FontProperties()
-                        monospace_font.set_family( 'monospace' )
-			if times_list[n][plot_idx-1].times_found():
-				xpos, ypos = 0.92, (0.10*len(inpaths)) - (0.015*6*n)
+			monospace_font = FontProperties()
+			monospace_font.set_family( 'monospace' )
+			if times_list[inpath_idx][plot_idx-1].times_found():
+				xpos, ypos = 0.92, (0.10*len(inpaths)) - (0.015*6*inpath_idx)
 				ax.text( xpos,
 					 ypos,
-					 times_list[n][plot_idx-1].get_label(),
+					 times_list[inpath_idx][plot_idx-1].get_label(),
 					 verticalalignment='bottom',
 					 horizontalalignment='right',
 					 transform=ax.transAxes,
-					 color=colorcode[n],
+					 color=colorcode[inpath_idx],
 					 fontsize=6,
                                          fontproperties=monospace_font )
 
