@@ -103,7 +103,7 @@ def load_data( inpaths, targets, outfilenames ):
 	data = {}
 	for inpath_idx, inpath in enumerate(inpaths):
 		outfiles = get_outfiles( inpath, targets, outfilenames )
-		if not len(outfiles): 
+		if not len(outfiles):
 			continue
 		data[ inpath ] = dict( [(basename(dirname(file)), load_score_data(file)) for file in outfiles] )
 	return data
@@ -164,7 +164,7 @@ def show_times( inpaths, data, noutfiles, target_names, times=None ):
 	for inpath_idx, inpath in enumerate(inpaths):
 		print ' Run %d: %s' % (inpath_idx, basename(inpath))
 	return
-	
+
 ###########################################################
 
 def get_times( inpaths, data, noutfiles, target_names, verbose=False ):
@@ -233,7 +233,7 @@ def finalize_figure( fig, nplots, nrows, ncols ):
 	legend_size = 6
 	if nplots > 20:
 		legend_size = 6
-	plot_idx = nplots - ( ncols - 1 )
+	plot_idx = nplots - 1
 	ax = fig.add_subplot( nrows, ncols, plot_idx)
 	legend = ax.legend(bbox_to_anchor=(0., .0, 1., -.225), loc=9, numpoints=1, prop={'size':legend_size})
 	#legend = ax.legend(bbox_to_anchor=(0.5,-.225), loc=9, numpoints=1, prop={'size':10})
