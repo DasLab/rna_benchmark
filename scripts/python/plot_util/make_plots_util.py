@@ -111,7 +111,9 @@ def load_data( inpaths, targets, outfilenames ):
 ##########################################################
 
 def get_date():
-	current_date = popen( 'date' ).read().replace('\n','')
+	#current_date = popen( 'date' ).read().replace('\n','')
+	#current_date = datetime.now().strftime("%b %d, %Y")
+	current_date = datetime.now().strftime("%Y-%m-%d")
 	return current_date
 
 ##########################################################
@@ -222,22 +224,27 @@ def setup_figure( noutfiles ):
 def finalize_figure( fig, nplots, nrows, ncols ):
 	# adjust spacing of plots on figure
 	if ( nplots == 1 or nrows < ncols ): # landscape
-		plt.subplots_adjust(bottom=.1, left=.05, right=.98, top=.90, hspace=.5)
+		plt.subplots_adjust(top=.90, bottom=.1,
+				    left=.05, right=.98,
+				    hspace=.5)
 	else:
-		plt.subplots_adjust(bottom=.1, left=.08, right=.95, top=.95, wspace=.3, hspace=.5)
+		plt.subplots_adjust(top=.95, bottom=.1,
+				    left=.08, right=.95,
+				    wspace=.3, hspace=.5)
 
 	# get date printed to figure
-	plt.figtext(0.95, 0.02, get_date(), horizontalalignment='right')
+	plt.figtext(0.95,0.02,
+		    get_date(),
+		    horizontalalignment='right',
+		    fontsize='small')
 
 	# setup global legend based on inpaths
 	legend_size = 6
-	if nplots > 20:
-		legend_size = 6
 	plot_idx = nplots - 1
 	ax = fig.add_subplot( nrows, ncols, plot_idx)
-	legend = ax.legend(bbox_to_anchor=(0., .0, 1., -.225), loc=9, numpoints=1, prop={'size':legend_size})
-	#legend = ax.legend(bbox_to_anchor=(0.5,-.225), loc=9, numpoints=1, prop={'size':10})
-	return
+	legend = ax.legend(bbox_to_anchor=(0., .0, 1., -.225),
+			   loc=9, numpoints=1, prop={'size':legend_size})
+       	return
 
 ###########################################################
 
