@@ -133,7 +133,7 @@ def plot_trial_counter_statistics( outfile ):
              marker='o',
              markersize=4,
              linestyle=' ')
-    ax.set_title('SWM Add Proposal Density Factor VS. Add Move Energy Drop/Trial',
+    ax.set_title('SWM Add Proposal Density Factor vs. Add Move Energy Drop/Trial',
                  fontsize=titlesize
                  )
     ax.set_xlabel('proposal density factor', fontsize=labelsize)

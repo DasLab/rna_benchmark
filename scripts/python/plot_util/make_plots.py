@@ -42,14 +42,14 @@ def make_plots( inpaths, outfilenames, target_files, targets, xvars, yvars, pdfn
 
 		# make sure target is in data for atleast one inpath
 		if not any ( target in d.keys() for d in data.values() ): continue
-		
+
 		# get subplot, if data exists for target
 		plot_idx_wrapped = 1 + (plot_idx - 1) % (nrows*ncols)
 		ax = fig.add_subplot( nrows, ncols, plot_idx_wrapped )
 
 		# iterate over runs
 		for inpath_idx, inpath in enumerate(inpaths):
-		
+
 			# plot run, if data exists
 			if target not in data[inpath].keys():
 				ax.plot( None,
@@ -63,24 +63,33 @@ def make_plots( inpaths, outfilenames, target_files, targets, xvars, yvars, pdfn
 
 			# get index of first xvar/yvar found in score_labels
 			score_labels = data[inpath][target].score_labels
+			xvar_idx = -1
 			for xvar in xvars:
-				xvar_idx = score_labels.index( xvar ) if xvar in score_labels else -1
-				if xvar_idx == -1:
-					continue 
+				if not xvar in score_labels:
+					continue
+				xvar_idx = score_labels.index( xvar )
 				if not xvar in xlabels:
 					xlabels.append( xvar )
 				break
+			yvar_idx = -1
 			for yvar in yvars:
-				yvar_idx = score_labels.index( yvar ) if yvar in score_labels else -1
-				if yvar_idx == -1:
-					continue 
+				if not yvar in score_labels:
+					continue
+				yvar_idx = score_labels.index( yvar )
 				if not yvar in ylabels:
 					ylabels.append( yvar )
 				break
 
 			# get data from scores using xvar_idx and yvar_idx
 			assert( xvar_idx > -1 and yvar_idx > -1 )
-			[ xvar_data, yvar_data ] = [ list(d) for d in zip( *[ ( score[xvar_idx], score[yvar_idx] ) for score in data[inpath][ target ].scores] ) ]
+			xvar_data, yvar_data = [], []
+			xvar_cutoff, yvar_cutoff = 100.0, 5.0
+			for score in data[inpath][target].scores:
+				if ( float(score[xvar_idx]) > xvar_cutoff or
+				     float(score[yvar_idx]) > yvar_cutoff ):
+					continue
+				xvar_data.append( score[xvar_idx] )
+				yvar_data.append( score[yvar_idx] )
 
 			# plot data, and reference lines (x=1, x=2)
 			ax.plot( xvar_data,
