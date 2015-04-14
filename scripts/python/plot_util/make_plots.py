@@ -21,7 +21,7 @@ def make_plots( inpaths, outfilenames, target_files, targets, xvars, yvars, pdfn
 
 	# Load data for all targets in all inpaths
 	data = load_data( inpaths, targets, outfilenames )
-	inpaths = data.keys()
+	inpaths = [x for x in inpaths if x in data.keys()]
 	noutfiles = np.max([len(d) for d in data.values()])
 
 	# get and print out runtimes, stored in the silent files
