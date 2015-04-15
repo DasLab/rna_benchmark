@@ -46,6 +46,22 @@ Input_res:     B:1,B:9-10,B:29-30,B:37-39,B:45-47,B:66,B:68-73
 Native:        3d2v_RNA.pdb
 Extra_flags:   -
 
+Name:          23s_rrna_44_49
+Sequence:      cugaugaagg,cg,gauuuccgaauga,u,acaau,caaugagga,gagg,a
+Secstruct:     -
+Working_res:   0:42-51,0:65-66,0:105-117,0:121,0:129-133,0:143-151,0:182-185,0:442
+Input_res:     0:42-43,0:50-51,0:65-66,0:105-117,0:121,0:129-133,0:143-151,0:182-185,0:442
+Native:        1s72_RNA.pdb
+Extra_flags:   -VDW_rep_optimize_memory_usage True
+
+Name:          23s_rrna_531_536
+Sequence:      uaugcc,ggcgaucgagcg,ggc,uucug,cgua,acauucca,agucuggagacac,cua,gugugu,a,aaaga
+Secstruct:     -
+Working_res:   0:10-15,0:528-539,0:544-546,0:611-615,0:617-620,0:2060-2067,0:2074-2086,0:2651-2653,0:2658-2663,0:2675,0:2812-2816
+Input_res:     0:10-15,0:528-530,0:537-539,0:544-546,0:611-615,0:617-620,0:2060-2067,0:2074-2086,0:2651-2653,0:2658-2663,0:2675,0:2812-2816
+Native:        1s72_RNA.pdb
+Extra_flags:   -VDW_rep_optimize_memory_usage True
+
 Name:          j31_glycine_riboswitch
 Sequence:      a,ggag,aa,au,aag,a,ggcaaaaggaca
 Secstruct:     -
@@ -77,24 +93,6 @@ Working_res:   A:4-8,A:12,A:14-27
 Input_res:     A:4-8,A:12,A:14-18,A:26-27
 Native:        1l2x_RNA.pdb
 Extra_flags:   -
-
-Name:          23s_rrna_44_49
-Sequence:      cugaugaagg,cg,gauuuccgaauga,u,acaau,caaugagga,gagg,a
-Secstruct:     -
-Working_res:   0:42-51,0:65-66,0:105-117,0:121,0:129-133,0:143-151,0:182-185,0:442
-Input_res:     0:42-43,0:50-51,0:65-66,0:105-117,0:121,0:129-133,0:143-151,0:182-185,0:442
-Native:        1s72_RNA.pdb
-Extra_flags:   -VDW_rep_optimize_memory_usage True
-
-
-Name:          23s_rrna_531_536
-Sequence:      uaugcc,ggcgaucgagcg,ggc,uucug,cgua,acauucca,agucuggagacac,cua,gugugu,a,aaaga
-Secstruct:     -
-Working_res:   0:10-15,0:528-539,0:544-546,0:611-615,0:617-620,0:2060-2067,0:2074-2086,0:2651-2653,0:2658-2663,0:2675,0:2812-2816
-Input_res:     0:10-15,0:528-530,0:537-539,0:544-546,0:611-615,0:617-620,0:2060-2067,0:2074-2086,0:2651-2653,0:2658-2663,0:2675,0:2812-2816
-Native:        1s72_RNA.pdb
-Extra_flags:   -VDW_rep_optimize_memory_usage True
-
 
 Name:          23s_rrna_2534_2540
 Sequence:      guuuuga,aaacga,cg,u,ugg,a,c,g,c,a,aauc,gcgga,gaagcgaagacccu,g,cuagggauaacagag,uaccucgaugucg,uc,ugagcuggg,u,cugc
