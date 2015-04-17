@@ -9,7 +9,7 @@ import subprocess as sp
 import multiprocessing as mp
 from os.path import exists, basename, dirname, isdir, isfile, realpath, abspath
 from glob import glob
-from create_benchmark_table_util import *
+from create_stepwise_benchmark_table_util import *
 
 
 ################################################################################
@@ -110,6 +110,12 @@ if __name__=='__main__':
         if len(user_targets):
             found_targets = filter(lambda x: x in user_targets, found_targets)
         targets = filter(lambda x: x in found_targets, get_target_names())
+        print '\nTARGETS\n%s\n' % ('\n'.join(targets))
+        
+        ########################################################################
+        ### TODO: move all optimize experimental models
+        ########################################################################
+        
 
 
         ########################################################################
@@ -135,10 +141,11 @@ if __name__=='__main__':
             print "Table:", table_name, "already exists!!!"
         else:
             table = Table( table_name )
-            table.add_row( column_names )
-            table.add_row([' | '.join(subcolumn_names[c]) for c in column_names])
+            table.add_column_labels( column_labels )
+            table.add_subcolumn_labels( subcolumn_labels )
             for table_row in table_row_list:
                 table.add_row( table_row.get_columns() )
+            table.add_row( ['AVERAGE'] + table.column_averages() )
             table.save()
 
         ########################################################################
