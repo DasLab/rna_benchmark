@@ -28,10 +28,10 @@ def get_target_row(target, (args)):
     ############################################################################
     table_row = TableRow()
     table_row.add_columns( get_title( target ) )
-    table_row.add_columns( get_target_properties( target ) )
-    table_row.add_columns( get_best_of_lowest_energy_cluster_centers( target, args.silent_file_name ) )
-    table_row.add_columns( get_lowest_rmsd_model( args.silent_file_name ) )
-    table_row.add_columns( get_lowest_energy_sampled( args.silent_file_name ) )
+    table_row.add_columns( get_target_properties() )
+    table_row.add_columns( get_best_of_lowest_energy_cluster_centers() )
+    table_row.add_columns( get_lowest_rmsd_model() )
+    table_row.add_columns( get_lowest_energy_sampled() )
 
     ############################################################################
     ### change back to working directory

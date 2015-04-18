@@ -9,7 +9,7 @@ import argparse
 import numpy as np
 import subprocess as sp
 import multiprocessing as mp
-from os.path import exists, basename, dirname, isdir, isfile, realpath, abspath
+from os.path import exists, basename, dirname, isdir, abspath, expandvars
 from glob import glob
 from titles import get_title
 from get_sequence import get_sequences
@@ -52,6 +52,51 @@ subcolumn_labels = {
 ################################################################################
 ### CLASSES
 ################################################################################
+class Command(object):
+
+	def __init__(self, command, args=None):
+		self.command = self._lex(command, args)
+		self.stdout = sp.PIPE
+		self.stderr = sp.PIPE
+		self.silent = False
+		self._out = None
+		self._err = None
+
+	def _lex(self, command, args):
+		if isinstance(command, list):
+			command = ' '.join(command)
+		if isinstance(args, list):
+			args = ' '.join(args)
+		return ' '.join([command, str(args)]) if args else command 
+
+	def _run(self):
+		pipe = sp.Popen( self.command, shell=True, 
+						 stdout=self.stderr, 
+						 stderr=self.stderr ) 
+		self._out, self._err = pipe.communicate()
+		return
+
+	def _check_error(self):
+		if self._err and len(self._err):
+			if not self.silent:
+				print '\n'.join([self.command,self._out,self._err])
+			return False
+		return True
+
+	def add_argument(self, argument, value=None):
+		argument = self._lex(argument, value) if value else argument
+		self.command = self._lex(self.command, argument)
+		return
+
+	def submit(self):
+		self._run()
+		return self._check_error()
+	
+	def output(self):
+		self._run()
+		return self._out if not self._check_error() else None
+
+
 class Table(object):
 
 	def __init__(self, filename):
@@ -62,7 +107,6 @@ class Table(object):
 		self.rows = []
 		self.delimiter = ' | '
 		self.subdelimiter = '  '
-
 		self.column_widths = []
 		self.subcolumn_widths = []
 		self.format_templates = []
@@ -195,8 +239,28 @@ class TableRow(object):
 	
 
 ################################################################################
-### FUNCTIONS
+### HELPER FUNCTIONS
 ################################################################################
+def find( file, dir='./' ):
+	dir += '/'
+	if exists(dir+file):
+		return dir+file
+	for subdir in filter(isdir, glob(dir+'*')):
+		return find(file, dir=subdir)
+	return None
+
+
+def get_rosetta_exe( exe, tools=False ):
+	rosetta = expandvars('$ROSETTA')
+	if '$' in rosetta:
+		rosetta = '~/src/rosetta/'
+	if tools:
+		rosetta += '/tools/'
+	else:
+		rosetta += '/main/source/bin/'
+	return find( exe, dir=rosetta )
+
+
 def get_target_names():
 	target_names = []
 	info_files = glob(benchmark_dir+'/input_files/*.txt')
@@ -212,167 +276,183 @@ def get_target_names():
 	return target_names 
 
 
-def get_score_data( filename, colname='score' ):
-	data = {}
-	idx = 0
+def get_score_data( filename, colnames=['score'], sort=None, keep=None ):
+	if not isinstance(colnames, list):
+		colnames = [ colnames ]
+	data = []
+	colidx = None
 	with open( filename, 'r' ) as f:
-		colidx = None
 		for line in f:
 			if not "SCORE:" in line:
 				continue
 			cols = line.split()
 			if not colidx:
-				if colname in cols:
-					colidx = cols.index(colname)
+				colidx = map(cols.index, filter(cols.count, colnames))
 				continue
-			data[idx] = float(cols[colidx])  
-			idx += 1
-	return data
-
-
-def get_sorted_score_data( filename, colname='score' ):
-	data = get_score_data( filename, colname=colname )
-	return dict(sorted(data.items(), key=operator.itemgetter(1)))
-
-
-def get_sorted_score_list( filename, colname='score' ):
-	data = get_sorted_score_data( filename, colname=colname )
-	data = sorted(data.values())
+			data.append(tuple([float(cols[idx]) for idx in colidx]))
+	if sort and len(data):
+		sort = colnames.index(sort) if isinstance(sort, str) else sort-1
+		data = sorted(data, key=operator.itemgetter(sort))
+	if len(colidx) == 1:
+		data = [d[0] for d in data] 
+	if keep and len(data):
+		keep = min(keep, len(data))
+		data = data[0] if keep == 1 else data[:keep]
 	return data
 
 
 def get_rmsd_type( silent_file ):
-	rmsd_type = 'rms_fill'
-	if 'region_FINAL.out' in silent_file:
-		rmsd_type = 'NAT_rmsd' 
-	return rmsd_type
+	with open( silent_file, 'r' ) as f:
+		for line in f:
+			if not 'SCORE:' in line:
+				continue
+			if 'rms_fill' in line:
+				return 'rms_fill'
+			elif 'NAT_rmsd' in line:
+				return 'NAT_rmsd'
+			else:
+				break
+	return 'rms'
 
 
-def get_target_properties( target ):
+def get_silent_file( filename=['region_FINAL.out','swm_rebuild.out'] ):
+	if not isinstance(filename, list):
+		filename = glob(filename)
+	silent_files = filter(exists, filename)
+	assert( len(silent_files) )
+	return silent_files[0]
+
+
+def get_native_pdb():
+	target = basename(os.getcwd())
 	native_pdb = glob( target+'_????_RNA.pdb' )[0]
+	return native_pdb
+
+
+def get_start_pdb_list():
+	target = basename(os.getcwd())
 	start_pdbs = glob( target+'_START*_????_RNA.pdb' )
-	# get length
-	length = len(''.join(get_sequences(native_pdb)[0]))
-	for start_pdb in start_pdbs:
+	return start_pdbs
+
+
+def get_motif_length():
+	length = len(''.join(get_sequences(get_native_pdb())[0]))
+	for start_pdb in get_start_pdb_list():
 		length -= len(''.join(get_sequences(start_pdb)[0]))
-	# get PDB
-	pdb = native_pdb.split('_')[-2].upper()
-	return [ length, pdb ]
+	return length
 
 
-def create_cluster_silent_file( native_pdb, silent_file ):
-	SWA_TOOLS="/home/calebgeniesse/src/rosetta/tools/SWA_RNA_python/SWA_dagman_python/"
-	TOP_ENERGY_CLUSTERS_FOLDER = "TOP_ENERGY_CLUSTERS/"
-	cluster_silent_file = "%s/top_energy_clusters.out" % TOP_ENERGY_CLUSTERS_FOLDER
-	COMMON_ARGS_FILE = glob( "COMMON_ARGS/*%s" % silent_file )[0]
-	CLUSTER_RMSD = 1.5 
-	SUITE_CLUSTER_RMSD = 2.5 
-	NO_GRAPHIC = False
-	IGNORE_FARFAR_NO_AUTO_BULGE_PARENT_TAG = False
-	IGNORE_UNMATCHED_VIRTUAL_RES = True
+def get_pdb_id():
+	return get_native_pdb().split('_')[-2].upper()
+
+
+def create_cluster_silent_file( silent_file ):
+	cluster_rmsd = 1.5 
+	suite_cluster_rmsd = 2.5 
+	no_graphic = False
+	ignore_unmatched_virtual_res = True
+	common_args_file = None 
+	native_pdb = get_native_pdb()
+	cluster_exe = "SWA_RNA_python/SWA_dagman_python/misc/SWA_cluster.py"
+	cluster_exe = get_rosetta_exe( cluster_exe, tools=True )
+	top_energy_clusters_folder = "TOP_ENERGY_CLUSTERS/"
+	cluster_silent_file = "%s/top_energy_clusters.out" % top_energy_clusters_folder
 	if exists( cluster_silent_file ):
-		return cluster_silent_file
-	command = "mkdir -p %s " % TOP_ENERGY_CLUSTERS_FOLDER
-	out, err = sp.Popen( command, shell=True,
-						stdout=sp.PIPE, stderr=sp.PIPE ).communicate()
-	if err and len(err):
-		print err
-	cluster_top_energy_command="%s/misc/SWA_cluster.py " % (SWA_TOOLS)
-	cluster_top_energy_command+="-num_pose_kept 100 -distinguish_pucker false -extract_pdb False " 
-	cluster_top_energy_command+="-cluster_rmsd %s " % (CLUSTER_RMSD)
-	cluster_top_energy_command+="-suite_cluster_rmsd %s " % (SUITE_CLUSTER_RMSD)
-	cluster_top_energy_command+="-silent_file %s "% (silent_file)
-	cluster_top_energy_command+="-native_pdb %s "%(native_pdb)
-	cluster_top_energy_command+="-common_args %s "%(COMMON_ARGS_FILE)
-	cluster_top_energy_command+="-output_filename %s " %(cluster_silent_file)	
-	cluster_top_energy_command+="-no_graphic %s " %(NO_GRAPHIC)
-	cluster_top_energy_command+="-full_length_loop_rmsd_clustering True "
-	if(IGNORE_FARFAR_NO_AUTO_BULGE_PARENT_TAG):
-		cluster_top_energy_command+="-ignore_FARFAR_no_auto_bulge_parent_tag True "
-	if(IGNORE_UNMATCHED_VIRTUAL_RES):
-		cluster_top_energy_command+="-ignore_unmatched_virtual_res True "
-	cluster_top_energy_command+=" > LOG_create_cluster_silent_file.txt"	
-	command = cluster_top_energy_command
-	out, err = sp.Popen( command, shell=True,
-						stdout=sp.PIPE, stderr=sp.PIPE ).communicate()
-	if err and len(err):
-		print err
-	if not exists( cluster_silent_file ):
-		print "%s does not exist!!!" % cluster_silent_file
-		return ''
+		Command( "rm -f ", args=cluster_silent_file ).submit()
+	elif not exists( top_energy_clusters_folder ):
+		Command( "mkdir -p", args=top_energy_clusters_folder ).submit()
+	command = Command( cluster_exe )
+	command.add_argument( "-num_pose_kept", value=100 )
+	command.add_argument( "-distinguish_pucker", value="false" )
+	command.add_argument( "-extract_pdb ", value="False" ) 
+	command.add_argument( "-cluster_rmsd", value=cluster_rmsd )
+	command.add_argument( "-suite_cluster_rmsd", value=suite_cluster_rmsd )
+	command.add_argument( "-silent_file", value=silent_file )
+	command.add_argument( "-native_pdb", value=native_pdb )
+	command.add_argument( "-output_filename", value=cluster_silent_file )	
+	command.add_argument( "-full_length_loop_rmsd_clustering", value="True" )
+	if not no_graphic:
+		command.add_argument( "-no_graphic", value="False" )
+	if ignore_unmatched_virtual_res:
+		command.add_argument( "-ignore_unmatched_virtual_res", value="True" )
+	if common_args_file:
+		command.add_argument( "-common_args", value=common_args_file )
+	command.add_argument( " > LOG_create_cluster_silent_file.txt" )
+	command.submit()	
 	return cluster_silent_file
 
 
-def get_lowest_energy_cluster_centers( target, silent_file_name ):
-	nclusters = 5
-	cluster_center_list = []
-	native_pdb = glob( target+'_????_RNA.pdb' )[0]
-	silent_files = filter( exists, silent_file_name )
-	assert( len( silent_files ) )
-	silent_file = silent_files[0]	
-	cluster_silent_file = silent_file
-	#######################################################
-	### TODO: Get SWA_cluster.py to run
-	#create_cluster_silent_file( native_pdb, silent_file )
-	#######################################################
+def get_lowest_energy_cluster_centers( nclusters=5 ):
+	silent_file = get_silent_file()	
+	cluster_silent_file = create_cluster_silent_file( silent_file )
 	if not exists( cluster_silent_file ):
 		print "CLUSTER_SILENT_FILE NOT FOUND FOR TARGET: %s" % target
 		print "USING SILENT_FILE: %s/%s" % (target, silent_file)
 		cluster_silent_file = silent_file
-	energy_data = get_sorted_score_data( cluster_silent_file )
-	rmsd_type = get_rmsd_type( cluster_silent_file )
-	rmsd_data = get_score_data( cluster_silent_file, colname=rmsd_type )
-	for idx, energy in energy_data.iteritems():
-		if idx >= nclusters:
+	score_types = ['score', get_rmsd_type(cluster_silent_file)]
+	data = get_score_data( cluster_silent_file, colnames=score_types, sort='score', keep=nclusters )
+	cluster_center_list = []
+	for idx, (energy, rmsd) in enumerate(data, start=1):
+		if idx > nclusters:
 			break
-		rmsd = rmsd_data[idx]
-		cluster_center_info = [ idx+1, rmsd, energy ]
-		cluster_center_list.append( cluster_center_info )
+		cluster_center_list.append( [idx, rmsd, energy] )
 	return cluster_center_list
 
 
-def get_best_of_lowest_energy_cluster_centers( target, silent_file_name ):
-	lowest_rmsd = 16.0
-	best_cluster_center = None
-	cluster_centers = get_lowest_energy_cluster_centers( target, silent_file_name )
-	for cluster_center_info in cluster_centers:
-		if not best_cluster_center:
-			best_cluster_center = cluster_center_info
-			continue
-		rmsd = cluster_center_info[1]
-		rmsd = float(rmsd) if rmsd else None
-		if not rmsd or rmsd >= lowest_rmsd:
-			continue
-		best_cluster_center = cluster_center_info
-		lowest_rmsd = rmsd
-	return best_cluster_center
+################################################################################
+### MAIN FUNCTIONS
+################################################################################
+def get_target_properties():
+	''' 
+		column:    | Motif Properties |
+		subcolumn: | Length | PDB     |
+
+	'''
+	length = get_motif_length()
+	pdb = get_pdb_id()
+	return [ length, pdb ]
 
 
-def get_lowest_rmsd_model( silent_file_name ):
-	silent_files = filter(exists, silent_file_name)
-	assert( len( silent_files ) )
-	silent_file = silent_files[0]
-	# get lowest rmsd 
+def get_best_of_lowest_energy_cluster_centers():
+	'''
+		column:    | Best of Five Lowest Energy Cluster Centers |
+		subcolumn: | Cluster Rank | RMSD | Rosetta Energy (RU)  |
+
+	'''
+	cluster_centers = get_lowest_energy_cluster_centers()
+	for idx, cluster_center in enumerate(cluster_centers):
+		rmsd = cluster_center[1]
+		if idx and rmsd >= best_rmsd:
+			continue
+		cluster_centers[0] = cluster_center
+		best_rmsd = rmsd
+	return cluster_centers[0]
+
+
+def get_lowest_rmsd_model():
+	'''
+		column:    | Lowest RMSD Model |
+		subcolumn: | RMSD              |
+
+	'''
+	silent_file = get_silent_file()
 	rmsd_type = get_rmsd_type( silent_file )
-	rmsd_list = get_sorted_score_list( silent_file, colname=rmsd_type )
-	rmsd = rmsd_list[0]
+	rmsd = get_score_data( silent_file, colnames=rmsd_type, sort=rmsd_type, keep=1 )
 	return [ rmsd ]
 
 
-def get_lowest_energy_sampled( silent_file_name ):
-	silent_files = filter(exists, silent_file_name)
-	assert( len( silent_files ) )
-	silent_file = silent_files[0]
-	# get lowest energy 
-	energy_list = get_sorted_score_list( silent_file )
-	energy = energy_list[0]
-	# get energy gap
-	opt_exp_silent_files = glob( '*OPT_EXP.out' )
-	if not len( opt_exp_silent_files ):
-		return ( energy, None )
-	opt_exp_silent_file = opt_exp_silent_files[0]
-	opt_exp_energy_list = get_sorted_score_list( opt_exp_silent_file )
-	opt_exp_energy = opt_exp_energy_list[0]
+def get_lowest_energy_sampled():
+	'''
+		column:    | Lowest Energy Sampled                         |
+		subcolumn: | Rosetta Energy (RU) | E-Gap to Opt. Exp. (RU) |
+
+	'''
+	silent_file = get_silent_file()
+	energy = get_score_data( silent_file, sort=1, keep=1 )
+	opt_exp_silent_file = get_silent_file( filename='*OPT_EXP.out' )
+	if not opt_exp_silent_file:
+		return [ energy, None ]
+	opt_exp_energy = get_score_data( opt_exp_silent_file, sort=1, keep=1 )
 	energy_gap = energy - opt_exp_energy
 	return [ energy, energy_gap ]
 
