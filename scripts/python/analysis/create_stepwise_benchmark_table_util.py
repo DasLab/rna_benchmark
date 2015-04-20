@@ -107,6 +107,7 @@ class Table(object):
 		self._subcolumn_widths = []
 		self._subcolumn_map = []
 		self.filename = filename
+		self.texfilename = filename.split('.')[0] + '.tex'
 		self.delimiter = ' | '
 		self.subdelimiter = '  '
 
@@ -165,7 +166,9 @@ class Table(object):
 		self._set_widths()
 		widths, subwidths = self._column_widths, self._subcolumn_widths
 		table_string =  self._row_to_string(self._column_labels, widths)
+		self.subdelimiter = self.delimiter
 		table_string += self._row_to_string(self._subcolumn_labels, subwidths)
+		self.subdelimiter = '   '
 		for row in self._rows:
 			table_string += self._row_to_string(row, subwidths)
 		return table_string
@@ -368,10 +371,10 @@ def get_opt_exp_score( inpaths ):
 
 
 def create_cluster_silent_file( silent_file ):
-	cluster_rmsd = 1.5 
+	cluster_rmsd = 2.0 
 	suite_cluster_rmsd = 2.5 
 	no_graphic = False
-	ignore_unmatched_virtual_res = True
+	ignore_unmatched_virtual_res = False
 	common_args_file = None 
 	native_pdb = get_native_pdb()
 	cluster_exe = "SWA_RNA_python/SWA_dagman_python/misc/SWA_cluster.py"
