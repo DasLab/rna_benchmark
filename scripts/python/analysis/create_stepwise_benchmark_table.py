@@ -87,13 +87,18 @@ if __name__=='__main__':
         help='Number of jobs to run in parallel',
         default=(mp.cpu_count()-1)
     )
+    parser.add_argument(
+        '-m','--merge_tables',
+        help='Merge tables created for each inpath, into a single table.',
+        action='store_true'
+    )
 
     args = parser.parse_args()
     inpaths = sorted( args.inpaths )
     user_targets = sorted( args.targets )
     force = args.force
     nproc = int(args.nproc)
-
+    merge_tables = args.merge_tables
 
     ############################################################################
     ### checks and initializations 
@@ -114,9 +119,9 @@ if __name__=='__main__':
         ########################################################################
         found_targets = sorted(filter(isdir, glob('*')))
         if len(user_targets):
-            found_targets = filter(lambda x: x in user_targets, found_targets)
-        targets = filter(lambda x: x in found_targets, get_target_names())
-        print '\nTARGETS\n%s\n' % ('\n'.join(targets))
+            found_targets = filter(user_targets.count, found_targets)
+        targets = filter(found_targets.count, get_target_names())
+        print '\nTARGETS:\n%s\n' % ('\n'.join(targets))
         
        
         ########################################################################
@@ -147,10 +152,23 @@ if __name__=='__main__':
             for table_row in table_row_list:
                 table.add_row( table_row.columns() )
             table.add_row( ['AVERAGE'] + table.column_averages() )
-            table.save()
+            table.save()    
 
         ########################################################################
         ### change back into working directory
         ########################################################################
         os.chdir( working_dir )
+
+    ###################################################################
+    ### combine tables from each inpath into one table
+    ###################################################################
+    if merge_tables:
+        print '\nMerging Tables for Runs:\n%s\n' % ('\n'.join(inpaths))
+        subtable_names = [ip+'/'+ip.upper()+'.tbl' for ip in inpaths]
+        table_name = '_v_'.join(inpaths).upper() + '.tbl'
+        if exists( table_name ) and not force:
+            print "Table:", table_name, "already exists!!!"
+        else:
+            table = Table( table_name )
+            table.merge_tables( subtable_names )    
 

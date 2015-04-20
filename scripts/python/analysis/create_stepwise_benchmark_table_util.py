@@ -130,7 +130,8 @@ class Table(object):
 		return group_width
 
 	def _set_subcolumn_widths(self):
-		if not len(self._subcolumn_labels): return
+		if not len(self._subcolumn_labels):
+			return
 		widths = []
 		for idx, label in zip(self._subcolumn_map, self._subcolumn_labels):
 			weight = len(label) / float(self._get_subcolumn_group_width(idx))
@@ -151,6 +152,11 @@ class Table(object):
 		return "%-*s" % (width, str(value))
 		
 	def _row_to_string(self, row, widths, newline=True):
+		if not len(widths):
+			row_string = self.delimiter.join(row)
+			if newline:
+				row_string += '\n'
+			return row_string
 		column_strings = [self._to_string(c,w) for c,w in zip(row,widths)]
 		if len(row) != len(self._column_labels):
 			column_group = [[] for c in self._column_labels]
@@ -165,10 +171,13 @@ class Table(object):
 	def _table_to_string(self):
 		self._set_widths()
 		widths, subwidths = self._column_widths, self._subcolumn_widths
-		table_string =  self._row_to_string(self._column_labels, widths)
-		self.subdelimiter = self.delimiter
-		table_string += self._row_to_string(self._subcolumn_labels, subwidths)
-		self.subdelimiter = '   '
+		table_string = ''
+		if len(self._column_labels):
+			table_string +=  self._row_to_string(self._column_labels, widths)
+		if len(self._subcolumn_labels):
+			self.subdelimiter = self.delimiter
+			table_string += self._row_to_string(self._subcolumn_labels, subwidths)
+			self.subdelimiter = '   '
 		for row in self._rows:
 			table_string += self._row_to_string(row, subwidths)
 		return table_string
@@ -222,6 +231,29 @@ class Table(object):
 		with open( self.filename, 'w' ) as f:
 			f.write( self._table_to_string() )
 		return 
+
+	def merge_tables(self, filenames):
+		# TODO: refactor so that new table can be written via _table_to_string()
+		# 		THIS IS JUST A HACK FOR NOW
+		subtable_rows = []
+		for table_idx, filename in enumerate(filenames):
+			if not exists( filename ):
+				continue
+			fin = open( filename, 'r' )
+			for idx, line in enumerate(fin.readlines()):
+				line = line.replace('\n','')
+				if table_idx < 1:
+					subtable_rows.append(line)
+				else:
+					if idx == 1:
+						line = '|'.join(line.split('|')[3:])
+					else:
+						line = '|'.join(line.split('|')[2:])
+					subtable_rows[idx] += ' | '+line
+			fin.close()
+		with open( self.filename, 'w') as f:
+			f.write( '\n'.join(subtable_rows) )
+		return
 
 
 class TableRow(object):
@@ -385,6 +417,9 @@ def get_opt_exp_score( inpaths ):
 
 
 def create_cluster_silent_file( silent_file ):
+	# TODO: get clustering to work for SWM, might need to rebuild 'missing'
+	if 'swm' in silent_file:
+		return silent_file
 	cluster_rmsd = 2.0 
 	suite_cluster_rmsd = 2.5 
 	no_graphic = False
@@ -444,8 +479,8 @@ def get_lowest_energy_cluster_centers( nclusters=5 ):
 ################################################################################
 def get_target_properties():
 	''' 
-		column:    | Motif Properties |
-		subcolumn: | Length | PDB     |
+		column:	| Motif Properties |
+		subcolumn: | Length | PDB	 |
 
 	'''
 	length = get_motif_length()
@@ -455,7 +490,7 @@ def get_target_properties():
 
 def get_best_of_lowest_energy_cluster_centers():
 	'''
-		column:    | Best of Five Lowest Energy Cluster Centers |
+		column:	| Best of Five Lowest Energy Cluster Centers |
 		subcolumn: | Cluster Rank | RMSD | Rosetta Energy (RU)  |
 
 	'''
@@ -471,8 +506,8 @@ def get_best_of_lowest_energy_cluster_centers():
 
 def get_lowest_rmsd_model():
 	'''
-		column:    | Lowest RMSD Model |
-		subcolumn: | RMSD              |
+		column:	| Lowest RMSD Model |
+		subcolumn: | RMSD			  |
 
 	'''
 	silent_file = get_silent_file()
@@ -483,7 +518,7 @@ def get_lowest_rmsd_model():
 
 def get_lowest_energy_sampled( opt_exp_inpaths ):
 	'''
-		column:    | Lowest Energy Sampled                         |
+		column:	| Lowest Energy Sampled						 |
 		subcolumn: | Rosetta Energy (RU) | E-Gap to Opt. Exp. (RU) |
 
 	'''
