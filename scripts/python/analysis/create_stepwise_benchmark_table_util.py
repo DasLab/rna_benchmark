@@ -43,7 +43,7 @@ subcolumn_labels = {
 		"RMSD" 
 	],
 	"Lowest Energy Sampled" : [
-		"Roestta Energy (RU)",
+		"Rosetta Energy (RU)",
 		"E-Gap to Opt. Exp. (RU)"
 	]
 }
@@ -55,19 +55,19 @@ subcolumn_labels = {
 class Command(object):
 
 	def __init__(self, command, args=None):
-		self.command = self._lex(command, args)
+		self.command = self._join(command, args)
 		self.stdout = sp.PIPE
 		self.stderr = sp.PIPE
 		self.silent = False
 		self._out = None
 		self._err = None
 
-	def _lex(self, command, args):
-		if isinstance(command, list):
-			command = ' '.join(command)
-		if isinstance(args, list):
-			args = ' '.join(args)
-		return ' '.join([command, str(args)]) if args else command 
+	def _join(self, x, y):
+		if isinstance(x, list):
+			x = ' '.join(x)
+		if isinstance(y, list):
+			y = ' '.join(y)
+		return x if y is None else ' '.join([str(x),str(y)]) 
 
 	def _run(self):
 		pipe = sp.Popen( self.command, shell=True, 
@@ -84,8 +84,8 @@ class Command(object):
 		return True
 
 	def add_argument(self, argument, value=None):
-		argument = self._lex(argument, value) if value else argument
-		self.command = self._lex(self.command, argument)
+		argument = self._join(argument, value)
+		self.command = self._join(self.command, argument)
 		return
 
 	def submit(self):
@@ -94,72 +94,66 @@ class Command(object):
 	
 	def output(self):
 		self._run()
-		return self._out if not self._check_error() else None
+		return self._out if self._check_error() else None
 
 
 class Table(object):
 
 	def __init__(self, filename):
+		self._rows = []
+		self._column_labels = []
+		self._subcolumn_labels = []
+		self._column_widths = []
+		self._subcolumn_widths = []
+		self._subcolumn_map = []
 		self.filename = filename
-		self.header = []
-		self.column_labels = []
-		self.subcolumn_labels = []
-		self.rows = []
 		self.delimiter = ' | '
 		self.subdelimiter = '  '
-		self.column_widths = []
-		self.subcolumn_widths = []
-		self.format_templates = []
 
-	def save(self):
-		with open( self.filename, 'w' ) as f:
-			f.write( self.table_to_string() )
-		return 
-
-	def set_widths(self):
-		self.set_column_widths()
-		self.set_subcolumn_widths()
+	def _set_widths(self):
+		self._set_column_widths()
+		self._set_subcolumn_widths()
 		return
 
-	def set_column_widths(self):
-		widths = [int(max(len(c),4)) for c in self.column_labels]
-		self.column_widths = widths
+	def _set_column_widths(self):
+		widths = [int(max(len(c),4)) for c in self._column_labels]
+		self._column_widths = widths
 		return
 
-	def get_subcolumn_group_width(self, index):
+	def _get_subcolumn_group_width(self, index):
 		group_width = 0
-		for n, label in enumerate(self.subcolumn_labels):
-			if index != self.subcolumn_index[n]:
+		for n, label in enumerate(self._subcolumn_labels):
+			if index != self._subcolumn_map[n]:
 				continue
 			group_width += len(label)
 		return group_width
 
-	def set_subcolumn_widths(self):
-		if not len(self.subcolumn_labels): return
+	def _set_subcolumn_widths(self):
+		if not len(self._subcolumn_labels): return
 		widths = []
-		for idx, label in zip(self.subcolumn_index, self.subcolumn_labels):
-			weight = len(label) / float(self.get_subcolumn_group_width(idx))
-			sub_width = np.floor( self.column_widths[idx] * weight )
+		for idx, label in zip(self._subcolumn_map, self._subcolumn_labels):
+			weight = len(label) / float(self._get_subcolumn_group_width(idx))
+			sub_width = np.floor( self._column_widths[idx] * weight )
 			widths.append( sub_width )
-		widths[0] = max([len(r[0]) for r in self.rows])
+		widths[0] = max([len(r[0]) for r in self._rows])
 		widths = [int(max(w,4)) for w in widths]
-		self.column_widths[0] = widths[0]
-		self.subcolumn_widths = widths
+		self._column_widths[0] = widths[0]
+		self._subcolumn_widths = widths
 		return 
 
-	def to_string(self, value, width):
+	def _to_string(self, value, width):
 		if isinstance(value, int):
 			return "%-*d" % (width, value)
 		if isinstance(value, float):
-			return "%-*.1f" % (width, value)
-		value = str(value) if value else "--"
+			return "%-*.2f" % (width, value)
+		value = "--" if value is None else str(value)
 		return "%-*s" % (width, str(value))
 		
-	def row_to_string(self, row, widths, newline=True):
-		column_strings = [self.to_string(c,w) for c,w in zip(row,widths)]
-		if len(row) != len(self.column_labels):
-			column_group = [[] for c in self.column_labels]
-			for n, idx in enumerate(self.subcolumn_index):
+	def _row_to_string(self, row, widths, newline=True):
+		column_strings = [self._to_string(c,w) for c,w in zip(row,widths)]
+		if len(row) != len(self._column_labels):
+			column_group = [[] for c in self._column_labels]
+			for n, idx in enumerate(self._subcolumn_map):
 				column_group[idx].append(column_strings[n])
 			column_strings = [self.subdelimiter.join(g) for g in column_group]
 		row_string = self.delimiter.join([s for s in column_strings]) 
@@ -167,41 +161,41 @@ class Table(object):
 			row_string += '\n'
 		return row_string
 	
-	def table_to_string(self):
-		self.set_widths()
-		widths, subwidths = self.column_widths, self.subcolumn_widths
-		table_string =  self.row_to_string(self.column_labels, widths)
-		table_string += self.row_to_string(self.subcolumn_labels, subwidths)
-		for row in self.rows:
-			table_string += self.row_to_string(row, subwidths)
+	def _table_to_string(self):
+		self._set_widths()
+		widths, subwidths = self._column_widths, self._subcolumn_widths
+		table_string =  self._row_to_string(self._column_labels, widths)
+		table_string += self._row_to_string(self._subcolumn_labels, subwidths)
+		for row in self._rows:
+			table_string += self._row_to_string(row, subwidths)
 		return table_string
 
 	def add_row(self, row):
 		if not isinstance(row, list):
 			row = [ row ]
-		self.rows.append( row )
+		self._rows.append( row )
 		return
 
 	def add_column_labels(self, labels):
-		self.column_labels = [l for l in labels]
+		self._column_labels = [l for l in labels]
 		return
 
 	def add_subcolumn_labels(self, labels):
-		self.subcolumn_labels = []
-		self.subcolumn_index = []
-		for idx, colname in enumerate(self.column_labels):
-			self.subcolumn_labels += labels[colname]
-			self.subcolumn_index += [idx for x in labels[colname]]
+		self._subcolumn_labels = []
+		self._subcolumn_map = []
+		for idx, colname in enumerate(self._column_labels):
+			self._subcolumn_labels += labels[colname]
+			self._subcolumn_map += [idx for x in labels[colname]]
 		return
 
 	def column_averages(self):
 		col_accums = []
 		col_counts = []
-		for row_idx, row in enumerate(self.rows):
+		for row_idx, row in enumerate(self._rows):
 			idx = 0
 			data = row[1:]
 			for col in data:
-				if isinstance(col, str):
+				if col is None or isinstance(col, str):
 					increment = 0.0
 				else:
 					col = float( col )
@@ -215,38 +209,43 @@ class Table(object):
 				idx += 1
 		col_aves = []
 		for accum, count in zip(col_accums,col_counts):
-			if not count:
+			if count == 0.0:
 				col_aves.append(None)
 				continue
 			col_aves.append(accum/count)
 		return col_aves
 
+	def save(self):
+		with open( self.filename, 'w' ) as f:
+			f.write( self._table_to_string() )
+		return 
+
 
 class TableRow(object):
 
 	def __init__(self):
-		self.columns = []
+		self._columns = []
 
 	def add_columns(self, cols):
 		if not isinstance(cols, list):
 			cols = [ cols ]
 		for col in cols:
-			self.columns.append( col )
+			self._columns.append( col )
 		return
 
-	def get_columns(self):
-		return self.columns
+	def columns(self):
+		return self._columns
 	
 
 ################################################################################
 ### HELPER FUNCTIONS
 ################################################################################
-def find( file, dir='./' ):
-	dir += '/'
-	if exists(dir+file):
-		return dir+file
-	for subdir in filter(isdir, glob(dir+'*')):
-		return find(file, dir=subdir)
+def find( file, start='./' ):
+	start += '/'
+	if exists(start+file):
+		return start+file
+	for dir in filter(isdir, glob(start+'*')):
+		return find(file, start=dir)
 	return None
 
 
@@ -258,7 +257,7 @@ def get_rosetta_exe( exe, tools=False ):
 		rosetta += '/tools/'
 	else:
 		rosetta += '/main/source/bin/'
-	return find( exe, dir=rosetta )
+	return find( exe, start=rosetta )
 
 
 def get_target_names():
@@ -286,16 +285,16 @@ def get_score_data( filename, colnames=['score'], sort=None, keep=None ):
 			if not "SCORE:" in line:
 				continue
 			cols = line.split()
-			if not colidx:
+			if colidx is None:
 				colidx = map(cols.index, filter(cols.count, colnames))
 				continue
 			data.append(tuple([float(cols[idx]) for idx in colidx]))
-	if sort and len(data):
+	if sort is not None and len(data):
 		sort = colnames.index(sort) if isinstance(sort, str) else sort-1
 		data = sorted(data, key=operator.itemgetter(sort))
 	if len(colidx) == 1:
 		data = [d[0] for d in data] 
-	if keep and len(data):
+	if keep is not None and len(data):
 		keep = min(keep, len(data))
 		data = data[0] if keep == 1 else data[:keep]
 	return data
@@ -315,22 +314,27 @@ def get_rmsd_type( silent_file ):
 	return 'rms'
 
 
-def get_silent_file( filename=['region_FINAL.out','swm_rebuild.out'] ):
+def get_working_target():
+	return basename(os.getcwd())
+
+
+def get_silent_file( filename=['region_FINAL.out','swm_rebuild.out'], dir=None ):
 	if not isinstance(filename, list):
-		filename = glob(filename)
+		filename = [ filename ]
+	if dir is not None:
+		filename = ['/'.join([dir,file]) for file in filename]
 	silent_files = filter(exists, filename)
-	assert( len(silent_files) )
-	return silent_files[0]
+	return silent_files[0] if len(silent_files) else None
 
 
 def get_native_pdb():
-	target = basename(os.getcwd())
+	target = get_working_target()
 	native_pdb = glob( target+'_????_RNA.pdb' )[0]
 	return native_pdb
 
 
 def get_start_pdb_list():
-	target = basename(os.getcwd())
+	target = get_working_target()
 	start_pdbs = glob( target+'_START*_????_RNA.pdb' )
 	return start_pdbs
 
@@ -344,6 +348,23 @@ def get_motif_length():
 
 def get_pdb_id():
 	return get_native_pdb().split('_')[-2].upper()
+
+
+def get_opt_exp_score( inpaths ):
+	target = get_working_target()
+	opt_exp_score = None
+	for inpath in inpaths:
+		inpath = find( '/'.join([inpath,target]), start='../../' )
+		if inpath is None:
+			continue
+		silent_file = get_silent_file( dir=inpath )
+		if silent_file is None:
+			continue
+		score = get_score_data( silent_file, sort='score', keep=1 )
+		if opt_exp_score is not None and score >= opt_exp_score:
+			continue
+		opt_exp_score = score
+	return opt_exp_score
 
 
 def create_cluster_silent_file( silent_file ):
@@ -409,8 +430,8 @@ def get_target_properties():
 
 	'''
 	length = get_motif_length()
-	pdb = get_pdb_id()
-	return [ length, pdb ]
+	pdb_id = get_pdb_id()
+	return [ length, pdb_id ]
 
 
 def get_best_of_lowest_energy_cluster_centers():
@@ -441,18 +462,17 @@ def get_lowest_rmsd_model():
 	return [ rmsd ]
 
 
-def get_lowest_energy_sampled():
+def get_lowest_energy_sampled( opt_exp_inpaths ):
 	'''
 		column:    | Lowest Energy Sampled                         |
 		subcolumn: | Rosetta Energy (RU) | E-Gap to Opt. Exp. (RU) |
 
 	'''
 	silent_file = get_silent_file()
-	energy = get_score_data( silent_file, sort=1, keep=1 )
-	opt_exp_silent_file = get_silent_file( filename='*OPT_EXP.out' )
-	if not opt_exp_silent_file:
+	energy = get_score_data( silent_file, sort='score', keep=1 )
+	opt_exp_energy = get_opt_exp_score( opt_exp_inpaths )
+	if opt_exp_energy is None:
 		return [ energy, None ]
-	opt_exp_energy = get_score_data( opt_exp_silent_file, sort=1, keep=1 )
 	energy_gap = energy - opt_exp_energy
 	return [ energy, energy_gap ]
 

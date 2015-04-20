@@ -7,7 +7,7 @@ import os
 import argparse
 import subprocess as sp
 import multiprocessing as mp
-from os.path import exists, basename, dirname, isdir, isfile, realpath, abspath
+from os.path import exists, basename, dirname, isdir, abspath
 from glob import glob
 from create_stepwise_benchmark_table_util import *
 
@@ -31,7 +31,7 @@ def get_target_row(target, (args)):
     table_row.add_columns( get_target_properties() )
     table_row.add_columns( get_best_of_lowest_energy_cluster_centers() )
     table_row.add_columns( get_lowest_rmsd_model() )
-    table_row.add_columns( get_lowest_energy_sampled() )
+    table_row.add_columns( get_lowest_energy_sampled( args.opt_exp_inpaths ) )
 
     ############################################################################
     ### change back to working directory
@@ -59,6 +59,12 @@ if __name__=='__main__':
         'inpaths',
         nargs='+',
         help='List of paths to target runs.'
+    )
+    parser.add_argument(
+        '-opt_exp_inpaths',
+        nargs='+',
+        help='List of paths to optimized experimental target runs.',
+        default=[]
     )
     parser.add_argument(
         '-t','--targets',
@@ -112,12 +118,7 @@ if __name__=='__main__':
         targets = filter(lambda x: x in found_targets, get_target_names())
         print '\nTARGETS\n%s\n' % ('\n'.join(targets))
         
-        ########################################################################
-        ### TODO: move all optimize experimental models
-        ########################################################################
-        
-
-
+       
         ########################################################################
         ### get table info for all targets found in inpath
         ########################################################################
@@ -144,7 +145,7 @@ if __name__=='__main__':
             table.add_column_labels( column_labels )
             table.add_subcolumn_labels( subcolumn_labels )
             for table_row in table_row_list:
-                table.add_row( table_row.get_columns() )
+                table.add_row( table_row.columns() )
             table.add_row( ['AVERAGE'] + table.column_averages() )
             table.save()
 
