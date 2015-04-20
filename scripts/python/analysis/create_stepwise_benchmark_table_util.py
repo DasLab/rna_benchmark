@@ -278,7 +278,7 @@ def get_target_names():
 	return target_names 
 
 
-def get_score_data( filename, colnames=['score'], sort=None, keep=None ):
+def get_score_data( filename, colnames=['score'], sort=None, filters=None, keep=None ):
 	if not isinstance(colnames, list):
 		colnames = [ colnames ]
 	data = []
@@ -292,12 +292,21 @@ def get_score_data( filename, colnames=['score'], sort=None, keep=None ):
 				colidx = map(cols.index, filter(cols.count, colnames))
 				continue
 			data.append(tuple([float(cols[idx]) for idx in colidx]))
-	if sort is not None and len(data):
+	if filters is not None:
+		if not isinstance(filters, list):
+			filters = [ filters ] 
+		for idx, value in enumerate(filters):
+			if value is None:
+				continue
+			data = [d for d in data if d[idx] <= value]
+	if not len(data):
+		return None
+	if sort is not None:
 		sort = colnames.index(sort) if isinstance(sort, str) else sort-1
 		data = sorted(data, key=operator.itemgetter(sort))
 	if len(colidx) == 1:
 		data = [d[0] for d in data] 
-	if keep is not None and len(data):
+	if keep is not None:
 		keep = min(keep, len(data))
 		data = data[0] if keep == 1 else data[:keep]
 	return data
@@ -363,7 +372,12 @@ def get_opt_exp_score( inpaths ):
 		silent_file = get_silent_file( dir=inpath )
 		if silent_file is None:
 			continue
-		score = get_score_data( silent_file, sort='score', keep=1 )
+		score_types = ['score', get_rmsd_type(silent_file)]
+		cutoffs = [None, 1.5]
+		data = get_score_data( silent_file, colnames=score_types, sort='score', filters=cutoffs, keep=1 )
+		if data is None:
+			continue 
+		score = data[score_types.index('score')]
 		if opt_exp_score is not None and score >= opt_exp_score:
 			continue
 		opt_exp_score = score
@@ -413,9 +427,11 @@ def get_lowest_energy_cluster_centers( nclusters=5 ):
 		print "CLUSTER_SILENT_FILE NOT FOUND FOR TARGET: %s" % target
 		print "USING SILENT_FILE: %s/%s" % (target, silent_file)
 		cluster_silent_file = silent_file
+	cluster_center_list = []
 	score_types = ['score', get_rmsd_type(cluster_silent_file)]
 	data = get_score_data( cluster_silent_file, colnames=score_types, sort='score', keep=nclusters )
-	cluster_center_list = []
+	if data is None:
+		return cluster_center_list
 	for idx, (energy, rmsd) in enumerate(data, start=1):
 		if idx > nclusters:
 			break
@@ -473,6 +489,8 @@ def get_lowest_energy_sampled( opt_exp_inpaths ):
 	'''
 	silent_file = get_silent_file()
 	energy = get_score_data( silent_file, sort='score', keep=1 )
+	if energy is None:
+		return [ None, None ]
 	opt_exp_energy = get_opt_exp_score( opt_exp_inpaths )
 	if opt_exp_energy is None:
 		return [ energy, None ]
