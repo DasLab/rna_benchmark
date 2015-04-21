@@ -164,8 +164,8 @@ if __name__=='__main__':
     ###################################################################
     if merge_tables:
         print '\nMerging Tables for Runs:\n%s\n' % ('\n'.join(inpaths))
-        subtable_names = [ip+'/'+ip.upper()+'.tbl' for ip in inpaths]
-        table_name = '_v_'.join(inpaths).upper() + '.tbl'
+        subtable_names = [ip+'/'+ip.upper()+'.tab' for ip in inpaths]
+        table_name = '_v_'.join(inpaths).upper() + '.tab'
         if exists( table_name ) and not force:
             print "Table:", table_name, "already exists!!!"
         else:

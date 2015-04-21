@@ -107,9 +107,10 @@ class Table(object):
 		self._subcolumn_widths = []
 		self._subcolumn_map = []
 		self.filename = filename
+		self.tabfilename = filename.split('.')[0] + '.tab'
 		self.texfilename = filename.split('.')[0] + '.tex'
-		self.delimiter = ' | '
-		self.subdelimiter = '  '
+		self.delimiter = '\t'
+		self.subdelimiter = '\t'
 
 	def _set_widths(self):
 		self._set_column_widths()
@@ -143,7 +144,9 @@ class Table(object):
 		self._subcolumn_widths = widths
 		return 
 
-	def _to_string(self, value, width):
+	def _format_string(self, value, width):
+		if width is None:
+			width = len(str(value))
 		if isinstance(value, int):
 			return "%-*d" % (width, value)
 		if isinstance(value, float):
@@ -151,35 +154,47 @@ class Table(object):
 		value = "--" if value is None else str(value)
 		return "%-*s" % (width, str(value))
 		
-	def _row_to_string(self, row, widths, newline=True):
-		if not len(widths):
-			row_string = self.delimiter.join(row)
-			if newline:
-				row_string += '\n'
-			return row_string
-		column_strings = [self._to_string(c,w) for c,w in zip(row,widths)]
-		if len(row) != len(self._column_labels):
-			column_group = [[] for c in self._column_labels]
-			for n, idx in enumerate(self._subcolumn_map):
-				column_group[idx].append(column_strings[n])
-			column_strings = [self.subdelimiter.join(g) for g in column_group]
+	def _row_to_string(self, row, widths=None, newline=True):
+		if widths is None or not len(widths):
+			column_strings = [self._format_string(c,None).strip() for c in row]
+		else:
+			column_strings = [self._format_string(c,w) for c,w in zip(row,widths)]
+			if len(row) != len(self._column_labels):
+				column_group = [[] for c in self._column_labels]
+				for n, idx in enumerate(self._subcolumn_map):
+					column_group[idx].append(column_strings[n])
+				column_strings = [self.subdelimiter.join(g) for g in column_group]
 		row_string = self.delimiter.join([s for s in column_strings]) 
 		if newline:
 			row_string += '\n'
 		return row_string
 	
-	def _table_to_string(self):
+	def _table_to_pretty_string(self):
+		self.delimiter = ' | '
+		self.subdelimiter = '   '
 		self._set_widths()
 		widths, subwidths = self._column_widths, self._subcolumn_widths
 		table_string = ''
 		if len(self._column_labels):
-			table_string +=  self._row_to_string(self._column_labels, widths)
+			table_string +=  self._row_to_string(self._column_labels, widths=widths)
 		if len(self._subcolumn_labels):
 			self.subdelimiter = self.delimiter
-			table_string += self._row_to_string(self._subcolumn_labels, subwidths)
+			table_string += self._row_to_string(self._subcolumn_labels, widths=subwidths)
 			self.subdelimiter = '   '
 		for row in self._rows:
-			table_string += self._row_to_string(row, subwidths)
+			table_string += self._row_to_string(row, widths=subwidths)
+		return table_string
+
+	def _table_to_tab_string(self):
+		self.delimiter = '\t'
+		self.subdelimiter = '\t'
+		table_string = ''
+		if len(self._column_labels):
+			table_string +=  self._row_to_string(self._column_labels)
+		if len(self._subcolumn_labels):
+			table_string += self._row_to_string(self._subcolumn_labels)
+		for row in self._rows:
+			table_string += self._row_to_string(row)
 		return table_string
 
 	def add_row(self, row):
@@ -229,7 +244,9 @@ class Table(object):
 
 	def save(self):
 		with open( self.filename, 'w' ) as f:
-			f.write( self._table_to_string() )
+			f.write( self._table_to_pretty_string() )
+		with open( self.tabfilename, 'w' ) as f:
+			f.write( self._table_to_tab_string() )
 		return 
 
 	def merge_tables(self, filenames):
@@ -245,11 +262,15 @@ class Table(object):
 				if table_idx < 1:
 					subtable_rows.append(line)
 				else:
-					if idx == 1:
-						line = '|'.join(line.split('|')[3:])
+					if '|' in line:
+						if idx == 1:
+							line = '|'.join(line.split('|')[3:])
+						else:
+							line = '|'.join(line.split('|')[2:])
+						subtable_rows[idx] += ' | '+line
 					else:
-						line = '|'.join(line.split('|')[2:])
-					subtable_rows[idx] += ' | '+line
+						line = '\t'.join(line.split('\t')[3:])
+						subtable_rows[idx] += '\t'+line
 			fin.close()
 		with open( self.filename, 'w') as f:
 			f.write( '\n'.join(subtable_rows) )
