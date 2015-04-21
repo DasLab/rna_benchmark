@@ -340,10 +340,19 @@ def get_opt_exp_score( inpaths ):
 	return opt_exp_score
 
 
+def virtualize_missing_residues( silent_file ):
+	silent_file_out = silent_file.replace(".out","_virt.out")
+	virtualize_exe = get_rosetta_exe( "virtualize_missing" )
+	command = Command( virtualize_exe )
+	command.add_argument( "-in:file:silent", value=silent_file )
+	command.add_argumnet( "-out:file:silent", value=silent_file_out )
+	command.submit()
+	return silent_file_out
+
+
 def create_cluster_silent_file( silent_file ):
-	# TODO: get clustering to work for SWM, might need to rebuild 'missing'
 	if 'swm' in silent_file:
-		return silent_file
+		silent_file = virtualize_missing_residues( silent_file )
 	cluster_rmsd = 2.0 
 	suite_cluster_rmsd = 2.5 
 	no_graphic = False
