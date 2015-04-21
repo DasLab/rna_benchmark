@@ -122,8 +122,7 @@ if __name__=='__main__':
             found_targets = filter(user_targets.count, found_targets)
         targets = filter(found_targets.count, get_target_names())
         print '\nTARGETS:\n%s\n' % ('\n'.join(targets))
-        
-       
+               
         ########################################################################
         ### get table info for all targets found in inpath
         ########################################################################
@@ -142,16 +141,16 @@ if __name__=='__main__':
         ########################################################################
         ### create table for inpath
         ########################################################################
-        table_name = inpath.upper() + '.tbl'
+        table_name = inpath.upper() + '.tab'
         if exists( table_name ) and not force:
             print "Table:", table_name, "already exists!!!"
         else:
             table = Table( table_name )
-            table.add_column_labels( column_labels )
-            table.add_subcolumn_labels( subcolumn_labels )
+            table.add_row( column_labels )
+            table.add_row( subcolumn_labels )
             for table_row in table_row_list:
-                table.add_row( table_row.columns() )
-            table.add_row( ['AVERAGE'] + table.column_averages() )
+                table.add_data_row( table_row.columns() )
+            table.add_row( ['AVERAGE'] + table.column_averages()[1:] )
             table.save()    
 
         ########################################################################
@@ -170,5 +169,6 @@ if __name__=='__main__':
             print "Table:", table_name, "already exists!!!"
         else:
             table = Table( table_name )
-            table.merge_tables( subtable_names )    
+            table.merge_tables( subtable_names )
+            table.save()    
 

@@ -26,27 +26,22 @@ column_labels = [
 	"Lowest RMSD Model",
 	"Lowest Energy Sampled" 
 ]
-subcolumn_labels = {
-	" "*10 : [
-		"Motif Name"	
-	],
-	"Motif Properties" : [
-		"Length",
-		"PDB"
-	],
-	"Best of Five Lowest Energy Cluster Centers" : [
-		"Cluster Rank",
-		"RMSD",
-		"Rosetta Energy (RU)"
-	],
-	"Lowest RMSD Model" : [
-		"RMSD" 
-	],
-	"Lowest Energy Sampled" : [
-		"Rosetta Energy (RU)",
-		"E-Gap to Opt. Exp. (RU)"
-	]
-}
+subcolumn_labels = [
+	# " "*10 
+	"Motif Name",	
+	# Motif Properties
+	"Length",
+	"PDB",
+	# Best of Five Lowest Energy Cluster Centers
+	"Cluster Rank",
+	"RMSD",
+	"Rosetta Energy (RU)",
+	# Lowest RMSD Model
+	"RMSD", 
+	# Lowest Energy Sampled
+	"Rosetta Energy (RU)",
+	"E-Gap to Opt. Exp. (RU)"
+]
 
 
 ################################################################################
@@ -101,50 +96,12 @@ class Table(object):
 
 	def __init__(self, filename):
 		self._rows = []
-		self._column_labels = []
-		self._subcolumn_labels = []
-		self._column_widths = []
-		self._subcolumn_widths = []
-		self._subcolumn_map = []
+		self._data_rows = []
 		self.filename = filename
-		self.tabfilename = filename.split('.')[0] + '.tab'
-		self.texfilename = filename.split('.')[0] + '.tex'
 		self.delimiter = '\t'
-		self.subdelimiter = '\t'
+		self.newline = '\n'
 
-	def _set_widths(self):
-		self._set_column_widths()
-		self._set_subcolumn_widths()
-		return
-
-	def _set_column_widths(self):
-		widths = [int(max(len(c),4)) for c in self._column_labels]
-		self._column_widths = widths
-		return
-
-	def _get_subcolumn_group_width(self, index):
-		group_width = 0
-		for n, label in enumerate(self._subcolumn_labels):
-			if index != self._subcolumn_map[n]:
-				continue
-			group_width += len(label)
-		return group_width
-
-	def _set_subcolumn_widths(self):
-		if not len(self._subcolumn_labels):
-			return
-		widths = []
-		for idx, label in zip(self._subcolumn_map, self._subcolumn_labels):
-			weight = len(label) / float(self._get_subcolumn_group_width(idx))
-			sub_width = np.floor( self._column_widths[idx] * weight )
-			widths.append( sub_width )
-		widths[0] = max([len(r[0]) for r in self._rows])
-		widths = [int(max(w,4)) for w in widths]
-		self._column_widths[0] = widths[0]
-		self._subcolumn_widths = widths
-		return 
-
-	def _format_string(self, value, width):
+	def _format_string(self, value, width=None):
 		if width is None:
 			width = len(str(value))
 		if isinstance(value, int):
@@ -154,48 +111,11 @@ class Table(object):
 		value = "--" if value is None else str(value)
 		return "%-*s" % (width, str(value))
 		
-	def _row_to_string(self, row, widths=None, newline=True):
-		if widths is None or not len(widths):
-			column_strings = [self._format_string(c,None).strip() for c in row]
-		else:
-			column_strings = [self._format_string(c,w) for c,w in zip(row,widths)]
-			if len(row) != len(self._column_labels):
-				column_group = [[] for c in self._column_labels]
-				for n, idx in enumerate(self._subcolumn_map):
-					column_group[idx].append(column_strings[n])
-				column_strings = [self.subdelimiter.join(g) for g in column_group]
-		row_string = self.delimiter.join([s for s in column_strings]) 
-		if newline:
-			row_string += '\n'
-		return row_string
+	def _row_to_string(self, row):
+		return self.delimiter.join(map(self._format_string, row)) 
 	
-	def _table_to_pretty_string(self):
-		self.delimiter = ' | '
-		self.subdelimiter = '   '
-		self._set_widths()
-		widths, subwidths = self._column_widths, self._subcolumn_widths
-		table_string = ''
-		if len(self._column_labels):
-			table_string +=  self._row_to_string(self._column_labels, widths=widths)
-		if len(self._subcolumn_labels):
-			self.subdelimiter = self.delimiter
-			table_string += self._row_to_string(self._subcolumn_labels, widths=subwidths)
-			self.subdelimiter = '   '
-		for row in self._rows:
-			table_string += self._row_to_string(row, widths=subwidths)
-		return table_string
-
-	def _table_to_tab_string(self):
-		self.delimiter = '\t'
-		self.subdelimiter = '\t'
-		table_string = ''
-		if len(self._column_labels):
-			table_string +=  self._row_to_string(self._column_labels)
-		if len(self._subcolumn_labels):
-			table_string += self._row_to_string(self._subcolumn_labels)
-		for row in self._rows:
-			table_string += self._row_to_string(row)
-		return table_string
+	def _table_to_string(self):
+		return self.newline.join(map(self._row_to_string, self._rows))
 
 	def add_row(self, row):
 		if not isinstance(row, list):
@@ -203,31 +123,25 @@ class Table(object):
 		self._rows.append( row )
 		return
 
-	def add_column_labels(self, labels):
-		self._column_labels = [l for l in labels]
-		return
-
-	def add_subcolumn_labels(self, labels):
-		self._subcolumn_labels = []
-		self._subcolumn_map = []
-		for idx, colname in enumerate(self._column_labels):
-			self._subcolumn_labels += labels[colname]
-			self._subcolumn_map += [idx for x in labels[colname]]
+	def add_data_row(self, row):
+		if not isinstance(row, list):
+			row = [ row ]
+		self._data_rows.append( row )
+		self._rows.append( row )
 		return
 
 	def column_averages(self):
 		col_accums = []
 		col_counts = []
-		for row_idx, row in enumerate(self._rows):
+		for data_idx, data in enumerate(self._data_rows):
 			idx = 0
-			data = row[1:]
 			for col in data:
 				if col is None or isinstance(col, str):
 					increment = 0.0
 				else:
 					col = float( col )
 					increment = 1.0
-				if row_idx == 0:
+				if data_idx == 0:
 					col_accums.append( col )
 					col_counts.append( increment )
 				else:
@@ -244,36 +158,25 @@ class Table(object):
 
 	def save(self):
 		with open( self.filename, 'w' ) as f:
-			f.write( self._table_to_pretty_string() )
-		with open( self.tabfilename, 'w' ) as f:
-			f.write( self._table_to_tab_string() )
+			f.write( self._table_to_string() )
 		return 
 
 	def merge_tables(self, filenames):
-		# TODO: refactor so that new table can be written via _table_to_string()
-		# 		THIS IS JUST A HACK FOR NOW
+		if not isinstance(filenames, list):
+			filenames = [ filenames ]
 		subtable_rows = []
+		subtable_rows.append( filenames )
 		for table_idx, filename in enumerate(filenames):
-			if not exists( filename ):
-				continue
-			fin = open( filename, 'r' )
-			for idx, line in enumerate(fin.readlines()):
-				line = line.replace('\n','')
-				if table_idx < 1:
-					subtable_rows.append(line)
-				else:
-					if '|' in line:
-						if idx == 1:
-							line = '|'.join(line.split('|')[3:])
-						else:
-							line = '|'.join(line.split('|')[2:])
-						subtable_rows[idx] += ' | '+line
+			with open( filename, 'r' ) as fin:
+	 			for idx, line in enumerate(fin.readlines()):
+					cols = line.strip().split(self.delimiter)
+					if table_idx < 1:
+						subtable_rows.append(cols)
 					else:
-						line = '\t'.join(line.split('\t')[3:])
-						subtable_rows[idx] += '\t'+line
-			fin.close()
-		with open( self.filename, 'w') as f:
-			f.write( '\n'.join(subtable_rows) )
+						startcol = 2 if not idx else 3
+						subtable_rows[idx] += cols[startcol:]
+		for row in subtable_rows:
+			self.add_row( row )
 		return
 
 
