@@ -165,7 +165,6 @@ class Table(object):
 		if not isinstance(filenames, list):
 			filenames = [ filenames ]
 		subtable_rows = []
-		subtable_rows.append( filenames )
 		for table_idx, filename in enumerate(filenames):
 			with open( filename, 'r' ) as fin:
 	 			for idx, line in enumerate(fin.readlines()):
@@ -173,8 +172,11 @@ class Table(object):
 					if table_idx < 1:
 						subtable_rows.append(cols)
 					else:
-						startcol = 2 if not idx else 3
+						startcol = 1 if idx == 0 else 3
+						if cols[0] != subtable_rows[idx][0]:
+							continue
 						subtable_rows[idx] += cols[startcol:]
+		self.add_row( [basename(f).split('.')[0] for f in filenames] )
 		for row in subtable_rows:
 			self.add_row( row )
 		return
@@ -342,10 +344,12 @@ def get_opt_exp_score( inpaths ):
 
 def virtualize_missing_residues( silent_file ):
 	silent_file_out = silent_file.replace(".out","_virt.out")
+	if exists( silent_file_out ):
+		Command( "rm -f ", args=silent_file_out ).submit()
 	virtualize_exe = get_rosetta_exe( "virtualize_missing" )
 	command = Command( virtualize_exe )
 	command.add_argument( "-in:file:silent", value=silent_file )
-	command.add_argumnet( "-out:file:silent", value=silent_file_out )
+	command.add_argument( "-out:file:silent", value=silent_file_out )
 	command.submit()
 	return silent_file_out
 
