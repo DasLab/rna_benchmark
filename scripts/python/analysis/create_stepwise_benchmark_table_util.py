@@ -246,7 +246,7 @@ def get_score_data( filename, colnames=['score'], sort=None, filters=None, keep=
 			if not "SCORE:" in line:
 				continue
 			cols = line.split()
-			if colidx is None:
+			if "description" in line:
 				colidx = map(cols.index, filter(cols.count, colnames))
 				continue
 			data.append(tuple([float(cols[idx]) for idx in colidx]))
@@ -342,14 +342,29 @@ def get_opt_exp_score( inpaths ):
 	return opt_exp_score
 
 
+def get_flag( flag ):
+	if not exists( 'flags' ):
+		return None
+	with open( 'flags', 'r' ) as f:
+		for line in f:
+			if flag not in line: 
+				continue
+			return line.strip()
+	return None 	
+
+
 def virtualize_missing_residues( silent_file ):
-	silent_file_out = silent_file.replace(".out","_virt.out")
+	silent_file_out = silent_file.replace(".out","_full_model.out")
 	if exists( silent_file_out ):
 		Command( "rm -f ", args=silent_file_out ).submit()
-	virtualize_exe = get_rosetta_exe( "virtualize_missing" )
-	command = Command( virtualize_exe )
+	build_full_model_exe = get_rosetta_exe( "build_full_model" )
+	weights = get_flag( "-score:weights" ).split(' ')[-1]
+	command = Command( build_full_model_exe )
 	command.add_argument( "-in:file:silent", value=silent_file )
 	command.add_argument( "-out:file:silent", value=silent_file_out )
+	if weights is not None:
+		command.add_argument( "-score:weights", value=weights )
+	command.add_argument( "-virtualize_built", value="true" )
 	command.submit()
 	return silent_file_out
 
