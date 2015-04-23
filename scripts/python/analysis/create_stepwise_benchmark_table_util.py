@@ -261,7 +261,7 @@ def get_score_data( filename, colnames=['score'], sort=None, filters=None, keep=
 		return None
 	if sort is not None:
 		sort = colnames.index(sort) if isinstance(sort, str) else sort-1
-		data = sorted(data, key=operator.itemgetter(sort))
+		data = sorted(data, key=operator.itemgetter(sort), reverse=True)
 	if len(colidx) == 1:
 		data = [d[0] for d in data] 
 	if keep is not None:
