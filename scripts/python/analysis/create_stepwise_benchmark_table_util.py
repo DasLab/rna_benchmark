@@ -63,7 +63,11 @@ class Command(object):
 			x = delim.join(x)
 		if isinstance(y, list):
 			y = delim.join(y)
-		return x if y is None else delim.join([str(x),str(y)]) 
+		if x is None and y is None:
+			return None
+		if x is None or y is None:
+			return x if y is None else y
+		return delim.join([str(x),str(y)]) 
 
 	def _run(self):
 		pipe = sp.Popen( self.command, shell=True, 
@@ -94,7 +98,7 @@ class Command(object):
 
 	def keep_log(self, filename=None):
 		if filename is None:
-			filename = 'LOG_%s.txt' % self.command.split(' ')[0]
+			filename = 'LOG_%s.txt' % basename(self.command.split(' ')[0])
 		self.logfile = filename
 		return
 
