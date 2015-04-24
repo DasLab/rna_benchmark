@@ -236,7 +236,7 @@ def get_target_names():
 	return target_names 
 
 
-def get_score_data( filename, colnames=['score'], sort=None, filters=None, keep=None ):
+def get_score_data( filename, colnames=['score'], sort=None, filters=None, tags=None, keep=None ):
 	if not isinstance(colnames, list):
 		colnames = [ colnames ]
 	data = []
@@ -245,11 +245,17 @@ def get_score_data( filename, colnames=['score'], sort=None, filters=None, keep=
 		for line in f:
 			if not "SCORE:" in line:
 				continue
-			cols = line.split()
+			cols = filter(None,[c.strip() for c in line.split()])
+			if not len(cols):
+				continue
 			if "description" in line:
 				colidx = map(cols.index, filter(cols.count, colnames))
 				continue
-			data.append(tuple([float(cols[idx]) for idx in colidx]))
+			if tags and not any( t in line for t in tags ):
+				continue
+			cols = [cols[idx] for idx in colidx]
+			d = [float(c) if isinstance(c,float) else c for c in cols]
+			data.append(tuple(d))
 	if filters is not None:
 		if not isinstance(filters, list):
 			filters = [ filters ] 
@@ -374,6 +380,7 @@ def create_cluster_silent_file( silent_file ):
 		silent_file = virtualize_missing_residues( silent_file )
 	cluster_rmsd = 2.0 
 	suite_cluster_rmsd = 2.5 
+	rename_tags = False
 	no_graphic = False
 	ignore_unmatched_virtual_res = False
 	common_args_file = None 
@@ -396,6 +403,9 @@ def create_cluster_silent_file( silent_file ):
 	command.add_argument( "-native_pdb", value=native_pdb )
 	command.add_argument( "-output_filename", value=cluster_silent_file )	
 	command.add_argument( "-full_length_loop_rmsd_clustering", value="True" )
+	if not rename_tags:
+		command.add_argument( "-clusterer_rename_tags", value="false" )
+		command.add_argument( "-add_lead_zero_to_tag", value="false" )
 	if not no_graphic:
 		command.add_argument( "-no_graphic", value="False" )
 	if ignore_unmatched_virtual_res:
@@ -416,7 +426,16 @@ def get_lowest_energy_cluster_centers( nclusters=5 ):
 		cluster_silent_file = silent_file
 	cluster_center_list = []
 	score_types = ['score', get_rmsd_type(cluster_silent_file)]
-	data = get_score_data( cluster_silent_file, colnames=score_types, sort='score', keep=nclusters )
+	if 'swm' in silent_file:
+		# PROBLEM: we need to build/virtualize missing residues in SWM silent files before 
+		# clustering with SWA_cluster.py, but the scores before and after build_full_model 
+		# are not matching up (yet!) ... 
+		# SOLUTION: use 'build_full_model -virtualize_built' output for clustering, but get
+		# original scores of poses, using the tags found in clusterer output
+		tags = get_score_data( cluster_silent_file, colnames='description' )
+		data = get_score_data( silent_file, colnames=score_types, sort='score', tags=tags, keep=nclusters )
+	else:
+		data = get_score_data( cluster_silent_file, colnames=score_types, sort='score', keep=nclusters )
 	if data is None:
 		return cluster_center_list
 	for idx, (energy, rmsd) in enumerate(data, start=1):
