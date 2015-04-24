@@ -87,7 +87,8 @@ class Command(object):
 	def _check_error(self):
 		if self._err and len(self._err):
 			if not self.silent:
-				print self._join(self.command,[self._out,self._err], delim='\n')
+				print "ERROR running", self.command,"in", os.getcwd()
+				#print self._join(self.command,[self._out,self._err], delim='\n')
 			return False
 		return True
 
@@ -385,24 +386,26 @@ def get_flag( flag ):
 
 def virtualize_missing_residues( silent_file ):
 	silent_file_out = silent_file.replace(".out","_full_model.out")
-	if exists( silent_file_out ):
-		Command( "rm -f ", args=silent_file_out ).submit()
 	build_full_model_exe = get_rosetta_exe( "build_full_model" )
 	weights = get_flag( "-score:weights" ).split(' ')[-1]
 	command = Command( build_full_model_exe )
 	command.add_argument( "-in:file:silent", value=silent_file )
 	command.add_argument( "-out:file:silent", value=silent_file_out )
+	command.add_argument( "-out:overwrite", value="true" )
 	if weights is not None:
 		command.add_argument( "-score:weights", value=weights )
 	command.add_argument( "-virtualize_built", value="true" )
 	command.keep_log()
-	command.submit()
-	return silent_file_out
+	err = command.submit()
+	return silent_file_out if err is False else None
 
 
 def create_cluster_silent_file( silent_file ):
 	if 'swm' in silent_file:
-		silent_file = virtualize_missing_residues( silent_file )
+		silent_file_virt = virtualize_missing_residues( silent_file )
+		if not silent_file_virt or not exists( silent_file_virt ):
+			return silent_file
+		silent_file = silent_file_virt
 	cluster_rmsd = 2.0 
 	suite_cluster_rmsd = 2.5 
 	rename_tags = False
@@ -451,6 +454,7 @@ def get_lowest_energy_cluster_centers( nclusters=5 ):
 		cluster_silent_file = silent_file
 	cluster_center_list = []
 	score_types = ['score', get_rmsd_type(cluster_silent_file)]
+	data = None
 	if 'swm' in silent_file:
 		# PROBLEM: we need to build/virtualize missing residues in SWM silent files before 
 		# clustering with SWA_cluster.py, but the scores before and after build_full_model 
