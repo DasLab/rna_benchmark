@@ -51,36 +51,51 @@ class Command(object):
 
 	def __init__(self, command, args=None):
 		self.command = self._join(command, args)
+		self.logfile = None
 		self.stdout = sp.PIPE
 		self.stderr = sp.PIPE
 		self.silent = False
 		self._out = None
 		self._err = None
 
-	def _join(self, x, y):
+	def _join(self, x, y, delim=' '):
 		if isinstance(x, list):
-			x = ' '.join(x)
+			x = delim.join(x)
 		if isinstance(y, list):
-			y = ' '.join(y)
-		return x if y is None else ' '.join([str(x),str(y)]) 
+			y = delim.join(y)
+		return x if y is None else delim.join([str(x),str(y)]) 
 
 	def _run(self):
 		pipe = sp.Popen( self.command, shell=True, 
 						 stdout=self.stderr, 
 						 stderr=self.stderr ) 
 		self._out, self._err = pipe.communicate()
+		self._log()
 		return
 
+	def _log(self):
+		if self.logfile is None:
+			return
+		with open( self.logfile, 'w' ) as f:
+			f.write( self._join(self.command,[self._out,self._err], delim='\n') )
+		return
+ 
 	def _check_error(self):
 		if self._err and len(self._err):
 			if not self.silent:
-				print '\n'.join([self.command,self._out,self._err])
+				print self._join(self.command,[self._out,self._err], delim='\n')
 			return False
 		return True
 
 	def add_argument(self, argument, value=None):
 		argument = self._join(argument, value)
 		self.command = self._join(self.command, argument)
+		return
+
+	def keep_log(self, filename=None):
+		if filename is None:
+			filename = 'LOG_%s.txt' % self.command.split(' ')[0]
+		self.logfile = filename
 		return
 
 	def submit(self):
@@ -376,6 +391,7 @@ def virtualize_missing_residues( silent_file ):
 	if weights is not None:
 		command.add_argument( "-score:weights", value=weights )
 	command.add_argument( "-virtualize_built", value="true" )
+	command.keep_log()
 	command.submit()
 	return silent_file_out
 
