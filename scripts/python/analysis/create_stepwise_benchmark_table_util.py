@@ -253,9 +253,14 @@ def get_score_data( filename, colnames=['score'], sort=None, filters=None, tags=
 				continue
 			if tags and not any( t in line for t in tags ):
 				continue
-			cols = [cols[idx] for idx in colidx]
-			d = [float(c) if isinstance(c,float) else c for c in cols]
-			data.append(tuple(d))
+			data.append([])
+			for idx in colidx:
+				col = cols[idx]
+				try:
+					data[-1].append( float(col) )
+				except:
+					data[-1].append( col )
+			data[-1] = tuple(data[-1])
 	if filters is not None:
 		if not isinstance(filters, list):
 			filters = [ filters ] 
