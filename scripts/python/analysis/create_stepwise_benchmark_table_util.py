@@ -388,12 +388,15 @@ def virtualize_missing_residues( silent_file ):
 	silent_file_out = silent_file.replace(".out","_full_model.out")
 	build_full_model_exe = get_rosetta_exe( "build_full_model" )
 	weights = get_flag( "-score:weights" ).split(' ')[-1]
+	torsion_potential = get_flag( "-score:rna_torsion_potential" ).split(' ')[-1]
 	command = Command( build_full_model_exe )
 	command.add_argument( "-in:file:silent", value=silent_file )
 	command.add_argument( "-out:file:silent", value=silent_file_out )
 	command.add_argument( "-out:overwrite", value="true" )
 	if weights is not None:
 		command.add_argument( "-score:weights", value=weights )
+	if torsion_potential is not None:
+		command.add_argument( "-score:rna_torsion_potential", value=torsion_potential )
 	command.add_argument( "-virtualize_built", value="true" )
 	command.keep_log()
 	err = command.submit()
