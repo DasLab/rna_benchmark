@@ -405,8 +405,8 @@ def virtualize_missing_residues( silent_file ):
 		command.add_argument( "-score:rna_torsion_potential", value=torsion_potential )
 	command.add_argument( "-virtualize_built", value="true" )
 	command.keep_log()
-	err = command.submit()
-	return silent_file_out if err is False else None
+	success = command.submit()
+	return silent_file_out if success is True else None
 
 
 def get_full_model_parameter(silent_file, parameter):
