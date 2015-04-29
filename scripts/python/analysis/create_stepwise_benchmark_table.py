@@ -161,7 +161,7 @@ if __name__=='__main__':
     ###################################################################
     ### combine tables from each inpath into one table
     ###################################################################
-    if merge_tables:
+    if merge_tables and len(inpaths) > 1:
         print '\nMerging Tables for Runs:\n%s\n' % ('\n'.join(inpaths))
         subtable_names = [ip+'/'+ip.upper()+'.tab' for ip in inpaths]
         table_name = '_v_'.join(inpaths).upper() + '.tab'

@@ -374,13 +374,19 @@ def get_opt_exp_score( inpaths ):
 
 
 def get_flag( flag ):
-	if not exists( 'flags' ):
-		return None
-	with open( 'flags', 'r' ) as f:
-		for line in f:
-			if flag not in line: 
-				continue
-			return line.strip()
+	if exists( 'flags' ):
+		with open( 'flags', 'r' ) as f:
+			for line in f:
+				if flag not in line: 
+					continue
+				return line.strip()
+	if exists( 'README_SWA' ):
+		with open( 'README_SWA', 'r' ) as f:
+			for line in f.read().strip().split(' -'):
+				line = '-'+line
+				if flag not in line:
+					continue
+				return line.strip()
 	return None 	
 
 
@@ -403,7 +409,79 @@ def virtualize_missing_residues( silent_file ):
 	return silent_file_out if err is False else None
 
 
+def get_full_model_parameter(silent_file, parameter):
+	with open( silent_file, 'r' ) as f:
+		for line in f:
+			if "FULL_MODEL_PARAMETERS" not in line:
+				continue
+			if parameter not in line:
+				continue
+			cols = line.strip().split()
+			return cols[cols.index(parameter)+1] 		
+	return None
+
+
+def make_res_list(tag):
+	new_list = []
+	subtags = tag.replace(',',' ').split(' ')
+	for subtag in subtags:
+		if '-' in subtag:
+			subtag = subtag.split('-')
+			for x in xrange(int(subtag[0]),int(subtag[1])+1):
+				new_list.append(str(x))
+		else:
+			res_list.append(subres)
+	return new_list
+
+
+def make_res_tag(res, exclude=None, delim=' ', dashes=True):
+	exclude_list = make_res_list(exclude) if exclude else []
+	res_list = [x for x in make_res_list(res) if x not in exclude_list]
+	if dashes:
+		for idx, res in enumerate(res_list):
+			while idx+2 != len(res_list) and int(res_list[idx+1]) + 1 == int(res_list[idx+2]):
+				res_list.pop(idx+1)
+			res_list[idx] = res_list[idx] + '-' + res_list.pop(idx+1)
+	res_tag = delim.join(res_list)
+	return res_tag
+	
+
+def create_common_args_file( silent_file ):
+	common_args_file = 'SWA_cluster_common_args_'+silent_file
+	if exists( common_args_file ):
+		Command( "rm -f ", args=common_args_file ).submit()
+	working_res = get_full_model_parameter(silent_file, 'WORKING')
+	sample_res = get_full_model_parameter(silent_file, 'CALC_RMS')
+	if sample_res is None:
+		sample_res = get_full_model_parameter(silent_file, 'SAMPLE')
+	fixed_res = make_res_tag(working_res, exclude=sample_res)
+	common_args = []
+	common_args.append( '-in:file:silent_struct_type binary_rna' )
+	common_args.append( get_flag('-score:weights') )
+	common_args.append( get_flag('-score:rna_torsion_potential') )
+	common_args.append( get_flag('-fasta') )
+	if get_flag('-VDW_rep_screen_info'):
+		common_args.append( get_flag('-VDW_rep_screen_info') )
+		common_args.append( '-VDW_rep_delete_matching_res false' )
+	common_args.append( '-jump_point_pairs ' + working_res )
+	common_args.append( '-alignment_res ' + working_res ) 
+	common_args.append( '-fixed_res ' + fixed_res )
+	common_args.append( '-input_res ' + fixed_res )
+ 	common_args.append( '-input_res2 ' + sample_res )
+ 	common_args.append( '-global_sample_res_list ' + sample_res ) 
+	common_args.append( '-sample_res ' + sample_res ) 
+	common_args.append( '-rmsd_res ' + sample_res ) 
+	with open( common_args_file, 'w' ) as fid:
+		fid.write(' ')
+		fid.write(' '.join(filter(None, common_args)))
+		fid.write('\n')
+	if not exists( common_args_file ):
+		common_args_file = None
+	return common_args_file
+
+
 def create_cluster_silent_file( silent_file ):
+	common_args_file = create_common_args_file( silent_file )
 	if 'swm' in silent_file:
 		silent_file_virt = virtualize_missing_residues( silent_file )
 		if not silent_file_virt or not exists( silent_file_virt ):
@@ -414,7 +492,6 @@ def create_cluster_silent_file( silent_file ):
 	rename_tags = False
 	no_graphic = False
 	ignore_unmatched_virtual_res = False
-	common_args_file = None 
 	native_pdb = get_native_pdb()
 	cluster_exe = "SWA_RNA_python/SWA_dagman_python/misc/SWA_cluster.py"
 	cluster_exe = get_rosetta_exe( cluster_exe, tools=True )
@@ -452,8 +529,8 @@ def get_lowest_energy_cluster_centers( nclusters=5 ):
 	silent_file = get_silent_file()	
 	cluster_silent_file = create_cluster_silent_file( silent_file )
 	if not exists( cluster_silent_file ):
-		print "CLUSTER_SILENT_FILE NOT FOUND FOR TARGET: %s" % target
-		print "USING SILENT_FILE: %s/%s" % (target, silent_file)
+		print "CLUSTER_SILENT_FILE NOT FOUND FOR TARGET: %s" % get_working_target()
+		print "USING SILENT_FILE: %s/%s" % (get_working_target(), silent_file)
 		cluster_silent_file = silent_file
 	cluster_center_list = []
 	score_types = ['score', get_rmsd_type(cluster_silent_file)]
