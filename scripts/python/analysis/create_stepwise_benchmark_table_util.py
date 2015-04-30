@@ -51,12 +51,14 @@ class Command(object):
 
 	def __init__(self, command, args=None):
 		self.command = self._join(command, args)
-		self.logfile = None
-		self.stdout = sp.PIPE
-		self.stderr = sp.PIPE
 		self.silent = False
+		self._success = False
 		self._out = None
 		self._err = None
+		self._stdout = sp.PIPE
+		self._stderr = sp.PIPE
+		self._outfile = None
+		self._errfile = None
 
 	def _join(self, x, y, delim=' '):
 		if isinstance(x, list):
@@ -69,49 +71,71 @@ class Command(object):
 			return x if y is None else y
 		return delim.join([str(x),str(y)]) 
 
-	def _run(self):
+	def _submit(self):
 		pipe = sp.Popen( self.command, shell=True, 
-						 stdout=self.stderr, 
-						 stderr=self.stderr ) 
+						 stdout=self._stderr, 
+						 stderr=self._stderr ) 
 		self._out, self._err = pipe.communicate()
-		self._log()
+		self._check_error()
+		self._save_logs()
 		return
 
-	def _log(self):
-		if self.logfile is None:
-			return
-		with open( self.logfile, 'w' ) as f:
-			f.write( self._join(self.command,[self._out,self._err], delim='\n') )
-		return
- 
 	def _check_error(self):
+		self._success = True
 		if self._err and len(self._err):
 			if not self.silent:
-				print "ERROR running", self.command,"in", os.getcwd()
-				#print self._join(self.command,[self._out,self._err], delim='\n')
-			return False
-		return True
+				print "\nFAILED:", self.command
+			self._success = False
+		return self._success
+
+	def _save_logs(self):
+		if self._outfile:
+			with open( self._outfile, 'w' ) as f:
+				f.write( self._join(self.command, [self._out,self._err], delim='\n') )
+		if self._errfile:
+			with open( self._errfile, 'w' ) as f:
+				if self._success is False:
+					f.write( self._join(self.command, self._err, delim='\n') )
+		return
 
 	def add_argument(self, argument, value=None):
 		argument = self._join(argument, value)
 		self.command = self._join(self.command, argument)
 		return
 
-	def keep_log(self, filename=None):
+	def save_logs(self, filename=None, out=True, err=True):
 		if filename is None:
-			filename = 'LOG_%s.txt' % basename(self.command.split(' ')[0])
-		self.logfile = filename
+			filename = 'LOG_' + basename(self.command.split(' ')[0])
+		filename = filename.split('.')[0]
+		self._outfile = filename + '.out' if out is True else None
+		self._errfile = filename + '.err' if err is True else None
 		return
 
 	def submit(self):
-		self._run()
-		return self._check_error()
+		self._submit()
+		return self._success
 	
 	def output(self):
-		self._run()
-		return self._out if self._check_error() else None
+		self._submit()
+		return self._out if self._success else None
 
+################################################################################
+class TableRow(object):
 
+	def __init__(self):
+		self._columns = []
+
+	def add_columns(self, cols):
+		if not isinstance(cols, list):
+			cols = [ cols ]
+		for col in cols:
+			self._columns.append( col )
+		return
+
+	def columns(self):
+		return self._columns
+
+################################################################################
 class Table(object):
 
 	def __init__(self, filename):
@@ -202,22 +226,6 @@ class Table(object):
 		return
 
 
-class TableRow(object):
-
-	def __init__(self):
-		self._columns = []
-
-	def add_columns(self, cols):
-		if not isinstance(cols, list):
-			cols = [ cols ]
-		for col in cols:
-			self._columns.append( col )
-		return
-
-	def columns(self):
-		return self._columns
-	
-
 ################################################################################
 ### HELPER FUNCTIONS
 ################################################################################
@@ -229,7 +237,7 @@ def find( file, start='./' ):
 		return find(file, start=dir)
 	return None
 
-
+################################################################################
 def get_rosetta_exe( exe, tools=False ):
 	rosetta = expandvars('$ROSETTA')
 	if '$' in rosetta:
@@ -240,7 +248,7 @@ def get_rosetta_exe( exe, tools=False ):
 		rosetta += '/main/source/bin/'
 	return find( exe, start=rosetta )
 
-
+################################################################################
 def get_target_names():
 	target_names = []
 	info_files = glob(benchmark_dir+'/input_files/*.txt')
@@ -255,7 +263,7 @@ def get_target_names():
 				target_names.append( name )
 	return target_names 
 
-
+################################################################################
 def get_score_data( filename, colnames=['score'], sort=None, filters=None, tags=None, keep=None ):
 	if not isinstance(colnames, list):
 		colnames = [ colnames ]
@@ -300,7 +308,7 @@ def get_score_data( filename, colnames=['score'], sort=None, filters=None, tags=
 		data = data[0] if keep == 1 else data[:keep]
 	return data
 
-
+################################################################################
 def get_rmsd_type( silent_file ):
 	with open( silent_file, 'r' ) as f:
 		for line in f:
@@ -314,11 +322,11 @@ def get_rmsd_type( silent_file ):
 				break
 	return 'rms'
 
-
+################################################################################
 def get_working_target():
 	return basename(os.getcwd())
 
-
+################################################################################
 def get_silent_file( filename=['region_FINAL.out','swm_rebuild.out'], dir=None ):
 	if not isinstance(filename, list):
 		filename = [ filename ]
@@ -327,30 +335,30 @@ def get_silent_file( filename=['region_FINAL.out','swm_rebuild.out'], dir=None )
 	silent_files = filter(exists, filename)
 	return silent_files[0] if len(silent_files) else None
 
-
+################################################################################
 def get_native_pdb():
 	target = get_working_target()
 	native_pdb = glob( target+'_????_RNA.pdb' )[0]
 	return native_pdb
 
-
+################################################################################
 def get_start_pdb_list():
 	target = get_working_target()
 	start_pdbs = glob( target+'_START*_????_RNA.pdb' )
 	return start_pdbs
 
-
+################################################################################
 def get_motif_length():
 	length = len(''.join(get_sequences(get_native_pdb())[0]))
 	for start_pdb in get_start_pdb_list():
 		length -= len(''.join(get_sequences(start_pdb)[0]))
 	return length
 
-
+################################################################################
 def get_pdb_id():
 	return get_native_pdb().split('_')[-2].upper()
 
-
+################################################################################
 def get_opt_exp_score( inpaths ):
 	target = get_working_target()
 	opt_exp_score = None
@@ -372,7 +380,7 @@ def get_opt_exp_score( inpaths ):
 		opt_exp_score = score
 	return opt_exp_score
 
-
+################################################################################
 def get_flag( flag ):
 	if exists( 'flags' ):
 		with open( 'flags', 'r' ) as f:
@@ -389,7 +397,7 @@ def get_flag( flag ):
 				return line.strip()
 	return None 	
 
-
+################################################################################
 def virtualize_missing_residues( silent_file ):
 	silent_file_out = silent_file.replace(".out","_full_model.out")
 	build_full_model_exe = get_rosetta_exe( "build_full_model" )
@@ -404,11 +412,11 @@ def virtualize_missing_residues( silent_file ):
 	if torsion_potential is not None:
 		command.add_argument( "-score:rna_torsion_potential", value=torsion_potential )
 	command.add_argument( "-virtualize_built", value="true" )
-	command.keep_log()
+	command.save_logs()
 	success = command.submit()
 	return silent_file_out if success is True else None
 
-
+################################################################################
 def get_full_model_parameter(silent_file, parameter):
 	with open( silent_file, 'r' ) as f:
 		for line in f:
@@ -420,7 +428,7 @@ def get_full_model_parameter(silent_file, parameter):
 			return cols[cols.index(parameter)+1] 		
 	return None
 
-
+################################################################################
 def make_res_list(tag):
 	new_list = []
 	subtags = tag.replace(',',' ').split(' ')
@@ -433,7 +441,7 @@ def make_res_list(tag):
 			res_list.append(subres)
 	return new_list
 
-
+################################################################################
 def make_res_tag(res, exclude=None, delim=' ', dashes=True):
 	exclude_list = make_res_list(exclude) if exclude else []
 	res_list = [x for x in make_res_list(res) if x not in exclude_list]
@@ -445,7 +453,7 @@ def make_res_tag(res, exclude=None, delim=' ', dashes=True):
 	res_tag = delim.join(res_list)
 	return res_tag
 	
-
+################################################################################
 def create_common_args_file( silent_file ):
 	common_args_file = 'SWA_cluster_common_args_'+silent_file
 	if exists( common_args_file ):
@@ -479,7 +487,7 @@ def create_common_args_file( silent_file ):
 		common_args_file = None
 	return common_args_file
 
-
+################################################################################
 def create_cluster_silent_file( silent_file ):
 	common_args_file = create_common_args_file( silent_file )
 	if 'swm' in silent_file:
@@ -520,17 +528,16 @@ def create_cluster_silent_file( silent_file ):
 		command.add_argument( "-ignore_unmatched_virtual_res", value="True" )
 	if common_args_file:
 		command.add_argument( "-common_args", value=common_args_file )
-	command.add_argument( " > LOG_create_cluster_silent_file.txt" )
-	command.submit()	
-	return cluster_silent_file
+	command.save_logs()
+	success = command.submit()
+	return cluster_silent_file if success is True else None
 
-
+################################################################################
 def get_lowest_energy_cluster_centers( nclusters=5 ):
 	silent_file = get_silent_file()	
 	cluster_silent_file = create_cluster_silent_file( silent_file )
-	if not exists( cluster_silent_file ):
-		print "CLUSTER_SILENT_FILE NOT FOUND FOR TARGET: %s" % get_working_target()
-		print "USING SILENT_FILE: %s/%s" % (get_working_target(), silent_file)
+	if cluster_silent_file is None or not exists( cluster_silent_file ):
+		print "\n[WARNING] cluster_silent_file not found for target: %s" % get_working_target()
 		cluster_silent_file = silent_file
 	cluster_center_list = []
 	score_types = ['score', get_rmsd_type(cluster_silent_file)]
@@ -567,7 +574,7 @@ def get_target_properties():
 	pdb_id = get_pdb_id()
 	return [ length, pdb_id ]
 
-
+################################################################################
 def get_best_of_lowest_energy_cluster_centers():
 	'''
 		column:	| Best of Five Lowest Energy Cluster Centers |
@@ -583,7 +590,7 @@ def get_best_of_lowest_energy_cluster_centers():
 		best_rmsd = rmsd
 	return cluster_centers[0]
 
-
+################################################################################
 def get_lowest_rmsd_model():
 	'''
 		column:	| Lowest RMSD Model |
@@ -595,7 +602,7 @@ def get_lowest_rmsd_model():
 	rmsd = get_score_data( silent_file, colnames=rmsd_type, sort=rmsd_type, keep=1 )
 	return [ rmsd ]
 
-
+################################################################################
 def get_lowest_energy_sampled( opt_exp_inpaths ):
 	'''
 		column:	| Lowest Energy Sampled						 |
@@ -611,4 +618,5 @@ def get_lowest_energy_sampled( opt_exp_inpaths ):
 		return [ energy, None ]
 	energy_gap = energy - opt_exp_energy
 	return [ energy, energy_gap ]
+
 
