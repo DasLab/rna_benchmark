@@ -61,3 +61,19 @@ Working_res: 	A:4-20,A:27-33
 Input_res: 		-
 Native: 		1raw_RNA-aptamer_no_ligand.pdb
 Extra_flags: 	-
+
+Name:			amp_rna_aptamer_fixedG30
+Sequence: 		aagggaagaaacugcgg,ccggcuu,a
+Secstruct: 		(((...........(((,))).))),.
+Working_res: 	A:4-20,A:27-33,A:37
+Input_res: 		A:4-6,A:18-20,A:27-33
+Native: 		1raw_RNA-aptamer.pdb
+Extra_flags: 	-
+
+Name:			amp_rna_aptamer_no_ligand_fixedG30
+Sequence: 		aagggaagaaacugcgg,ccggcuu
+Secstruct: 		(((...........(((,))).)))
+Working_res: 	A:4-20,A:27-33
+Input_res: 		A:4-6,A:18-20,A:27-33
+Native: 		1raw_RNA-aptamer_no_ligand.pdb
+Extra_flags: 	-
