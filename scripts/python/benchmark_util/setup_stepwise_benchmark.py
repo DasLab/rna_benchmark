@@ -78,7 +78,7 @@ if len (args.extra_flags) > 0:
                 nstruct_flag_found = True
             if ( '-input_res' in flag ):
                 extra_input_res = flag.strip().split(' ')[1:]
-                extra_input_res = ';',join(filter(None, extra_input_res))
+                extra_input_res = ';'.join(filter(None, extra_input_res))
                 extra_flags_benchmark.pop(idx)
     else:
         extra_flags_benchmark = []
