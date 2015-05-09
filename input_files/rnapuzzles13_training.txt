@@ -46,6 +46,22 @@ Input_res: 		A:4-6,A:12-20,A:27-29,A:31-33
 Native: 		1raw_RNA.pdb
 Extra_flags: 	-
 
+Name:			amp_rna_mini_context_free
+Sequence: 		aagggaagaaacugcgg,ccggcuu,a
+Secstruct: 		(((...........(((,))).))),.
+Working_res: 	A:4-20,A:27-33,A:37
+Input_res: 	A:4-6,A:31-33;A:12-20,A:27-29
+Native: 		1raw_RNA.pdb
+Extra_flags: 	-jump_res A:10 A:37
+
+Name:			amp_rna_mini_context_free_no_ligand
+Sequence: 		aagggaagaaacugcgg,ccggcuu
+Secstruct: 		(((...........(((,))).)))
+Working_res: 	A:4-20,A:27-33
+Input_res: 	A:4-6,A:31-33;A:12-20,A:27-29
+Native: 		1raw_RNA.pdb
+Extra_flags: 	-
+
 Name:			amp_rna_aptamer
 Sequence: 		aagggaagaaacugcgg,ccggcuu,a
 Secstruct: 		(((...........(((,))).))),.
@@ -66,7 +82,7 @@ Name:			amp_rna_aptamer_free
 Sequence: 		aagggaagaaacugcgg,ccggcuu,a
 Secstruct: 		(((...........(((,))).))),.
 Working_res: 	A:4-20,A:27-33,A:37
-Input_res: 		-
+Input_res: 	A:4-6,A:31-33;A:18-20,A:27-29
 Native: 		1raw_RNA.pdb
 Extra_flags: 	-jump_res A:10 A:37
 
@@ -74,7 +90,7 @@ Name:			amp_rna_aptamer_free_no_ligand
 Sequence: 		aagggaagaaacugcgg,ccggcuu
 Secstruct: 		(((...........(((,))).)))
 Working_res: 	A:4-20,A:27-33
-Input_res: 		-
+Input_res: 	A:4-6,A:31-33;A:18-20,A:27-29
 Native: 		1raw_RNA.pdb
 Extra_flags: 	-
 

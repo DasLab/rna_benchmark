@@ -62,11 +62,12 @@ SWA_DAGMAN_TOOLS=ROSETTA+'/tools/SWA_RNA_python/SWA_dagman_python/'
 VDW_rep_screen_info_flag_found = False
 cycles_flag_found = False
 nstruct_flag_found = False
+extra_input_res = None
 if len (args.extra_flags) > 0:
     if exists( args.extra_flags ):
         extra_flags_benchmark = open( args.extra_flags ).readlines()
 
-        for flag in extra_flags_benchmark:
+        for idx, flag in enumerate(extra_flags_benchmark):
             if ( '-VDW_rep_screen_info' in flag ):
                 VDW_rep_screen_info_flag_found = True
                 continue
@@ -75,6 +76,10 @@ if len (args.extra_flags) > 0:
                 continue
             if ( '-nstruct' in flag ):
                 nstruct_flag_found = True
+            if ( '-input_res' in flag ):
+                extra_input_res = flag.strip().split(' ')[1:]
+                extra_input_res = ';',join(filter(None, extra_input_res))
+                extra_flags_benchmark.pop(idx)
     else:
         extra_flags_benchmark = []
         print 'Did not find ', args.extra_flags, ' so not using any extra flags for the benchmark'
@@ -164,16 +169,19 @@ for name in names:
     assert( string.join(sequences,'') == string.join(get_sequences( working_native[name] )[0],'') )
 
     # create starting PDBs
+    input_res_blocks =[]
     input_pdbs[ name ] = []
     input_resnums = []
     input_chains  = []
     if input_res[ name ] != '-':
-        input_res_blocks = string.split( input_res[ name ], ';' )
-        for m in range( len ( input_res_blocks ) ):
-            prefix = '%s/%s_START%d_' % ( inpath,name,m+1)
-            input_pdb = slice_out( inpath, prefix, native[ name ],input_res_blocks[m] )
-            input_pdbs[ name ].append( input_pdb )
-            get_resnum_chain( input_res_blocks[m], input_resnums, input_chains )
+        input_res_blocks += input_res[ name ].split(';')
+    if extra_input_res:
+        input_res_blocks += extra_input_res.split(';')
+    for m,input_res_block in enumerate(input_res_blocks):
+        prefix = '%s/%s_START%d_' % ( inpath,name,m+1)
+        input_pdb = slice_out( inpath, prefix, native[ name ],input_res_block )
+        input_pdbs[ name ].append( input_pdb )
+        get_resnum_chain( input_res_block, input_resnums, input_chains )
 
 
     input_resnum_fullmodel = map( lambda x: get_fullmodel_number(x,resnums[name],chains[name]), zip( input_resnums, input_chains ) )
