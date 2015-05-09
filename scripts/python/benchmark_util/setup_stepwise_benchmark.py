@@ -67,7 +67,7 @@ if len (args.extra_flags) > 0:
     if exists( args.extra_flags ):
         keep_flags = []
         extra_flags_benchmark = open( args.extra_flags ).readlines()
-      
+
         for flag in extra_flags_benchmark:
             if ( '-VDW_rep_screen_info' in flag ):
                 VDW_rep_screen_info_flag_found = True
@@ -323,9 +323,9 @@ for name in names:
 
 
 # write qsubMINIs, READMEs and SUBMITs
-qsub_file = ['qsubMINI']
+qsub_files = ['qsubMINI']
 hostname = uname()[1]
-if 'stampede' in hostname: qsub_file = ['qsubMPI']
+if 'stampede' in hostname: qsub_files = ['qsubMPI']
 if 'sherlock' in hostname or 'sh-' in hostname:
     qsub_files = ['sbatchMINI','qsubMPI']
     if args.nhours > 48:
