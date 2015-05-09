@@ -65,21 +65,22 @@ nstruct_flag_found = False
 extra_input_res = None
 if len (args.extra_flags) > 0:
     if exists( args.extra_flags ):
+        keep_flags = []
         extra_flags_benchmark = open( args.extra_flags ).readlines()
-
-        for idx, flag in enumerate(extra_flags_benchmark):
+      
+        for flag in extra_flags_benchmark:
             if ( '-VDW_rep_screen_info' in flag ):
                 VDW_rep_screen_info_flag_found = True
-                continue
             if ( '-cycles' in flag ):
                 cycles_flag_found = True
-                continue
             if ( '-nstruct' in flag ):
                 nstruct_flag_found = True
             if ( '-input_res' in flag ):
-                extra_input_res = flag.strip().split(' ')[1:]
-                extra_input_res = ';'.join(filter(None, extra_input_res))
-                extra_flags_benchmark.pop(idx)
+                extra_input_res = flag.strip().replace(' ',',').split(',')[1:]
+                extra_input_res = ','.join(filter(None, extra_input_res))
+                continue
+            keep_flags.append(flag)
+        extra_flags_benchmark = keep_flags
     else:
         extra_flags_benchmark = []
         print 'Did not find ', args.extra_flags, ' so not using any extra flags for the benchmark'
