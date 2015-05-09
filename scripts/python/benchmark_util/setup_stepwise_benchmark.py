@@ -322,14 +322,17 @@ for name in names:
 
 
 # write qsubMINIs, READMEs and SUBMITs
-qsub_file = 'qsubMINI'
+qsub_file = ['qsubMINI']
 hostname = uname()[1]
-if 'stampede' in hostname: qsub_file = 'qsubMPI'
+if 'stampede' in hostname: qsub_file = ['qsubMPI']
 if 'sherlock' in hostname or 'sh-' in hostname:
-    qsub_file = 'sbatchMINI'
+    qsub_files = ['sbatchMINI','qsubMPI']
     if args.nhours > 48:
         args.nhours = 48
-fid_qsub = open( qsub_file, 'w' )
+
+for qsub_file in qsub_files:
+    fid_qsub = open( qsub_file, 'w' )
+    fid_qsub.close()
 
 for name in names:
 
@@ -398,7 +401,9 @@ for name in names:
         fid_submit.write( ' -dagman_file rna_build.dag' )
         fid_submit.close()
 
-        fid_qsub.write( 'cd %s; source ./README_SWA && source ./SUBMIT_SWA; cd %s\n' % ( dirname, CWD ) )
+        for qsub_file in qsub_files:
+            with open(qsub_file,'a') as fid_qsub:
+                fid_qsub.write( 'cd %s; source ./README_SWA && source ./SUBMIT_SWA; cd %s\n' % ( dirname, CWD ) )
 
     # SETUP for StepWise Monte Carlo
     else:
@@ -468,8 +473,8 @@ for name in names:
 
         chdir( CWD )
 
-        fid_qsub.write( 'cd %s; source %s; cd %s\n' % ( name, qsub_file,  CWD ) )
+        for qsub_file in qsub_files:
+            with open(qsub_file,'a') as fid_qsub:
+                fid_qsub.write( 'cd %s; source %s; cd %s\n' % ( name, qsub_file,  CWD ) )
 
-
-fid_qsub.close()
 
