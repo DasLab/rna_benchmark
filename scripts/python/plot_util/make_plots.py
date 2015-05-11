@@ -83,11 +83,11 @@ def make_plots( inpaths, outfilenames, target_files, targets, xvars, yvars, pdfn
 			# get data from scores using xvar_idx and yvar_idx
 			assert( xvar_idx > -1 and yvar_idx > -1 )
 			xvar_data, yvar_data = [], []
-			xvar_cutoff, yvar_cutoff = 100.0, 5.0
+			#xvar_cutoff, yvar_cutoff = 100.0, 5.0
 			for score in data[inpath][target].scores:
-				if ( float(score[xvar_idx]) > xvar_cutoff or
-				     float(score[yvar_idx]) > yvar_cutoff ):
-					continue
+				#if ( float(score[xvar_idx]) > xvar_cutoff or
+				#     float(score[yvar_idx]) > yvar_cutoff ):
+				#	continue
 				xvar_data.append( score[xvar_idx] )
 				yvar_data.append( score[yvar_idx] )
 
@@ -95,7 +95,7 @@ def make_plots( inpaths, outfilenames, target_files, targets, xvars, yvars, pdfn
 			ax.plot( xvar_data,
 				 yvar_data,
 				 marker='.',
-				 markersize=4,
+				 markersize=3,
 				 color=colorcode[inpath_idx],
 				 linestyle=' ',
 				 label=basename(inpath) )
@@ -111,9 +111,7 @@ def make_plots( inpaths, outfilenames, target_files, targets, xvars, yvars, pdfn
 			ax.set_xlim( 0, 16 )
 
 			# set title and axes labels, adjust axis properties
-			title_fontsize = 'small'
-			if nplots > 20:
-				title_fontsize = 6
+			title_fontsize = 'small' if nrows < 3 else 8
 			ax.set_title( get_title(target), fontsize=title_fontsize, weight='bold' )
 			ax.set_ylabel( string.join(ylabels, ', '), fontsize=6 )
 			ax.set_xlabel( string.join(xlabels, ', '), fontsize=6 )
@@ -123,7 +121,7 @@ def make_plots( inpaths, outfilenames, target_files, targets, xvars, yvars, pdfn
 			# print times in plots (if available)
 			monospace_font = FontProperties()
 			monospace_font.set_family( 'monospace' )
-			if times_list[inpath_idx][plot_idx-1].times_found():
+			if False:#if times_list[inpath_idx][plot_idx-1].times_found():
 				xpos, ypos = 0.92, (0.10*len(inpaths)) - (0.015*6*inpath_idx)
 				ax.text( xpos,
 					 ypos,
