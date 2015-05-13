@@ -20,10 +20,9 @@ import subprocess
 parser = argparse.ArgumentParser(description='Setup benchmark for stepwise monte carlo')
 parser.add_argument("info_file",       help='text file with information, in same directory as input_files/ (e.g., "../favorites.txt")')
 parser.add_argument("user_input_runs", nargs='*',help='specify particular cases to run (default: run all in info_file)' )
-default_extra_flags_benchmark = 'extra_flags_benchmark.txt'
-parser.add_argument('-extra_flags', default=default_extra_flags_benchmark, help='Filename of text file with extra_flags for all cases.')
+parser.add_argument('-extra_flags', default='extra_flags_benchmark.txt', help='Filename of text file with extra_flags for all cases.')
 parser.add_argument('-nhours', default='16', type=int, help='Number of hours to queue each job.')
-parser.add_argument('-j','--njobs', default='10', type=int, help='Number of cores for each job.')
+parser.add_argument('-j','--njobs', default=None, type=int, help='Number of cores for each job.')
 parser.add_argument('--swa', action='store_true', help='Additional flag for setting up SWA runs.')
 parser.add_argument('--extra_min_res_off', action='store_true', help='Additional flag for turning extra_min_res off.')
 parser.add_argument('--save_times_off', action='store_true', help='Additional flag for turning save_times flag off.')
@@ -35,13 +34,8 @@ args = parser.parse_args()
 
 #####################################################################################################################
 motif_mode_off = ( args.motif_mode_off or args.swa )
-
-if args.swa and args.njobs == 10:
-    # set default njobs to 150 for SWA jobs
-    njobs = 150
-else:
-    njobs = args.njobs
-
+njobs = 150 if args.swa else 10 
+njobs = njobs if args.njobs is None else args.njobs 
 
 # get path to rosetta, required for now
 ROSETTA=args.path_to_rosetta
@@ -58,33 +52,18 @@ ROSETTA_DB=ROSETTA+'/main/database/'
 SWA_DAGMAN_TOOLS=ROSETTA+'/tools/SWA_RNA_python/SWA_dagman_python/'
 
 
-# get extra_flags_benchmark
-VDW_rep_screen_info_flag_found = False
-cycles_flag_found = False
-nstruct_flag_found = False
+# parse extra_flags_benchmark
+extra_flags_benchmark = {}
 extra_input_res = None
-if len (args.extra_flags) > 0:
-    if exists( args.extra_flags ):
-        keep_flags = []
-        extra_flags_benchmark = open( args.extra_flags ).readlines()
+if exists(args.extra_flags):
+    with open(args.extra_flags, 'r') as fid:
+        flags = filter(None, [l.split('#')[0].strip().split() for l in fid])
+    extra_flags_benchmark = dict([(f.pop(0), ' '.join(f)) for f in flags])
+    if '-input_res' in extra_flags_benchmark:
+        extra_input_res = extra_flags_benchmark.pop('-input_res')
+else:
+    print args.extra_flags,"doesn't exist, not using extra flags for benchmark"
 
-        for flag in extra_flags_benchmark:
-            if ( '-VDW_rep_screen_info' in flag ):
-                VDW_rep_screen_info_flag_found = True
-            if ( '-cycles' in flag ):
-                cycles_flag_found = True
-            if ( '-nstruct' in flag ):
-                nstruct_flag_found = True
-            if ( '-input_res' in flag ):
-                extra_input_res = flag.strip().replace(' ',',').split(',')[1:]
-                extra_input_res = ','.join(filter(None, extra_input_res))
-                continue
-            keep_flags.append(flag)
-        extra_flags_benchmark = keep_flags
-    else:
-        extra_flags_benchmark = []
-        print 'Did not find ', args.extra_flags, ' so not using any extra flags for the benchmark'
-        assert ( args.extra_flags == default_extra_flags_benchmark )
 
 # initialize directories
 names = []
@@ -125,7 +104,7 @@ for info_file_line in open( info_file ).readlines():
 
     if info_file_line[0] == '#' : continue
     if len( info_file_line ) < 5: continue
-    cols = string.split( info_file_line.replace( '\n','' ) )
+    cols = info_file_line.strip().split()
     assert( len( cols ) >= 2 )
 
     if cols[0] == 'Name:':
@@ -143,8 +122,10 @@ for info_file_line in open( info_file ).readlines():
     elif cols[0] == 'Working_res:' :    working_res[ name ] = cols[1]
     elif cols[0] == 'Input_res:'   :    input_res  [ name ] = cols[1]
     elif cols[0] == 'Native:'      :    native     [ name ] = cols[1]
-    elif cols[0] == 'Extra_flags:' :    extra_flags[ name ] = string.join( cols[1:] )
+    elif cols[0] == 'Extra_flags:' :    extra_flags[ name ] = parse_flags(cols[1:])
 
+
+        
 
 # check that each dictionary is the same size
 assert( len( names ) == len( sequence ) == len( secstruct ) == len( working_res ) == len( input_res ) == len( native ))
@@ -245,8 +226,8 @@ for name in names:
         if ( ( prev_moving and not next_moving and not right_before_chainbreak ) or \
              ( next_moving and not prev_moving and not right_after_chainbreak ) ):
             extra_min_res[ name ].append( m )
-    if not '-motif_mode\n' in extra_flags_benchmark and not motif_mode_off:
-        extra_flags_benchmark.append( '-motif_mode\n' )
+    if not motif_mode_off and '-motif_mode' not in extra_flags_benchmark:
+        extra_flags_benchmark['-motif_mode'] = ''
 
     # create fasta
     fasta[ name ] = '%s/%s.fasta' % (inpath,name)
@@ -307,7 +288,7 @@ for name in names:
     VDW_rep_screen_pdb[ name ] = prefix + native[ name ]
     VDW_rep_screen_info[ name ] = '%s' % ( basename( VDW_rep_screen_pdb[name] ) )
 
-    if VDW_rep_screen_info_flag_found:
+    if '-VDW_rep_screen_info' in extra_flags_benchmark:
 
         if not exists( VDW_rep_screen_pdb[ name ] ):
 
@@ -343,7 +324,8 @@ for name in names:
     # move all required files to the correct directory
     start_files = helix_files[ name ] + input_pdbs[ name ]
     infiles = start_files + [ fasta[name], working_native[ name ] ]
-    if VDW_rep_screen_info_flag_found:  infiles.append( VDW_rep_screen_pdb[ name ] )
+    if '-VDW_rep_screen_info' in extra_flags_benchmark:
+        infiles += [VDW_rep_screen_pdb[ name ]]
     for infile in infiles:  system( 'cp %s %s/ ' % ( infile, dirname ) )
 
     # SETUP for StepWise Assembly
@@ -360,36 +342,32 @@ for name in names:
         fid.write( ' -sample_res %s' % loop_res[ name ][ 'swa' ] )
 
         # case-specific extra flags
-        if ( len( extra_flags[name] ) > 0 ) and ( extra_flags[ name ] != '-' ) :
-            #fid.write( '%s\n' % extra_flags[name] )
-            for flag in extra_flags[name].split('-'):
-                if not len( flag ): continue
-                flag = flag.replace('true','True').replace('false','False')
-                fid.write( ' -%s' % flag )
+        for flag in extra_flags[ name ]:
+            flag = flag.replace('true','True').replace('false','False')
+            fid.write(' %s' % flag)
 
         # extra flags for whole benchmark
-        weights_file = ''
-        for flag in extra_flags_benchmark:
-            if ( '#' in flag ): continue
-            flag = flag.replace('true','True').replace('false','False')
-            if ( '-analytic_etable_evaluation' in flag ): continue ### SWM Specific
-            if ( '-motif_mode' in flag ): continue ### SWM Specific
-            if ( '-score:weights' in flag ):
-                flag = flag.replace( '-score:weights', '-force_field_file' )
-                weights_file = string.split( flag )[1]
-            if ( '-score:rna_torsion_potential' in flag ):
-                flag = flag.replace( '-score:rna_torsion_potential', '-rna_torsion_potential_folder' )
-            if ( '-VDW_rep_screen_info True' in flag ):
-                flag = flag.replace( 'True', VDW_rep_screen_info[ name ] ) #-VDW_rep_screen_info 1zih_RNA.pdb
-                flag = flag + ' -apply_VDW_rep_delete_matching_res False'
-            flag = ' '+flag.replace( '\n', '' )
-            fid.write( flag )
-        if len( weights_file ) > 0:
-            if not exists( weights_file ):
-                weights_file = ROSETTA_DB+'/scoring/weights/'+weights_file
-            assert( exists( weights_file ) )
-            system( 'cp ' + weights_file + ' ' + name )
-
+        for key, value in extra_flags_benchmark.iteritems():
+            value = value.replace('true','True').replace('false','False')
+            if '-analytic_etable_evaluation' in key:
+                continue ### SWM Specific
+            if '-motif_mode' in key:
+                continue ### SWM Specific
+            if '-score:weights' in key:
+                key = '-force_field_file'
+                weights_file = value
+                if not exists( weights_file ):
+                    weights_file = ROSETTA_DB+'/scoring/weights/'+weights_file
+                assert( exists(weights_file) )
+                system( 'cp %s %s' % (weights_file, name) )
+            if '-score:rna_torsion_potential' in key:
+                key = '-rna_torsion_potential_folder'
+            if '-VDW_rep_screen_info' in key and 'True' in value:
+                value = VDW_rep_screen_info[ name ]
+                fid.write(' -apply_VDW_rep_delete_matching_res False')
+            flag = ' '.join([key, value]).strip()
+            fid.write(' %s' % flag)
+            
         fid.close()
 
         print '\nSetting up submission files for: ', name
@@ -428,39 +406,35 @@ for name in names:
         #if ( len( input_pdbs[ name ] ) == 0 ):
         #    fid.write( '-superimpose_over_all\n' ) # RMSD over everything -- better test since helices are usually native
         fid.write( '-fasta %s\n' % basename( fasta[ name ] ) )
-        if not cycles_flag_found:
+        if '-cycles' not in extra_flags_benchmark:
             fid.write( '-cycles 200\n' )
-        if not nstruct_flag_found:
+        if '-nstruct' not in extra_flags_benchmark:
             fid.write( '-nstruct 20\n' )
         #fid.write( '-intermolecular_frequency 0.0\n' )
         if not args.save_times_off:
             fid.write( '-save_times\n' )
 
         # case-specific extra flags
-        if ( len( extra_flags[name] ) > 0 ) and ( extra_flags[ name ] != '-' ) :
-            #fid.write( '%s\n' % extra_flags[name] )
-            for flag in extra_flags[name].split('-'):
-                if not len( flag ): continue
-                flag = flag.replace('True','true').replace('False','false')
-                fid.write( '-%s\n' % flag )
+        for flag in extra_flags[ name ]:
+            flag = flag.replace('True','true').replace('False','false')
+            fid.write('%s\n' % flag)
 
         # extra flags for whole benchmark
-        weights_file = ''
-        for flag in extra_flags_benchmark:
-            if ( '#' in flag ): continue
-            flag = flag.replace('True','true').replace('False','false')
-            if ( '-single_stranded_loop_mode' in flag ): continue ### SWA Specific
-            if ( '-score:weights' in flag ): weights_file = string.split( flag )[1]
-            if ( '-VDW_rep_screen_info true' in flag ):
-                flag = flag.replace( 'true', basename( VDW_rep_screen_info[ name ] ) )#-VDW_rep_screen_info 1zih_RNA.pdb
-            fid.write( flag )
-
-        if len( weights_file ) > 0:
-            if not exists( weights_file ):
-                weights_file = ROSETTA_DB+'/scoring/weights/'+weights_file
-            assert( exists( weights_file ) )
-            system( 'cp ' + weights_file + ' ' + name )
-
+        for key, value in extra_flags_benchmark.iteritems():
+            value = value.replace('True','true').replace('False','false')
+            if '-single_stranded_loop_mode' in key:
+                continue ### SWA Specific
+            if '-score:weights' in key:
+                weights_file = value
+                if not exists(weights_file):
+                    weights_file = ROSETTA_DB+'/scoring/weights/'+weights_file
+                assert( exists(weights_file) )
+                system( 'cp %s %s' % (weights_file, name) )
+            if '-VDW_rep_screen_info' in key and 'true' in value:
+                value = basename(VDW_rep_screen_info[ name ])
+            flag = ' '.join([key, value]).strip()
+            fid.write('%s\n' % flag)
+                
         fid.close()
 
         print '\nSetting up submission files for: ', name
