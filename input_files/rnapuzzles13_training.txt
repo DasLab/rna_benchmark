@@ -30,22 +30,6 @@ Input_res: 		A:4-6,A:12-20,A:27-33
 Native: 		1raw_RNA.pdb
 Extra_flags: 	-
 
-Name:			amp_rna_mini_context_freeG30
-Sequence: 		aagggaagaaacugcgg,ccggcuu,a
-Secstruct: 		(((...........(((,))).))),.
-Working_res: 	A:4-20,A:27-33,A:37
-Input_res: 		A:4-6,A:12-20,A:27-29,A:31-33
-Native: 		1raw_RNA.pdb
-Extra_flags: 	-jump_res A:10 A:37 -ligand_res A:37
-
-Name:			amp_rna_mini_context_freeG30_no_ligand
-Sequence: 		aagggaagaaacugcgg,ccggcuu
-Secstruct: 		(((...........(((,))).)))
-Working_res: 	A:4-20,A:27-33
-Input_res: 		A:4-6,A:12-20,A:27-29,A:31-33
-Native: 		1raw_RNA.pdb
-Extra_flags: 	-
-
 Name:			amp_rna_mini_context_free
 Sequence: 		aagggaagaaacugcgg,ccggcuu,a
 Secstruct: 		(((...........(((,))).))),.
