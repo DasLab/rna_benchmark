@@ -78,4 +78,22 @@ Input_res: 	A:4-6,A:31-33;A:18-20,A:27-29
 Native: 		1raw_RNA.pdb
 Extra_flags: 	-
 
+###############################################################################
+### DOCKING ONLY
+###############################################################################
+Name:			amp_rna_aptamer_dock_ligand
+Sequence: 		aagggaagaaacugcgg,ccggcuu,a
+Secstruct: 		(((...........(((,))).))),.
+Working_res: 		A:4-20,A:27-33,A:37
+Input_res: 		A:4-20,A:27-33
+Native: 		1raw_RNA.pdb
+Extra_flags: 		-ligand_res A:37
+
+Name:			amp_rna_aptamer_dock_ligand_base
+Sequence: 		aagggaagaaacugcgg,ccggcuu,a
+Secstruct: 		(((...........(((,))).))),.
+Working_res: 		A:4-20,A:27-33,A:37
+Input_res: 		A:4-20,A:27-33
+Native: 		1raw_RNA.pdb
+Extra_flags: 		-
  
