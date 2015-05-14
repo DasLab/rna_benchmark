@@ -8,6 +8,7 @@ from subprocess import Popen, PIPE
 from os.path import exists
 from os import system
 from make_tag import make_tag_with_dashes
+from parse_options import get_resnum_chain
 import subprocess
 
 ###############################################################################
@@ -96,3 +97,39 @@ def parse_flags( flags ):
             continue
         parsed_flags[-1] += ' ' + flag
     return parsed_flags
+
+###############################################################################
+### CLASSES
+###############################################################################
+class FullModelInfo(object):
+    
+    def __init__(self, name = None):
+        self.name = name
+        self.resnums = None
+        self.chains = None
+             
+    def set_resnums(self, resnums):
+        self.resnums = resnums
+        
+    def set_chains(self, chains):
+        self.chains = chains
+        
+    def extract_resnum_chains(self, resnum_chain_tag):
+        resnums, chains = [], []
+        if not isinstance(resnum_chain_tag, list):
+            resnum_chain_tag = resnum_chain_tag.replace(';',',').split(',')
+        for tag in resnum_chain_tag:
+            get_resnum_chain(tag, resnums, chains)
+        return resnums, chains
+
+    def conventional_tag_to_full(self, resnum_chain_tag):
+        resnums, chains = self.extract_resnum_chains(resnum_chain_tag)
+        return self.conventional_to_full(zip(resnums, chains))
+        
+    def conventional_to_full(self, resnum_chain):
+        '''
+        Input: (res, chain) or [(res, chain), (res, chain)]
+        '''
+        if isinstance(resnum_chain, list):
+            return map(self.conventional_to_full, resnum_chain)
+        return get_fullmodel_number(resnum_chain, self.resnums, self.chains)

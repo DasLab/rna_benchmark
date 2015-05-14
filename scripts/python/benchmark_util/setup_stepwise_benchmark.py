@@ -54,18 +54,22 @@ SWA_DAGMAN_TOOLS=ROSETTA+'/tools/SWA_RNA_python/SWA_dagman_python/'
 
 # parse extra_flags_benchmark
 extra_flags_benchmark = {}
-extra_input_res = None
+input_res_benchmark = None
+extra_min_res_benchmark = None
 if exists(args.extra_flags):
     with open(args.extra_flags, 'r') as fid:
         flags = filter(None, [l.split('#')[0].strip().split() for l in fid])
     extra_flags_benchmark = dict([(f.pop(0), ' '.join(f)) for f in flags])
     if '-input_res' in extra_flags_benchmark:
-        extra_input_res = extra_flags_benchmark.pop('-input_res')
+        input_res_benchmark = extra_flags_benchmark.pop('-input_res')
+    if '-extra_min_res' in extra_flags_benchmark:
+        extra_min_res_benchmark = extra_flags_benchmark.pop('-extra_min_res')
 else:
     print args.extra_flags,"doesn't exist, not using extra flags for benchmark"
 
 
 # initialize directories
+full_model_info = {}
 names = []
 sequence = {}
 secstruct = {}
@@ -124,6 +128,7 @@ for info_file_line in open( info_file ).readlines():
     elif cols[0] == 'Native:'      :    native     [ name ] = cols[1]
     elif cols[0] == 'Extra_flags:' :    extra_flags[ name ] = parse_flags(cols[1:])
 
+        
 
         
 
@@ -134,15 +139,18 @@ assert( len( names ) == len( sequence ) == len( secstruct ) == len( working_res 
 # iterate over names
 for name in names:
 
+    full_model_info[ name ] = FullModelInfo( name )
+    
     sequences          = string.split( sequence[name], ',' )
     working_res_blocks = string.split( working_res[name], ',' )
-
 
     # store information on 'conventional' residue numbers and chains.
     resnums[ name ] = []
     chains[ name ] = []
     for working_res_block in working_res_blocks: get_resnum_chain( working_res_block, resnums[ name ], chains[ name ] )
 
+    full_model_info[ name ].set_resnums( resnums[ name ] )
+    full_model_info[ name ].set_chains( chains[ name ] )
 
     # working_native
     assert( native[ name ] != '-' ) # for now, require a native, since this is a benchmark.
@@ -151,22 +159,21 @@ for name in names:
     assert( string.join(sequences,'') == string.join(get_sequences( working_native[name] )[0],'') )
 
     # create starting PDBs
-    input_res_blocks =[]
     input_pdbs[ name ] = []
-    input_resnums = []
-    input_chains  = []
+    input_res_blocks = [] 
     if input_res[ name ] != '-':
         input_res_blocks += input_res[ name ].split(';')
-    if extra_input_res:
-        input_res_blocks += extra_input_res.split(';')
+    if input_res_benchmark:
+        input_res_blocks += input_res_benchmark.split(';')
     for m,input_res_block in enumerate(input_res_blocks):
         prefix = '%s/%s_START%d_' % ( inpath,name,m+1)
         input_pdb = slice_out( inpath, prefix, native[ name ],input_res_block )
         input_pdbs[ name ].append( input_pdb )
-        get_resnum_chain( input_res_block, input_resnums, input_chains )
+    input_resnum_fullmodel = full_model_info[ name ].conventional_tag_to_full( 
+        input_res_blocks
+    )
 
-
-    input_resnum_fullmodel = map( lambda x: get_fullmodel_number(x,resnums[name],chains[name]), zip( input_resnums, input_chains ) )
+    #input_resnum_fullmodel = map( lambda x: get_fullmodel_number(x,resnums[name],chains[name]), zip( input_resnums, input_chains ) )
 
 
     # create secstruct if not defined
@@ -226,6 +233,12 @@ for name in names:
         if ( ( prev_moving and not next_moving and not right_before_chainbreak ) or \
              ( next_moving and not prev_moving and not right_after_chainbreak ) ):
             extra_min_res[ name ].append( m )
+    if extra_min_res_benchmark:
+        extra_res_full = full_model_info[ name ].conventional_tag_to_full(extra_min_res_benchmark)
+        extra_res_full = filter(input_resnum_fullmodel.count, extra_res_full)
+        extra_min_res[ name ] += extra_res_full
+        extra_min_res[ name ] = sorted(list(set(extra_min_res[ name ]))) 
+        motif_mode_off = True
     if not motif_mode_off and '-motif_mode' not in extra_flags_benchmark:
         extra_flags_benchmark['-motif_mode'] = ''
 
@@ -398,7 +411,7 @@ for name in names:
             fid.write( '\n' )
         if len( native[ name ] ) > 0:
             fid.write( '-native %s\n' % basename( working_native[name] ) )
-        if args.motif_mode_off:
+        if motif_mode_off:
             if len( terminal_res[ name ] ) > 0:
                 fid.write( '-terminal_res %s  \n' % make_tag_with_conventional_numbering( terminal_res[ name ], resnums[ name ], chains[ name ] ) )
             if len( extra_min_res[ name ] ) > 0 and not args.extra_min_res_off: ### Turn extra_min_res off for SWM when comparing to SWA
@@ -406,10 +419,11 @@ for name in names:
         #if ( len( input_pdbs[ name ] ) == 0 ):
         #    fid.write( '-superimpose_over_all\n' ) # RMSD over everything -- better test since helices are usually native
         fid.write( '-fasta %s\n' % basename( fasta[ name ] ) )
-        if '-cycles' not in extra_flags_benchmark:
-            fid.write( '-cycles 200\n' )
-        if '-nstruct' not in extra_flags_benchmark:
-            fid.write( '-nstruct 20\n' )
+        if '-move' not in extra_flags_benchmark:
+            if '-cycles' not in extra_flags_benchmark:
+                fid.write( '-cycles 200\n' )
+            if '-nstruct' not in extra_flags_benchmark:
+                fid.write( '-nstruct 20\n' )
         #fid.write( '-intermolecular_frequency 0.0\n' )
         if not args.save_times_off:
             fid.write( '-save_times\n' )
