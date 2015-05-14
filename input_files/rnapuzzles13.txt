@@ -1,0 +1,59 @@
+##############################################################################
+### Dock ZMP
+##############################################################################
+Name:			rnapz13_full
+Sequence: 		gggucgugacuggcgaacaggugggaaaccaccggggagcgaccccggcaucgauagccgcccgccugggc,z
+Secstruct: 		(((((((....[[[[....(((((....))))).....)))))))...........(((...]]]]..))),.
+Working_res: 		A:1-45,A:57-71
+Input_res: 		A:1-45,A:57-71
+Native: 		rnapz13_RNA.pdb
+Extra_flags: 		-
+
+Name:			rnapz13_full_zmp
+Sequence: 		gggucgugacuggcgaacaggugggaaaccaccggggagcgaccccggcaucgauagccgcccgccugggc,z
+Secstruct: 		(((((((....[[[[....(((((....))))).....)))))))...........(((...]]]]..))),.
+Working_res: 		A:1-45,A:57-72
+Input_res: 		A:1-45,A:57-71
+Native: 		rnapz13_RNA.pdb
+Extra_flags: 		-ligand_res A:72
+
+Name:			rnapz13_full_zmp_base
+Sequence: 		gggucgugacuggcgaacaggugggaaaccaccggggagcgaccccggcaucgauagccgcccgccugggc,z
+Secstruct: 		(((((((....[[[[....(((((....))))).....)))))))...........(((...]]]]..))),.
+Working_res: 		A:1-45,A:57-72
+Input_res: 		A:1-45,A:57-71
+Native: 		rnapz13_RNA.pdb
+Extra_flags: 		-
+
+##############################################################################
+### Dock ZMP + Rebuild Loops
+##############################################################################
+Name:			rnapz13_full_zmp_rebuild
+Sequence: 		gggucgugacuggcgaacaggugggaaaccaccggggagcgaccccggcaucgauagccgcccgccugggc,z
+Secstruct: 		(((((((....[[[[....(((((....))))).....)))))))...........(((...]]]]..))),.
+Working_res: 		A:1-45,A:57-72
+Input_res: 		???
+Native: 		rnapz13_RNA.pdb
+Extra_flags: 		-ligand_res A:72
+
+##############################################################################
+### Dock ZMP + Rebuild Loops + Free P2
+##############################################################################
+Name:			rnapz13_full_zmp_rebuild_freeP2
+Sequence: 		gggucgugacuggcgaacaggugggaaaccaccggggagcgaccccggcaucgauagccgcccgccugggc,z
+Secstruct: 		(((((((....[[[[....(((((....))))).....)))))))...........(((...]]]]..))),.
+Working_res: 		A:1-45,A:57-72
+Input_res: 		???
+Native: 		rnapz13_RNA.pdb
+Extra_flags: 		-ligand_res A:72
+
+##############################################################################
+### Dock ZMP + Rebuild Loops + Free P2 + Extra Minimize MOCHA Hit
+##############################################################################
+Name:			rnapz13_full_zmp_rebuild_freeP2_mocha_cst
+Sequence: 		gggucgugacuggcgaacaggugggaaaccaccggggagcgaccccggcaucgauagccgcccgccugggc,z
+Secstruct: 		(((((((....[[[[....(((((....))))).....)))))))...........(((...]]]]..))),.
+Working_res: 		A:1-45,A:57-72
+Input_res: 		A:1-45,A:57-71
+Native: 		rnapz13_RNA.pdb
+Extra_flags: 		-ligand_res A:72 -extra_min_jump_res A:? A:?
