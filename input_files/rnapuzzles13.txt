@@ -1,7 +1,7 @@
 ##############################################################################
 ### Dock AMP
 ##############################################################################
-Name:			rnapz13_full_amp
+Name:			rnapz13_free_amp
 Sequence: 		gggucgugacuggcgaacaggugggaaaccaccggggagcgaccc,gccgcccgccugggc,a
 Secstruct: 		(((((((....[[[[....(((((....))))).....))))))),(((...]]]]..))),.
 Working_res: 		A:1-45,A:57-71,A:72
@@ -9,7 +9,7 @@ Input_res: 		A:1-45,A:57-71
 Native: 		rnapz13_amp_RNA.pdb
 Extra_flags: 		-ligand_res A:72
 
-Name:			rnapz13_full_amp_base
+Name:			rnapz13_free_amp_base
 Sequence: 		gggucgugacuggcgaacaggugggaaaccaccggggagcgaccc,gccgcccgccugggc,a
 Secstruct: 		(((((((....[[[[....(((((....))))).....))))))),(((...]]]]..))),.
 Working_res: 		A:1-45,A:57-71,A:72
@@ -18,34 +18,97 @@ Native: 		rnapz13_amp_RNA.pdb
 Extra_flags: 		-
 
 ##############################################################################
-### Dock ZMP + Rebuild Loops
+### Rebuild Loops + Dock AMP
 ##############################################################################
-#Name:			rnapz13_full_zmp_rebuild
-#Sequence: 		gggucgugacuggcgaacaggugggaaaccaccggggagcgaccccggcaucgau#agccgcccgccugggc,z
-#Secstruct: 		(((((((....[[[[....(((((....))))).....)))))))..........#.(((...]]]]..))),.
-#Working_res: 		A:1-45,A:57-72
-#Input_res: 		???
-#Native: 		rnapz13_RNA.pdb
-#Extra_flags: 		-ligand_res A:72
+Name:			rnapz13_free_loops_free_amp
+Sequence: 		gggucgugacuggcgaacaggugggaaaccaccggggagcgaccc,gccgcccgccugggc,a
+Secstruct: 		(((((((....[[[[....(((((....))))).....))))))),(((...]]]]..))),.
+Working_res: 		A:1-45,A:57-71,A:72
+Input_res: 		A:1-7,A:12-15,A:20-24,A:29-33,A:39-45,A:57-59,A:63-66,A:69-71
+Native: 		rnapz13_amp_RNA.pdb
+Extra_flags: 		-ligand_res A:72
+
+Name:			rnapz13_free_loops_free_amp_base
+Sequence: 		gggucgugacuggcgaacaggugggaaaccaccggggagcgaccc,gccgcccgccugggc,a
+Secstruct: 		(((((((....[[[[....(((((....))))).....))))))),(((...]]]]..))),.
+Working_res: 		A:1-45,A:57-71,A:72
+Input_res: 		A:1-7,A:12-15,A:20-24,A:29-33,A:39-45,A:57-59,A:63-66,A:69-71
+Native: 		rnapz13_amp_RNA.pdb
+Extra_flags: 		-
 
 ##############################################################################
-### Dock ZMP + Rebuild Loops + Free P2
+### Free P2 + Rebuild Loops + Dock AMP
 ##############################################################################
-#Name:			rnapz13_full_zmp_rebuild_freeP2
-#Sequence: 		gggucgugacuggcgaacaggugggaaaccaccggggagcgaccccggcaucgau#agccgcccgccugggc,z
-#Secstruct: 		(((((((....[[[[....(((((....))))).....)))))))..........#.(((...]]]]..))),.
-#Working_res: 		A:1-45,A:57-72
-#Input_res: 		???
-#Native: 		rnapz13_RNA.pdb
-#Extra_flags: 		-ligand_res A:72
+Name:			rnapz13_free_p2_free_loops_free_amp
+Sequence: 		gggucgugacuggcgaacaggugggaaaccaccggggagcgaccc,gccgcccgccugggc,a
+Secstruct: 		(((((((....[[[[....(((((....))))).....))))))),(((...]]]]..))),.
+Working_res: 		A:1-45,A:57-71,A:72
+Input_res: 		A:1-7,A:12-15,A:39-45,A:57-59,A:63-66,A:69-71;A:20-24,A:29-33
+Native: 		rnapz13_amp_RNA.pdb
+Extra_flags: 		-ligand_res A:72
+
+Name:			rnapz13_free_p2_free_loops_free_amp_base
+Sequence: 		gggucgugacuggcgaacaggugggaaaccaccggggagcgaccc,gccgcccgccugggc,a
+Secstruct: 		(((((((....[[[[....(((((....))))).....))))))),(((...]]]]..))),.
+Working_res: 		A:1-45,A:57-71,A:72
+Input_res: 		A:1-7,A:12-15,A:39-45,A:57-59,A:63-66,A:69-71;A:20-24,A:29-33
+Native: 		rnapz13_amp_RNA.pdb
+Extra_flags: 		-
 
 ##############################################################################
-### Dock ZMP + Rebuild Loops + Free P2 + Extra Minimize MOCHA Hit
+### Dock ZMP
 ##############################################################################
-#Name:			rnapz13_full_zmp_rebuild_freeP2_mocha_cst
-#Sequence: 		gggucgugacuggcgaacaggugggaaaccaccggggagcgaccccggcaucgau#agccgcccgccugggc,z
-#Secstruct: 		(((((((....[[[[....(((((....))))).....)))))))..........#.(((...]]]]..))),.
-#Working_res: 		A:1-45,A:57-72
+#Name:			rnapz13_free_zmp
+#Sequence: 		gggucgugacuggcgaacaggugggaaaccaccggggagcgaccc,gccgcccgccugggc,z
+#Secstruct: 		(((((((....[[[[....(((((....))))).....))))))),(((...]]]]..))),.
+#Working_res: 		A:1-45,A:57-71,A:72
 #Input_res: 		A:1-45,A:57-71
-#Native: 		rnapz13_RNA.pdb
-#Extra_flags: 		-ligand_res A:72 -extra_min_jump_res A:? A:?
+#Native: 		rnapz13_zmp_RNA.pdb
+#Extra_flags: 		-ligand_res A:72
+
+#Name:			rnapz13_free_zmp_base
+#Sequence: 		gggucgugacuggcgaacaggugggaaaccaccggggagcgaccc,gccgcccgccugggc,z
+#Secstruct: 		(((((((....[[[[....(((((....))))).....))))))),(((...]]]]..))),.
+#Working_res: 		A:1-45,A:57-71,A:72
+#Input_res: 		A:1-45,A:57-71
+#Native: 		rnapz13_zmp_RNA.pdb
+#Extra_flags: 		-
+
+##############################################################################
+### Rebuild Loops + Dock ZMP
+##############################################################################
+#Name:			rnapz13_free_loops_free_zmp
+#Sequence: 		gggucgugacuggcgaacaggugggaaaccaccggggagcgaccc,gccgcccgccugggc,z
+#Secstruct: 		(((((((....[[[[....(((((....))))).....))))))),(((...]]]]..))),.
+#Working_res: 		A:1-45,A:57-71,A:72
+#Input_res: 		A:1-7,A:12-15,A:20-24,A:29-33,A:39-45,A:57-59,A:63-66,A:69-71
+#Native: 		rnapz13_zmp_RNA.pdb
+#Extra_flags: 		-ligand_res A:72
+
+#Name:			rnapz13_free_loops_free_zmp_base
+#Sequence: 		gggucgugacuggcgaacaggugggaaaccaccggggagcgaccc,gccgcccgccugggc,z
+#Secstruct: 		(((((((....[[[[....(((((....))))).....))))))),(((...]]]]..))),.
+#Working_res: 		A:1-45,A:57-71,A:72
+#Input_res: 		A:1-7,A:12-15,A:20-24,A:29-33,A:39-45,A:57-59,A:63-66,A:69-71
+#Native: 		rnapz13_zmp_RNA.pdb
+#Extra_flags: 		-
+
+##############################################################################
+### Free P2 + Rebuild Loops + Dock ZMP
+##############################################################################
+#Name:			rnapz13_free_p2_free_loops_free_zmp
+#Sequence: 		gggucgugacuggcgaacaggugggaaaccaccggggagcgaccc,gccgcccgccugggc,z
+#Secstruct: 		(((((((....[[[[....(((((....))))).....))))))),(((...]]]]..))),.
+#Working_res: 		A:1-45,A:57-71,A:72
+#Input_res: 		A:1-7,A:12-15,A:39-45,A:57-59,A:63-66,A:69-71;A:20-24,A:29-33
+#Native: 		rnapz13_zmp_RNA.pdb
+#Extra_flags: 		-ligand_res A:72
+
+#Name:			rnapz13_free_p2_free_loops_free_zmp_base
+#Sequence: 		gggucgugacuggcgaacaggugggaaaccaccggggagcgaccc,gccgcccgccugggc,z
+#Secstruct: 		(((((((....[[[[....(((((....))))).....))))))),(((...]]]]..))),.
+#Working_res: 		A:1-45,A:57-71,A:72
+#Input_res: 		A:1-7,A:12-15,A:39-45,A:57-59,A:63-66,A:69-71;A:20-24,A:29-33
+#Native: 		rnapz13_zmp_RNA.pdb
+#Extra_flags: 		-
+
