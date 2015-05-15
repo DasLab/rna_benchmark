@@ -1,14 +1,27 @@
 #!/bin/bash
 
+# Read arguments
 PDB=$1
-
-if [ "$#" -eq 2 ]
-then
+NATIVE="RNAPZ13.pdb"
+LIGAND=""
+if [ "$#" -eq 2 ]; then
     NATIVE=$2
-else
-    NATIVE="RNAPZ13.pdb"
+fi
+if [ "$#" -eq 3 ]; then
+    LIGAND=$3
 fi
 
-rm $NATIVE
+# Move PDB into NATIVE
+if [ -e "$NATIVE" ]; then
+    rm $NATIVE
+fi
 cp $PDB $NATIVE
+
+# Merge LIGAND into NATIVE [optional]
+if [ -e "$LIGAND" ]; then
+    merge_pdbs.py $NATIVE $LIGAND -overwrite
+    NATIVE="${NATIVE%.*}_${LIGAND%.*}.pdb"
+fi
+
+# Clean up NATIVE
 make_rna_rosetta_ready.py $NATIVE -no_renumber -remove_ions
