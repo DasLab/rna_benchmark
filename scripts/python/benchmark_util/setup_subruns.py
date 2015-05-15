@@ -8,6 +8,7 @@ import subprocess as sp
 import os
 import os.path
 import shutil
+import glob
 
 ###############################################################################
 ### global vars
@@ -53,6 +54,40 @@ def expand_tags(tags):
 ###############################################################################
 ### main functions
 ###############################################################################
+def combine_qsubMPI():
+    mpi_batch_file = 'MPI_ONEBATCH.job'
+    batch_files= filter(os.path.isdir,glob.glob('./*/*/%s'%mpi_batch_file))
+    master_batch_files = []
+    for batch_id, batch_file in enumerate(batch_files, start=1):
+        job_lines = open( batch_file, 'r').readlines()
+        for job_idx, job in enumerate(job_lines, start=1):
+            jobid = (batch_id * job_id) - 1
+            if jobid % 16:
+                id = len(master_batch_files)
+                master_batch_file = mpi_batch_file.replace('.job','_%d.job'%id)
+                master_batch_files.append(master_batch_file)
+                open(mpi_batch_file, 'w')
+            with open(mpi_batch_file, 'a') as master_batch_fid:
+                master_batch_fid.write( job.strip()+'\n' )
+    with open('qsubMPI_ONEBATCH', 'w') as master_submit_fid:
+        for idx, master_batch_file in enumerate(master_batch_files):       
+            job_file = 'qsubMPI_ONEBATCH_%d.sbatch' % idx
+            with open(job_file, 'w') as fid:
+                fid.write('#!/bin/bash\n')
+                fid.write('#SBATCH -J mpi_onebatch%d\n' % idx)
+                fid.write('#SBATCH -o %j.out\n')
+                fid.write('#SBATCH -p normal\n')
+                fid.write('#SBATCH -t 4:00:00\n')
+                fid.write('#SBATCH -n 16\n')
+                fid.write('#SBATCH -N 1\n')
+                fid.write('#SBATCH -A TG-MCB120152\n')
+                fid.write('pp_jobsub.py %s' % master_batch_file) 
+                fid.write(' -cluster_name stampede')
+                fid.write(' -nodelist $SLURM_NODELIST')
+                fid.write(' -job_cpus_per_node $SLURM_JOB_CPUS_PER_NODE\n')
+            master_submit_fid.write('sbatch %s\n' % job_file)
+    return True
+
 def setup_subruns(tags):
     readme_setup_fid = open('README_SETUP_MASTER', 'w')
     submit_fids = dict([(f, open(f,'w')) for f in SUBMIT_FILES]) 
@@ -99,7 +134,11 @@ if __name__=='__main__':
     
     if len(argv) < 2:
         exit(1)
-
+    
+    if '-combine_qsubMPI' in argv[1]:
+        combine_qsubMPI()
+        exit(1)
+    
     subrun_tags = argv[1:]
     subrun_tags = expand_tags(subrun_tags)
     setup_subruns(subrun_tags)
