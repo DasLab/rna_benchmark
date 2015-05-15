@@ -4,14 +4,14 @@
 ### imports
 ###############################################################################
 from sys import argv, exit
-from os.path import exists
+from os.path import exists, basename, dirname, splitext
 
 ###############################################################################
 ### helper functions
 ###############################################################################
 def merge_filenames(filenames):
-    ext = [f[f.index('.'):] for f in filenames][0]
-    return '_'.join([f.replace(ext,'') for f in filenames])+ ext
+    ext = splitext(filenames[0])[-1]
+    return '_'.join([basename(splitext(f)[0]) for f in filenames]) + ext
 
 ###############################################################################
 ### main function
@@ -28,6 +28,8 @@ def merge_pdbs(input_pdbs, overwrite = False):
         atom_idx, res_idx = 0, 0
         for line_idx, line in enumerate(input_lines):
             line = line.strip()
+            if 'HETATM' in line:
+                line = line.replace('HETATM','ATOM')
             if 'ATOM' not in line:
                 continue
             atomno, chain, resno = int(line[7:11]), line[21], int(line[22:26])

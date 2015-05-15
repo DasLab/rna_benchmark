@@ -19,8 +19,7 @@ cp $PDB $NATIVE
 
 # Merge LIGAND into NATIVE [optional]
 if [ -e "$LIGAND" ]; then
-    merge_pdbs.py $NATIVE $LIGAND -overwrite
-    NATIVE="${NATIVE%.*}_${LIGAND%.*}.pdb"
+    NATIVE=`merge_pdbs.py $NATIVE $LIGAND -overwrite`
 fi
 
 # Clean up NATIVE
