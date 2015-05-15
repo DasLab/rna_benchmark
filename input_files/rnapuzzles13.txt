@@ -1,28 +1,20 @@
 ##############################################################################
-### Dock ZMP
+### Dock AMP
 ##############################################################################
-Name:			rnapz13_full
-Sequence: 		gggucgugacuggcgaacaggugggaaaccaccggggagcgacccgccgcccgccugggc
-Secstruct: 		(((((((....[[[[....(((((....))))).....)))))))(((...]]]]..)))
-Working_res: 		A:1-45,A:57-71
+Name:			rnapz13_full_amp
+Sequence: 		gggucgugacuggcgaacaggugggaaaccaccggggagcgaccc,gccgcccgccugggc,a
+Secstruct: 		(((((((....[[[[....(((((....))))).....))))))),(((...]]]]..))),.
+Working_res: 		A:1-45,A:57-71,A:72
 Input_res: 		A:1-45,A:57-71
-Native: 		rnapz13_RNA.pdb
-Extra_flags: 		-
-
-Name:			rnapz13_full_zmp
-Sequence: 		gggucgugacuggcgaacaggugggaaaccaccggggagcgacccgccgcccgccugggc,a
-Secstruct: 		(((((((....[[[[....(((((....))))).....)))))))(((...]]]]..))),.
-Working_res: 		A:1-45,A:57-72
-Input_res: 		A:1-45,A:57-71
-Native: 		rnapz13_RNA.pdb
+Native: 		rnapz13_amp_RNA.pdb
 Extra_flags: 		-ligand_res A:72
 
-Name:			rnapz13_full_zmp_base
-Sequence: 		gggucgugacuggcgaacaggugggaaaccaccggggagcgacccgccgcccgccugggc,a
-Secstruct: 		(((((((....[[[[....(((((....))))).....)))))))(((...]]]]..))),.
-Working_res: 		A:1-45,A:57-72
+Name:			rnapz13_full_amp_base
+Sequence: 		gggucgugacuggcgaacaggugggaaaccaccggggagcgaccc,gccgcccgccugggc,a
+Secstruct: 		(((((((....[[[[....(((((....))))).....))))))),(((...]]]]..))),.
+Working_res: 		A:1-45,A:57-71,A:72
 Input_res: 		A:1-45,A:57-71
-Native: 		rnapz13_RNA.pdb
+Native: 		rnapz13_amp_RNA.pdb
 Extra_flags: 		-
 
 ##############################################################################
