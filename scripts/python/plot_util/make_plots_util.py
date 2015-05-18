@@ -195,7 +195,7 @@ def get_times( inpaths, data, noutfiles, target_names, verbose=False ):
 def get_figure_dimensions( noutfiles ):
 	nplots = noutfiles
 	assert( nplots )
-	if nplots <= 6:
+	if nplots <= 5:
 		nrows = nplots
 	elif nplots <= 9:
 		nrows = 3
@@ -240,7 +240,7 @@ def finalize_figure( fig, nplots, nrows, ncols ):
 
 	# setup global legend based on inpaths
 	legend_size = 6
-	plot_idx = nplots - 1
+	plot_idx = nplots - 1 if ncols > 1 else nplots
 	ax = fig.add_subplot( nrows, ncols, plot_idx)
 	legend = ax.legend(bbox_to_anchor=(0., .0, 1., -.225),
 			   loc=9, numpoints=1, prop={'size':legend_size})

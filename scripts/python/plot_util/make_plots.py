@@ -108,7 +108,7 @@ def make_plots( inpaths, outfilenames, target_files, targets, xvars, yvars, pdfn
 				 plt.ylim(),
 				 color='black')
 
-			ax.set_xlim( 0, 16 )
+			ax.set_xlim( 0, 20 )
 
 			# set title and axes labels, adjust axis properties
 			title_fontsize = 'small' if nrows < 3 else 8
