@@ -18,6 +18,26 @@ Native: 		rnapz13_amp_RNA.pdb
 Extra_flags: 		-
 
 ##############################################################################
+### Rebuild Conserved Residues + Dock AMP
+##############################################################################
+Name:			rnapz13_free_conserved_free_amp
+Sequence: 		gggucgugacuggcgaacaggugggaaaccaccggggagcgaccc,gccgcccgccugggc,a
+Secstruct: 		(((((((....[[[[....(((((....))))).....))))))),(((...]]]]..))),.
+Working_res: 	A:1-45,A:57-71,A:72
+Input_res: 		A:1-9,A:11-27,A:29-35,A:37-45,A:57-71
+Native: 		rnapz13_amp_RNA.pdb
+Extra_flags: 	-ligand_res A:72
+
+Name:			rnapz13_free_conserved_free_amp_base
+Sequence: 		gggucgugacuggcgaacaggugggaaaccaccggggagcgaccc,gccgcccgccugggc,a
+Secstruct: 		(((((((....[[[[....(((((....))))).....))))))),(((...]]]]..))),.
+Working_res: 	A:1-45,A:57-71,A:72
+Input_res: 		A:1-9,A:11-27,A:29-35,A:37-45,A:57-71
+Native: 		rnapz13_amp_RNA.pdb
+Extra_flags: 	-
+
+
+##############################################################################
 ### Rebuild Loops + Dock AMP
 ##############################################################################
 Name:			rnapz13_free_loops_free_amp
@@ -73,6 +93,25 @@ Extra_flags: 		-
 #Input_res: 		A:1-45,A:57-71
 #Native: 		rnapz13_zmp_RNA.pdb
 #Extra_flags: 		-
+
+##############################################################################
+### Rebuild Conserved Residues + Dock ZMP
+##############################################################################
+#Name:			rnapz13_free_conserved_free_zmp
+#Sequence: 		gggucgugacuggcgaacaggugggaaaccaccggggagcgaccc,gccgcccgccugggc,z
+#Secstruct: 		(((((((....[[[[....(((((....))))).....))))))),(((...]]]]..))),.
+#Working_res: 	A:1-45,A:57-71,A:72
+#Input_res: 		A:1-9,A:11-27,A:29-35,A:37-45,A:57-71
+#Native: 		rnapz13_zmp_RNA.pdb
+#Extra_flags: 	-ligand_res A:72
+
+#Name:			rnapz13_free_conserved_free_zmp_base
+#Sequence: 		gggucgugacuggcgaacaggugggaaaccaccggggagcgaccc,gccgcccgccugggc,z
+#Secstruct: 		(((((((....[[[[....(((((....))))).....))))))),(((...]]]]..))),.
+#Working_res: 	A:1-45,A:57-71,A:72
+#Input_res: 		A:1-9,A:11-27,A:29-35,A:37-45,A:57-71
+#Native: 		rnapz13_zmp_RNA.pdb
+#Extra_flags: 	-
 
 ##############################################################################
 ### Rebuild Loops + Dock ZMP
