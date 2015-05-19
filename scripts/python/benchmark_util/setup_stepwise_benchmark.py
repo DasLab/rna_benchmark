@@ -239,8 +239,18 @@ for name in names:
         if ( ( prev_moving and not next_moving and not right_before_chainbreak ) or \
              ( next_moving and not prev_moving and not right_after_chainbreak ) ):
             extra_min_res[ name ].append( m )
+    if '-extra_min_res' in extra_flags[ name ]:
+        extra_res_full = full_model_info[ name ].conventional_tag_to_full(
+            extra_flags[ name ].pop('-extra_min_res' )
+        )
+        extra_res_full = filter(input_resnum_fullmodel.count, extra_res_full)
+        extra_min_res[ name ] += extra_res_full
+        extra_min_res[ name ] = sorted(list(set(extra_min_res[ name ]))) 
+        motif_mode_off = True
     if extra_min_res_benchmark:
-        extra_res_full = full_model_info[ name ].conventional_tag_to_full(extra_min_res_benchmark)
+        extra_res_full = full_model_info[ name ].conventional_tag_to_full(
+            extra_min_res_benchmark
+        )
         extra_res_full = filter(input_resnum_fullmodel.count, extra_res_full)
         extra_min_res[ name ] += extra_res_full
         extra_min_res[ name ] = sorted(list(set(extra_min_res[ name ]))) 
