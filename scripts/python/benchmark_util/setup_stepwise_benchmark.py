@@ -267,8 +267,7 @@ for name in names:
     if '-align_pdb' in extra_flags_benchmark:
         align_pdb[ name ] = '%s/%s_ALIGN.pdb' % (inpath, name)
         extra_flags_benchmark['-align_pdb'] = basename(align_pdb[ name ])
-        start_pdbs = input_pdbs[ name ] + helix_files[ name ]
-        merge_pdbs(start_pdbs, align_pdb[ name ])
+        merge_pdbs(input_pdbs[ name ], align_pdb[ name ])
         if '-align_pdb' in extra_flags[ name ]:
             extra_flags[ name ].pop('-align_pdb')
     elif '-align_pdb' in extra_flags[ name ]:
