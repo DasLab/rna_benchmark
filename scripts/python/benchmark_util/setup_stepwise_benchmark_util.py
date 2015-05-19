@@ -86,18 +86,39 @@ def make_rna_rosetta_ready( pdb_file, sequence, reassign_chainids=True, allowed_
     out, err = subprocess.Popen( mv_cmdline, stdout=subprocess.PIPE, stderr=subprocess.PIPE ).communicate()
 
 ###############################################################################
-def parse_flags( flags ):
-    if not isinstance(flags, list):
-        flags = flags.split(' ')
-    flags = filter(lambda x: len(x) > 2, map(str, flags))
-    parsed_flags = []
-    for flag in flags:
-        if flag.startswith('-'):
-            parsed_flags.append(flag)
-            continue
-        parsed_flags[-1] += ' ' + flag
-    return parsed_flags
+def make_replacements(s, replacements = {}):
+    if isinstance(s, list):
+        return [make_replacements(ss, replacements) for ss in s]
+    for old, new in replacements.iteritems():
+        s = s.replace(old, new)
+    return s
 
+###############################################################################
+def parse_flags(substrings, replacements = {}):
+    if isinstance(substrings, list):
+        substrings = ' '.join(substrings)
+    substrings = make_replacements(substrings, replacements)
+    substrings = substrings.split(' ')
+    substrings = [s for s in substrings if s not in ['','-','#']]
+    flags = []
+    for idx, substring in enumerate(substrings):
+        if substring.startswith('-'):
+            flags.append([substring])
+            continue
+        if not len(flags):
+            continue
+        flags[-1].append(substring)
+    flags = dict([(f.pop(0), ' '.join(f)) for f in flags])
+    return flags
+
+###############################################################################
+def merge_pdbs(pdbs_in, pdb_out):                                       
+    if not isinstance(pdbs_in, list):                                   
+        pdbs_in = [ pdbs_in ]           
+    pdbs_in = ' '.join(pdbs_in)
+    system('cat %s > %s' % (pdbs_in, pdb_out))              
+    return pdb_out             
+         
 ###############################################################################
 ### CLASSES
 ###############################################################################

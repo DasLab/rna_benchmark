@@ -51,6 +51,11 @@ ROSETTA_BIN=ROSETTA+'/main/source/bin/'
 ROSETTA_DB=ROSETTA+'/main/database/'
 SWA_DAGMAN_TOOLS=ROSETTA+'/tools/SWA_RNA_python/SWA_dagman_python/'
 
+# replace python/c++ syntax accordingly
+replacements = { 'True' : 'true', 'False' : 'false' }
+if args.swa:
+    replacements = { 'true' : 'True', 'false' : 'False' }
+
 
 # parse extra_flags_benchmark
 extra_flags_benchmark = {}
@@ -58,8 +63,8 @@ input_res_benchmark = None
 extra_min_res_benchmark = None
 if exists(args.extra_flags):
     with open(args.extra_flags, 'r') as fid:
-        flags = filter(None, [l.split('#')[0].strip().split() for l in fid])
-    extra_flags_benchmark = dict([(f.pop(0), ' '.join(f)) for f in flags])
+        lines = filter(None, [l.split('#')[0].strip() for l in fid])
+    extra_flags_benchmark = parse_flags(lines, replacements)
     if '-input_res' in extra_flags_benchmark:
         input_res_benchmark = extra_flags_benchmark.pop('-input_res')
     if '-extra_min_res' in extra_flags_benchmark:
@@ -88,6 +93,7 @@ extra_min_res = {}
 loop_res = {}
 VDW_rep_screen_pdb = {}
 VDW_rep_screen_info = {}
+align_pdb = {}
 bps = ['au','ua','gc','cg','ug','gu']
 
 
@@ -107,9 +113,9 @@ assert( exists( inpath ) )
 for info_file_line in open( info_file ).readlines():
 
     if info_file_line[0] == '#' : continue
-    if len( info_file_line ) < 5: continue
-    cols = info_file_line.strip().split()
-    assert( len( cols ) >= 2 )
+    cols = info_file_line.split('#')[0].strip().split()
+    if len(cols) < 2:
+        continue
 
     if cols[0] == 'Name:':
         name = cols[1]
@@ -126,7 +132,7 @@ for info_file_line in open( info_file ).readlines():
     elif cols[0] == 'Working_res:' :    working_res[ name ] = cols[1]
     elif cols[0] == 'Input_res:'   :    input_res  [ name ] = cols[1]
     elif cols[0] == 'Native:'      :    native     [ name ] = cols[1]
-    elif cols[0] == 'Extra_flags:' :    extra_flags[ name ] = parse_flags(cols[1:])
+    elif cols[0] == 'Extra_flags:' :    extra_flags[ name ] = parse_flags(cols[1:], replacements)
 
         
 
@@ -257,6 +263,19 @@ for name in names:
         #fid.write( popen( 'pdb2fasta.py %s' % (  working_native[ name ] ) ).read() )
         fid.close()
 
+    # get align_pdb
+    if '-align_pdb' in extra_flags_benchmark:
+        align_pdb[ name ] = '%s/%s_ALIGN.pdb' % (inpath, name)
+        extra_flags_benchmark['-align_pdb'] = basename(align_pdb[ name ])
+        start_pdbs = input_pdbs[ name ] + helix_files[ name ]
+        merge_pdbs(start_pdbs, align_pdb[ name ])
+        if '-align_pdb' in extra_flags[ name ]:
+            extra_flags[ name ].pop('-align_pdb')
+    elif '-align_pdb' in extra_flags[ name ]:
+        align_pdb[ name ] = inpath+'/'+extra_flags[ name ]['-align_pdb']
+        assert( exists(align_pdb) )
+    else:
+        align_pdb[ name ] = None
 
     # get sample loop res
     loop_res[ name ] = {}
@@ -294,14 +313,17 @@ for name in names:
 
 
     # get VDW_rep_screen_info, it will only be used if -VDW_rep_screen_info flag is set in extra_flags_benchmark
-    periph_res_radius = 50.0
-    if ( 'rrna' in name ) or ( 'rRNA' in name ):    periph_res_radius = 100.0
-
-    prefix = '%s/%s_%d_ANGSTROM_GRID_' % ( inpath, name, periph_res_radius )
-    VDW_rep_screen_pdb[ name ] = prefix + native[ name ]
-    VDW_rep_screen_info[ name ] = '%s' % ( basename( VDW_rep_screen_pdb[name] ) )
-
+    VDW_rep_screen_pdb[ name ] = None
+    VDW_rep_screen_info[ name ] = None
     if '-VDW_rep_screen_info' in extra_flags_benchmark:
+
+        periph_res_radius = 50.0
+        if ( 'rrna' in name ) or ( 'rRNA' in name ):
+            periph_res_radius = 100.0
+
+        prefix = '%s/%s_%d_ANGSTROM_GRID_' % (inpath, name, periph_res_radius)
+        VDW_rep_screen_pdb[ name ] = prefix + native[ name ]
+        VDW_rep_screen_info[ name ] = basename(VDW_rep_screen_pdb[name])
 
         if not exists( VDW_rep_screen_pdb[ name ] ):
 
@@ -337,9 +359,11 @@ for name in names:
     # move all required files to the correct directory
     start_files = helix_files[ name ] + input_pdbs[ name ]
     infiles = start_files + [ fasta[name], working_native[ name ] ]
-    if '-VDW_rep_screen_info' in extra_flags_benchmark:
-        infiles += [VDW_rep_screen_pdb[ name ]]
-    for infile in infiles:  system( 'cp %s %s/ ' % ( infile, dirname ) )
+    if VDW_rep_screen_pdb[ name ]:
+        infiles.append(VDW_rep_screen_pdb[ name ])
+    if align_pdb[ name ]:
+        infiles.append(align_pdb[ name ])
+    system( 'cp %s %s/ ' % (' '.join(infiles), dirname) )
 
     # SETUP for StepWise Assembly
     if args.swa:
@@ -355,13 +379,12 @@ for name in names:
         fid.write( ' -sample_res %s' % loop_res[ name ][ 'swa' ] )
 
         # case-specific extra flags
-        for flag in extra_flags[ name ]:
-            flag = flag.replace('true','True').replace('false','False')
+        for key, value in extra_flags[ name ].iteritems():
+            flag = ' '.join([key, value]).strip()
             fid.write(' %s' % flag)
 
         # extra flags for whole benchmark
         for key, value in extra_flags_benchmark.iteritems():
-            value = value.replace('true','True').replace('false','False')
             if '-analytic_etable_evaluation' in key:
                 continue ### SWM Specific
             if '-motif_mode' in key:
@@ -429,13 +452,12 @@ for name in names:
             fid.write( '-save_times\n' )
 
         # case-specific extra flags
-        for flag in extra_flags[ name ]:
-            flag = flag.replace('True','true').replace('False','false')
+        for key, value in extra_flags[ name ].iteritems():
+            flag = ' '.join([key, value]).strip()
             fid.write('%s\n' % flag)
 
         # extra flags for whole benchmark
         for key, value in extra_flags_benchmark.iteritems():
-            value = value.replace('True','true').replace('False','false')
             if '-single_stranded_loop_mode' in key:
                 continue ### SWA Specific
             if '-score:weights' in key:
