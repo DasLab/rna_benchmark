@@ -275,8 +275,9 @@ for name in names:
 
     # get align_pdb
     if '-align_pdb' in extra_flags_benchmark:
-        align_pdb[ name ] = '%s/%s_ALIGN.pdb' % (inpath, name)
-        merge_pdbs(input_pdbs[ name ], align_pdb[ name ])
+        prefix = '%s/%s_ALIGN_' % (inpath, name)
+        align_res = ','.join(input_res_blocks)
+        align_pdb[ name ] = slice_out(inpath, prefix, native[ name ], align_res)
         if '-align_pdb' in extra_flags[ name ]:
             extra_flags[ name ].pop('-align_pdb')
     elif '-align_pdb' in extra_flags[ name ]:
