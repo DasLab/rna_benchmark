@@ -276,7 +276,6 @@ for name in names:
     # get align_pdb
     if '-align_pdb' in extra_flags_benchmark:
         align_pdb[ name ] = '%s/%s_ALIGN.pdb' % (inpath, name)
-        extra_flags_benchmark['-align_pdb'] = basename(align_pdb[ name ])
         merge_pdbs(input_pdbs[ name ], align_pdb[ name ])
         if '-align_pdb' in extra_flags[ name ]:
             extra_flags[ name ].pop('-align_pdb')
@@ -371,6 +370,8 @@ for name in names:
     if VDW_rep_screen_pdb[ name ]:
         infiles.append(VDW_rep_screen_pdb[ name ])
     if align_pdb[ name ]:
+        if '-align_pdb' in extra_flags_benchmark:
+            extra_flags_benchmark['-align_pdb'] = basename(align_pdb[ name ])
         infiles.append(align_pdb[ name ])
     system( 'cp %s %s/ ' % (' '.join(infiles), dirname) )
 
