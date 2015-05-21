@@ -374,6 +374,10 @@ for name in names:
         if '-align_pdb' in extra_flags_benchmark:
             extra_flags_benchmark['-align_pdb'] = basename(align_pdb[ name ])
         infiles.append(align_pdb[ name ])
+    if '-input_pdb' in extra_flags[ name ]:
+        input_pdb = inpath+'/'+extra_flags[ name ]['-input_pdb']
+        assert( exists(input_pdb) )
+        infiles.append(input_pdb)
     system( 'cp %s %s/ ' % (' '.join(infiles), dirname) )
 
     # SETUP for StepWise Assembly
