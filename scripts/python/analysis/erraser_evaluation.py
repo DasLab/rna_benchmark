@@ -81,6 +81,9 @@ def check_erraser_tools( path_to_rosetta ):
 	return path_to_erraser
 
 
+def warn(*args):
+        print "[WARNING]", ' '.join(map(str, args))
+
 ################################################################################
 ### MAIN FUNCTION
 ################################################################################
@@ -90,15 +93,22 @@ def analyze(work_dir, (path_to_erraser)):
 	### change into directory
 	############################################################################
 	origin_dir = os.getcwd()
-	os.chdir( work_dir )	
+	if not isdir( work_dir ):
+                warn( work_dir, "is not a directory" )
+                return False
+        os.chdir( work_dir )	
 
 	############################################################################
 	### get exe and pdbs 
 	############################################################################
 	erraser_analysis_exe = path_to_erraser + '/erraser_analysis.py'
-	input_pdb = glob( '????' + INPUT_PDB_TAG )[0]
-	output_pdb = glob( '????' + OUTPUT_PDB_TAG )[0]
-	reference_pdb = glob( '????' + REFERENCE_PDB_TAG )[0]
+	try:
+		input_pdb = glob( '????' + INPUT_PDB_TAG )[0]
+		output_pdb = glob( '????' + OUTPUT_PDB_TAG )[0]
+		reference_pdb = glob( '????' + REFERENCE_PDB_TAG )[0]
+	except IndexError as e:
+                warn( "PDBs not found for", work_dir )
+		return False 
 
 	############################################################################
 	### run erraser_analysis on input and output pdbs
@@ -194,6 +204,7 @@ if __name__=='__main__':
 	print
 	print 'Inpath:'
 	print inpath
+        print 
 
 	########################################################################
 	### find all targets in inpath
@@ -201,10 +212,10 @@ if __name__=='__main__':
 	targets = sorted(filter(lambda x: isdir(x), glob('*')))
 	if len(user_targets):
 		targets = filter(lambda x: x in user_targets, targets)
-	print
 	print 'Targets:'
 	for t in targets:
 		print t
+        print
 
 	########################################################################
 	### run erraser_analysis on all targets found in inpath
