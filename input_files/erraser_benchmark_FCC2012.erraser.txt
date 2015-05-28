@@ -1,39 +1,39 @@
-Name:			guanine_riboswitch
-Input_pdb:		1U8D_phenix.pdb
-Map_file:		1U8D_cell.ccp4
-Map_reso:		1.795
-Fixed_res:		-
-Extra_flags:	-n_iterate 3
-Reference_pdb:	1U8D_phenix_erraser_ref.pdb
+Name:                   guanine_riboswitch
+Input_pdb:              1U8D_phenix.pdb
+Map_file:               1U8D_cell.ccp4
+Map_reso:               1.795
+Fixed_res:              -
+Extra_flags:            -
+Reference_pdb:          1U8D_phenix_erraser_ref.pdb
 
-Name:			rna_pseudoknot
-Input_pdb:		2A43_phenix.pdb
-Map_file:		2A43_cell.ccp4
-Map_reso:		1.343
-Fixed_res:		-
-Extra_flags:	-n_iterate 3
-Reference_pdb:	2A43_phenix_erraser_ref.pdb
+Name:                   rna_pseudoknot
+Input_pdb:              2A43_phenix.pdb
+Map_file:               2A43_cell.ccp4
+Map_reso:               1.343
+Fixed_res:              -
+Extra_flags:            -
+Reference_pdb:          2A43_phenix_erraser_ref.pdb
 
-Name:			sam_I_riboswitch
-Input_pdb:		2GIS_phenix.pdb
-Map_file:		2GIS_cell.ccp4
-Map_reso:		2.8
-Fixed_res:		-
-Extra_flags:	-n_iterate 3
-Reference_pdb:	2GIS_phenix_erraser_ref.pdb
+Name:                   sam_I_riboswitch
+Input_pdb:              2GIS_phenix.pdb
+Map_file:               2GIS_cell.ccp4
+Map_reso:               2.8
+Fixed_res:              -
+Extra_flags:            -
+Reference_pdb:          2GIS_phenix_erraser_ref.pdb
 
-Name:			hcv_ires_subdomain_IIa
-Input_pdb:		2PN3_phenix.pdb
-Map_file:		2PN3_cell.ccp4
-Map_reso:		2.902
-Fixed_res:		-
-Extra_flags:	-n_iterate 3
-Reference_pdb:	2PN3_phenix_erraser_ref.pdb
+Name:                   hcv_ires_subdomain_IIa
+Input_pdb:              2PN3_phenix.pdb
+Map_file:               2PN3_cell.ccp4
+Map_reso:               2.902
+Fixed_res:              -
+Extra_flags:            -
+Reference_pdb:          2PN3_phenix_erraser_ref.pdb
 
-Name:			sam_I_riboswitch_2gna
-Input_pdb:		2YGH_phenix.pdb
-Map_file:		2YGH_cell.ccp4
-Map_reso:		2.601
-Fixed_res:		A:9
-Extra_flags:	-n_iterate 3
-Reference_pdb:	2YGH_phenix_erraser_ref.pdb
+Name:                   sam_I_riboswitch_2gna
+Input_pdb:              2YGH_phenix.pdb
+Map_file:               2YGH_cell.ccp4
+Map_reso:               2.601
+Fixed_res:              A:9
+Extra_flags:            -
+Reference_pdb:          2YGH_phenix_erraser_ref.pdb
