@@ -22,16 +22,16 @@ def make_plots( inpaths, outfilenames, target_files, targets, xvars, yvars, pdfn
 	# Load data for all targets in all inpaths
 	data = load_data( inpaths, targets, outfilenames )
 	inpaths = [x for x in inpaths if x in data.keys()]
-	noutfiles = np.max([len(d) for d in data.values()])
+	nplots = len(set([k for v in data.values() for k in v.keys()]))
 
 	# get and print out runtimes, stored in the silent files
-	times_list = get_times( inpaths, data, noutfiles, targets, verbose=True )
+	times_list = get_times( inpaths, data, targets, verbose=True )
 
 	###################################################
 
 	# setup pdf and figure, return handles
 	( pp, fullpdfname ) = setup_pdf_page( inpaths, targets, pdfname=pdfname )
-	( fig, nplots, nrows, ncols ) = setup_figure( noutfiles )
+	( fig, nplots, nrows, ncols ) = setup_figure( nplots )
 	colorcode = get_colorcode( len(inpaths) )
 
 	xlabels = []

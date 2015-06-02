@@ -147,9 +147,9 @@ def get_path_to_dir( dirnames ):
 
 ###########################################################
 
-def show_times( inpaths, data, noutfiles, target_names, times=None ):
+def show_times( inpaths, data, target_names, times=None ):
 	if not times:
-		times_list = get_times( inpaths, data, noutfiles, target_names, verbose=False )
+		times_list = get_times( inpaths, data, target_names, verbose=False )
 	else:
 		times_list = times
 	for k in xrange( len(target_names) ):
@@ -169,7 +169,7 @@ def show_times( inpaths, data, noutfiles, target_names, times=None ):
 
 ###########################################################
 
-def get_times( inpaths, data, noutfiles, target_names, verbose=False ):
+def get_times( inpaths, data, target_names, verbose=False ):
 	time_label = 'time'
 	times_list = []
 	for inpath_idx, inpath in enumerate(inpaths):
@@ -187,13 +187,12 @@ def get_times( inpaths, data, noutfiles, target_names, verbose=False ):
 			times.append( time_data )
 		times_list.append( times )
 	if verbose:
-		show_times( inpaths, data, noutfiles, target_names, times=times_list )
+		show_times( inpaths, data, target_names, times=times_list )
 	return times_list
 
 ###########################################################
 
-def get_figure_dimensions( noutfiles ):
-	nplots = noutfiles
+def get_figure_dimensions( nplots ):
 	assert( nplots )
 	if nplots <= 5:
 		nrows = nplots
@@ -210,8 +209,8 @@ def get_figure_dimensions( noutfiles ):
 
 ###########################################################
 
-def setup_figure( noutfiles ):
-	( nplots, nrows, ncols ) = get_figure_dimensions( noutfiles )
+def setup_figure( nplots ):
+	( nplots, nrows, ncols ) = get_figure_dimensions( nplots )
 	fig = plt.figure(1)
 	if ( nplots == 1 or nrows < ncols ): # landscape
 		fig.set_size_inches(11, 8.5)
