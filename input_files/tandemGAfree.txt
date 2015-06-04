@@ -1,288 +1,37 @@
-Name:          tandemGAfree-01-aGAa-uGAu
-Sequence:      cuagaaugcaugauag
-Secstruct:     ((....(())....))
-Working_res:   A:1-16
-Input_res:     -
-Native:        1mis_RNA_01-aGAa-uGAu.pdb
-Extra_flags:   -
-
-Name:          tandemGAfree-02-aGAu-aGAu
-Sequence:      cuagauugcaagauag
-Secstruct:     ((....(())....))
-Working_res:   A:1-16
-Input_res:     -
-Native:        1mis_RNA_02-aGAu-aGAu.pdb
-Extra_flags:   -
-
-Name:          tandemGAfree-03-uGAa-uGAa
-Sequence:      cuugaaugcaugaaag
-Secstruct:     ((....(())....))
-Working_res:   A:1-16
-Input_res:     -
-Native:        1mis_RNA_03-uGAa-uGAa.pdb
-Extra_flags:   -
-
-Name:          tandemGAfree-04-uGAu-aGAa
-Sequence:      cuugauugcaagaaag
-Secstruct:     ((....(())....))
-Working_res:   A:1-16
-Input_res:     -
-Native:        1mis_RNA_04-uGAu-aGAa.pdb
-Extra_flags:   -
-
-Name:          tandemGAfree-05-aGAc-gGAu
-Sequence:      cuagacugcaggauag
-Secstruct:     ((....(())....))
-Working_res:   A:1-16
-Input_res:     -
-Native:        1mis_RNA_05-aGAc-gGAu.pdb
-Extra_flags:   -
-
-Name:          tandemGAfree-06-aGAg-cGAu
-Sequence:      cuagagugcacgauag
-Secstruct:     ((....(())....))
-Working_res:   A:1-16
-Input_res:     -
-Native:        1mis_RNA_06-aGAg-cGAu.pdb
-Extra_flags:   -
-
-Name:          tandemGAfree-07-uGAc-gGAa
-Sequence:      cuugacugcaggaaag
-Secstruct:     ((....(())....))
-Working_res:   A:1-16
-Input_res:     -
-Native:        1mis_RNA_07-uGAc-gGAa.pdb
-Extra_flags:   -
-
-Name:          tandemGAfree-08-uGAg-cGAa
-Sequence:      cuugagugcacgaaag
-Secstruct:     ((....(())....))
-Working_res:   A:1-16
-Input_res:     -
-Native:        1mis_RNA_08-uGAg-cGAa.pdb
-Extra_flags:   -
-
-Name:          tandemGAfree-09-aGAg-uGAu
-Sequence:      cuagagugcaugauag
-Secstruct:     ((....(())....))
-Working_res:   A:1-16
-Input_res:     -
-Native:        1mis_RNA_09-aGAg-uGAu.pdb
-Extra_flags:   -
-
-Name:          tandemGAfree-10-aGAu-gGAu
-Sequence:      cuagauugcaggauag
-Secstruct:     ((....(())....))
-Working_res:   A:1-16
-Input_res:     -
-Native:        1mis_RNA_10-aGAu-gGAu.pdb
-Extra_flags:   -
-
-Name:          tandemGAfree-11-uGAg-uGAa
-Sequence:      cuugagugcaugaaag
-Secstruct:     ((....(())....))
-Working_res:   A:1-16
-Input_res:     -
-Native:        1mis_RNA_11-uGAg-uGAa.pdb
-Extra_flags:   -
-
-Name:          tandemGAfree-12-uGAu-gGAa
-Sequence:      cuugauugcaggaaag
-Secstruct:     ((....(())....))
-Working_res:   A:1-16
-Input_res:     -
-Native:        1mis_RNA_12-uGAu-gGAa.pdb
-Extra_flags:   -
-
-Name:          tandemGAfree-13-cGAa-uGAg
-Sequence:      cucgaaugcaugagag
-Secstruct:     ((....(())....))
-Working_res:   A:1-16
-Input_res:     -
-Native:        1mis_RNA_13-cGAa-uGAg.pdb
-Extra_flags:   -
-
-Name:          tandemGAfree-14-cGAu-aGAg
-Sequence:      cucgauugcaagagag
-Secstruct:     ((....(())....))
-Working_res:   A:1-16
-Input_res:     -
-Native:        1mis_RNA_14-cGAu-aGAg.pdb
-Extra_flags:   -
-
-Name:          tandemGAfree-15-gGAa-uGAc
-Sequence:      cuggaaugcaugacag
-Secstruct:     ((....(())....))
-Working_res:   A:1-16
-Input_res:     -
-Native:        1mis_RNA_15-gGAa-uGAc.pdb
-Extra_flags:   -
-
-Name:          tandemGAfree-16-gGAu-aGAc
-Sequence:      cuggauugcaagacag
-Secstruct:     ((....(())....))
-Working_res:   A:1-16
-Input_res:     -
-Native:        1mis_RNA_16-gGAu-aGAc.pdb
-Extra_flags:   -
-
-Name:          tandemGAfree-17-cGAc-gGAg
-Sequence:      cucgacugcaggagag
-Secstruct:     ((....(())....))
-Working_res:   A:1-16
-Input_res:     -
-Native:        1mis_RNA_17-cGAc-gGAg.pdb
-Extra_flags:   -
-
-Name:          tandemGAfree-18-cGAg-cGAg
-Sequence:      cucgagugcacgagag
-Secstruct:     ((....(())....))
-Working_res:   A:1-16
-Input_res:     -
-Native:        1mis_RNA_18-cGAg-cGAg.pdb
-Extra_flags:   -
-
-Name:          tandemGAfree-19-gGAc-gGAc
-Sequence:      cuggacugcaggacag
-Secstruct:     ((....(())....))
-Working_res:   A:1-16
-Input_res:     -
-Native:        1mis_RNA_19-gGAc-gGAc.pdb
-Extra_flags:   -
-
-Name:          tandemGAfree-20-gGAg-cGAc
-Sequence:      cuggagugcacgacag
-Secstruct:     ((....(())....))
-Working_res:   A:1-16
-Input_res:     -
-Native:        1mis_RNA_20-gGAg-cGAc.pdb
-Extra_flags:   -
-
-Name:          tandemGAfree-21-cGAg-uGAg
-Sequence:      cucgagugcaugagag
-Secstruct:     ((....(())....))
-Working_res:   A:1-16
-Input_res:     -
-Native:        1mis_RNA_21-cGAg-uGAg.pdb
-Extra_flags:   -
-
-Name:          tandemGAfree-22-cGAu-gGAg
-Sequence:      cucgauugcaggagag
-Secstruct:     ((....(())....))
-Working_res:   A:1-16
-Input_res:     -
-Native:        1mis_RNA_22-cGAu-gGAg.pdb
-Extra_flags:   -
-
-Name:          tandemGAfree-23-gGAg-uGAc
-Sequence:      cuggagugcaugacag
-Secstruct:     ((....(())....))
-Working_res:   A:1-16
-Input_res:     -
-Native:        1mis_RNA_23-gGAg-uGAc.pdb
-Extra_flags:   -
-
-Name:          tandemGAfree-24-gGAu-gGAc
-Sequence:      cuggauugcaggacag
-Secstruct:     ((....(())....))
-Working_res:   A:1-16
-Input_res:     -
-Native:        1mis_RNA_24-gGAu-gGAc.pdb
-Extra_flags:   -
-
-Name:          tandemGAfree-25-gGAa-uGAu
-Sequence:      cuggaaugcaugauag
-Secstruct:     ((....(())....))
-Working_res:   A:1-16
-Input_res:     -
-Native:        1mis_RNA_25-gGAa-uGAu.pdb
-Extra_flags:   -
-
-Name:          tandemGAfree-26-gGAu-aGAu
-Sequence:      cuggauugcaagauag
-Secstruct:     ((....(())....))
-Working_res:   A:1-16
-Input_res:     -
-Native:        1mis_RNA_26-gGAu-aGAu.pdb
-Extra_flags:   -
-
-Name:          tandemGAfree-27-uGAa-uGAg
-Sequence:      cuugaaugcaugagag
-Secstruct:     ((....(())....))
-Working_res:   A:1-16
-Input_res:     -
-Native:        1mis_RNA_27-uGAa-uGAg.pdb
-Extra_flags:   -
-
-Name:          tandemGAfree-28-uGAu-aGAg
-Sequence:      cuugauugcaagagag
-Secstruct:     ((....(())....))
-Working_res:   A:1-16
-Input_res:     -
-Native:        1mis_RNA_28-uGAu-aGAg.pdb
-Extra_flags:   -
-
-Name:          tandemGAfree-29-gGAc-gGAu
-Sequence:      cuggacugcaggauag
-Secstruct:     ((....(())....))
-Working_res:   A:1-16
-Input_res:     -
-Native:        1mis_RNA_29-gGAc-gGAu.pdb
-Extra_flags:   -
-
-Name:          tandemGAfree-30-gGAg-cGAu
-Sequence:      cuggagugcacgauag
-Secstruct:     ((....(())....))
-Working_res:   A:1-16
-Input_res:     -
-Native:        1mis_RNA_30-gGAg-cGAu.pdb
-Extra_flags:   -
-
-Name:          tandemGAfree-31-uGAc-gGAg
-Sequence:      cuugacugcaggagag
-Secstruct:     ((....(())....))
-Working_res:   A:1-16
-Input_res:     -
-Native:        1mis_RNA_31-uGAc-gGAg.pdb
-Extra_flags:   -
-
-Name:          tandemGAfree-32-uGAg-cGAg
-Sequence:      cuugagugcacgagag
-Secstruct:     ((....(())....))
-Working_res:   A:1-16
-Input_res:     -
-Native:        1mis_RNA_32-uGAg-cGAg.pdb
-Extra_flags:   -
-
-Name:          tandemGAfree-33-gGAg-uGAu
-Sequence:      cuggagugcaugauag
-Secstruct:     ((....(())....))
-Working_res:   A:1-16
-Input_res:     -
-Native:        1mis_RNA_33-gGAg-uGAu.pdb
-Extra_flags:   -
-
-Name:          tandemGAfree-34-gGAu-gGAu
-Sequence:      cuggauugcaggauag
-Secstruct:     ((....(())....))
-Working_res:   A:1-16
-Input_res:     -
-Native:        1mis_RNA_34-gGAu-gGAu.pdb
-Extra_flags:   -
-
-Name:          tandemGAfree-35-uGAg-uGAg
-Sequence:      cuugagugcaugagag
-Secstruct:     ((....(())....))
-Working_res:   A:1-16
-Input_res:     -
-Native:        1mis_RNA_35-uGAg-uGAg.pdb
-Extra_flags:   -
-
-Name:          tandemGAfree-36-uGAu-gGAg
-Sequence:      cuugauugcaggagag
-Secstruct:     ((....(())....))
-Working_res:   A:1-16
-Input_res:     -
-Native:        1mis_RNA_36-uGAu-gGAg.pdb
-Extra_flags:   -
-
+Name	Sequence	Secstruct	Working_res	Native	Input_res	Extra_flags
+tandemGAfree-01-aGAa-uGAu	cuagaaugcaugauag	((....(())....))	A:1-16	1mis_RNA_01-aGAa-uGAu.pdb	-	-
+tandemGAfree-02-aGAu-aGAu	cuagauugcaagauag	((....(())....))	A:1-16	1mis_RNA_02-aGAu-aGAu.pdb	-	-
+tandemGAfree-03-uGAa-uGAa	cuugaaugcaugaaag	((....(())....))	A:1-16	1mis_RNA_03-uGAa-uGAa.pdb	-	-
+tandemGAfree-04-uGAu-aGAa	cuugauugcaagaaag	((....(())....))	A:1-16	1mis_RNA_04-uGAu-aGAa.pdb	-	-
+tandemGAfree-05-aGAc-gGAu	cuagacugcaggauag	((....(())....))	A:1-16	1mis_RNA_05-aGAc-gGAu.pdb	-	-
+tandemGAfree-06-aGAg-cGAu	cuagagugcacgauag	((....(())....))	A:1-16	1mis_RNA_06-aGAg-cGAu.pdb	-	-
+tandemGAfree-07-uGAc-gGAa	cuugacugcaggaaag	((....(())....))	A:1-16	1mis_RNA_07-uGAc-gGAa.pdb	-	-
+tandemGAfree-08-uGAg-cGAa	cuugagugcacgaaag	((....(())....))	A:1-16	1mis_RNA_08-uGAg-cGAa.pdb	-	-
+tandemGAfree-09-aGAg-uGAu	cuagagugcaugauag	((....(())....))	A:1-16	1mis_RNA_09-aGAg-uGAu.pdb	-	-
+tandemGAfree-10-aGAu-gGAu	cuagauugcaggauag	((....(())....))	A:1-16	1mis_RNA_10-aGAu-gGAu.pdb	-	-
+tandemGAfree-11-uGAg-uGAa	cuugagugcaugaaag	((....(())....))	A:1-16	1mis_RNA_11-uGAg-uGAa.pdb	-	-
+tandemGAfree-12-uGAu-gGAa	cuugauugcaggaaag	((....(())....))	A:1-16	1mis_RNA_12-uGAu-gGAa.pdb	-	-
+tandemGAfree-13-cGAa-uGAg	cucgaaugcaugagag	((....(())....))	A:1-16	1mis_RNA_13-cGAa-uGAg.pdb	-	-
+tandemGAfree-14-cGAu-aGAg	cucgauugcaagagag	((....(())....))	A:1-16	1mis_RNA_14-cGAu-aGAg.pdb	-	-
+tandemGAfree-15-gGAa-uGAc	cuggaaugcaugacag	((....(())....))	A:1-16	1mis_RNA_15-gGAa-uGAc.pdb	-	-
+tandemGAfree-16-gGAu-aGAc	cuggauugcaagacag	((....(())....))	A:1-16	1mis_RNA_16-gGAu-aGAc.pdb	-	-
+tandemGAfree-17-cGAc-gGAg	cucgacugcaggagag	((....(())....))	A:1-16	1mis_RNA_17-cGAc-gGAg.pdb	-	-
+tandemGAfree-18-cGAg-cGAg	cucgagugcacgagag	((....(())....))	A:1-16	1mis_RNA_18-cGAg-cGAg.pdb	-	-
+tandemGAfree-19-gGAc-gGAc	cuggacugcaggacag	((....(())....))	A:1-16	1mis_RNA_19-gGAc-gGAc.pdb	-	-
+tandemGAfree-20-gGAg-cGAc	cuggagugcacgacag	((....(())....))	A:1-16	1mis_RNA_20-gGAg-cGAc.pdb	-	-
+tandemGAfree-21-cGAg-uGAg	cucgagugcaugagag	((....(())....))	A:1-16	1mis_RNA_21-cGAg-uGAg.pdb	-	-
+tandemGAfree-22-cGAu-gGAg	cucgauugcaggagag	((....(())....))	A:1-16	1mis_RNA_22-cGAu-gGAg.pdb	-	-
+tandemGAfree-23-gGAg-uGAc	cuggagugcaugacag	((....(())....))	A:1-16	1mis_RNA_23-gGAg-uGAc.pdb	-	-
+tandemGAfree-24-gGAu-gGAc	cuggauugcaggacag	((....(())....))	A:1-16	1mis_RNA_24-gGAu-gGAc.pdb	-	-
+tandemGAfree-25-gGAa-uGAu	cuggaaugcaugauag	((....(())....))	A:1-16	1mis_RNA_25-gGAa-uGAu.pdb	-	-
+tandemGAfree-26-gGAu-aGAu	cuggauugcaagauag	((....(())....))	A:1-16	1mis_RNA_26-gGAu-aGAu.pdb	-	-
+tandemGAfree-27-uGAa-uGAg	cuugaaugcaugagag	((....(())....))	A:1-16	1mis_RNA_27-uGAa-uGAg.pdb	-	-
+tandemGAfree-28-uGAu-aGAg	cuugauugcaagagag	((....(())....))	A:1-16	1mis_RNA_28-uGAu-aGAg.pdb	-	-
+tandemGAfree-29-gGAc-gGAu	cuggacugcaggauag	((....(())....))	A:1-16	1mis_RNA_29-gGAc-gGAu.pdb	-	-
+tandemGAfree-30-gGAg-cGAu	cuggagugcacgauag	((....(())....))	A:1-16	1mis_RNA_30-gGAg-cGAu.pdb	-	-
+tandemGAfree-31-uGAc-gGAg	cuugacugcaggagag	((....(())....))	A:1-16	1mis_RNA_31-uGAc-gGAg.pdb	-	-
+tandemGAfree-32-uGAg-cGAg	cuugagugcacgagag	((....(())....))	A:1-16	1mis_RNA_32-uGAg-cGAg.pdb	-	-
+tandemGAfree-33-gGAg-uGAu	cuggagugcaugauag	((....(())....))	A:1-16	1mis_RNA_33-gGAg-uGAu.pdb	-	-
+tandemGAfree-34-gGAu-gGAu	cuggauugcaggauag	((....(())....))	A:1-16	1mis_RNA_34-gGAu-gGAu.pdb	-	-
+tandemGAfree-35-uGAg-uGAg	cuugagugcaugagag	((....(())....))	A:1-16	1mis_RNA_35-uGAg-uGAg.pdb	-	-
+tandemGAfree-36-uGAu-gGAg	cuugauugcaggagag	((....(())....))	A:1-16	1mis_RNA_36-uGAu-gGAg.pdb	-	-
