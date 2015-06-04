@@ -110,9 +110,9 @@ for info_file_line in open( info_file ).readlines()[1:]:
     target.sequence = cols[1]
     target.secstruct = cols[2]
     target.working_res = cols[3]
-    target.input_res = cols[4]
-    target.native = cols[5]
-    target.extra_flags = cols[6]
+    target.native = cols[4]
+    target.input_res = cols[5]
+    target.extra_flags = parse_flags( cols[6], replacements )
     targets.append( target )        
 
 full_model_info = {}
@@ -266,7 +266,7 @@ for target in targets:
     # get sample loop res
     target.loop_res = {}
 
-    if targets.input_res == '-':
+    if target.input_res == '-':
         if args.swa:
             print "WARNING: input_res[ name ] == '-' "
         continue
