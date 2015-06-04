@@ -30,6 +30,7 @@ parser.add_argument('--path_to_rosetta', default='', help='Path to working copy 
 parser.add_argument('-v', '--verbose', help="increase output verbosity", action="store_true")
 parser.add_argument('-motif_mode_off', help="temporary hack for turning off hardcoded '-motif_mode' flag", action="store_true")
 parser.add_argument('--save_logs', help="save .out and .err logs for each job.", action="store_true")
+parser.add_argument('--design', help="design sample residues", action="store_true")
 args = parser.parse_args()
 
 #####################################################################################################################
@@ -74,26 +75,7 @@ else:
 
 
 # initialize directories
-full_model_info = {}
-names = []
-sequence = {}
-secstruct = {}
-working_res = {}
-native = {}
-input_res = {}
-extra_flags = {}
-fasta = {}
-resnums = {}
-chains  = {}
-helix_files = {}
-working_native = {}
-input_pdbs = {}
-terminal_res = {}
-extra_min_res = {}
-loop_res = {}
-VDW_rep_screen_pdb = {}
-VDW_rep_screen_info = {}
-align_pdb = {}
+targets = []
 bps = ['au','ua','gc','cg','ug','gu']
 
 
@@ -110,71 +92,66 @@ assert( exists( inpath ) )
 
 
 # read info_file
-for info_file_line in open( info_file ).readlines():
+for info_file_line in open( info_file ).readlines()[1:]:
 
-    if info_file_line[0] == '#' : continue
-    cols = info_file_line.split('#')[0].strip().split()
+    if info_file_line[0] == '#' :
+        continue
+    cols = info_file_line.strip().split('\t')
     if len(cols) < 2:
         continue
 
-    if cols[0] == 'Name:':
-        name = cols[1]
-        if ( len( args.user_input_runs ) > 0 ) and ( name not in args.user_input_runs ): continue
-        print 'Reading in info for: ', name
-        assert( name not in names )
-        names.append( name )
+    name = cols[0]
+    if ( len( args.user_input_runs ) > 0 ) and ( name not in args.user_input_runs ):
         continue
+    assert( all (name != t.names for t in targets) )
+    print 'Reading in info for: ', name
 
-    if ( len( args.user_input_runs ) > 0 ) and ( name not in args.user_input_runs ): continue
+    target = Target( name )
+    target.sequence = cols[1]
+    target.secstruct = cols[2]
+    target.working_res = cols[3]
+    target.input_res = cols[4]
+    target.native = cols[5]
+    target.extra_flags = cols[6]
+    targets.append( target )        
 
-    if   cols[0] == 'Sequence:'    :    sequence   [ name ] = cols[1]
-    elif cols[0] == 'Secstruct:'   :    secstruct  [ name ] = cols[1]
-    elif cols[0] == 'Working_res:' :    working_res[ name ] = cols[1]
-    elif cols[0] == 'Input_res:'   :    input_res  [ name ] = cols[1]
-    elif cols[0] == 'Native:'      :    native     [ name ] = cols[1]
-    elif cols[0] == 'Extra_flags:' :    extra_flags[ name ] = parse_flags(cols[1:], replacements)
-
-        
-
-        
-
-# check that each dictionary is the same size
-assert( len( names ) == len( sequence ) == len( secstruct ) == len( working_res ) == len( input_res ) == len( native ))
-
+full_model_info = {}
 
 # iterate over names
-for name in names:
+for target in targets:
 
-    full_model_info[ name ] = FullModelInfo( name )
+    full_model_info[ target.name ] = FullModelInfo( target.name )
     
-    sequences          = string.split( sequence[name], ',' )
-    working_res_blocks = string.split( working_res[name], ',' )
+    sequences          = string.split( target.sequence, ',' )
+    working_res_blocks = string.split( target.working_res, ',' )
 
     # store information on 'conventional' residue numbers and chains.
-    resnums[ name ] = []
-    chains[ name ] = []
-    for working_res_block in working_res_blocks: get_resnum_chain( working_res_block, resnums[ name ], chains[ name ] )
-
-    full_model_info[ name ].set_resnums( resnums[ name ] )
-    full_model_info[ name ].set_chains( chains[ name ] )
+    resnums = []
+    chains = []
+    for working_res_block in working_res_blocks:
+        get_resnum_chain( working_res_block, resnums, chains )
+    full_model_info[ name ].set_resnums( resnums )
+    full_model_info[ name ].set_chains( chains )
+    target.chains = chains
+    target.resnums
 
     # working_native
-    assert( native[ name ] != '-' ) # for now, require a native, since this is a benchmark.
-    prefix = '%s/%s_' % ( inpath,name)
-    working_native[ name ] = slice_out( inpath, prefix, native[ name ], string.join( working_res_blocks ) )
-    assert( string.join(sequences,'') == string.join(get_sequences( working_native[name] )[0],'') )
+    assert( target.native != '-' ) # for now, require a native, since this is a benchmark.
+    prefix = '%s/%s_' % ( inpath, target.name)
+    target.working_native = slice_out( inpath, prefix, target.native, string.join( working_res_blocks ) )
+    assert( string.join(sequences,'') == string.join(get_sequences( target.working_native )[0],'') )
 
     # create starting PDBs
-    input_pdbs[ name ] = []
+    target.input_pdbs = []
     input_res_blocks = [] 
-    if input_res[ name ] != '-':
-        input_res_blocks += input_res[ name ].split(';')
+    if target.input_res != '-':
+        input_res_blocks += target.input_res.split(';')
     if input_res_benchmark:
         input_res_blocks += input_res_benchmark.split(';')
     for m,input_res_block in enumerate(input_res_blocks):
-        prefix = '%s/%s_START%d_' % ( inpath,name,m+1)
-        input_pdb = slice_out( inpath, prefix, native[ name ],input_res_block )
-        input_pdbs[ name ].append( input_pdb )
+        prefix = '%s/%s_START%d_' % ( inpath,target.name,m+1)
+        input_pdb = slice_out( inpath, prefix, target.native,input_res_block )
+        target.input_pdbs.append( input_pdb )
     input_resnum_fullmodel = full_model_info[ name ].conventional_tag_to_full( 
         input_res_blocks
     )
@@ -183,19 +160,19 @@ for name in names:
 
 
     # create secstruct if not defined
-    if secstruct[ name ] == '-':
-        secstruct[ name ] = string.join( [ '.' * len( seq ) for seq in sequences ], ',' )
+    if target.secstruct == '-':
+        target.secstruct = string.join( [ '.' * len( seq ) for seq in sequences ], ',' )
 
 
     # create any helices.
-    helix_files[ name ] = []
-    (sequence_joined, chainbreak_pos)           = join_sequence( sequence[name] )
-    (secstruct_joined,chainbreak_pos_secstruct) = join_sequence( secstruct[name] )
+    target.helix_files = []
+    (sequence_joined, chainbreak_pos)           = join_sequence( target.sequence )
+    (secstruct_joined,chainbreak_pos_secstruct) = join_sequence( target.secstruct )
     assert( chainbreak_pos == chainbreak_pos_secstruct )
     stems = get_all_stems( secstruct_joined, chainbreak_pos, sequence_joined  )
 
     for i in range( len( stems ) ):
-        helix_file =  '%s/%s_HELIX%d.pdb' % (inpath,name,(i+1))
+        helix_file =  '%s/%s_HELIX%d.pdb' % (inpath,target.name,(i+1))
 
         stem = stems[i]
         helix_seq = ''; helix_resnum = [];
@@ -212,12 +189,12 @@ for name in names:
             if m in input_resnum_fullmodel: already_in_input_res = True
         if already_in_input_res: continue
 
-        helix_files[ name ].append( helix_file )
+        target.helix_files.append( helix_file )
         input_resnum_fullmodel += helix_resnum
 
         if exists( helix_file ): continue
         command = 'rna_helix.py -seq %s  -o %s -resnum %s' % ( helix_seq, helix_file, \
-            make_tag_with_conventional_numbering( helix_resnum, resnums[ name ], chains[ name ] ) )
+            make_tag_with_conventional_numbering( helix_resnum, resnums, chains) )
         print command
         system( command )
 
@@ -225,8 +202,8 @@ for name in names:
     # following is now 'hard-coded' into Rosetta option '-motif_mode'
     # deprecate this python block in 2015 after testing -- rd2014
     L = len( sequence_joined )
-    terminal_res[ name ] = []
-    extra_min_res[ name ] = []
+    target.terminal_res = []
+    target.extra_min_res = []
     for m in range( 1, L+1 ):
         if ( m not in input_resnum_fullmodel ): continue
         prev_moving = ( m - 1 not in input_resnum_fullmodel ) and ( m != 1 )
@@ -235,66 +212,66 @@ for name in names:
         right_after_chainbreak  = ( m == 1 or m - 1 in chainbreak_pos )
         if ( ( right_after_chainbreak and not next_moving ) or \
              ( right_before_chainbreak and not prev_moving ) ):
-            terminal_res[ name ].append( m )
+            target.terminal_res.append( m )
         if ( ( prev_moving and not next_moving and not right_before_chainbreak ) or \
              ( next_moving and not prev_moving and not right_after_chainbreak ) ):
-            extra_min_res[ name ].append( m )
-    if '-extra_min_res' in extra_flags[ name ]:
+            target.extra_min_res.append( m )
+    if '-extra_min_res' in target.extra_flags:
         extra_res_full = full_model_info[ name ].conventional_tag_to_full(
-            extra_flags[ name ].pop('-extra_min_res' )
+            target.extra_flags.pop('-extra_min_res' )
         )
         extra_res_full = filter(input_resnum_fullmodel.count, extra_res_full)
-        extra_min_res[ name ] += extra_res_full
-        extra_min_res[ name ] = sorted(list(set(extra_min_res[ name ]))) 
+        target.extra_min_res += extra_res_full
+        target.extra_min_res = sorted(list(set(target.extra_min_res))) 
         motif_mode_off = True
     if extra_min_res_benchmark:
         extra_res_full = full_model_info[ name ].conventional_tag_to_full(
             extra_min_res_benchmark
         )
         extra_res_full = filter(input_resnum_fullmodel.count, extra_res_full)
-        extra_min_res[ name ] += extra_res_full
-        extra_min_res[ name ] = sorted(list(set(extra_min_res[ name ]))) 
+        target.extra_min_res += extra_res_full
+        target.extra_min_res = sorted(list(set(target.extra_min_res))) 
         motif_mode_off = True
     if not motif_mode_off and '-motif_mode' not in extra_flags_benchmark:
         extra_flags_benchmark['-motif_mode'] = ''
 
     # create fasta
-    fasta[ name ] = '%s/%s.fasta' % (inpath,name)
+    target.fasta = '%s/%s.fasta' % (inpath,target.name)
     if args.swa:
-        fasta[ name ] = fasta[ name ].replace('.fasta', '_SWA.fasta')
-    if not exists( fasta[ name ] ):
-        fid = open( fasta[ name ], 'w' )
+        target.fasta = target.fasta.replace('.fasta', '_SWA.fasta')
+    if not exists( target.fasta ):
+        fid = open( target.fasta, 'w' )
         assert( len( sequences ) == len( working_res_blocks ) )
         if args.swa:
-            fid.write( '>%s %s\n%s\n' % ( name,string.join(working_res_blocks,' '),string.join(sequences,'') ) )
+            fid.write( '>%s %s\n%s\n' % ( target.name,string.join(working_res_blocks,' '),string.join(sequences,'') ) )
         else:
             ### splitting up sequence in fasta may cause errors in SWA runs
-            for n in range( len( sequences ) ): fid.write( '>%s %s\n%s\n' % (name,working_res_blocks[n],sequences[n]) )
+            for n in range( len( sequences ) ): fid.write( '>%s %s\n%s\n' % (target.name,working_res_blocks[n],sequences[n]) )
         #fid.write( popen( 'pdb2fasta.py %s' % (  working_native[ name ] ) ).read() )
         fid.close()
 
     # get align_pdb
     if '-align_pdb' in extra_flags_benchmark:
-        prefix = '%s/%s_ALIGN_' % (inpath, name)
+        prefix = '%s/%s_ALIGN_' % (inpath, target.name)
         align_res = ','.join(input_res_blocks)
-        align_pdb[ name ] = slice_out(inpath, prefix, native[ name ], align_res)
-        if '-align_pdb' in extra_flags[ name ]:
-            extra_flags[ name ].pop('-align_pdb')
-    elif '-align_pdb' in extra_flags[ name ]:
-        align_pdb[ name ] = inpath+'/'+extra_flags[ name ]['-align_pdb']
+        target.align_pdb = slice_out(inpath, prefix, target.native, align_res)
+        if '-align_pdb' in target.extra_flags:
+            target.extra_flags.pop('-align_pdb')
+    elif '-align_pdb' in target.extra_flags:
+        target.align_pdb = inpath+'/'+target.extra_flags['-align_pdb']
         assert( exists(align_pdb) )
     else:
-        align_pdb[ name ] = None
+        target.align_pdb = None
 
     # get sample loop res
-    loop_res[ name ] = {}
-    if input_res[ name ] == '-':
+    target.loop_res = {}
+    if targets.input_res == '-':
         if args.swa:
             print "WARNING: input_res[ name ] == '-' "
         continue
 
-    ( workres , workchains  ) = parse_tag( working_res[ name ], alpha_sort=True )
-    ( inputres , inputchains  ) = parse_tag( input_res[ name ], alpha_sort=True )
+    ( workres , workchains  ) = parse_tag( target.working_res, alpha_sort=True )
+    ( inputres , inputchains  ) = parse_tag( target.input_res, alpha_sort=True )
 
     loopres_tag = []
     for ii in xrange( len( workres ) ):
@@ -309,41 +286,41 @@ for name in names:
     loopres_tag = string.join( loopres_tag, ',' )
 
     ( loopres , loopchains  ) = parse_tag( loopres_tag, alpha_sort=True )
-    ( workres , workchains  ) = parse_tag( working_res[ name ], alpha_sort=True )
+    ( workres , workchains  ) = parse_tag( target.working_res, alpha_sort=True )
 
     loopres_conventional = [ str(workchains[idx])+':'+str(workres[idx]) for idx in xrange( len( workres ) ) if (workres[idx] in loopres and workchains[idx] == loopchains[loopres.index(workres[idx])]) ]
     loopres_conventional = string.join( [ str(x) for x in loopres_conventional ] ,' ')
-    loop_res[ name ][ 'conventional' ] = loopres_conventional
+    target.loop_res[ 'conventional' ] = loopres_conventional
 
     if args.swa:
         loopres_swa = [ idx+1 for idx in xrange( len( workres ) ) if (workres[idx] in loopres and workchains[idx] == loopchains[loopres.index(workres[idx])]) ]
         loopres_swa = string.join( [ str(x) for x in loopres_swa ] ,' ')
-        loop_res[ name ][ 'swa' ]  = loopres_swa
+        target.loop_res[ 'swa' ]  = loopres_swa
 
 
     # get VDW_rep_screen_info, it will only be used if -VDW_rep_screen_info flag is set in extra_flags_benchmark
-    VDW_rep_screen_pdb[ name ] = None
-    VDW_rep_screen_info[ name ] = None
+    target.VDW_rep_screen_pdb = None
+    target.VDW_rep_screen_info = None
     if '-VDW_rep_screen_info' in extra_flags_benchmark:
 
         periph_res_radius = 50.0
-        if ( 'rrna' in name ) or ( 'rRNA' in name ):
+        if ( 'rrna' in target.name ) or ( 'rRNA' in target.name ):
             periph_res_radius = 100.0
 
-        prefix = '%s/%s_%d_ANGSTROM_GRID_' % (inpath, name, periph_res_radius)
-        VDW_rep_screen_pdb[ name ] = prefix + native[ name ]
-        VDW_rep_screen_info[ name ] = basename(VDW_rep_screen_pdb[name])
+        prefix = '%s/%s_%d_ANGSTROM_GRID_' % (inpath, target.name, periph_res_radius)
+        target.VDW_rep_screen_pdb = prefix +target.native
+        target.VDW_rep_screen_info = basename(target.VDW_rep_screen_pdb)
 
-        if not exists( VDW_rep_screen_pdb[ name ] ):
+        if not exists( target.VDW_rep_screen_pdb ):
 
-            loopres_list=string.split( loop_res[ name ][ 'conventional' ], ' ' )
-            periph_res_tag = get_surrounding_res_tag( inpath+native[ name ], sample_res_list=loopres_list, radius=periph_res_radius, verbose=args.verbose )
+            loopres_list=string.split( target.loop_res[ 'conventional' ], ' ' )
+            periph_res_tag = get_surrounding_res_tag( inpath+target.native, sample_res_list=loopres_list, radius=periph_res_radius, verbose=args.verbose )
             assert( len( periph_res_tag ) )
-            slice_out( inpath, prefix, native[ name ], periph_res_tag )
+            slice_out( inpath, prefix, target.native, periph_res_tag )
 
             if args.verbose:
-                print 'loopres_list for '+name+' = '+string.join(loopres_list)
-                print 'periph_res for '+name+' = '+periph_res_tag
+                print 'loopres_list for '+target.name+' = '+string.join(loopres_list)
+                print 'periph_res for '+target.name+' = '+periph_res_tag
 
 
 
@@ -364,22 +341,22 @@ for qsub_file in qsub_files:
     fid_qsub = open( qsub_file, 'w' )
     fid_qsub.close()
 
-for name in names:
-
-    dirname = name
+for target in targets:
+    
+    dirname = target.name
     if not exists( dirname ): system( 'mkdir '+dirname )
 
     # move all required files to the correct directory
-    start_files = helix_files[ name ] + input_pdbs[ name ]
-    infiles = start_files + [ fasta[name], working_native[ name ] ]
-    if VDW_rep_screen_pdb[ name ]:
-        infiles.append(VDW_rep_screen_pdb[ name ])
-    if align_pdb[ name ]:
+    start_files = target.helix_files + target.input_pdbs
+    infiles = start_files + [ target.fasta, target.working_native ]
+    if target.VDW_rep_screen_pdb:
+        infiles.append(target.VDW_rep_screen_pdb)
+    if target.align_pdb:
         if '-align_pdb' in extra_flags_benchmark:
-            extra_flags_benchmark['-align_pdb'] = basename(align_pdb[ name ])
-        infiles.append(align_pdb[ name ])
-    if '-input_pdb' in extra_flags[ name ]:
-        input_pdb = inpath+'/'+extra_flags[ name ]['-input_pdb']
+            extra_flags_benchmark['-align_pdb'] = basename(target.align_pdb)
+        infiles.append(target.align_pdb)
+    if '-input_pdb' in target.extra_flags:
+        input_pdb = inpath+'/'+target.extra_flags['-input_pdb']
         assert( exists(input_pdb) )
         infiles.append(input_pdb)
     system( 'cp %s %s/ ' % (' '.join(infiles), dirname) )
@@ -392,13 +369,13 @@ for name in names:
         if len( start_files ) > 0 :
             fid.write( ' -s' )
             for infile in start_files:  fid.write( ' %s' % (basename(infile) ) )
-        if len( native[ name ] ) > 0:
-            fid.write( ' -native_pdb %s' % basename( working_native[name] ) )
-        fid.write( ' -fasta %s' %  basename( fasta[ name ] ) )
-        fid.write( ' -sample_res %s' % loop_res[ name ][ 'swa' ] )
+        if len( target.native ) > 0:
+            fid.write( ' -native_pdb %s' % basename( target.working_native ) )
+        fid.write( ' -fasta %s' %  basename( target.fasta ) )
+        fid.write( ' -sample_res %s' % target.loop_res[ 'swa' ] )
 
         # case-specific extra flags
-        for key, value in extra_flags[ name ].iteritems():
+        for key, value in target.extra_flags.iteritems():
             flag = ' '.join([key, value]).strip()
             fid.write(' %s' % flag)
 
@@ -414,18 +391,18 @@ for name in names:
                 if not exists( weights_file ):
                     weights_file = ROSETTA_DB+'/scoring/weights/'+weights_file
                 assert( exists(weights_file) )
-                system( 'cp %s %s' % (weights_file, name) )
+                system( 'cp %s %s' % (weights_file, target.name) )
             if '-score:rna_torsion_potential' in key:
                 key = '-rna_torsion_potential_folder'
             if '-VDW_rep_screen_info' in key and 'True' in value:
-                value = VDW_rep_screen_info[ name ]
+                value = target.VDW_rep_screen_info
                 fid.write(' -apply_VDW_rep_delete_matching_res False')
             flag = ' '.join([key, value]).strip()
             fid.write(' %s' % flag)
             
         fid.close()
 
-        print '\nSetting up submission files for: ', name
+        print '\nSetting up submission files for: ', target.name
         CWD = getcwd()
         fid_submit = open( dirname+'/SUBMIT_SWA', 'w' )
         fid_submit.write( SWA_DAGMAN_TOOLS+'/dagman/submit_DAG_job.py' )
@@ -442,25 +419,25 @@ for name in names:
     # SETUP for StepWise Monte Carlo
     else:
 
-        fid = open( '%s/README_SWM' % name, 'w' )
+        fid = open( '%s/README_SWM' % target.name, 'w' )
         fid.write( ROSETTA_BIN + 'stepwise @flags -out:file:silent swm_rebuild.out\n' )
         fid.close()
 
-        fid = open( '%s/flags' % name, 'w' )
+        fid = open( '%s/flags' % target.name, 'w' )
         if len( start_files ) > 0 :
             fid.write( '-s' )
             for infile in start_files:  fid.write( ' %s' % (basename(infile) ) )
             fid.write( '\n' )
-        if len( native[ name ] ) > 0:
-            fid.write( '-native %s\n' % basename( working_native[name] ) )
+        if len( target.native ) > 0:
+            fid.write( '-native %s\n' % basename( target.working_native ) )
         if motif_mode_off:
-            if len( terminal_res[ name ] ) > 0:
-                fid.write( '-terminal_res %s  \n' % make_tag_with_conventional_numbering( terminal_res[ name ], resnums[ name ], chains[ name ] ) )
-            if len( extra_min_res[ name ] ) > 0 and not args.extra_min_res_off: ### Turn extra_min_res off for SWM when comparing to SWA
-                fid.write( '-extra_min_res %s \n' % make_tag_with_conventional_numbering( extra_min_res[ name ], resnums[ name ], chains[ name ] ) )
+            if len( target.terminal_res ) > 0:
+                fid.write( '-terminal_res %s  \n' % make_tag_with_conventional_numbering( target.terminal_res, target.resnums, target.chains ) )
+            if len( target.extra_min_res ) > 0 and not args.extra_min_res_off: ### Turn extra_min_res off for SWM when comparing to SWA
+                fid.write( '-extra_min_res %s \n' % make_tag_with_conventional_numbering( target.extra_min_res, target.resnums, target.chains ) )
         #if ( len( input_pdbs[ name ] ) == 0 ):
         #    fid.write( '-superimpose_over_all\n' ) # RMSD over everything -- better test since helices are usually native
-        fid.write( '-fasta %s\n' % basename( fasta[ name ] ) )
+        fid.write( '-fasta %s\n' % basename( target.fasta) )
         if '-move' not in extra_flags_benchmark:
             if '-cycles' not in extra_flags_benchmark:
                 fid.write( '-cycles 200\n' )
@@ -471,7 +448,7 @@ for name in names:
             fid.write( '-save_times\n' )
 
         # case-specific extra flags
-        for key, value in extra_flags[ name ].iteritems():
+        for key, value in target.extra_flags.iteritems():
             flag = ' '.join([key, value]).strip()
             fid.write('%s\n' % flag)
 
@@ -484,17 +461,17 @@ for name in names:
                 if not exists(weights_file):
                     weights_file = ROSETTA_DB+'/scoring/weights/'+weights_file
                 assert( exists(weights_file) )
-                system( 'cp %s %s' % (weights_file, name) )
+                system( 'cp %s %s' % (weights_file, target.name) )
             if '-VDW_rep_screen_info' in key and 'true' in value:
-                value = basename(VDW_rep_screen_info[ name ])
+                value = basename(target.VDW_rep_screen_info)
             flag = ' '.join([key, value]).strip()
             fid.write('%s\n' % flag)
                 
         fid.close()
 
-        print '\nSetting up submission files for: ', name
+        print '\nSetting up submission files for: ', target.name
         CWD = getcwd()
-        chdir( name )
+        chdir( target.name )
 
         rosetta_submit_cmd = 'rosetta_submit.py README_SWM SWM %d %d' % (njobs, args.nhours )
         if args.save_logs:
@@ -505,6 +482,6 @@ for name in names:
 
         for qsub_file in qsub_files:
             with open(qsub_file,'a') as fid_qsub:
-                fid_qsub.write( 'cd %s; source %s; cd %s\n' % ( name, qsub_file,  CWD ) )
+                fid_qsub.write( 'cd %s; source %s; cd %s\n' % ( target.name, qsub_file,  CWD ) )
 
 
