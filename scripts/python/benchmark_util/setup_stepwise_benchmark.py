@@ -288,11 +288,14 @@ for name in names:
 
     # get sample loop res
     loop_res[ name ] = {}
+    VDW_rep_screen_pdb[ name ] = None
+    VDW_rep_screen_info[ name ] = None
+    
     if input_res[ name ] == '-':
         if args.swa:
             print "WARNING: input_res[ name ] == '-' "
         continue
-
+    
     ( workres , workchains  ) = parse_tag( working_res[ name ], alpha_sort=True )
     ( inputres , inputchains  ) = parse_tag( input_res[ name ], alpha_sort=True )
 
@@ -322,8 +325,6 @@ for name in names:
 
 
     # get VDW_rep_screen_info, it will only be used if -VDW_rep_screen_info flag is set in extra_flags_benchmark
-    VDW_rep_screen_pdb[ name ] = None
-    VDW_rep_screen_info[ name ] = None
     if '-VDW_rep_screen_info' in extra_flags_benchmark:
 
         periph_res_radius = 50.0
