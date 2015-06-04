@@ -350,8 +350,12 @@ for name in names:
 # write qsubMINIs, READMEs and SUBMITs
 qsub_files = ['qsubMINI']
 hostname = uname()[1]
-if 'stampede' in hostname: qsub_files = ['qsubMPI']
-if 'sherlock' in hostname or 'sh-' in hostname:
+if 'sh-' in hostname:
+    if 'sherlock' in expandvars("$COMPUTER_CLUSTER_NAME").lower():
+        hostname = 'sherlock'
+if 'stampede' in hostname:
+    qsub_files = ['qsubMPI']
+if 'sherlock' in hostname or 'comet' in hostname:
     qsub_files = ['sbatchMINI','qsubMPI']
     if args.nhours > 48:
         args.nhours = 48
