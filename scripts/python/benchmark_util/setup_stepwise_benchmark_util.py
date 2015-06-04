@@ -122,6 +122,31 @@ def merge_pdbs(pdbs_in, pdb_out):
 ###############################################################################
 ### CLASSES
 ###############################################################################
+class Target(object):
+
+    def __init__(self, name = None):
+        self.name = name
+        self.sequence = None
+        self.secstruct = None
+        self.working_res = None
+        self.native = None
+        self.input_res = None
+        self.extra_flags = None
+        self.fasta = None
+        self.resnums = None
+        self.chains = None
+        self.helix_files = None
+        self.working_native = None
+        self.input_pdbs = None
+        self.terminal_res = None
+        self.extra_min_res = None
+        self.loop_res = None
+        self.VDW_rep_screen_pdb = None
+        self.VDW_rep_screen_info = None
+        self.align_pdb = None
+
+
+###############################################################################
 class FullModelInfo(object):
     
     def __init__(self, name = None):
