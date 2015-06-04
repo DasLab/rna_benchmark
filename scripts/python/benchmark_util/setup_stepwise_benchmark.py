@@ -265,6 +265,7 @@ for target in targets:
 
     # get sample loop res
     target.loop_res = {}
+
     if targets.input_res == '-':
         if args.swa:
             print "WARNING: input_res[ name ] == '-' "
@@ -299,8 +300,6 @@ for target in targets:
 
 
     # get VDW_rep_screen_info, it will only be used if -VDW_rep_screen_info flag is set in extra_flags_benchmark
-    target.VDW_rep_screen_pdb = None
-    target.VDW_rep_screen_info = None
     if '-VDW_rep_screen_info' in extra_flags_benchmark:
 
         periph_res_radius = 50.0
