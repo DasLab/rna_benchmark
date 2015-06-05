@@ -31,7 +31,7 @@ parser.add_argument('--path_to_rosetta', default='', help='Path to working copy 
 parser.add_argument('-v', '--verbose', help="increase output verbosity", action="store_true")
 parser.add_argument('-motif_mode_off', help="temporary hack for turning off hardcoded '-motif_mode' flag", action="store_true")
 parser.add_argument('--save_logs', help="save .out and .err logs for each job.", action="store_true")
-parser.add_argument('--design', help="design sample residues", action="store_true")
+parser.add_argument('--design', help="design all working residues not in input structures", action="store_true")
 args = parser.parse_args()
 
 #####################################################################################################################
@@ -132,6 +132,7 @@ for target in targets:
     input_resnum_fullmodel = full_model_info[ target.name ].conventional_tag_to_full( 
         input_res_blocks
     )
+    input_resnum_fullmodel.sort()
 
     #input_resnum_fullmodel = map( lambda x: get_fullmodel_number(x,resnums[name],chains[name]), zip( input_resnums, input_chains ) )
 
@@ -168,13 +169,14 @@ for target in targets:
 
         target.helix_files.append( helix_file )
         input_resnum_fullmodel += helix_resnum
+        input_resnum_fullmodel.sort()
 
         if exists( helix_file ): continue
         command = 'rna_helix.py -seq %s  -o %s -resnum %s' % ( helix_seq, helix_file, \
             make_tag_with_conventional_numbering( helix_resnum, resnums, chains) )
         print command
         system( command )
-
+    
 
     # following is now 'hard-coded' into Rosetta option '-motif_mode'
     # deprecate this python block in 2015 after testing -- rd2014
@@ -214,6 +216,32 @@ for target in targets:
 
     # create fasta
     target.fasta = '%s/%s.fasta' % (inpath,target.name)
+    if args.design:
+        target.fasta = target.fasta.replace('.fasta', '_design.fasta')
+        '''
+        count = 1
+        print sequences
+        print input_resnum_fullmodel
+        for idx,sequence in enumerate(sequences):
+            
+            for res_idx,res in enumerate(sequence,start=count):
+                print idx, count, res_idx, str(res)
+                if not res_idx in input_resnum_fullmodel:
+                    sequence = bytearray(sequence)
+                    sequence[res_idx-2] = 'n'
+                    sequence = str(sequence)
+               
+                count += 1
+            sequences[idx] = str(sequence)
+       
+        cutpoints = map(len, sequences) 
+        sequence = bytearray(''.join(sequences))
+        for idx, res in sequence:
+            if not idx in input:
+                res = 'n'
+            sequence[idx] = re
+sequences = [sequence[:cp] for cp in cutpoints]
+ '''           
     if args.swa:
         target.fasta = target.fasta.replace('.fasta', '_SWA.fasta')
     if not exists( target.fasta ):
