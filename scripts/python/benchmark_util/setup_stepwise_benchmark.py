@@ -218,30 +218,18 @@ for target in targets:
     target.fasta = '%s/%s.fasta' % (inpath,target.name)
     if args.design:
         target.fasta = target.fasta.replace('.fasta', '_design.fasta')
-        '''
-        count = 1
-        print sequences
-        print input_resnum_fullmodel
-        for idx,sequence in enumerate(sequences):
-            
-            for res_idx,res in enumerate(sequence,start=count):
-                print idx, count, res_idx, str(res)
-                if not res_idx in input_resnum_fullmodel:
-                    sequence = bytearray(sequence)
-                    sequence[res_idx-2] = 'n'
-                    sequence = str(sequence)
-               
-                count += 1
-            sequences[idx] = str(sequence)
-       
-        cutpoints = map(len, sequences) 
-        sequence = bytearray(''.join(sequences))
-        for idx, res in sequence:
-            if not idx in input:
+        sequence_joined, chainbreak_pos = join_sequence( target.sequence )
+        design_sequences = ['']
+        for res_idx, res in enumerate(sequence_joined, start=1):
+            if not res_idx in input_resnum_fullmodel:
                 res = 'n'
-            sequence[idx] = re
-sequences = [sequence[:cp] for cp in cutpoints]
- '''           
+            if res_idx - 1 in chainbreak_pos:
+                design_sequences.append('')
+            design_sequences[-1] += res
+        sequences = design_sequences
+        target.sequence = ','.join(design_sequences)
+        print input_resnum_fullmodel
+        print sequences
     if args.swa:
         target.fasta = target.fasta.replace('.fasta', '_SWA.fasta')
     if not exists( target.fasta ):
@@ -312,7 +300,7 @@ sequences = [sequence[:cp] for cp in cutpoints]
             periph_res_radius = 100.0
 
         prefix = '%s/%s_%d_ANGSTROM_GRID_' % (inpath, target.name, periph_res_radius)
-        target.VDW_rep_screen_pdb = prefix +target.native
+        target.VDW_rep_screen_pdb = prefix + target.native
         target.VDW_rep_screen_info = basename(target.VDW_rep_screen_pdb)
 
         if not exists( target.VDW_rep_screen_pdb ):
@@ -385,6 +373,8 @@ for target in targets:
             if '-score:rna_torsion_potential' in key:
                 key = '-rna_torsion_potential_folder'
             if '-VDW_rep_screen_info' in key and 'True' in value:
+                if target.VDW_rep_screen_info is None:
+                    continue
                 value = target.VDW_rep_screen_info
                 fid.write(' -apply_VDW_rep_delete_matching_res False')
             flag = ' '.join([key, value]).strip()
@@ -453,6 +443,8 @@ for target in targets:
                 assert( exists(weights_file) )
                 system( 'cp %s %s' % (weights_file, target.name) )
             if '-VDW_rep_screen_info' in key and 'true' in value:
+                if target.VDW_rep_screen_info is None:
+                    continue
                 value = basename(target.VDW_rep_screen_info)
             flag = ' '.join([key, value]).strip()
             fid.write('%s\n' % flag)
