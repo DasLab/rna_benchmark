@@ -1,6 +1,11 @@
 #!/usr/bin/python
 
 ##########################################################
+#import imp
+#imp.load_source('info_handlers', '../utility/info_handlers.py')
+#imp.load_source('file_handlers', '../utility/file_handlers.py')
+
+##########################################################
 
 from sys import exit
 from os import system, popen
@@ -13,6 +18,7 @@ import matplotlib.colors as colors
 import matplotlib.cm as cmx
 import numpy as np
 from datetime import datetime
+from utility import file_handlers, info_handlers
 
 ##########################################################
 
@@ -121,7 +127,9 @@ def get_date():
 def get_target_names( target_files ):
 	target_names = []
 	for file_name in target_files:
-		if '..' not in file_name:	file_name = get_path_to_dir(['stepwise_benchmark','benchmark']) + '/input_files/' + basename(file_name)
+		if '..' not in file_name:
+                        input_dir = get_path_to_dir(['stepwise_benchmark','benchmark']) + '/input_files/'
+                        file_name = input_dir + basename(file_name)
 		target_names = get_target_names_from_file( file_name, target_names )
 	return target_names
 
@@ -129,14 +137,11 @@ def get_target_names( target_files ):
 
 def get_target_names_from_file( filename, target_names ):
 	assert( exists( filename ) )
-	fid = open( filename, 'r' )
-	for line in fid.readlines():
-		cols = string.split(line.replace('\n', ''))
-		if not len( cols ): continue
-		if cols[0] == 'Name:': target_names.append( cols[1] )
-	fid.close()
-	return target_names
-
+        info_fid = file_handlers.TargetDefinitionsFile()
+        info_fid.load(open(filename))
+        assert( info_fid.validate() )
+        return [td.name for td in info_fid.target_definitions]
+        
 ###########################################################
 
 def get_path_to_dir( dirnames ):

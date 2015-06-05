@@ -11,6 +11,7 @@ from parse_tag import parse_tag
 from get_sequence import get_sequences
 from rna_server_conversions import get_all_stems, join_sequence
 from get_surrounding_res import get_surrounding_res_tag
+from utility import helpers, info_handlers, file_handlers
 from setup_stepwise_benchmark_util import *
 from sys import argv, exit
 import subprocess
@@ -92,29 +93,16 @@ assert( exists( inpath ) )
 
 
 # read info_file
-for info_file_line in open( info_file ).readlines()[1:]:
+info_fid = file_handlers.TargetDefinitionsFile()
+info_fid.load(open(info_file))
+assert( info_fid.validate() )
+target_definitions = info_fid.target_definitions
+if len(args.user_input_runs):
+    target_definitions = [td for td in target_definitions if td.name not in args.user_input_runs]
+targets = [info_handlers.Target(td) for td in target_definitions]
 
-    if info_file_line[0] == '#' :
-        continue
-    cols = info_file_line.strip().split('\t')
-    if len(cols) < 2:
-        continue
 
-    name = cols[0]
-    if ( len( args.user_input_runs ) > 0 ) and ( name not in args.user_input_runs ):
-        continue
-    assert( all (name != t.names for t in targets) )
-    print 'Reading in info for: ', name
-
-    target = Target( name )
-    target.sequence = cols[1]
-    target.secstruct = cols[2]
-    target.working_res = cols[3]
-    target.native = cols[4]
-    target.input_res = cols[5]
-    target.extra_flags = parse_flags( cols[6], replacements )
-    targets.append( target )        
-
+# misc dicts
 full_model_info = {}
 
 # iterate over names
@@ -130,10 +118,10 @@ for target in targets:
     chains = []
     for working_res_block in working_res_blocks:
         get_resnum_chain( working_res_block, resnums, chains )
-    full_model_info[ name ].set_resnums( resnums )
-    full_model_info[ name ].set_chains( chains )
+    full_model_info[ target.name ].set_resnums( resnums )
+    full_model_info[ target.name ].set_chains( chains )
     target.chains = chains
-    target.resnums
+    target.resnums = resnums
 
     # working_native
     assert( target.native != '-' ) # for now, require a native, since this is a benchmark.
@@ -152,7 +140,7 @@ for target in targets:
         prefix = '%s/%s_START%d_' % ( inpath,target.name,m+1)
         input_pdb = slice_out( inpath, prefix, target.native,input_res_block )
         target.input_pdbs.append( input_pdb )
-    input_resnum_fullmodel = full_model_info[ name ].conventional_tag_to_full( 
+    input_resnum_fullmodel = full_model_info[ target.name ].conventional_tag_to_full( 
         input_res_blocks
     )
 
@@ -217,7 +205,7 @@ for target in targets:
              ( next_moving and not prev_moving and not right_after_chainbreak ) ):
             target.extra_min_res.append( m )
     if '-extra_min_res' in target.extra_flags:
-        extra_res_full = full_model_info[ name ].conventional_tag_to_full(
+        extra_res_full = full_model_info[ target.name ].conventional_tag_to_full(
             target.extra_flags.pop('-extra_min_res' )
         )
         extra_res_full = filter(input_resnum_fullmodel.count, extra_res_full)
@@ -225,7 +213,7 @@ for target in targets:
         target.extra_min_res = sorted(list(set(target.extra_min_res))) 
         motif_mode_off = True
     if extra_min_res_benchmark:
-        extra_res_full = full_model_info[ name ].conventional_tag_to_full(
+        extra_res_full = full_model_info[ target.name ].conventional_tag_to_full(
             extra_min_res_benchmark
         )
         extra_res_full = filter(input_resnum_fullmodel.count, extra_res_full)
@@ -324,21 +312,7 @@ for target in targets:
 
 
 # write qsubMINIs, READMEs and SUBMITs
-qsub_files = ['qsubMINI']
-hostname = uname()[1]
-if 'sh-' in hostname:
-    if 'sherlock' in expandvars("$COMPUTER_CLUSTER_NAME").lower():
-        hostname = 'sherlock'
-if 'stampede' in hostname:
-    qsub_files = ['qsubMPI']
-if 'sherlock' in hostname or 'comet' in hostname:
-    qsub_files = ['sbatchMINI','qsubMPI']
-    if args.nhours > 48:
-        args.nhours = 48
-
-for qsub_file in qsub_files:
-    fid_qsub = open( qsub_file, 'w' )
-    fid_qsub.close()
+submit_files = init_submit_files()
 
 for target in targets:
     
@@ -411,9 +385,9 @@ for target in targets:
         fid_submit.write( ' -dagman_file rna_build.dag' )
         fid_submit.close()
 
-        for qsub_file in qsub_files:
-            with open(qsub_file,'a') as fid_qsub:
-                fid_qsub.write( 'cd %s; source ./README_SWA && source ./SUBMIT_SWA; cd %s\n' % ( dirname, CWD ) )
+        for submit_file in submit_files:
+            with open(submit_file,'a') as fid_submit:
+                fid_submit.write( 'cd %s; source ./README_SWA && source ./SUBMIT_SWA; cd %s\n' % ( dirname, CWD ) )
 
     # SETUP for StepWise Monte Carlo
     else:
@@ -479,8 +453,8 @@ for target in targets:
 
         chdir( CWD )
 
-        for qsub_file in qsub_files:
-            with open(qsub_file,'a') as fid_qsub:
-                fid_qsub.write( 'cd %s; source %s; cd %s\n' % ( target.name, qsub_file,  CWD ) )
+        for submit_file in submit_files:
+            with open(submit_file,'a') as fid_submit:
+                fid_submit.write( 'cd %s; source %s; cd %s\n' % ( target.name, submit_file,  CWD ) )
 
 

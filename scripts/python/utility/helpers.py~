@@ -5,8 +5,8 @@
 ###############################################################################
 import string
 from subprocess import Popen, PIPE
-from os.path import exists, expandvars
-from os import system, uname
+from os.path import exists
+from os import system
 from make_tag import make_tag_with_dashes
 from parse_options import get_resnum_chain
 import subprocess
@@ -118,22 +118,7 @@ def merge_pdbs(pdbs_in, pdb_out):
     pdbs_in = ' '.join(pdbs_in)
     system('cat %s > %s' % (pdbs_in, pdb_out))              
     return pdb_out             
-
-###############################################################################
-def init_submit_files():
-    hostname = uname()[1]
-    submit_files = ['qsubMINI']
-    if 'stampede' in hostname:
-        qsub_files = ['qsubMPI']
-    if 'comet' in hostname:
-        qsub_files = ['sbatchMINI','qsubMPI']
-    if 'sherlock' in hostname or 'SHERLOCK' in expandvars("$COMPUTER_CLUSTER_NAME"):
-        qsub_files = ['sbatchMINI','qsubMPI']
-    for submit_file in submit_files:
-        fid = open(submit_file, 'w')
-        fid.close()
-    return submit_files
-
+         
 ###############################################################################
 ### CLASSES
 ###############################################################################
