@@ -12,15 +12,15 @@ import subprocess
 ###############################################################################
 def init_environment( options ):
     env = {}
-    env['ROSETTA'] = expandvars("$ROSETTA")
-    if 'path_to_rosetta' in dir(options) and exists(options.path_to_rosetta):
+    env['ROSETTA'] = os.path.expandvars("$ROSETTA")
+    if 'path_to_rosetta' in dir(options) and os.path.exists(options.path_to_rosetta):
         env['ROSETTA'] = options.path_to_rosetta
-    if not len(env['ROSETTA']) or not exists(env['ROSETTA']):
+    if not len(env['ROSETTA']) or not os.path.exists(env['ROSETTA']):
         print 'WARNING: $ROSETTA must be defined as the path to a working rosetta repository!!!'
         print 'Export this variable, by putting the following in your .bashrc or .zshrc:'
         print 'export ROSETTA=/path/to/rosetta/\n'
         exit(0)
-    assert( exists(env['ROSETTA']) )
+    assert( os.path.exists(env['ROSETTA']) )
     env['ROSETTA_BIN'] = env['ROSETTA'] + '/main/source/bin/'
     env['ROSETTA_DB'] = env['ROSETTA'] + '/main/database/'
     env['SWA_DAGMAN_TOOLS'] = env['ROSETTA'] + '/tools/SWA_RNA_python/SWA_dagman_python/'
