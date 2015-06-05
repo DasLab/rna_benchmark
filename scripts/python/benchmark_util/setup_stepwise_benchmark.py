@@ -40,18 +40,7 @@ njobs = 150 if args.swa else 10
 njobs = njobs if args.njobs is None else args.njobs 
 
 # get path to rosetta, required for now
-ROSETTA=args.path_to_rosetta
-if ( not len( ROSETTA ) ) or ( not exists( ROSETTA ) ):
-    ROSETTA=expandvars( '$ROSETTA' )
-    if ( not len( ROSETTA ) ) or ( not exists( ROSETTA ) ):
-        print 'WARNING: $ROSETTA must be defined as the path to a working rosetta repository!!!'
-        print 'Export this variable, by putting the following in your .bashrc or .zshrc:'
-        print 'export ROSETTA=/path/to/rosetta/\n'
-        exit(0)
-assert( exists( ROSETTA ) )
-ROSETTA_BIN=ROSETTA+'/main/source/bin/'
-ROSETTA_DB=ROSETTA+'/main/database/'
-SWA_DAGMAN_TOOLS=ROSETTA+'/tools/SWA_RNA_python/SWA_dagman_python/'
+env = helpers.init_environment( args )
 
 # replace python/c++ syntax accordingly
 replacements = { 'True' : 'true', 'False' : 'false' }
@@ -338,7 +327,7 @@ for target in targets:
     if args.swa:
 
         fid = open( '%s/README_SWA' % dirname, 'w' )
-        fid.write( SWA_DAGMAN_TOOLS+'/SWA_DAG/setup_SWA_RNA_dag_job_files.py' )
+        fid.write( env['SWA_DAGMAN_TOOLS']+'/SWA_DAG/setup_SWA_RNA_dag_job_files.py' )
         if len( start_files ) > 0 :
             fid.write( ' -s' )
             for infile in start_files:  fid.write( ' %s' % (basename(infile) ) )
@@ -362,7 +351,7 @@ for target in targets:
                 key = '-force_field_file'
                 weights_file = value
                 if not exists( weights_file ):
-                    weights_file = ROSETTA_DB+'/scoring/weights/'+weights_file
+                    weights_file = env['ROSETTA_DB']+'/scoring/weights/'+weights_file
                 assert( exists(weights_file) )
                 system( 'cp %s %s' % (weights_file, target.name) )
             if '-score:rna_torsion_potential' in key:
@@ -378,7 +367,7 @@ for target in targets:
         print '\nSetting up submission files for: ', target.name
         CWD = getcwd()
         fid_submit = open( dirname+'/SUBMIT_SWA', 'w' )
-        fid_submit.write( SWA_DAGMAN_TOOLS+'/dagman/submit_DAG_job.py' )
+        fid_submit.write( env['SWA_DAGMAN_TOOLS']+'/dagman/submit_DAG_job.py' )
         fid_submit.write( ' -master_wall_time %d' % args.nhours )
         fid_submit.write( ' -master_memory_reserve 2048' )
         fid_submit.write( ' -num_slave_nodes %d' % njobs )
@@ -393,7 +382,7 @@ for target in targets:
     else:
 
         fid = open( '%s/README_SWM' % target.name, 'w' )
-        fid.write( ROSETTA_BIN + 'stepwise @flags -out:file:silent swm_rebuild.out\n' )
+        fid.write( env['ROSETTA_BIN'] + 'stepwise @flags -out:file:silent swm_rebuild.out\n' )
         fid.close()
 
         fid = open( '%s/flags' % target.name, 'w' )
@@ -432,7 +421,7 @@ for target in targets:
             if '-score:weights' in key:
                 weights_file = value
                 if not exists(weights_file):
-                    weights_file = ROSETTA_DB+'/scoring/weights/'+weights_file
+                    weights_file = env['ROSETTA_DB']+'/scoring/weights/'+weights_file
                 assert( exists(weights_file) )
                 system( 'cp %s %s' % (weights_file, target.name) )
             if '-VDW_rep_screen_info' in key and 'true' in value:
