@@ -12,6 +12,7 @@ from os import system, popen
 import subprocess
 from os.path import exists, dirname, basename, abspath
 import string
+import glob
 from matplotlib.backends.backend_pdf import PdfPages
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
@@ -66,17 +67,14 @@ def get_outfiles( inpath, targets, outfilenames ):
 	outfiles = []
 	for target in targets:
 		for outfilename in outfilenames:
-			command = ['ls', '-1', string.join([inpath, target, outfilename], '/')]
-			out, err = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
-			if err and len(err) > 0: continue
-			outfiles += out.split('\n')[:-1]
-	outfiles_actual = []
+			outfiles += glob.glob('/'.join([inpath, target, outfilename]))
 	for outfile in outfiles:
-		if outfile.find( '.out' ) > 0 and outfile.replace( '.out','.sc' ) in outfiles:	continue
-		print 'Reading in ... '+outfile
+		if outfile.find('.out') > 0 and outfile.replace('.out', '.sc') in outfiles:
+			outfiles.pop(outfiles.index(outfile))
+			continue
 		assert( exists( outfile ) )
-		outfiles_actual.append( outfile )
-	return outfiles_actual
+		print 'Reading in ... '+outfile
+	return outfiles
 
 ##########################################################
 
