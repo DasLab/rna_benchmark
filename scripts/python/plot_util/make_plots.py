@@ -36,16 +36,18 @@ def make_plots( inpaths, outfilenames, target_files, targets, xvars, yvars, pdfn
 
 	xlabels = []
 	ylabels = []
+	plot_idx = 0
 
 	# iterate over targets
-	for plot_idx, target in enumerate(targets, start=1):
+	for target_idx, target in enumerate(targets, start=1):
 
 		# make sure target is in data for atleast one inpath
-		if not any ( target in d.keys() for d in data.values() ): continue
+		if not any ( target in d.keys() for d in data.values() ):
+			continue
 
 		# get subplot, if data exists for target
-		plot_idx_wrapped = 1 + (plot_idx - 1) % (nrows*ncols)
-		ax = fig.add_subplot( nrows, ncols, plot_idx_wrapped )
+		plot_idx += 1
+		ax = fig.add_subplot( nrows, ncols, plot_idx )
 
 		# iterate over runs
 		for inpath_idx, inpath in enumerate(inpaths):
@@ -121,11 +123,11 @@ def make_plots( inpaths, outfilenames, target_files, targets, xvars, yvars, pdfn
 			# print times in plots (if available)
 			monospace_font = FontProperties()
 			monospace_font.set_family( 'monospace' )
-			if False:#if times_list[inpath_idx][plot_idx-1].times_found():
+			if False:#if times_list[inpath_idx][target_idx-1].times_found():
 				xpos, ypos = 0.92, (0.10*len(inpaths)) - (0.015*6*inpath_idx)
 				ax.text( xpos,
 					 ypos,
-					 times_list[inpath_idx][plot_idx-1].get_label(),
+					 times_list[inpath_idx][target_idx-1].get_label(),
 					 verticalalignment='bottom',
 					 horizontalalignment='right',
 					 transform=ax.transAxes,
