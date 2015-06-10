@@ -24,6 +24,8 @@ from utility import file_handlers, info_handlers
 
 class ScoreData(object):
 
+	__slots__ = ["scores", "score_labels"]
+
 	def __init__(self):
 		self.scores = None
 		self.score_labels = None
@@ -31,6 +33,8 @@ class ScoreData(object):
 ##########################################################
 
 class TimeData(object):
+
+	__slots__ = ["inpath", "target", "times", "mean", "stdev"]
 
 	def __init__(self):
 		self.inpath = None
