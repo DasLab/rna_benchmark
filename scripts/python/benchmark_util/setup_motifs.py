@@ -21,25 +21,18 @@ for i,m in enumerate(p.motifs.all_motifs,start=1):
         continue
     
     # figure out target attributes
-    print m.sequence(), m.secondary_structure()
-    # replace '&' with ',' and '+' with ',' in sequence and secondary_structure 
-
     working_res = []
     for c in m.chains():
-        #working_res.append('%s:%d-%d'%(c.first().chain_id,c.first().num,c.last.num))  
-        print c.first().num, c.last().num,c.first().chain_id
-
+        working_res.append('%s:%d-%d'%(c.first().chain_id,c.first().num,c.last().num))  
     working_res = ','.join(working_res)
     
     #construct target object
     td = info_handlers.TargetDefinition()
    
     # set target attributes
-    # ex.td.sequence, td.secstruct, td.working_res
-    # figure out name = input_pdb.replace(.pdb, '_'+str(i))
     td.name = input_pdb.replace(".pdb", '_'+str(i))
-    td.sequence = m.sequence()
-    td.sectruct = m.secondary_structure()
+    td.sequence = m.sequence().replace('&',',').replace('+',',')
+    td.secstruct = m.secondary_structure().replace('&',',').replace('+',',')
     td.native = input_pdb
     td.working_res = working_res
 
