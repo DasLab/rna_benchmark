@@ -124,11 +124,11 @@ def init_submit_files():
     hostname = uname()[1]
     submit_files = ['qsubMINI']
     if 'stampede' in hostname:
-        qsub_files = ['qsubMPI']
+        submit_files = ['qsubMPI']
     if 'comet' in hostname:
-        qsub_files = ['sbatchMINI','qsubMPI']
+        submit_files = ['sbatchMINI','qsubMPI']
     if 'sherlock' in hostname or 'SHERLOCK' in expandvars("$COMPUTER_CLUSTER_NAME"):
-        qsub_files = ['sbatchMINI','qsubMPI']
+        submit_files = ['sbatchMINI','qsubMPI']
     for submit_file in submit_files:
         fid = open(submit_file, 'w')
         fid.close()
