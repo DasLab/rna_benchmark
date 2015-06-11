@@ -15,31 +15,30 @@ p = rnamake.pose.Pose(RNAMAKE+"/examples/getting_started/resources/p4p6")
 #p=rnamake.pose.Pose(pdb=input_pdb)
 
 #loop over motifs
-for i,m in enumerate(p.motifs.all_motifs,start=1):
+for iterator,motif in enumerate(p.motifs.all_motifs,start=1):
 
-    if m.mtype == motif_type.HELIX:
+    if motif.mtype == motif_type.HELIX:
         continue
     
     # figure out target attributes
     working_res = []
-    for c in m.chains():
-        working_res.append('%s:%d-%d'%(c.first().chain_id,c.first().num,c.last().num))  
+    for residue in motif.chains():
+        working_res.append('%s:%d-%d'%(residue.first().chain_id,residue.first().num,residue.last().num))  
     working_res = ','.join(working_res)
     
     #construct target object
     td = info_handlers.TargetDefinition()
    
     # set target attributes
-    td.name = input_pdb.replace(".pdb", '_'+str(i))
-    td.sequence = m.sequence().replace('&',',').replace('+',',')
-    td.secstruct = m.secondary_structure().replace('&',',').replace('+',',')
+    td.name = input_pdb.replace(".pdb", '_'+str(iterator))
+    td.sequence = motif.sequence().replace('&',',').replace('+',',')
+    td.secstruct = motif.secondary_structure().replace('&',',').replace('+',',')
     td.native = input_pdb
     td.working_res = working_res
 
     info_fid.add_target_definition(td)
 
 #save '2r8s.txt'
-
 motif_file = os.path.basename(os.path.dirname(os.path.abspath(input_pdb)))+'.txt'
 print 'Saving TargetDefinitions file:', motif_file
 
