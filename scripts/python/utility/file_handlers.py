@@ -43,6 +43,19 @@ class TargetDefinitionsFile(object):
         fid.close()
         return True
 
+    def _header(self):
+        attrs = ['Name', 'Sequence', 'Secstruct', 'Working_res', 'Native', 'Input_res', 'Extra_flags']
+        #attrs = [attr.title() for attr in attrs]
+        return '\t'.join(attrs)
+
+    def save(self, fid):
+        if not isinstance(fid, file):
+            fid = open(fid, 'w')
+        fid.write(self._header())
+        fid.write('\n'.join([td._to_str(sep='\t') for td in self.target_definitions]))
+        fid.close()
+        return True
+
     def validate(self, verbose = False):
         for td in self.target_definitions:
             for attr in td.ordered_attrs():

@@ -28,6 +28,11 @@ class TargetDefinition(object):
         self.extra_flags = helpers.parse_flags(self.extra_flags)
         return True
 
+    def _to_str(self, sep='\n'):
+        attrs = [self.name, self.sequence, self.working_res, self.native, self.input_res, self.extra_flags]
+        return sep.join([('-' if attr is None else attr) for attr in attrs]) 
+        
+
 ###############################################################################
 class Target(TargetDefinition):
 
