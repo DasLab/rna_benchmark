@@ -10,7 +10,7 @@
 from sys import exit
 from os import system, popen
 import subprocess
-from os.path import exists, dirname, basename, abspath
+from os.path import exists, dirname, basename, abspath, isdir
 import string
 import glob
 from matplotlib.backends.backend_pdf import PdfPages
@@ -126,7 +126,9 @@ def get_date():
 
 ##########################################################
 
-def get_target_names( target_files ):
+def get_target_names( target_files, inpaths = None ):
+        if inpaths:
+                return get_target_names_from_inpaths( inpaths )
 	target_names = []
 	for file_name in target_files:
 		if '..' not in file_name:
@@ -134,6 +136,15 @@ def get_target_names( target_files ):
                         file_name = input_dir + basename(file_name)
 		target_names = get_target_names_from_file( file_name, target_names )
 	return target_names
+
+###########################################################
+
+def get_target_names_from_inpaths( inpaths ):
+        target_names = []
+        for inpath in inpaths:
+                target_names += glob.glob('/'.join([inpath, '*']))
+        target_names = list(set(map(basename, filter(isdir, target_names))))
+        return target_names 
 
 ###########################################################
 

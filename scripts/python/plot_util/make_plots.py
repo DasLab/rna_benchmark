@@ -15,7 +15,12 @@ def make_plots( inpaths, outfilenames, target_files, targets, xvars, yvars, pdfn
 
 	# Initialize/Check args
 	inpaths = [abspath(x) for x in inpaths if exists(x) and isdir(x)]
-	targets = targets if targets[0] != '*' else get_target_names( target_files )
+	if targets[0] != '*':
+                targets = targets
+        elif target_files is not None:
+                targets = get_target_names( target_files )
+        else:
+                targets = get_target_names( target_files, inpaths )
 	for target in targets:
 		print "Target: "+target
 
@@ -173,7 +178,7 @@ if __name__=='__main__':
 	parser.add_argument('-target_files',
 			    nargs='+',
 			    help='List of additional target files.',
-			    default=['favorites.txt','favorites2.txt']
+			    default=None
 			    )
 	parser.add_argument('-targets',
 			    nargs='+',
