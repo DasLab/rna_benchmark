@@ -31,19 +31,19 @@ for iterator,motif in enumerate(p.motifs.all_motifs,start=1):
    
     # set target attributes
     td.name = input_pdb.replace(".pdb", '_'+str(iterator))
-    td.sequence = motif.sequence().replace('&',',').replace('+',',')
-    td.secstruct = motif.secondary_structure().replace('&',',').replace('+',',')
+    td.sequence = motif.sequence().lower().replace('&',',').replace('+',',')
+    td.secstruct = motif.secondary_structure().lower().replace('&',',').replace('+',',')
     td.native = input_pdb
     td.working_res = working_res
 
     info_fid.add_target_definition(td)
 
 #save '2r8s.txt'
-motif_file = os.path.basename(os.path.dirname(os.path.abspath(input_pdb)))+'.txt'
+motif_file = '../'+os.path.basename(os.path.dirname(os.path.abspath(input_pdb)))+'.txt'
 print 'Saving TargetDefinitions file:', motif_file
 
 #write save method
-#info_fid.save(open(motif_file,"w"))
+info_fid.save(open(motif_file,"w"))
 
 print 'Validating', motif_file
 assert( info_fid.validate(verbose = True) )
