@@ -63,13 +63,13 @@ class TargetDefinitionsFile(object):
         if verbose is True:
             print '\n\n'.join([td._to_str(sep='\n') for td in self.target_definitions])
         for td in self.target_definitions:
-            seqblocks = td.sequence.split(',')
-            ssblocks = td.secstruct.split(',')
-            wrblocks = td.working_res.split(',')
             if td.name is False:
                 return False
-            if not (len(seqblocks) == len(ssblocks) == len(wrblocks)):
-                return False
+            #seqblocks = td.sequence.split(',')
+            #ssblocks = td.secstruct.split(',')
+            #wrblocks = td.working_res.split(',')
+            #if not (len(seqblocks) == len(ssblocks) == len(wrblocks)):
+            #    return False
             if td.native is None:
                 return False
         return True
