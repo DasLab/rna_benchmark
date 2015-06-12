@@ -29,7 +29,15 @@ class TargetDefinition(object):
         return True
 
     def _to_str(self, sep='\n'):
-        attrs = [self.name, self.sequence, self.working_res, self.native, self.input_res, self.extra_flags]
+        attrs = [
+            self.name,
+            self.sequence,
+            self.secstruct,
+            self.working_res,
+            self.native,
+            self.input_res,
+            self.extra_flags
+        ]
         return sep.join([('-' if attr is None else attr) for attr in attrs]) 
         
 
