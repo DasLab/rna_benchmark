@@ -10,21 +10,21 @@ import subprocess
 ###############################################################################
 ### helper function
 ###############################################################################
-def init_environment( options ):
-    env = {}
-    env['ROSETTA'] = os.path.expandvars("$ROSETTA")
-    if 'path_to_rosetta' in dir(options) and os.path.exists(options.path_to_rosetta):
-        env['ROSETTA'] = options.path_to_rosetta
-    if not len(env['ROSETTA']) or not os.path.exists(env['ROSETTA']):
-        print 'WARNING: $ROSETTA must be defined as the path to a working rosetta repository!!!'
-        print 'Export this variable, by putting the following in your .bashrc or .zshrc:'
+def init_environ( options ):
+    if 'rosetta' in dir(options) and os.path.exists(options.rosetta):
+        os.environ['ROSETTA'] = options.rosetta
+    if not 'ROSETTA' in os.environ or not os.path.exists(os.environ['ROSETTA']):
+        print 'WARNING:', os.environ['ROSETTA'], 'is not a working Rosetta repository!!!'
+        print 'The path to Rosetta must be defined in $ROSETTA, or specified via --rosetta'
+        print 'To set this variable, add the following to your .bashrc or .zshrc:'
         print 'export ROSETTA=/path/to/rosetta/\n'
-        exit(0)
-    assert( os.path.exists(env['ROSETTA']) )
-    env['ROSETTA_BIN'] = env['ROSETTA'] + '/main/source/bin/'
-    env['ROSETTA_DB'] = env['ROSETTA'] + '/main/database/'
-    env['SWA_DAGMAN_TOOLS'] = env['ROSETTA'] + '/tools/SWA_RNA_python/SWA_dagman_python/'
-    return env
+    assert('ROSETTA' in os.environ)
+    assert(os.path.exists(os.environ['ROSETTA']))
+    os.environ['ROSETTA_BIN'] = os.environ['ROSETTA'] + '/main/source/bin/'
+    os.environ['ROSETTA_DB'] = os.environ['ROSETTA'] + '/main/database/'
+    os.environ['ROSETTA_DB_WEIGHTS'] = os.environ['ROSETTA_DB'] + '/scoring/weights/'
+    os.environ['SWA_DAGMAN_TOOLS'] = os.environ['ROSETTA'] + '/tools/SWA_RNA_python/SWA_dagman_python/'
+    return True 
 
 ###############################################################################
 def safe_submit( command, allow_retry=False, max_retry=3 ):

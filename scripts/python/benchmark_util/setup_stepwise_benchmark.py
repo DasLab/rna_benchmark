@@ -3,8 +3,9 @@
 
 import string
 import argparse
+import os
+import sys
 from os.path import exists,basename,dirname,expandvars
-from os import system, getcwd, chdir, popen, uname
 from make_tag import *
 from parse_options import get_resnum_chain
 from parse_tag import parse_tag
@@ -24,13 +25,13 @@ parser.add_argument("user_input_runs", nargs='*',help='specify particular cases 
 parser.add_argument('-extra_flags', default='extra_flags_benchmark.txt', help='Filename of text file with extra_flags for all cases.')
 parser.add_argument('-nhours', default='16', type=int, help='Number of hours to queue each job.')
 parser.add_argument('-j','--njobs', default=None, type=int, help='Number of cores for each job.')
-parser.add_argument('--swa', action='store_true', help='Additional flag for setting up SWA runs.')
 parser.add_argument('--extra_min_res_off', action='store_true', help='Additional flag for turning extra_min_res off.')
 parser.add_argument('--save_times_off', action='store_true', help='Additional flag for turning save_times flag off.')
-parser.add_argument('--path_to_rosetta', default='', help='Path to working copy of rosetta.')
-parser.add_argument('-v', '--verbose', help="increase output verbosity", action="store_true")
 parser.add_argument('-motif_mode_off', help="temporary hack for turning off hardcoded '-motif_mode' flag", action="store_true")
 parser.add_argument('--save_logs', help="save .out and .err logs for each job.", action="store_true")
+parser.add_argument('--rosetta', default='', help='Path to working copy of rosetta.')
+parser.add_argument('-v', '--verbose', help="increase output verbosity", action="store_true")
+parser.add_argument('--swa', action='store_true', help='Additional flag for setting up SWA runs.')
 parser.add_argument('--design', help="design all working residues not in input structures", action="store_true")
 args = parser.parse_args()
 
@@ -40,7 +41,7 @@ njobs = 150 if args.swa else 10
 njobs = njobs if args.njobs is None else args.njobs 
 
 # get path to rosetta, required for now
-env = helpers.init_environment( args )
+helpers.init_environ(args)
 
 # replace python/c++ syntax accordingly
 replacements = { 'True' : 'true', 'False' : 'false' }
@@ -175,7 +176,7 @@ for target in targets:
         command = 'rna_helix.py -seq %s  -o %s -resnum %s' % ( helix_seq, helix_file, \
             make_tag_with_conventional_numbering( helix_resnum, resnums, chains) )
         print command
-        system( command )
+        os.system( command )
     
 
     # following is now 'hard-coded' into Rosetta option '-motif_mode'
@@ -240,7 +241,7 @@ for target in targets:
         else:
             ### splitting up sequence in fasta may cause errors in SWA runs
             for n in range( len( sequences ) ): fid.write( '>%s %s\n%s\n' % (target.name,working_res_blocks[n],sequences[n]) )
-        #fid.write( popen( 'pdb2fasta.py %s' % (  working_native[ name ] ) ).read() )
+        #fid.write( os.popen( 'pdb2fasta.py %s' % (  working_native[ name ] ) ).read() )
         fid.close()
 
     # get align_pdb
@@ -322,7 +323,7 @@ submit_files = init_submit_files()
 for target in targets:
     
     dirname = target.name
-    if not exists( dirname ): system( 'mkdir '+dirname )
+    if not exists( dirname ): os.system( 'mkdir '+dirname )
 
     # move all required files to the correct directory
     start_files = target.helix_files + target.input_pdbs
@@ -337,13 +338,13 @@ for target in targets:
         input_pdb = inpath+'/'+target.extra_flags['-input_pdb']
         assert( exists(input_pdb) )
         infiles.append(input_pdb)
-    system( 'cp %s %s/ ' % (' '.join(infiles), dirname) )
+    os.system( 'cp %s %s/ ' % (' '.join(infiles), dirname) )
 
     # SETUP for StepWise Assembly
     if args.swa:
 
         fid = open( '%s/README_SWA' % dirname, 'w' )
-        fid.write( env['SWA_DAGMAN_TOOLS']+'/SWA_DAG/setup_SWA_RNA_dag_job_files.py' )
+        fid.write( os.environ['SWA_DAGMAN_TOOLS']+'/SWA_DAG/setup_SWA_RNA_dag_job_files.py' )
         if len( start_files ) > 0 :
             fid.write( ' -s' )
             for infile in start_files:  fid.write( ' %s' % (basename(infile) ) )
@@ -367,9 +368,9 @@ for target in targets:
                 key = '-force_field_file'
                 weights_file = value
                 if not exists( weights_file ):
-                    weights_file = env['ROSETTA_DB']+'/scoring/weights/'+weights_file
+                    weights_file = os.environ['ROSETTA_DB_WEIGHTS'] + weights_file
                 assert( exists(weights_file) )
-                system( 'cp %s %s' % (weights_file, target.name) )
+                os.system( 'cp %s %s' % (weights_file, target.name) )
             if '-score:rna_torsion_potential' in key:
                 key = '-rna_torsion_potential_folder'
             if '-VDW_rep_screen_info' in key and 'True' in value:
@@ -383,9 +384,9 @@ for target in targets:
         fid.close()
 
         print '\nSetting up submission files for: ', target.name
-        CWD = getcwd()
+        CWD = os.getcwd()
         fid_submit = open( dirname+'/SUBMIT_SWA', 'w' )
-        fid_submit.write( env['SWA_DAGMAN_TOOLS']+'/dagman/submit_DAG_job.py' )
+        fid_submit.write( os.environ['SWA_DAGMAN_TOOLS']+'/dagman/submit_DAG_job.py' )
         fid_submit.write( ' -master_wall_time %d' % args.nhours )
         fid_submit.write( ' -master_memory_reserve 2048' )
         fid_submit.write( ' -num_slave_nodes %d' % njobs )
@@ -400,7 +401,7 @@ for target in targets:
     else:
 
         fid = open( '%s/README_SWM' % target.name, 'w' )
-        fid.write( env['ROSETTA_BIN'] + 'stepwise @flags -out:file:silent swm_rebuild.out\n' )
+        fid.write( os.environ['ROSETTA_BIN'] + 'stepwise @flags -out:file:silent swm_rebuild.out\n' )
         fid.close()
 
         fid = open( '%s/flags' % target.name, 'w' )
@@ -439,9 +440,9 @@ for target in targets:
             if '-score:weights' in key:
                 weights_file = value
                 if not exists(weights_file):
-                    weights_file = env['ROSETTA_DB']+'/scoring/weights/'+weights_file
+                    weights_file = os.environ['ROSETTA_DB_WEIGHTS'] + weights_file
                 assert( exists(weights_file) )
-                system( 'cp %s %s' % (weights_file, target.name) )
+                os.system( 'cp %s %s' % (weights_file, target.name) )
             if '-VDW_rep_screen_info' in key and 'true' in value:
                 if target.VDW_rep_screen_info is None:
                     continue
@@ -452,15 +453,15 @@ for target in targets:
         fid.close()
 
         print '\nSetting up submission files for: ', target.name
-        CWD = getcwd()
-        chdir( target.name )
+        CWD = os.getcwd()
+        os.chdir( target.name )
 
         rosetta_submit_cmd = 'rosetta_submit.py README_SWM SWM %d %d' % (njobs, args.nhours )
         if args.save_logs:
             rosetta_submit_cmd += ' -save_logs'
-        system( rosetta_submit_cmd )
+        os.system( rosetta_submit_cmd )
 
-        chdir( CWD )
+        os.chdir( CWD )
 
         for submit_file in submit_files:
             with open(submit_file,'a') as fid_submit:
