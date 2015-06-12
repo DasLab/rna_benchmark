@@ -45,10 +45,11 @@ class TargetDefinitionsFile(object):
 
     def _header(self):
         attrs = ['Name', 'Sequence', 'Secstruct', 'Working_res', 'Native', 'Input_res', 'Extra_flags']
-        #attrs = [attr.title() for attr in attrs]
         return '\t'.join(attrs)
-
+        
     def save(self, fid):
+        if not self.validate():
+            return False
         if not isinstance(fid, file):
             fid = open(fid, 'w')
         fid.write(self._header())
@@ -57,12 +58,17 @@ class TargetDefinitionsFile(object):
         return True
 
     def validate(self, verbose = False):
+        if verbose is True:
+            print '\n\n'.join([td._to_str(sep='\n') for td in self.target_definitions])
         for td in self.target_definitions:
-            for attr in td.ordered_attrs():
-                if attr.startswith('_'):
-                    continue
-                if verbose is True:
-                    print attr + ': ', getattr(td, attr)
-            print
+            seqblocks = td.sequence.split(',')
+            ssblocks = td.secstruct.split(',')
+            wrblocks = td.working_res.split(',')
+            if td.name is False:
+                return False
+            if not (len(seqblocks) == len(ssblocks) == len(wrblocks)):
+                return False
+            if td.native is None:
+                return False
         return True
 
