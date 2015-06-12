@@ -52,7 +52,7 @@ class TargetDefinitionsFile(object):
             return False
         if not isinstance(fid, file):
             fid = open(fid, 'w')
-        fid.write(self._header())
+        fid.write(self._header() + '\n')
         fid.write('\n'.join([td._to_str(sep='\t') for td in self.target_definitions]))
         fid.close()
         return True
