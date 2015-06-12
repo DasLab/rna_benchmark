@@ -36,6 +36,8 @@ class TargetDefinitionsFile(object):
             # new target definition
             target_definition = info_handlers.TargetDefinition()
             for attr, value in zip(attrs, values):
+                if attr in 'sequence':
+                    value = value.lower()
                 setattr(target_definition, attr, value)
             target_definition.finalize()
             print "Loading TargetDefinition for:", target_definition.name
