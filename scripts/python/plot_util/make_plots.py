@@ -1,19 +1,34 @@
 #!/usr/bin/python
 
-##########################################################
-
+###############################################################################
+### imports
+###############################################################################
+import sys
+import os
 from os.path import exists, dirname, basename, abspath, isdir
 import matplotlib.pyplot as plt
 import numpy as np
 from make_plots_util import *
 import subprocess
 from matplotlib.font_manager import FontProperties
+import argparse
 
-##########################################################
 
-def make_plots( inpaths, outfilenames, target_files, targets, xvars, yvars, pdfname ):
+###############################################################################
+### main functions
+###############################################################################
+def make_plots(argv):
 
-	# Initialize/Check args
+	# initialize options
+	options = init_options(argv)
+	inpaths = options.inpaths
+	outfilenames = options.outfilenames
+	target_files = options.target_files
+	targets = options.targets
+	xvars, yvars = options.xvar, options.yvar
+	pdfname = options.pdfname
+
+	# check options
 	inpaths = [abspath(x) for x in inpaths if exists(x) and isdir(x)]
 	if targets[0] != '*':
                 targets = targets
@@ -154,57 +169,69 @@ def make_plots( inpaths, outfilenames, target_files, targets, xvars, yvars, pdfn
 	if 'Linux' in out:
 		subprocess.call(['xdg-open',fullpdfname])
 
-	return
+	return True
 
-##########################################################
-##########################################################
 
+###############################################################################
+### initialization functions
+###############################################################################
+def init_options(argv):
+    if isinstance(argv, argparse.ArgumentParser):
+    	return argv
+    options = init_options_parser().parse_args(args = argv)
+    return options
+
+def init_options_parser():
+	parser = argparse.ArgumentParser(description='Plot scores from silent files.')
+	parser.add_argument(
+		'inpaths',
+		nargs='+',
+		help='List of paths too silent files.'
+	)
+	parser.add_argument(
+		'-outfilenames',
+	    nargs='*',
+	    help='Name of silent file.',
+	    default=['swm_rebuild.out',
+		     'swm_rebuild.sc',
+		     'region_FINAL.out']
+	)
+	parser.add_argument(
+		'-target_files',
+	    nargs='+',
+	    help='List of additional target files.',
+	    default=None
+	)
+	parser.add_argument(
+		'-targets',
+	    nargs='+',
+	    help='List of targets.',
+	    default=['*']
+	)
+	parser.add_argument(
+		'-xvar',
+	    nargs='*',
+	    help='Name of x variable(s).',
+	    default=['rms_fill','NAT_rmsd']
+	)
+	parser.add_argument(
+		'-yvar',
+	    nargs='*',
+	    help='Name of y variable(s).',
+	    default=['score']
+	)
+	parser.add_argument(
+		'-o','--pdfname',
+	    help='File name to save as pdf.',
+	    default=None
+	)
+	return parser
+
+
+###############################################################################
+### main
+###############################################################################
 if __name__=='__main__':
 
-	import argparse
-
-	parser = argparse.ArgumentParser(description='Plot scores from silent files.')
-	parser.add_argument('inpaths',
-			    nargs='+',
-			    help='List of paths too silent files.'
-			    )
-	parser.add_argument('-outfilenames',
-			    nargs='*',
-			    help='Name of silent file.',
-			    default=['swm_rebuild.out',
-				     'swm_rebuild.sc',
-				     'region_FINAL.out']
-			    )
-	parser.add_argument('-target_files',
-			    nargs='+',
-			    help='List of additional target files.',
-			    default=None
-			    )
-	parser.add_argument('-targets',
-			    nargs='+',
-			    help='List of targets.',
-			    default=['*'])
-	parser.add_argument('-xvar',
-			    nargs='*',
-			    help='Name of x variable(s).',
-			    default=['rms_fill','NAT_rmsd']
-			    )
-	parser.add_argument('-yvar',
-			    nargs='*',
-			    help='Name of y variable(s).',
-			    default=['score']
-			    )
-	parser.add_argument('-o','--pdfname',
-			    help='File name to save as pdf.',
-			    default=None
-			    )
-	args=parser.parse_args()
-
-
-	make_plots( args.inpaths,
-		    args.outfilenames,
-		    args.target_files,
-		    args.targets,
-		    args.xvar,
-		    args.yvar,
-		    args.pdfname )
+	sys.exit(make_plots(sys.argv[1:]))
+	
