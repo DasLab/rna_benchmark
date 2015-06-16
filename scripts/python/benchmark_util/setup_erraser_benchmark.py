@@ -151,6 +151,7 @@ qsub_file = 'qsubMINI'
 hostname, hostname_err = subprocess.Popen(['hostname'], stdout=subprocess.PIPE).communicate()
 if hostname.find( 'stampede' ) > -1: qsub_file = 'qsubMPI'
 if hostname.find( 'sherlock' ) > -1: qsub_file = 'sbatchMINI'
+if hostname.find( 'comet' ) > -1: qsub_file = 'sbatchMINI'
 fid_qsub = open( qsub_file, 'w' )
 
 for name in names:
