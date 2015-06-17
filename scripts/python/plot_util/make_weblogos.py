@@ -19,6 +19,8 @@ import re
 ### supporting functions
 ###############################################################################
 def get_fasta_from_silent_file(outfile):
+        """ Returns .fasta file listing the name of sequence and sequence of bases"""
+        
         fasta_file = outfile.replace(".out",".out.fasta")
         fasta = open(fasta_file,'w')
         original_sequence = ""
@@ -26,7 +28,7 @@ def get_fasta_from_silent_file(outfile):
         for line in open(outfile).readlines():
                 line = line.strip()
 
-                if "FULL_MODEL_PARAMETERS" in line:
+                if "FULL_SEQUENCE" in line:
                         line = line.split()
                         index = line.index("FULL_SEQUENCE")
                         original_sequence = line[index+1]
@@ -38,8 +40,7 @@ def get_fasta_from_silent_file(outfile):
                 line = line.split()
                 
                 name = line[2]
-                sequence = line[1]
-                sequence = re.sub(r'\[.*?\]', '', sequence)
+                sequence = re.sub(r'\[.*?\]', '', line[1])
                 
                 if len(original_sequence) != len(sequence):
                         continue
@@ -51,6 +52,7 @@ def get_fasta_from_silent_file(outfile):
         return fasta_file
 
 def generate_weblogo(inpath, target, outfile):
+        """ Returns .weblogo.png image displaying likelihood of bases appearing in sequence """
 
         outfile = "/".join([inpath,target,outfile])
         fasta_file = get_fasta_from_silent_file(outfile)
@@ -62,10 +64,10 @@ def generate_weblogo(inpath, target, outfile):
         "--resolution 600",
         "--color green cC 'Cytosine'",
         "--color red gG 'Guanine'",
-        "--color orange aA 'Ade'",
-        "--color blue uU 'Ura'",
+        "--color orange aA 'Adenine'",
+        "--color blue uU 'Uracil'",
         "--errorbars NO",
-        "< %s > %s" % (fasta_file, weblogo_file)]
+        "< {} > {}".format(fasta_file, weblogo_file)]
 
         cmd = " ".join(cmd)
         os.system(cmd)
@@ -119,7 +121,7 @@ def make_weblogos(argv):
                 ax = fig.add_subplot( nrows, ncols, plot_idx )
                 image = mpimg.imread(weblogo)
                 plt.imshow(image)
-
+                ax.set_title( target, fontsize=8, weight='bold' )
                 print plot_idx, target
 
 	# finalize (adjust spacing, print date)
