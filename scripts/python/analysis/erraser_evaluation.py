@@ -390,14 +390,14 @@ if __name__=='__main__':
 			'ERRASER - Ref',
 			'ERRASER - Out'
 		]
-		subcolumn_labels = [
-			'Target', 
+		subcolumn_labels = ['Target']
+		subcolumn_labels += [ 
 			'Clashscore', 
 			'Suite Outlier',
 			'Pucker Outlier',
 			'Bond Outlier', 
 			'Angle Outlier'
-		]
+		] * 3
 		table = Table( table_name )
 		table.add_row( inpath )
 		table.add_row( column_labels )
