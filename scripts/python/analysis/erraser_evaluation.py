@@ -18,6 +18,71 @@ INPUT_PDB_TAG = '_phenix.pdb'
 OUTPUT_PDB_TAG = '_phenix_erraser.pdb'
 REFERENCE_PDB_TAG = '_phenix_erraser_ref.pdb'
 
+################################################################################
+### HELPER CLASSES
+################################################################################
+class TableRow(object):
+
+	def __init__(self):
+		self._columns = []
+
+	def add_columns(self, cols):
+		if not isinstance(cols, list):
+			cols = [ cols ]
+		for col in cols:
+			self._columns.append( col )
+		return
+
+	def columns(self):
+		return self._columns
+
+	def is_empty(self):
+		return bool(not len(self._columns))
+
+################################################################################
+class Table(object):
+
+	def __init__(self, filename):
+		self._rows = []
+		self._data_rows = []
+		self.filename = filename
+		self.delimiter = '\t'
+		self.newline = '\n'
+
+	def _format_string(self, value, width=None):
+		if width is None:
+			width = len(str(value))
+		if isinstance(value, int):
+			return "%-*d" % (width, value)
+		if isinstance(value, float):
+			return "%-*.2f" % (width, value)
+		value = "--" if value is None else str(value)
+		return "%-*s" % (width, str(value))
+		
+	def _row_to_string(self, row):
+		return self.delimiter.join(map(self._format_string, row)) 
+	
+	def _table_to_string(self):
+		return self.newline.join(map(self._row_to_string, self._rows))
+
+	def add_row(self, row):
+		if not isinstance(row, list):
+			row = [ row ]
+		self._rows.append( row )
+		return
+
+	def add_data_row(self, row):
+		if not isinstance(row, list):
+			row = [ row ]
+		self._data_rows.append( row )
+		self._rows.append( row )
+		return
+
+	def save(self):
+		with open( self.filename, 'w' ) as f:
+			f.write( self._table_to_string() )
+		return 
+
 
 ################################################################################
 ### HELPER FUNCTIONS
@@ -82,7 +147,8 @@ def check_erraser_tools( path_to_rosetta ):
 
 
 def warn(*args):
-        print "[WARNING]", ' '.join(map(str, args))
+	print "[WARNING]", ' '.join(map(str, args))
+
 
 ################################################################################
 ### MAIN FUNCTION
@@ -94,9 +160,9 @@ def analyze(work_dir, (path_to_erraser)):
 	############################################################################
 	origin_dir = os.getcwd()
 	if not isdir( work_dir ):
-                warn( work_dir, "is not a directory" )
-                return False
-        os.chdir( work_dir )	
+		warn( work_dir, "is not a directory" )
+		return False
+	os.chdir( work_dir )
 
 	############################################################################
 	### get exe and pdbs 
@@ -107,7 +173,7 @@ def analyze(work_dir, (path_to_erraser)):
 		output_pdb = glob( '????' + OUTPUT_PDB_TAG )[0]
 		reference_pdb = glob( '????' + REFERENCE_PDB_TAG )[0]
 	except IndexError as e:
-                warn( "PDBs not found for", work_dir )
+		warn( "PDBs not found for", work_dir )
 		return False 
 
 	############################################################################
@@ -116,7 +182,8 @@ def analyze(work_dir, (path_to_erraser)):
 	command = [erraser_analysis_exe, input_pdb, output_pdb]
 	out, err = subprocess.Popen( command,
 								 stdout=subprocess.PIPE, 
-								 stderr=subprocess.PIPE ).communicate()
+								 stderr=subprocess.PIPE
+	).communicate()
 	with open( 'erraser_analysis.out', 'w' ) as fid:
 		fid.write( '%s %s %s' % (basename(command[0]),command[1],command[2]))
 		fid.write( '\n\n' )
@@ -130,7 +197,8 @@ def analyze(work_dir, (path_to_erraser)):
 	command = [erraser_analysis_exe, input_pdb, reference_pdb]
 	out, err = subprocess.Popen( command, 
 								 stdout=subprocess.PIPE, 
-								 stderr=subprocess.PIPE ).communicate()
+								 stderr=subprocess.PIPE 
+	).communicate()
 	with open( 'erraser_analysis_ref.out', 'w' ) as fid:
 		fid.write( '%s %s %s' % (basename(command[0]),command[1],command[2]))
 		fid.write( '\n\n' )
@@ -138,11 +206,71 @@ def analyze(work_dir, (path_to_erraser)):
 	with open( 'erraser_analysis_ref.err', 'w' ) as fid:
 		fid.write( err )
   
+
+	############################################################################
+	### write table info
+	############################################################################
+	results = {
+		'input':[],
+		'reference':[],
+		'output':[]
+	}
+	for line in open('erraser_analysis_ref.out').readlines():
+		cols = line.strip().split()
+		if 'Clashscore' in line:
+			results['input'].append(float(cols[1]))
+			results['reference'].append(float(cols[2]))
+			continue
+		if 'Suite' in cols and 'Outlier' in cols:
+			results['input'].append(int(cols[2]))
+			results['reference'].append(int(cols[3]))
+			continue
+		if 'Pucker' in cols and 'Outlier' in cols:
+			results['input'].append(int(cols[2]))
+			results['reference'].append(int(cols[3]))
+			continue
+		if 'Bond' in cols and 'Outlier' in cols:
+			results['input'].append(int(cols[2]))
+			results['reference'].append(int(cols[3]))
+			continue
+		if 'Angle' in cols and 'Outlier' in cols:
+			results['input'].append(int(cols[2]))
+			results['reference'].append(int(cols[3]))
+			break
+
+	for line in open('erraser_analysis.out').readlines():
+		cols = line.strip().split()
+		if 'Clashscore' in line:
+			results['output'].append(float(cols[2]))
+			continue
+		if 'Suite' in cols and 'Outlier' in cols:
+			results['output'].append(int(cols[3]))
+			continue
+		if 'Pucker' in cols and 'Outlier' in cols:
+			results['output'].append(int(cols[3]))
+			continue
+		if 'Bond' in cols and 'Outlier' in cols:
+			results['output'].append(int(cols[3]))
+			continue
+		if 'Angle' in cols and 'Outlier' in cols:
+			results['output'].append(int(cols[3]))
+			break
+
+	############################################################################
+	### write table info
+	############################################################################
+	table_row = TableRow()
+	table_row.add_columns( basename(work_dir) )
+	table_row.add_columns( results['input'] )
+	table_row.add_columns( results['reference'] )
+	table_row.add_columns( results['output'] )
+
+
 	############################################################################	
 	### change back to working directory
 	############################################################################
 	os.chdir(origin_dir)
-	return True
+	return table_row
 
 
 ################################################################################
@@ -150,7 +278,7 @@ def analyze(work_dir, (path_to_erraser)):
 ################################################################################
 if __name__=='__main__':
 
-   	############################################################################
+	############################################################################
 	### parse arguments
 	############################################################################
 	parser = argparse.ArgumentParser(
@@ -180,13 +308,17 @@ if __name__=='__main__':
 		help='Number of jobs to run in parallel',
 		default=(mp.cpu_count()-1)
 	)
+	parser.add_argument(
+		'-f','--force',
+		help='Rewrite tables even if they alread exist.',
+		action='store_true'
+	)
+	options = parser.parse_args()
 
-	args = parser.parse_args()
-
-	inpath = args.inpath
-	user_targets = sorted( args.targets )
-	path_to_rosetta = args.path_to_rosetta
-	nproc = int( args.nproc )
+	inpath = options.inpath
+	user_targets = sorted( options.targets )
+	path_to_rosetta = options.path_to_rosetta
+	nproc = int( options.nproc )
 
 	########################################################################
 	### checks and initializations 
@@ -204,7 +336,7 @@ if __name__=='__main__':
 	print
 	print 'Inpath:'
 	print inpath
-        print 
+	print 
 
 	########################################################################
 	### find all targets in inpath
@@ -215,7 +347,7 @@ if __name__=='__main__':
 	print 'Targets:'
 	for t in targets:
 		print t
-        print
+		print
 
 	########################################################################
 	### run erraser_analysis on all targets found in inpath
@@ -229,7 +361,7 @@ if __name__=='__main__':
 		pool = mp.Pool(processes=nproc)
 		
 		out = [pool.apply_async(analyze, args=(t,args)) for t in targets]
-		out = [o.get() for o in out]
+		table_rows = [o.get() for o in out]
 		
 		pool.close()
 		pool.join()
@@ -239,18 +371,47 @@ if __name__=='__main__':
 		###################################################################
 		### Serial Version
 		###################################################################
-	   	out = [analyze(t,args) for t in targets]		   
+	   	table_rows = [analyze(t,args) for t in targets]		   
+
+	########################################################################
+	### change back into working directory
+	########################################################################
+	os.chdir( origin_dir )
+
+	########################################################################
+	### create table for inpath
+	########################################################################
+	table_name = inpath.upper() + '.tab'
+	if exists( table_name ) and not options.force:
+		print "Table:", table_name, "already exists!!!"
+	else:
+		column_labels = [
+			'Input PDB',
+			'ERRASER - Ref',
+			'ERRASER - Out'
+		]
+		subcolumn_labels = [
+			'Target', 
+			'Clashscore', 
+			'Suite Outlier',
+			'Pucker Outlier',
+			'Bond Outlier', 
+			'Angle Outlier'
+		]
+		table = Table( table_name )
+		table.add_row( inpath )
+		table.add_row( column_labels )
+		table.add_row( subcolumn_labels )
+		for table_row in table_rows:
+			table.add_data_row( table_row.columns() )
+		table.save()	
 
 	########################################################################
 	### process or print output
 	########################################################################
 	print 
 	print 'Status:'
-	for idx, t in enumerate(targets):
-		status = '+' if out[idx] else '-'
+	for idx, (t, tr) in enumerate(zip(targets,table_rows)):
+		status = '-' if tr.is_empty() else '+'
 		print '[%s] %s' % (status, t)
 	
-	########################################################################
-	### change back into working directory
-	########################################################################
-	os.chdir( origin_dir )
