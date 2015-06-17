@@ -16,10 +16,10 @@ import argparse
 import re
 
 ###############################################################################
-### supporting functions
+### file functions
 ###############################################################################
 def get_fasta_from_silent_file(outfile):
-        """ Returns .fasta file listing the name of sequence and sequence of bases"""
+        """ Returns .fasta file listing sequencename and base sequences provided from outfile """
         
         fasta_file = outfile.replace(".out",".out.fasta")
         fasta = open(fasta_file,'w')
@@ -39,27 +39,28 @@ def get_fasta_from_silent_file(outfile):
 
                 line = line.split()
                 
-                name = line[2]
+                seqname = line[2]
                 sequence = re.sub(r'\[.*?\]', '', line[1])
                 
                 if len(original_sequence) != len(sequence):
                         continue
                 
-                fasta.write(">{}\n{}\n".format(name, sequence)) 
+                fasta.write(">{}\n{}\n".format(seqname, sequence)) 
         
         fasta.close()
 
         return fasta_file
 
 def generate_weblogo(inpath, target, outfile):
-        """ Returns .weblogo.png image displaying likelihood of bases appearing in sequence """
+        """ Returns .weblogo.png image of sequence given by outfile """
 
         outfile = "/".join([inpath,target,outfile])
         fasta_file = get_fasta_from_silent_file(outfile)
 
         weblogo_file = outfile.replace(".out",".weblogo.png")
 
-        cmd = ["weblogo", 
+        cmd = [
+        "weblogo", 
         "-F png",
         "--resolution 600",
         "--color green cC 'Cytosine'",
@@ -71,7 +72,7 @@ def generate_weblogo(inpath, target, outfile):
 
         cmd = " ".join(cmd)
         os.system(cmd)
-        print cmd
+        #print cmd
 
         return weblogo_file
 
@@ -116,13 +117,13 @@ def make_weblogos(argv):
 	for plot_idx, target in enumerate(targets, start=1):
 
                 weblogo = generate_weblogo(inpath, target, silentfile)
-                print weblogo
+                #print weblogo
+
                 # plot image on subplot
                 ax = fig.add_subplot( nrows, ncols, plot_idx )
                 image = mpimg.imread(weblogo)
                 plt.imshow(image)
                 ax.set_title( target, fontsize=8, weight='bold' )
-                print plot_idx, target
 
 	# finalize (adjust spacing, print date)
 	#finalize_figure( fig, nplots, nrows, ncols )
