@@ -24,12 +24,19 @@ for iterator,motif in enumerate(p.motifs.all_motifs,start=1):
     if motif.mtype == motif_type.HELIX:
         continue
     
-    print input_pdb.replace(".pdb", '_'+str(iterator))
+    
     # figure out target attributes
     motif_res = []
+    chain_ends = []
     for residue in motif.chains():
+        chain_ends.append(residue.first().num)
+        chain_ends.append(residue.last().num)
+
         motif_res.append('%s:%d-%d'%(residue.first().chain_id,residue.first().num,residue.last().num))  
     
+    name = input_pdb.replace(".pdb", '_{}-{}'.format(str(chain_ends[0]),str(chain_ends[-1])))
+    print name
+
     motif_res = ','.join(motif_res)
     print "motif_res = ", motif_res
     
@@ -65,7 +72,7 @@ for iterator,motif in enumerate(p.motifs.all_motifs,start=1):
     td = info_handlers.TargetDefinition()
    
     # set target attributes
-    td.name = input_pdb.replace(".pdb", '_'+str(iterator))
+    td.name = name
     #td.sequence = ','.join(get_sequences_for_res(input_pdb, working_res))
     td.sequence = sequences
     td.secstruct = ''.join([(x if x == ',' else '.') for x in td.sequence])

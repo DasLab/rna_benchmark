@@ -227,10 +227,10 @@ def get_figure_dimensions( nplots ):
 
 ###########################################################
 
-def setup_figure( nplots ):
+def setup_figure( nplots, landscape = False ):
 	( nplots, nrows, ncols ) = get_figure_dimensions( nplots )
-	fig = plt.figure(1)
-	if ( nplots == 1 or nrows < ncols ): # landscape
+	fig = plt.figure()
+	if ( landscape is True ): # landscape
 		fig.set_size_inches(11, 8.5)
 	else:
 		fig.set_size_inches(8.5, 11)

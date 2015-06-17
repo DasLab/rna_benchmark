@@ -6,6 +6,7 @@
 import sys
 import os
 from os.path import exists, dirname, basename, abspath, isdir
+import stat
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import numpy as np
@@ -44,18 +45,21 @@ def get_fasta_from_silent_file(outfile):
                 
                 if len(original_sequence) != len(sequence):
                         continue
-                
+                        
                 fasta.write(">{}\n{}\n".format(seqname, sequence)) 
-        
+                
         fasta.close()
-
+                
         return fasta_file
 
 def generate_weblogo(inpath, target, outfile):
         """ Returns .weblogo.png image of sequence given by outfile """
 
         outfile = "/".join([inpath,target,outfile])
-        fasta_file = get_fasta_from_silent_file(outfile)
+        fasta_file = get_fasta_from_silent_file(outfile)  
+     
+        if os.stat(fasta_file).st_size == 0:
+                return False
 
         weblogo_file = outfile.replace(".out",".weblogo.png")
 
@@ -105,28 +109,50 @@ def make_weblogos(argv):
 		print "Target: "+target
                 
         nplots = len(targets)
+        if nplots >= 3:
+                nplots = 3
         
         if pdfname is None:
                 pdfname = basename(inpath)+'_weblogos.pdf'
 
         # setup pdf and figure, return handles
 	( pp, fullpdfname ) = setup_pdf_page( inpaths, targets, pdfname )
-	( fig, nplots, nrows, ncols ) = setup_figure( nplots )
+	( fig, nplots, nrows, ncols ) = setup_figure( nplots, True )
         
 	# iterate over targets
+        count = 1
 	for plot_idx, target in enumerate(targets, start=1):
-
+                
+                if count > nplots:
+                        count = 1
+                        # get date printed to figure
+                        plt.figtext(0.95,0.98,
+                        basename(inpath),
+                        horizontalalignment='right',
+                        fontsize='large')
+                        pp.savefig()
+                        ( fig, nplots, nrows, ncols ) = setup_figure( nplots, True )
+                        
                 weblogo = generate_weblogo(inpath, target, silentfile)
                 #print weblogo
-
+                
+                if weblogo is False:
+                        continue
+                
                 # plot image on subplot
-                ax = fig.add_subplot( nrows, ncols, plot_idx )
+                ax = fig.add_subplot( nrows, ncols, count )
                 image = mpimg.imread(weblogo)
+
                 plt.imshow(image)
                 ax.set_title( target, fontsize=8, weight='bold' )
+                
+                count += 1
+                plt.axis('off')
 
 	# finalize (adjust spacing, print date)
 	#finalize_figure( fig, nplots, nrows, ncols )
+
+        
 
 	# save as pdf and close
 	pp.savefig()
@@ -140,7 +166,6 @@ def make_weblogos(argv):
 		subprocess.call(['xdg-open',fullpdfname])
 
 	return True
-
 
 ###############################################################################
 ### initialization functions
