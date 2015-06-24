@@ -28,13 +28,15 @@ for iterator,motif in enumerate(p.motifs.all_motifs,start=1):
     # figure out target attributes
     motif_res = []
     chain_ends = []
-    for residue in motif.chains():
-        chain_ends.append(residue.first().num)
-        chain_ends.append(residue.last().num)
+    name = input_pdb.replace(".pdb", "")
 
-        motif_res.append('%s:%d-%d'%(residue.first().chain_id,residue.first().num,residue.last().num))  
+    for chains in motif.chains():
+        chain_ends.append(chains.first().num)
+        chain_ends.append(chains.last().num)
+        name += "_{}-{}".format(chains.first().num,chains.last().num)
+        motif_res.append('%s:%d-%d'%(chains.first().chain_id,chains.first().num,chains.last().num))  
     
-    name = input_pdb.replace(".pdb", '_{}-{}'.format(str(chain_ends[0]),str(chain_ends[-1])))
+
     print name
 
     motif_res = ','.join(motif_res)

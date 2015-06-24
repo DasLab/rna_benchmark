@@ -40,7 +40,7 @@ def get_fasta_from_silent_file(outfile):
                                 res_chain_index = line.index("CONVENTIONAL_RES_CHAIN")
                                 conventional_res_chain = line[res_chain_index+1]
                                 conventional_res, conventional_chain = parse_tag(conventional_res_chain)
-                                print "conventional res chain", zip(conventional_res,conventional_chain)
+                                #print "conventional res chain", zip(conventional_res,conventional_chain)
                                 continue
                         continue
 
@@ -63,7 +63,7 @@ def get_fasta_from_silent_file(outfile):
                         line = line.split()
                         res_input = ",".join(line[1:-1])
                         res_num, res_chain = parse_tag(res_input)
-                        print "Res num list", zip(res_num, res_chain)
+                        #print "Res num list", zip(res_num, res_chain)
                                 
         fasta.close()  
    
