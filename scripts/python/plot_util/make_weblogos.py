@@ -15,6 +15,7 @@ import subprocess
 from matplotlib.font_manager import FontProperties
 import argparse
 import re
+from parse_tag import parse_tag
 
 ###############################################################################
 ### file functions
@@ -30,26 +31,42 @@ def get_fasta_from_silent_file(outfile):
                 line = line.strip()
 
                 if "FULL_SEQUENCE" in line:
-                        line = line.split()
-                        index = line.index("FULL_SEQUENCE")
-                        original_sequence = line[index+1]
-                        continue
-
-                if "ANNOTATED_SEQUENCE:" not in line:
-                        continue
-
-                line = line.split()
-                
-                seqname = line[2]
-                sequence = re.sub(r'\[.*?\]', '', line[1])
-                
-                if len(original_sequence) != len(sequence):
-                        continue
                         
-                fasta.write(">{}\n{}\n".format(seqname, sequence)) 
+                        line = line.split()
+                        full_seq_index = line.index("FULL_SEQUENCE")
+                        original_sequence = line[full_seq_index+1]
+
+                        if "CONVENTIONAL_RES_CHAIN" in line:
+                                res_chain_index = line.index("CONVENTIONAL_RES_CHAIN")
+                                conventional_res_chain = line[res_chain_index+1]
+                                conventional_res, conventional_chain = parse_tag(conventional_res_chain)
+                                print "conventional res chain", zip(conventional_res,conventional_chain)
+                                continue
+                        continue
+
+                if "ANNOTATED_SEQUENCE:" in line:
+
+                        line = line.split()
                 
-        fasta.close()
+                        seqname = line[2]
+                        sequence = re.sub(r'\[.*?\]', '', line[1])
                 
+                        if len(original_sequence) != len(sequence):
+                                continue
+
+                        fasta.write(">{}\n{}\n".format(seqname, sequence)) 
+                        #print "Annotated seq: ", sequence
+                        continue
+
+                if "RES_NUM" in line:
+
+                        line = line.split()
+                        res_input = ",".join(line[1:-1])
+                        res_num, res_chain = parse_tag(res_input)
+                        print "Res num list", zip(res_num, res_chain)
+                                
+        fasta.close()  
+   
         return fasta_file
 
 def generate_weblogo(inpath, target, outfile):
@@ -67,6 +84,9 @@ def generate_weblogo(inpath, target, outfile):
         "weblogo", 
         "-F png",
         "--resolution 600",
+        "--size large",
+        "--stacks-per-line 40",
+        "--aspect-ratio 4",
         "--color green cC 'Cytosine'",
         "--color red gG 'Guanine'",
         "--color orange aA 'Adenine'",
@@ -130,7 +150,7 @@ def make_weblogos(argv):
                         basename(inpath),
                         horizontalalignment='right',
                         fontsize='large')
-                        pp.savefig()
+                        pp.savefig(DPI=1200)
                         ( fig, nplots, nrows, ncols ) = setup_figure( nplots, True )
                         
                 weblogo = generate_weblogo(inpath, target, silentfile)
@@ -155,7 +175,7 @@ def make_weblogos(argv):
         
 
 	# save as pdf and close
-	pp.savefig()
+	pp.savefig(DPI=1200)
 	pp.close()
 
 	# open pdf
@@ -216,3 +236,9 @@ if __name__=='__main__':
 
 	sys.exit(make_weblogos(sys.argv[1:]))
 	
+'''SEQUENCE: ugcggnnnnngggucgccgucuugcuaaagcuggacugguccnnnnacgcaaguuca
+REMARK BINARY SILENTFILE    FULL_MODEL_PARAMETERS  FULL_SEQUENCE ugcggnnnnngggucgccgucuugcuaaagcuggacugguccnnnnacgcaaguuca  CONVENTIONAL_RES_CHAIN A:107-121,A:126-130,A:166-170,A:182-184,A:187-190,A:194-197,A:199-208,A:210-214,A:256-261  CUTPOINT_OPEN 15,20,25,28,32,36,46,51  DOCK_DOMAIN 1-57  EXTRA_MINIMIZE 5,11,42,47  FIXED_DOMAIN 1-4,12-41,48-57  INPUT_DOMAIN 1-5,11-42,47-57  SAMPLE 6-10,43-46  WORKING 1-57  RNA_TERMINAL 1,15-16,20-21,25-26,28-29,32-33,36-37,47,51-52,57
+
+
+RES_NUM A:107-121 A:126-130 A:166-170 A:182-184 A:187-190 A:194-197 A:199-208 A:210-214 A:256-261 S_000753
+ANNOTATED_SEQUENCE: u[URA:Virtual_Phosphate]gcggg[RGU:rna_cutpoint_lower]a[RAD:rna_cutpoint_upper]ggggggucg[RGU:Virtual_Phosphate]ccguc[RCY:Virtual_Phosphate]uugcu[URA:Virtual_Phosphate]aaa[RAD:Virtual_Phosphate]gcug[RGU:Virtual_Phosphate]gacu[URA:Virtual_Phosphate]ggucccccaa[RAD:Virtual_Phosphate]cgcaa[RAD:Virtual_Phosphate]guuca S_000753'''
