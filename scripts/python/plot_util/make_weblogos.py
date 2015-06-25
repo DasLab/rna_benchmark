@@ -20,12 +20,17 @@ from parse_tag import parse_tag
 ###############################################################################
 ### file functions
 ###############################################################################
+     
 def get_fasta_from_silent_file(outfile):
         """ Returns .fasta file listing sequencename and base sequences provided from outfile """
         
         fasta_file = outfile.replace(".out",".out.fasta")
         fasta = open(fasta_file,'w')
         original_sequence = ""
+        seqname = ""
+        res_num, res_chain = None, None
+        index = []
+        other_pose = False
 
         for line in open(outfile).readlines():
                 line = line.strip()
@@ -40,41 +45,73 @@ def get_fasta_from_silent_file(outfile):
                                 res_chain_index = line.index("CONVENTIONAL_RES_CHAIN")
                                 conventional_res_chain = line[res_chain_index+1]
                                 conventional_res, conventional_chain = parse_tag(conventional_res_chain)
-                                #print "conventional res chain", zip(conventional_res,conventional_chain)
-                                continue
+                                #print "conventional res chain:", zip(conventional_res,conventional_chain)
+
+                        index_list = [n_char.start() for n_char in re.finditer('n', original_sequence)]
+
+                        # show neighboring base pairs of design sequence
+                        index_list += [idx-1 for idx in index_list if idx-1 not in index_list]
+                        index_list += [idx+1 for idx in index_list if idx+1 not in index_list]
+                        index_list.sort()
+
+                        n_res = [conventional_res[i] for i in index_list]      
+                        #print n_res
+                        #print [original_sequence[i] for i in range(len(original_sequence)) if i in index ]
                         continue
 
                 if "ANNOTATED_SEQUENCE:" in line:
 
                         line = line.split()
                 
-                        seqname = line[2]
-                        sequence = re.sub(r'\[.*?\]', '', line[1])
-                
-                        if len(original_sequence) != len(sequence):
+                        #seqname = line[2]
+                        
+                        if seqname != line[-1] or other_pose: 
                                 continue
 
+                        sequence = re.sub(r'\[.*?\]', '', line[1])
+                        
+                        if len(original_sequence) != len(sequence):
+                                filled_sequence = ""
+                                for res, char in zip(conventional_res, original_sequence):
+                                        if res not in res_num:
+                                                filled_sequence += 'n'
+                                        else:
+                                                filled_sequence += sequence[res_num.index(res)]
+                                #print filled_sequence
+                                sequence = filled_sequence
+                        assert (len(sequence) == len(original_sequence))
+                        
+                        sequence = "".join([sequence[i] for i in range(len(sequence)) if i in index_list])
+                        #print sequence
+                        
                         fasta.write(">{}\n{}\n".format(seqname, sequence)) 
-                        #print "Annotated seq: ", sequence
                         continue
 
                 if "RES_NUM" in line:
 
                         line = line.split()
+                        
+                        other_pose = (seqname == line[-1])
+                        if other_pose:
+                                continue
+
+                        seqname = line[-1]
                         res_input = ",".join(line[1:-1])
                         res_num, res_chain = parse_tag(res_input)
-                        #print "Res num list", zip(res_num, res_chain)
-                                
+                        #print "Res num list:", zip(res_num, res_chain)
+
+        print n_res
         fasta.close()  
    
-        return fasta_file
+        return fasta_file, n_res
 
 def generate_weblogo(inpath, target, outfile):
         """ Returns .weblogo.png image of sequence given by outfile """
 
         outfile = "/".join([inpath,target,outfile])
-        fasta_file = get_fasta_from_silent_file(outfile)  
-     
+        fasta_file, n_res = get_fasta_from_silent_file(outfile)  
+        res_csv = ','.join(map(str,n_res))
+       
         if os.stat(fasta_file).st_size == 0:
                 return False
 
@@ -84,13 +121,14 @@ def generate_weblogo(inpath, target, outfile):
         "weblogo", 
         "-F png",
         "--resolution 600",
+        "--alphabet 'CGAUN'",
+        "--annotate '{}'".format(res_csv),
         "--size large",
-        "--stacks-per-line 40",
-        "--aspect-ratio 4",
         "--color green cC 'Cytosine'",
         "--color red gG 'Guanine'",
         "--color orange aA 'Adenine'",
         "--color blue uU 'Uracil'",
+        "--color black nN 'N'",
         "--errorbars NO",
         "< {} > {}".format(fasta_file, weblogo_file)]
 
@@ -137,21 +175,22 @@ def make_weblogos(argv):
 
         # setup pdf and figure, return handles
 	( pp, fullpdfname ) = setup_pdf_page( inpaths, targets, pdfname )
-	( fig, nplots, nrows, ncols ) = setup_figure( nplots, True )
+	( fig, nplots, nrows, ncols ) = setup_figure( nplots)
         
 	# iterate over targets
         count = 1
 	for plot_idx, target in enumerate(targets, start=1):
                 
-                if count > nplots:
-                        count = 1
-                        # get date printed to figure
-                        plt.figtext(0.95,0.98,
-                        basename(inpath),
-                        horizontalalignment='right',
-                        fontsize='large')
-                        pp.savefig(DPI=1200)
-                        ( fig, nplots, nrows, ncols ) = setup_figure( nplots, True )
+                if count > nplots or count == 1 or plot_idx == len(targets):
+                        if count != 1:
+                                count = 1
+                                # get date printed to figure
+                                plt.figtext(0.95,0.98,
+                                            basename(inpath),
+                                            horizontalalignment='right',
+                                            fontsize='large')
+                                pp.savefig(DPI=1200)
+                        ( fig, nplots, nrows, ncols ) = setup_figure( nplots )
                         
                 weblogo = generate_weblogo(inpath, target, silentfile)
                 #print weblogo
@@ -171,8 +210,6 @@ def make_weblogos(argv):
 
 	# finalize (adjust spacing, print date)
 	#finalize_figure( fig, nplots, nrows, ncols )
-
-        
 
 	# save as pdf and close
 	pp.savefig(DPI=1200)
