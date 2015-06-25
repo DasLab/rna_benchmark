@@ -55,15 +55,11 @@ def get_fasta_from_silent_file(outfile):
                         index_list.sort()
 
                         n_res = [conventional_res[i] for i in index_list]      
-                        #print n_res
-                        #print [original_sequence[i] for i in range(len(original_sequence)) if i in index ]
                         continue
 
                 if "ANNOTATED_SEQUENCE:" in line:
 
                         line = line.split()
-                
-                        #seqname = line[2]
                         
                         if seqname != line[-1] or other_pose: 
                                 continue
@@ -71,19 +67,20 @@ def get_fasta_from_silent_file(outfile):
                         sequence = re.sub(r'\[.*?\]', '', line[1])
                         
                         if len(original_sequence) != len(sequence):
+                               
                                 filled_sequence = ""
                                 for res, char in zip(conventional_res, original_sequence):
                                         if res not in res_num:
                                                 filled_sequence += 'n'
                                         else:
                                                 filled_sequence += sequence[res_num.index(res)]
-                                #print filled_sequence
+                                         
                                 sequence = filled_sequence
+
                         assert (len(sequence) == len(original_sequence))
                         
                         sequence = "".join([sequence[i] for i in range(len(sequence)) if i in index_list])
-                        #print sequence
-                        
+                                                
                         fasta.write(">{}\n{}\n".format(seqname, sequence)) 
                         continue
 
@@ -92,15 +89,11 @@ def get_fasta_from_silent_file(outfile):
                         line = line.split()
                         
                         other_pose = (seqname == line[-1])
-                        if other_pose:
-                                continue
+                        if not other_pose:
+                                seqname = line[-1]
+                                res_input = ",".join(line[1:-1])
+                                res_num, res_chain = parse_tag(res_input)
 
-                        seqname = line[-1]
-                        res_input = ",".join(line[1:-1])
-                        res_num, res_chain = parse_tag(res_input)
-                        #print "Res num list:", zip(res_num, res_chain)
-
-        print n_res
         fasta.close()  
    
         return fasta_file, n_res
@@ -134,7 +127,6 @@ def generate_weblogo(inpath, target, outfile):
 
         cmd = " ".join(cmd)
         os.system(cmd)
-        #print cmd
 
         return weblogo_file
 
@@ -272,10 +264,4 @@ def init_options_parser():
 if __name__=='__main__':
 
 	sys.exit(make_weblogos(sys.argv[1:]))
-	
-'''SEQUENCE: ugcggnnnnngggucgccgucuugcuaaagcuggacugguccnnnnacgcaaguuca
-REMARK BINARY SILENTFILE    FULL_MODEL_PARAMETERS  FULL_SEQUENCE ugcggnnnnngggucgccgucuugcuaaagcuggacugguccnnnnacgcaaguuca  CONVENTIONAL_RES_CHAIN A:107-121,A:126-130,A:166-170,A:182-184,A:187-190,A:194-197,A:199-208,A:210-214,A:256-261  CUTPOINT_OPEN 15,20,25,28,32,36,46,51  DOCK_DOMAIN 1-57  EXTRA_MINIMIZE 5,11,42,47  FIXED_DOMAIN 1-4,12-41,48-57  INPUT_DOMAIN 1-5,11-42,47-57  SAMPLE 6-10,43-46  WORKING 1-57  RNA_TERMINAL 1,15-16,20-21,25-26,28-29,32-33,36-37,47,51-52,57
 
-
-RES_NUM A:107-121 A:126-130 A:166-170 A:182-184 A:187-190 A:194-197 A:199-208 A:210-214 A:256-261 S_000753
-ANNOTATED_SEQUENCE: u[URA:Virtual_Phosphate]gcggg[RGU:rna_cutpoint_lower]a[RAD:rna_cutpoint_upper]ggggggucg[RGU:Virtual_Phosphate]ccguc[RCY:Virtual_Phosphate]uugcu[URA:Virtual_Phosphate]aaa[RAD:Virtual_Phosphate]gcug[RGU:Virtual_Phosphate]gacu[URA:Virtual_Phosphate]ggucccccaa[RAD:Virtual_Phosphate]cgcaa[RAD:Virtual_Phosphate]guuca S_000753'''
