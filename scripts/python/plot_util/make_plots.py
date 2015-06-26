@@ -41,9 +41,10 @@ def make_plots(argv):
 
 	# Load data for all targets in all inpaths
 	data = load_data( inpaths, targets, outfilenames )
+        print data
 	inpaths = [x for x in inpaths if x in data.keys()]
 	nplots = len(set([k for v in data.values() for k in v.keys()]))
-
+        
 	# get and print out runtimes, stored in the silent files
 	times_list = get_times( inpaths, data, targets, verbose=True )
 
@@ -83,9 +84,20 @@ def make_plots(argv):
 					 label=basename(inpath) )
 				continue
 
-			# get index of first xvar/yvar found in score_labels
+                        # get index of first xvar/yvar found in score_labels
 			score_labels = data[inpath][target].score_labels
-			xvar_idx = -1
+
+                        # check for sequence recovery 
+                        if "sequence_recovery" in xvars+yvars:
+                                score_labels.append("sequence_recovery")
+
+                                tag_idx = score_labels.index("description")
+                                for idx, score in enumerate(data[inpath][target].scores):
+                                        tag = score[tag_idx]
+                                        seq_recovery = get_sequence_recovery(inpath, target, outfilenames, tag)
+                                        data[inpath][target].scores[idx].append(seq_recovery)
+                                        
+                        xvar_idx = -1
 			for xvar in xvars:
 				if not xvar in score_labels:
 					continue
@@ -110,8 +122,9 @@ def make_plots(argv):
 				#if ( float(score[xvar_idx]) > xvar_cutoff or
 				#     float(score[yvar_idx]) > yvar_cutoff ):
 				#	continue
-				xvar_data.append( score[xvar_idx] )
-				yvar_data.append( score[yvar_idx] )
+                        
+				xvar_data.append( float(score[xvar_idx]) )
+				yvar_data.append( float(score[yvar_idx]) )
 
 			# plot data, and reference lines (x=1, x=2)
 			ax.plot( xvar_data,
@@ -130,7 +143,20 @@ def make_plots(argv):
 				 plt.ylim(),
 				 color='black')
 
-			ax.set_xlim( 0, 16 )
+                        if "sequence_recovery" in xvars:
+                                ax.set_xlim( -10, 110)
+
+                        if "sequence_recovery" in yvars:
+                                ax.set_ylim( -10, 110)
+                                
+                        if "missing" in xvars:
+                                ax.set_xlim( min(xvar_data)-1, max(xvar_data)+1)
+
+                        if "missing" in yvars:
+                                ax.set_ylim( min(yvar_data)-1, max(yvar_data)+1)
+
+                        if any("rms" in xvar for xvar in xvars):
+                                ax.set_xlim( 0, 16 )
 
 			# set title and axes labels, adjust axis properties
 			title_fontsize = 'small' if nrows < 3 else 8
