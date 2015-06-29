@@ -118,11 +118,12 @@ if __name__=='__main__':
         ########################################################################
         table_name = inpath.upper() + '.tab'
         if exists('/'.join([inpath, table_name])):
+            print "Table:", table_name, "already exists!!!"
             if not force:
-            	print "Table:", table_name, "already exists!!!"
-            	print "run with '--force' to re-write table"
+            	print "[HINT] run with '--force' to re-write table"
             	continue
-            print "'--force' option detected ... re-writing table"
+            else:
+                print "[WARNING] detected '--force' option ... re-writing table"
 
         #######################################################################
         ### change into inpath
@@ -180,14 +181,18 @@ if __name__=='__main__':
         print '\nMerging Tables for Runs:\n%s\n' % ('\n'.join(inpaths))
         subtable_names = [ip+'/'+ip.upper()+'.tab' for ip in inpaths]
         table_name = '_v_'.join(inpaths).upper() + '.tab'
-        if exists( table_name ) and not force:
+        if exists(table_name):
             print "Table:", table_name, "already exists!!!"
-        else:
+            if not force:
+            	print "[HINT] run with '--force' to re-write table"
+            else:
+                print "[WARNING] '--force' option detected ... re-writing table"
+        if not exists( table_name ) or force:
             table = Table( table_name )
             table.merge_tables( subtable_names )
             table.save()
 
-	###################################################################
+    ###################################################################
     ### exit
     ###################################################################
     exit(True)
