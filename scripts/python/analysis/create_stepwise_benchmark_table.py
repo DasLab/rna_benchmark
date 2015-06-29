@@ -111,8 +111,23 @@ if __name__=='__main__':
     ############################################################################
     for idx, inpath in enumerate(inpaths, start=1):
         
-        os.chdir( inpath )
         print '\n[%d/%d] Creating Table for Run: %s' % (idx,len(inpaths),inpath)
+
+		########################################################################
+        ### continue if table exists and not args.force 
+        ########################################################################
+        table_name = inpath.upper() + '.tab'
+        if exists('/'.join([inpath, table_name])):
+        	if not force:
+            	print "Table:", table_name, "already exists!!!"
+            	print "run with '--force' to re-write table"
+            	continue
+            print "'--force' option detected ... re-writing table"
+
+        #######################################################################
+        ### change into inpath
+        ######################################################################## 
+        os.chdir( inpath )
 
         ########################################################################
         ### find all targets in inpath
@@ -172,3 +187,7 @@ if __name__=='__main__':
             table.merge_tables( subtable_names )
             table.save()    
 
+	###################################################################
+    ### exit
+    ###################################################################
+    exit(True)
