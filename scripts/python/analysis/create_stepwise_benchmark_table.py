@@ -118,7 +118,7 @@ if __name__=='__main__':
         ########################################################################
         table_name = inpath.upper() + '.tab'
         if exists('/'.join([inpath, table_name])):
-            print "Table:", table_name, "already exists!!!"
+            print "[WARNING] Table:", table_name, "already exists!!!"
             if not force:
             	print "[HINT] run with '--force' to re-write table"
             	continue
@@ -182,7 +182,7 @@ if __name__=='__main__':
         subtable_names = [ip+'/'+ip.upper()+'.tab' for ip in inpaths]
         table_name = '_v_'.join(inpaths).upper() + '.tab'
         if exists(table_name):
-            print "Table:", table_name, "already exists!!!"
+            print "[WARNING] Table:", table_name, "already exists!!!"
             if not force:
             	print "[HINT] run with '--force' to re-write table"
             else:
