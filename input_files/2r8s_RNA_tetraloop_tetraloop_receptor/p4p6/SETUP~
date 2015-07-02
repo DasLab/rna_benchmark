@@ -1,0 +1,3 @@
+fetch_pdb.py 2R8S
+make_rna_rosetta_ready.py 2R8S.pdb -no_renumber -remove_ions
+replace_chain_inplace.py 2r8s_RNA.pdb A
