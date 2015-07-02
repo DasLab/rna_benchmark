@@ -16,13 +16,13 @@ from create_stepwise_benchmark_table_util import *
 ### main function
 ################################################################################
 def get_target_row(target, (args)):
-    
+
     ############################################################################
     ### change into target_dir and find all silent files
     ############################################################################
     working_dir = os.getcwd()
-    os.chdir(target)    
-    
+    os.chdir(target)
+
     ############################################################################
     ### get table info
     ############################################################################
@@ -101,7 +101,7 @@ if __name__=='__main__':
     merge_tables = args.merge_tables
 
     ############################################################################
-    ### checks and initializations 
+    ### checks and initializations
     ############################################################################
     assert( all( exists( inpath ) for inpath in inpaths ) )
     working_dir = os.getcwd()
@@ -110,9 +110,25 @@ if __name__=='__main__':
     ### change into inpaths and get targets
     ############################################################################
     for idx, inpath in enumerate(inpaths, start=1):
-        
-        os.chdir( inpath )
+
         print '\n[%d/%d] Creating Table for Run: %s' % (idx,len(inpaths),inpath)
+
+		########################################################################
+        ### continue if table exists and not args.force
+        ########################################################################
+        table_name = inpath.upper() + '.tab'
+        if exists('/'.join([inpath, table_name])):
+            print "[WARNING] Table:", table_name, "already exists!!!"
+            if not force:
+            	print "[HINT] run with '--force' to re-write table"
+            	continue
+            else:
+                print "[WARNING] detected '--force' option ... re-writing table"
+
+        #######################################################################
+        ### change into inpath
+        ########################################################################
+        os.chdir( inpath )
 
         ########################################################################
         ### find all targets in inpath
@@ -122,7 +138,7 @@ if __name__=='__main__':
             found_targets = filter(user_targets.count, found_targets)
         targets = filter(found_targets.count, get_target_names())
         print '\nTARGETS:\n%s\n' % ('\n'.join(targets))
-               
+
         ########################################################################
         ### get table info for all targets found in inpath
         ########################################################################
@@ -131,7 +147,7 @@ if __name__=='__main__':
 
             out = [pool.apply_async(get_target_row,args=(t,args)) for t in targets]
             table_row_list = [o.get() for o in out]
-            
+
             pool.close()
             pool.join()
 
@@ -151,7 +167,7 @@ if __name__=='__main__':
             for table_row in table_row_list:
                 table.add_data_row( table_row.columns() )
             table.add_row( ['AVERAGE'] + table.column_averages()[1:] )
-            table.save()    
+            table.save()
 
         ########################################################################
         ### change back into working directory
@@ -165,10 +181,18 @@ if __name__=='__main__':
         print '\nMerging Tables for Runs:\n%s\n' % ('\n'.join(inpaths))
         subtable_names = [ip+'/'+ip.upper()+'.tab' for ip in inpaths]
         table_name = '_v_'.join(inpaths).upper() + '.tab'
-        if exists( table_name ) and not force:
-            print "Table:", table_name, "already exists!!!"
-        else:
+        if exists(table_name):
+            print "[WARNING] Table:", table_name, "already exists!!!"
+            if not force:
+            	print "[HINT] run with '--force' to re-write table"
+            else:
+                print "[WARNING] '--force' option detected ... re-writing table"
+        if not exists( table_name ) or force:
             table = Table( table_name )
             table.merge_tables( subtable_names )
-            table.save()    
+            table.save()
 
+    ###################################################################
+    ### exit
+    ###################################################################
+    exit(True)
