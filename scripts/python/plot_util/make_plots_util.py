@@ -337,7 +337,7 @@ def get_fasta_from_silent_file(outfile):
         for tag, sequence in zip(tags,sequences):
                 fasta.write(">{}\n{}\n".format(tag,sequence))
         fasta.close()
-        return fasta, n_res
+        return fasta_file, n_res
 
 def get_sequences_from_silent_file(outfile,tags=None):
         
