@@ -16,6 +16,12 @@ input_pdb = sys.argv[1]
 
 design_bps = "-design_bps" in sys.argv
 
+radius = 15
+if '-radius' in sys.argv:
+    radius_idx = sys.argv.index('-radius')
+    radius = int(sys.argv[radius_idx+1])
+    print "using radius = ",radius
+
 #Read in pose
 #p = rnamake.pose.Pose(RNAMAKE+"/examples/getting_started/resources/p4p6")
 p = rnamake.pose.Pose(pdb=input_pdb)
@@ -53,7 +59,7 @@ for iterator,motif in enumerate(p.motifs.all_motifs,start=1):
     motif_res = ','.join(motif_res)
     print "motif_res = ", motif_res
     
-    input_res = get_surrounding_res_tag(input_pdb, motif_res, 15, csv=True, verbose=True)
+    input_res = get_surrounding_res_tag(input_pdb, motif_res, radius, csv=True, verbose=True)
     
     input_resnums, input_chains = parse_tag(input_res)
     motif_resnums, motif_chains = parse_tag(motif_res)
