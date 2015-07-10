@@ -14,9 +14,12 @@ assert(os.path.exists(RNAMAKE))
 info_fid = file_handlers.TargetDefinitionsFile()
 input_pdb = sys.argv[1]
 
+design_bps = "-design_bps" in sys.argv
+
 #Read in pose
-p = rnamake.pose.Pose(RNAMAKE+"/examples/getting_started/resources/p4p6")
-#p = rnamake.pose.Pose(pdb=input_pdb)
+#p = rnamake.pose.Pose(RNAMAKE+"/examples/getting_started/resources/p4p6")
+p = rnamake.pose.Pose(pdb=input_pdb)
+
 
 #loop over motifs
 for iterator,motif in enumerate(p.motifs.all_motifs,start=1):
@@ -27,15 +30,20 @@ for iterator,motif in enumerate(p.motifs.all_motifs,start=1):
     
     # figure out target attributes
     motif_res = []
-    chain_ends = []
+    
     name = input_pdb.replace(".pdb", "")
 
     for chains in motif.chains():
-        chain_ends.append(chains.first().num)
-        chain_ends.append(chains.last().num)
-        name += "_{}-{}".format(chains.first().num,chains.last().num)
-        motif_res.append('%s:%d-%d'%(chains.first().chain_id,chains.first().num,chains.last().num))  
-    
+        first = chains.first().num
+        last = chains.last().num
+        
+        if not design_bps:
+            first += 1
+            last -= 1
+
+        name += "_{}-{}".format(first,last)
+
+        motif_res.append('%s:%d-%d'%(chains.first().chain_id,first,last))  
 
     print name
 
