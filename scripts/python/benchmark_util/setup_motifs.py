@@ -40,10 +40,13 @@ for iterator,motif in enumerate(p.motifs.all_motifs,start=1):
         if not design_bps:
             first += 1
             last -= 1
-
-        name += "_{}-{}".format(first,last)
-
-        motif_res.append('%s:%d-%d'%(chains.first().chain_id,first,last))  
+            
+        restag = "{}".format(first)
+        if first != last:
+            restag += "-{}".format(last)
+    
+        name += "_{}".format(restag)
+        motif_res.append('{}:{}'.format(chains.first().chain_id,restag))  
 
     print name
 
