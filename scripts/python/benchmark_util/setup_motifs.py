@@ -7,6 +7,7 @@ import sys, os
 from get_surrounding_res import get_surrounding_res_tag
 from get_sequence import get_sequences_for_res
 from utility import file_handlers, info_handlers
+import rnamake.pose_factory as pf
 
 RNAMAKE=os.path.expandvars("$RNAMAKE")
 assert(os.path.exists(RNAMAKE))
@@ -18,11 +19,11 @@ design_bps = "-design_bps" in sys.argv
 
 #Read in pose
 #p = rnamake.pose.Pose(RNAMAKE+"/examples/getting_started/resources/p4p6")
-p = rnamake.pose.Pose(pdb=input_pdb)
-
+#p = rnamake.pose.Pose(pdb=input_pdb)
+p = pf.factory.pose_from_file(input_pdb)
 
 #loop over motifs
-for iterator,motif in enumerate(p.motifs.all_motifs,start=1):
+for iterator,motif in enumerate(p.motifs(motif_type.ALL),start=1):
 
     if motif.mtype == motif_type.HELIX:
         continue
