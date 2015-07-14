@@ -8,7 +8,7 @@ if [ $# -lt 2 ]; then
 fi
 
 NATIVE=$(readlink -ne $1)
-TARGET=$2
+TARGET=${2%*/}
 MODELS=3
 
 if [ $# -eq 3 ]
@@ -17,6 +17,7 @@ then
 fi
 
 WORKDIR=$(pwd)
+
 cd $TARGET
 
 
