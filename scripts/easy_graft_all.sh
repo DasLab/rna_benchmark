@@ -25,6 +25,9 @@ fi
 # cd back into original directory
 cd $WORKDIR
 
+echo ">${NATIVE}"
+echo $(get_sequence.py ${NATIVE})
+
 for TARGET in */ ; do
 	TARGET=${TARGET%*/}
 
@@ -37,7 +40,7 @@ for TARGET in */ ; do
 	then
 		continue
 	fi 
-	echo $(easy_graft.sh $NATIVE $TARGET $MODELS)
+	easy_graft.sh $NATIVE $TARGET $MODELS
 	#echo $TARGET
 done
 

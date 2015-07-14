@@ -32,8 +32,8 @@ cp swm_rebuild.out models/${TARGET}.out
 cd models
 out=$(extract_lowscore_decoys.py ${TARGET}.out $MODELS)
 
-echo ">${NATIVE}"
-echo $(get_sequence.py ${NATIVE})
+#echo ">${NATIVE}"
+#echo $(get_sequence.py ${NATIVE})
 
 
 # Graft into Native
