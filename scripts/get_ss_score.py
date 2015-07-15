@@ -7,4 +7,4 @@ import sys
 input_pdb = sys.argv[1]
 m = motif_factory.factory.motif_from_file(input_pdb)
 
-print "{}: {}".format(input_pdb, m.score)
+print m.score

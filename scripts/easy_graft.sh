@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# This script is useful for running easy_cat.py in specified directories only.
-
 if [ $# -lt 2 ]; then
     echo "Must supply the name of a native pdb and target for easy_graft.sh to look in"
     exit 1
@@ -46,9 +44,10 @@ for pdb in ${TARGET}.out.*.pdb ; do
 		-o $grafted_pdb
 	) 
 
-
-	echo ">$grafted_pdb"
+	echo ">${grafted_pdb}  ss_score=$(get_ss_score.py $grafted_pdb)"
+	#echo ">$grafted_pdb"
 	echo $(get_sequence.py $grafted_pdb)
+
 
 done
 

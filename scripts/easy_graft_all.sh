@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# This script is useful for running easy_cat.py in specified directories only.
-
 if [ $# -lt 2 ]; then
     echo "Must supply the name of a native pdb and target for easy_graft.sh to look in"
     exit 1
