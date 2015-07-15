@@ -23,7 +23,7 @@ fi
 # cd back into original directory
 cd $WORKDIR
 
-echo ">${NATIVE}"
+echo ">${NATIVE} ss_score=$(get_ss_score.py $NATIVE)"
 echo $(get_sequence.py ${NATIVE})
 
 for TARGET in */ ; do

@@ -36,7 +36,20 @@ out=$(extract_lowscore_decoys.py ${TARGET}.out $MODELS)
 
 # Graft into Native
 for pdb in ${TARGET}.out.*.pdb ; do
+
+	#compare length of native sequence with working native pdb sequence
+	working_native="../${TARGET}_$(basename $NATIVE)"
+	native_sequence=$(get_sequence.py $working_native)
+	design_sequence=$(get_sequence.py $pdb)
+
+	native_size=${#native_sequence}
+	size=${#design_sequence}
+	#echo "Native: $native_sequence Size: $native_size"
+	#echo "Design: $design_sequence Size: $size"
+
+
 	grafted_pdb=${pdb/.out./.out.grafted.}
+	
 	out=$(
 		rna_graft.linuxgccrelease \
 		-s $NATIVE $pdb \
@@ -44,10 +57,8 @@ for pdb in ${TARGET}.out.*.pdb ; do
 		-o $grafted_pdb
 	) 
 
-	echo ">${grafted_pdb}  ss_score=$(get_ss_score.py $grafted_pdb)"
-	#echo ">$grafted_pdb"
+	echo ">${grafted_pdb}  ss_score=$(get_ss_score.py $grafted_pdb) missing=$(($native_size - $size))"
 	echo $(get_sequence.py $grafted_pdb)
-
 
 done
 
