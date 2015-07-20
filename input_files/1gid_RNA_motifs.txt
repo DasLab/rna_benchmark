@@ -9,3 +9,4 @@ Name	Sequence	Secstruct	Working_res	Native	Input_res	Extra_flags
 1gid_RNA_139-140_163-164_176-179	ggg,uucaguaccaagucuca,uuugagauggccuugcaaaggguaugguaauaagc,ccagc,augca	...,.................,...................................,.....,.....	A:108-110,A:130-146,A:155-189,A:212-216,A:252-256	1gid_RNA.pdb	A:108-110,A:130-138,A:141-146,A:155-162,A:165-175,A:180-189,A:212-216,A:252-256	-
 1gid_RNA_224-226_248-249	ggaaacu,caaguccuaagucaac,cuguugauauggau	.......,................,..............	A:149-155,A:217-232,A:240-253	1gid_RNA.pdb	A:149-155,A:217-223,A:227-232,A:240-247,A:250-253	-
 1gid_RNA_119-126_196-202	gggaaaggggucaacagccguucag,agcugacggacaugguccuaa	.........................,.....................	A:110-134,A:187-207	1gid_RNA.pdb	A:110-118,A:127-134,A:187-195,A:203-207	-
+1gid_RNA_122-126_196-199	gggaaaggggucaacagccguucag,agcugacggacaugguccuaa	.........................,.....................	A:110-134,A:187-207	1gid_RNA.pdb	A:110-121,A:127-134,A:187-195,A:200-207	-
