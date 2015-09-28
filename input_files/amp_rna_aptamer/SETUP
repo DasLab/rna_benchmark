@@ -1,0 +1,6 @@
+#!/bin/bash
+
+PDB_ID=$1
+
+fetch_pdb.py $PDB_ID
+make_rna_rosetta_ready.py $PDB_ID.pdb -no_renumber -remove_ions
