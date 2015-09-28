@@ -401,8 +401,8 @@ def get_flag( flag ):
 def virtualize_missing_residues( silent_file ):
 	silent_file_out = silent_file.replace(".out","_full_model.out")
 	build_full_model_exe = get_rosetta_exe( "build_full_model" )
-	weights = get_flag( "-score:weights" ).split(' ')[-1]
-	torsion_potential = get_flag( "-score:rna_torsion_potential" ).split(' ')[-1]
+	weights = None #get_flag( "-score:weights" ).split(' ')[-1]
+	torsion_potential = None #get_flag( "-score:rna_torsion_potential" ).split(' ')[-1]
 	command = Command( build_full_model_exe )
 	command.add_argument( "-in:file:silent", value=silent_file )
 	command.add_argument( "-out:file:silent", value=silent_file_out )

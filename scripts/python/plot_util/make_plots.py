@@ -12,7 +12,7 @@ from make_plots_util import *
 import subprocess
 from matplotlib.font_manager import FontProperties
 import argparse
-
+import seaborn as sns 
 
 ###############################################################################
 ### main functions
@@ -58,7 +58,7 @@ def make_plots(argv):
 	xlabels = []
 	ylabels = []
 	plot_idx = 0
-
+	handles = []
 	# iterate over targets
 	for target_idx, target in enumerate(targets, start=1):
 
@@ -126,15 +126,30 @@ def make_plots(argv):
 				xvar_data.append( float(score[xvar_idx]) )
 				yvar_data.append( float(score[yvar_idx]) )
 
+			sns.set_style("darkgrid")
+			sns.set_context("poster")
+			colorcode = [
+				#"#696969", #grey
+				"#ff0000", #red
+				"#0000ff", #blue
+			]
+			markersize = 10
+			c1 = 'red'
+			c2 = 'blue'
 			# plot data, and reference lines (x=1, x=2)
-			ax.plot( xvar_data,
+			label = 'StepWise Assembly'# (SWA)' 
+			if 'swm' in basename(inpath):
+				label = 'StepWise Monte Carlo'# (SWM)'
+
+			h = ax.plot( xvar_data,
 				 yvar_data,
-				 marker='.',
-				 markersize=3,
+				 marker='o',
+				 markersize=markersize,
 				 color=colorcode[inpath_idx],
 				 linestyle=' ',
-				 label=basename(inpath) )
-
+				 label=label )
+			handles.append(h)
+			'''
 			ax.plot( [1 for y in plt.ylim()],
 				 plt.ylim(),
 				 color='black',
@@ -142,7 +157,7 @@ def make_plots(argv):
 			ax.plot( [2 for y in plt.ylim()],
 				 plt.ylim(),
 				 color='black')
-
+			'''
                         if "sequence_recovery" in xvars:
                                 ax.set_xlim( -10, 110)
 
@@ -156,20 +171,27 @@ def make_plots(argv):
                                 ax.set_ylim( min(yvar_data)-1, max(yvar_data)+1)
 
                         if any("rms" in xvar for xvar in xvars):
-                                ax.set_xlim( 0, 16 )
+                                ax.set_xlim( 0, 8 )
 
+			ax.set_xlim(0, 8)
+			if '3P_j55a' in target:
+				ax.set_ylim(-40, -10) 
+			if 'l1' in target:
+				ax.set_ylim(-70, -50) 
+			if 'hepatitis' in target:
+				ax.set_ylim(-28, -18) 
 			# set title and axes labels, adjust axis properties
-			title_fontsize = 'small' if nrows < 3 else 8
-			ax.set_title( get_title(target), fontsize=title_fontsize, weight='bold' )
-			ax.set_ylabel( string.join(ylabels, ', '), fontsize=6 )
-			ax.set_xlabel( string.join(xlabels, ', '), fontsize=6 )
+			title_fontsize = 20 # 'small' if nrows < 3 else 8
+			#ax.set_title( get_title(target), fontsize=title_fontsize, weight='bold' )
+			#ax.set_ylabel('Rosetta Energy', fontsize=20, weight='bold')#string.join(ylabels, ', '), fontsize=6 )
+			#ax.set_xlabel(r'RMSD ($\AA$)', fontsize=20, weight='bold')#string.join(xlabels, ', '), fontsize=6 )
 			for ticklabel in ax.yaxis.get_ticklabels()+ax.xaxis.get_ticklabels():
-				ticklabel.set_fontsize(6)
+				ticklabel.set_fontsize(14)
 
 			# print times in plots (if available)
 			monospace_font = FontProperties()
 			monospace_font.set_family( 'monospace' )
-			if False:#if times_list[inpath_idx][target_idx-1].times_found():
+			if False: #times_list[inpath_idx][target_idx-1].times_found():
 				xpos, ypos = 0.92, (0.10*len(inpaths)) - (0.015*6*inpath_idx)
 				ax.text( xpos,
 					 ypos,
@@ -182,8 +204,10 @@ def make_plots(argv):
                                          fontproperties=monospace_font )
 
 	# finalize (adjust spacing, print date)
-	finalize_figure( fig, nplots, nrows, ncols )
+	plt.legend(numpoints=1, loc=4, prop={'size':16})
 
+	finalize_figure( fig, nplots, nrows, ncols )
+	fig.savefig('figures-new/'+targets[0]+'_score_v_rmsd-'+c1+'+'+c2+'-'+str(markersize)+'.png')
 	# save as pdf and close
 	pp.savefig()
 	pp.close()
@@ -191,9 +215,9 @@ def make_plots(argv):
 	# open pdf
 	out, err = subprocess.Popen(['uname'], stdout=subprocess.PIPE).communicate()
 	if 'Darwin' in out:
-		subprocess.call(['open',fullpdfname])
+		pass#subprocess.call(['open',fullpdfname])
 	if 'Linux' in out:
-		subprocess.call(['xdg-open',fullpdfname])
+		pass#subprocess.call(['xdg-open',fullpdfname])
 
 	return True
 
