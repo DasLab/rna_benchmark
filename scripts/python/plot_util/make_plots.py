@@ -31,20 +31,20 @@ def make_plots(argv):
 	# check options
 	inpaths = [abspath(x) for x in inpaths if exists(x) and isdir(x)]
 	if targets[0] != '*':
-                targets = targets
-        elif target_files is not None:
-                targets = get_target_names( target_files )
-        else:
-                targets = get_target_names( target_files, inpaths )
+		targets = targets
+	elif target_files is not None:
+		targets = get_target_names( target_files )
+	else:
+		targets = get_target_names( target_files, inpaths )
 	for target in targets:
 		print "Target: "+target
 
 	# Load data for all targets in all inpaths
 	data = load_data( inpaths, targets, outfilenames )
-        print data
+	
 	inpaths = [x for x in inpaths if x in data.keys()]
 	nplots = len(set([k for v in data.values() for k in v.keys()]))
-        
+		
 	# get and print out runtimes, stored in the silent files
 	times_list = get_times( inpaths, data, targets, verbose=True )
 
@@ -84,20 +84,22 @@ def make_plots(argv):
 					 label=basename(inpath) )
 				continue
 
-                        # get index of first xvar/yvar found in score_labels
+			# get index of first xvar/yvar found in score_labels
 			score_labels = data[inpath][target].score_labels
 
-                        # check for sequence recovery 
-                        if "sequence_recovery" in xvars+yvars:
-                                score_labels.append("sequence_recovery")
+			# check for sequence recovery 
+			if "sequence_recovery" in xvars+yvars:
+				score_labels.append("sequence_recovery")
 
-                                tag_idx = score_labels.index("description")
-                                for idx, score in enumerate(data[inpath][target].scores):
-                                        tag = score[tag_idx]
-                                        seq_recovery = get_sequence_recovery(inpath, target, outfilenames, tag)
-                                        data[inpath][target].scores[idx].append(seq_recovery)
-                                        
-                        xvar_idx = -1
+				tag_idx = score_labels.index("description")
+				for idx, score in enumerate(data[inpath][target].scores):
+
+					tag = score[tag_idx]
+					seq_recovery = get_sequence_recovery(inpath, target, outfilenames, tag)
+					data[inpath][target].scores[idx].append(seq_recovery)
+									
+		 	xvar_idx = -1
+
 			for xvar in xvars:
 				if not xvar in score_labels:
 					continue
@@ -120,9 +122,14 @@ def make_plots(argv):
 			#xvar_cutoff, yvar_cutoff = 100.0, 5.0
 			for score in data[inpath][target].scores:
 				#if ( float(score[xvar_idx]) > xvar_cutoff or
-				#     float(score[yvar_idx]) > yvar_cutoff ):
+				#	 float(score[yvar_idx]) > yvar_cutoff ):
 				#	continue
-                        
+
+				if options.ignore_missing:
+					missing_idx = score_labels.index("missing")
+					if missing_idx > -1 and float(score[missing_idx]) > 0.0:
+						continue
+
 				xvar_data.append( float(score[xvar_idx]) )
 				yvar_data.append( float(score[yvar_idx]) )
 
@@ -136,6 +143,7 @@ def make_plots(argv):
 			markersize = 10
 			c1 = 'red'
 			c2 = 'blue'
+
 			# plot data, and reference lines (x=1, x=2)
 			label = 'StepWise Assembly'# (SWA)' 
 			if 'swm' in basename(inpath):
@@ -158,17 +166,17 @@ def make_plots(argv):
 				 plt.ylim(),
 				 color='black')
 			'''
-                        if "sequence_recovery" in xvars:
-                                ax.set_xlim( -10, 110)
+			if "sequence_recovery" in xvars:
+					ax.set_xlim( -10, 110)
 
-                        if "sequence_recovery" in yvars:
-                                ax.set_ylim( -10, 110)
-                                
-                        if "missing" in xvars:
-                                ax.set_xlim( min(xvar_data)-1, max(xvar_data)+1)
+			if "sequence_recovery" in yvars:
+					ax.set_ylim( -10, 110)
+					
+			if "missing" in xvars:
+					ax.set_xlim( min(xvar_data)-1, max(xvar_data)+1)
 
-                        if "missing" in yvars:
-                                ax.set_ylim( min(yvar_data)-1, max(yvar_data)+1)
+			if "missing" in yvars:
+					ax.set_ylim( min(yvar_data)-1, max(yvar_data)+1)
 
                         if any("rms" in xvar for xvar in xvars):
                                 ax.set_xlim( 0, 8 )
@@ -201,7 +209,7 @@ def make_plots(argv):
 					 transform=ax.transAxes,
 					 color=colorcode[inpath_idx],
 					 fontsize=6,
-                                         fontproperties=monospace_font )
+										 fontproperties=monospace_font )
 
 	# finalize (adjust spacing, print date)
 	plt.legend(numpoints=1, loc=4, prop={'size':16})
@@ -226,10 +234,10 @@ def make_plots(argv):
 ### initialization functions
 ###############################################################################
 def init_options(argv):
-    if isinstance(argv, argparse.ArgumentParser):
-    	return argv
-    options = init_options_parser().parse_args(args = argv)
-    return options
+	if isinstance(argv, argparse.ArgumentParser):
+		return argv
+	options = init_options_parser().parse_args(args = argv)
+	return options
 
 def init_options_parser():
 	parser = argparse.ArgumentParser(description='Plot scores from silent files.')
@@ -240,40 +248,45 @@ def init_options_parser():
 	)
 	parser.add_argument(
 		'-outfilenames',
-	    nargs='*',
-	    help='Name of silent file.',
-	    default=['swm_rebuild.out',
-		     'swm_rebuild.sc',
-		     'region_FINAL.out']
+		nargs='*',
+		help='Name of silent file.',
+		default=['swm_rebuild.out',
+			 'swm_rebuild.sc',
+			 'region_FINAL.out']
 	)
 	parser.add_argument(
 		'-target_files',
-	    nargs='+',
-	    help='List of additional target files.',
-	    default=None
+		nargs='+',
+		help='List of additional target files.',
+		default=None
 	)
 	parser.add_argument(
 		'-targets',
-	    nargs='+',
-	    help='List of targets.',
-	    default=['*']
+		nargs='+',
+		help='List of targets.',
+		default=['*']
 	)
 	parser.add_argument(
 		'-xvar',
-	    nargs='*',
-	    help='Name of x variable(s).',
-	    default=['rms_fill','NAT_rmsd']
+		nargs='*',
+		help='Name of x variable(s).',
+		default=['rms_fill','NAT_rmsd']
 	)
 	parser.add_argument(
 		'-yvar',
-	    nargs='*',
-	    help='Name of y variable(s).',
-	    default=['score']
+		nargs='*',
+		help='Name of y variable(s).',
+		default=['score']
 	)
 	parser.add_argument(
 		'-o','--pdfname',
-	    help='File name to save as pdf.',
-	    default=None
+		help='File name to save as pdf.',
+		default=None
+	)
+	parser.add_argument(
+		'--ignore_missing',
+		help='Ignore structures with unbuilt residues.',
+		action = "store_true"
 	)
 	return parser
 
