@@ -30,6 +30,7 @@ parser.add_argument('--path_to_rosetta', default='', help='Path to working copy 
 parser.add_argument('-v', '--verbose', help="increase output verbosity", action="store_true")
 parser.add_argument('-motif_mode_off', help="temporary hack for turning off hardcoded '-motif_mode' flag", action="store_true")
 parser.add_argument('--save_logs', help="save .out and .err logs for each job.", action="store_true")
+parser.add_argument('-stepwise_lores',action='store_true', help='used to setup stepwise_lores mode (FARNA optimization)')
 args = parser.parse_args()
 
 #####################################################################################################################
@@ -94,6 +95,8 @@ working_native = {}
 input_pdbs = {}
 terminal_res = {}
 extra_min_res = {}
+cutpoint_closed = {}
+jump_res = {}
 loop_res = {}
 VDW_rep_screen_pdb = {}
 VDW_rep_screen_info = {}
@@ -238,6 +241,15 @@ for name in names:
             extra_min_res[ name ].append( m )
     if not '-motif_mode\n' in extra_flags_benchmark and not motif_mode_off:
         extra_flags_benchmark.append( '-motif_mode\n' )
+
+    # needed for stepwise_lores to work with base pair steps that include flanking helices:
+    if args.stepwise_lores:
+        jump_res[ name ] = []
+        cutpoint_closed[ name ] = []
+        for i in range( len( stems ) ):
+            stem = stems[i]
+            for bp in stem: jump_res[ name ].extend( [ bp[ 0 ], bp[ 1 ] ] )
+            for bp in stem[:-1]: cutpoint_closed[ name ].append( bp[ 0 ] )
 
     # create fasta
     fasta[ name ] = '%s/%s.fasta' % (inpath,name)
@@ -401,6 +413,9 @@ for name in names:
             fid.write( '-terminal_res %s  \n' % make_tag_with_conventional_numbering( terminal_res[ name ], resnums[ name ], chains[ name ] ) )
         if len( extra_min_res[ name ] ) > 0 and not args.extra_min_res_off: ### Turn extra_min_res off for SWM when comparing to SWA
             fid.write( '-extra_min_res %s \n' % make_tag_with_conventional_numbering( extra_min_res[ name ], resnums[ name ], chains[ name ] ) )
+        if args.stepwise_lores:
+            fid.write( '-jump_res %s \n' % make_tag_with_conventional_numbering( jump_res[ name ], resnums[ name ], chains[ name ] ) )
+            fid.write( '-cutpoint_closed %s \n' % make_tag_with_conventional_numbering( cutpoint_closed[ name ], resnums[ name ], chains[ name ] ) )
         #if ( len( input_pdbs[ name ] ) == 0 ):
         #    fid.write( '-superimpose_over_all\n' ) # RMSD over everything -- better test since helices are usually native
         fid.write( '-fasta %s.fasta\n' % name )
