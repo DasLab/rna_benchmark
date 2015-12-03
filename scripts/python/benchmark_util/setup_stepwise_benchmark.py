@@ -248,8 +248,9 @@ for name in names:
         cutpoint_closed[ name ] = []
         for i in range( len( stems ) ):
             stem = stems[i]
-            for bp in stem: jump_res[ name ].extend( [ bp[ 0 ], bp[ 1 ] ] )
-            for bp in stem[:-1]: cutpoint_closed[ name ].append( bp[ 0 ] )
+            for bp in stem:
+                jump_res[ name ].extend( [ bp[ 0 ], bp[ 1 ] ] )
+                if ( bp != stem[ -1] ): cutpoint_closed[ name ].append( bp[ 0 ] )
 
     # create fasta
     fasta[ name ] = '%s/%s.fasta' % (inpath,name)
@@ -414,8 +415,9 @@ for name in names:
         if len( extra_min_res[ name ] ) > 0 and not args.extra_min_res_off: ### Turn extra_min_res off for SWM when comparing to SWA
             fid.write( '-extra_min_res %s \n' % make_tag_with_conventional_numbering( extra_min_res[ name ], resnums[ name ], chains[ name ] ) )
         if args.stepwise_lores:
-            fid.write( '-jump_res %s \n' % make_tag_with_conventional_numbering( jump_res[ name ], resnums[ name ], chains[ name ] ) )
-            fid.write( '-cutpoint_closed %s \n' % make_tag_with_conventional_numbering( cutpoint_closed[ name ], resnums[ name ], chains[ name ] ) )
+            if ( len( jump_res[ name ] ) > 0 ):
+                fid.write( '-jump_res %s \n' % make_tag_with_conventional_numbering( jump_res[ name ], resnums[ name ], chains[ name ] ) )
+                fid.write( '-cutpoint_closed %s \n' % make_tag_with_conventional_numbering( cutpoint_closed[ name ], resnums[ name ], chains[ name ] ) )
         #if ( len( input_pdbs[ name ] ) == 0 ):
         #    fid.write( '-superimpose_over_all\n' ) # RMSD over everything -- better test since helices are usually native
         fid.write( '-fasta %s.fasta\n' % name )
