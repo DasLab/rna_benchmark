@@ -83,6 +83,7 @@ if len (args.extra_flags) > 0:
 names = []
 sequence = {}
 secstruct = {}
+secstruct_gen = {}
 working_res = {}
 native = {}
 input_res = {}
@@ -134,6 +135,7 @@ for info_file_line in open( info_file ).readlines():
 
     if cols[0] == 'Benchmark_flags:':
         extra_flags_benchmark.extend( parse_flags_string( string.join( cols[1:] ) ) )
+        name = ''
 
     if cols[0] == 'Name:':
         name = cols[1]
@@ -147,11 +149,11 @@ for info_file_line in open( info_file ).readlines():
 
     if   cols[0] == 'Sequence:'    :    sequence   [ name ] = cols[1]
     elif cols[0] == 'Secstruct:'   :    secstruct  [ name ] = cols[1]
+    elif cols[0] == 'Secstruct_gen:':   secstruct_gen[ name ] = cols[1]
     elif cols[0] == 'Working_res:' :    working_res[ name ] = cols[1]
     elif cols[0] == 'Input_res:'   :    input_res  [ name ] = cols[1]
     elif cols[0] == 'Native:'      :    native     [ name ] = cols[1]
     elif cols[0] == 'Extra_flags:' :    extra_flags[ name ] = string.join( cols[1:] )
-
 
 # check that each dictionary is the same size
 assert( len( names ) == len( sequence ) == len( secstruct ) == len( working_res ) == len( input_res ) == len( native ))
@@ -178,6 +180,8 @@ for name in names:
     input_pdbs[ name ] = []
     input_resnums = []
     input_chains  = []
+    input_resnums_by_block = []
+    input_chains_by_block = []
     if input_res[ name ] != '-':
         input_res_blocks = string.split( input_res[ name ], ';' )
         for m in range( len ( input_res_blocks ) ):
@@ -185,20 +189,25 @@ for name in names:
             input_pdb = slice_out( inpath, prefix, native[ name ],input_res_blocks[m] )
             input_pdbs[ name ].append( input_pdb )
             get_resnum_chain( input_res_blocks[m], input_resnums, input_chains )
-
+            # useful for checking jumps & cutpoints; see below.
+            input_resnums_by_block.append( [] )
+            input_chains_by_block.append(  [] )
+            get_resnum_chain( input_res_blocks[m], input_resnums_by_block[m], input_chains_by_block[m] )
 
     input_resnum_fullmodel = map( lambda x: get_fullmodel_number(x,resnums[name],chains[name]), zip( input_resnums, input_chains ) )
 
 
     # create secstruct if not defined
-    if secstruct[ name ] == '-':
-        secstruct[ name ] = string.join( [ '.' * len( seq ) for seq in sequences ], ',' )
+    if secstruct[ name ] == '-': secstruct[ name ] = string.join( [ '.' * len( seq ) for seq in sequences ], ',' )
+    # secstruct general can include obligate pairs (even non-canonical!)
+    if name not in secstruct_gen.keys(): secstruct_gen[ name ] = string.join( [ '.' * len( seq ) for seq in sequences ], ',' )
 
 
     # create any helices.
     helix_files[ name ] = []
     (sequence_joined, chainbreak_pos)           = join_sequence( sequence[name] )
     (secstruct_joined,chainbreak_pos_secstruct) = join_sequence( secstruct[name] )
+    (secstruct_gen_joined,chainbreak_pos_secstruct_gen) = join_sequence( secstruct_gen[name] )
     assert( chainbreak_pos == chainbreak_pos_secstruct )
     stems = get_all_stems( secstruct_joined, chainbreak_pos, sequence_joined  )
 
@@ -254,11 +263,33 @@ for name in names:
     if args.stepwise_lores:
         jump_res[ name ] = []
         cutpoint_closed[ name ] = []
-        for i in range( len( stems ) ):
-            stem = stems[i]
-            for bp in stem:
+        jump_bps = []
+        stems_gen = get_all_stems( secstruct_gen_joined )
+        for i in range( len( stems_gen ) ):
+            stem_gen = stems_gen[i]
+            for bp in stem_gen:
+                jump_bps.append( bp )
                 jump_res[ name ].extend( [ bp[ 0 ], bp[ 1 ] ] )
-                if ( bp != stem[ -1] ): cutpoint_closed[ name ].append( bp[ 0 ] )
+                if ( bp != stem_gen[ -1] ): cutpoint_closed[ name ].append( bp[ 0 ] )
+        # need to be really explicit about cutpoints_closed in stepwise right now... there is an edge case (srl_fixed)
+        # where jumps don't quite work.
+        for i in range( len( input_resnums_by_block ) ):
+            cuts  = []
+            for m in range(1, len( input_resnums_by_block[i] ) ):
+                m_full = get_fullmodel_number( (input_resnums_by_block[i][m-1],input_chains_by_block[i][m-1]),resnums[name],chains[name] )
+                if ( ( input_resnums_by_block[ i ][ m ] != input_resnums_by_block[ i ][ m-1 ] + 1 ) or
+                     ( input_chains_by_block[ i ][ m ]  != input_chains_by_block[ i ][ m-1 ] ) or
+                     ( m_full in cutpoint_closed[ name ] ) ):
+                    cuts.append( m_full )
+            for jump_bp in jump_bps:
+                if ( ( resnums[ name ][ jump_bp[0]-1 ], chains[ name ][ jump_bp[0]-1 ] ) in zip( input_resnums_by_block[i], input_chains_by_block[i] ) and \
+                     ( resnums[ name ][ jump_bp[1]-1 ], chains[ name ][ jump_bp[1]-1 ] ) in zip( input_resnums_by_block[i], input_chains_by_block[i] ) ):
+                    cut_exists_for_jump = False
+                    for cut in cuts:
+                        if ( cut >= jump_bp[0] and cut < jump_bp[1] ): cut_exists_for_jump = True
+                    if not cut_exists_for_jump:
+                        cutpoint_closed[ name ].append( jump_bp[ 0 ] )
+                        cuts.append( jump_bp[ 0 ] )
 
     # create fasta
     fasta[ name ] = '%s/%s.fasta' % (inpath,name)
