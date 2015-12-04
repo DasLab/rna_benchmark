@@ -1,3 +1,4 @@
+Benchmark_flags: -superimpose_over_all
 
 Name:          kiss_add_PK_dock
 Sequence:      aaugauaugguuu,agccuuaaacu

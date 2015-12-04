@@ -1,3 +1,5 @@
+Benchmark_flags: -superimpose_over_all
+
 Name:          anticodon
 Sequence:      ggauugaaaaucc
 Secstruct:     (((.......)))

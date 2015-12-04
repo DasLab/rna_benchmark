@@ -118,12 +118,22 @@ assert( exists( inpath ) )
 
 
 # read info_file
+def parse_flags_string( flag_string ):
+    flags = []
+    for flag in flag_string.split('-'):
+        if not len( flag ): continue
+        flags.append( '-%s\n' % flag )
+    return flags
+
 for info_file_line in open( info_file ).readlines():
 
     if info_file_line[0] == '#' : continue
     if len( info_file_line ) < 5: continue
     cols = string.split( info_file_line.replace( '\n','' ) )
     assert( len( cols ) >= 2 )
+
+    if cols[0] == 'Benchmark_flags:':
+        extra_flags_benchmark.extend( parse_flags_string( string.join( cols[1:] ) ) )
 
     if cols[0] == 'Name:':
         name = cols[1]
@@ -353,9 +363,7 @@ for name in names:
 
         # case-specific extra flags
         if ( len( extra_flags[name] ) > 0 ) and ( extra_flags[ name ] != '-' ) :
-            #fid.write( '%s\n' % extra_flags[name] )
-            for flag in extra_flags[name].split('-'):
-                if not len( flag ): continue
+            for flag in parse_flags_string( extra_flags[ name ] ):
                 flag = flag.replace('true','True').replace('false','False')
                 fid.write( ' -%s' % flag )
 
@@ -418,8 +426,6 @@ for name in names:
             if ( len( jump_res[ name ] ) > 0 ):
                 fid.write( '-jump_res %s \n' % make_tag_with_conventional_numbering( jump_res[ name ], resnums[ name ], chains[ name ] ) )
                 fid.write( '-cutpoint_closed %s \n' % make_tag_with_conventional_numbering( cutpoint_closed[ name ], resnums[ name ], chains[ name ] ) )
-        #if ( len( input_pdbs[ name ] ) == 0 ):
-        #    fid.write( '-superimpose_over_all\n' ) # RMSD over everything -- better test since helices are usually native
         fid.write( '-fasta %s.fasta\n' % name )
         if not cycles_flag_found:
             fid.write( '-cycles 200\n' )
