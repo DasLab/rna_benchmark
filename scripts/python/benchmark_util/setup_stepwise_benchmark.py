@@ -163,12 +163,10 @@ for name in names:
     sequences          = string.split( sequence[name], ',' )
     working_res_blocks = string.split( working_res[name], ',' )
 
-
     # store information on 'conventional' residue numbers and chains.
     resnums[ name ] = []
     chains[ name ] = []
     for working_res_block in working_res_blocks: get_resnum_chain( working_res_block, resnums[ name ], chains[ name ] )
-
 
     # working_native
     assert( native[ name ] != '-' ) # for now, require a native, since this is a benchmark.
