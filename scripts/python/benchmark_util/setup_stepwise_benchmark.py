@@ -435,51 +435,44 @@ for name in names:
     elif args.farna: # Fragment Assembly of RNA
         # can we unify some of this stuff with stepwise?
         fid = open( '%s/README_SETUP' % name, 'w' )
-
-        fid.write( 'rna_denovo @flags -out:file:silent farna_rebuild.out\n' )
-        fid.close()
-
-        fid = open( '%s/flags' % name, 'w' )
-        if len( start_files ) > 0 :
-            fid.write( '-s' )
-            for infile in start_files:  fid.write( ' %s' % (basename(infile) ) )
-            fid.write( '\n' )
-            fid.write( '-input_res %s\n' % make_tag_with_dashes( input_resnum_fullmodel[ name ] ) )
-
+        fid.write( 'rna_denovo_setup.py \\\n' )
+        fid.write( ' -fasta %s.fasta\\\n' % name )
+        fid.write( ' -tag farna_rebuild\\\n')
         if len( native[ name ] ) > 0:
-            fid.write( '-native %s\n' % basename( working_native[name] ) )
+            fid.write( ' -working_native %s\\\n' % basename( working_native[ name ] ) );
+        if len( start_files ) > 0 :
+            fid.write( ' -s' )
+            for infile in start_files:  fid.write( ' %s' % (basename(infile) ) )
+            fid.write( '\\\n' )
+        fid.write( ' -working_res %s\\\n' % working_res[ name ].replace( ',',' ') )
         if len( extra_min_res[ name ] ) > 0 and not args.extra_min_res_off:
-            ### FARNA does not currently accept 'conventional numbering' -- use full_model numbering.
-            fid.write( '-extra_minimize_res %s \n' % make_tag_with_dashes( extra_min_res[ name ] ) )
-        fid.write( '-fasta %s.fasta\n' % name )
-        if not cycles_flag_found:   fid.write( '-cycles 20000\n' )
-        if not nstruct_flag_found:  fid.write( '-nstruct 20\n' )
-        if not args.save_times_off: fid.write( '-save_times\n' )
-
-        # silly, currently required for FARNA, but hopefully not in future
-        fid.write( '-output_res_num %s\n' % make_tag_with_dashes( resnums[ name ], chains[ name ] ) )
-
+            fid.write( ' -extra_minimize_res %s\\\n' % make_tag_with_conventional_numbering( extra_min_res[ name ], resnums[ name ], chains[ name ] ) )
+        if not cycles_flag_found:   fid.write( ' -cycles 20000\\\n' )
+        if not nstruct_flag_found:  fid.write( ' -nstruct 20\\\n' )
+        if not args.save_times_off: fid.write( ' -save_times\\\n' )
         # case-specific extra flags
         if ( len( extra_flags[name] ) > 0 ) and ( extra_flags[ name ] != '-' ) :
             for flag in parse_flags_string( extra_flags[ name ] ):
                 flag = flag.replace('true','True').replace('false','False')
-                fid.write( '%s\n' % flag )
-
+                fid.write( ' %s\\\n' % flag[:-1] )
+        # silly, currently required for FARNA, but hopefully not in future
+        #fid.write( '-output_res_num %s\n' % make_tag_with_dashes( resnums[ name ], chains[ name ] ) )
         # extra flags for whole benchmark
-        weights_file = ''
         for flag in extra_flags_benchmark:
             if ( '-motif_mode' in flag ): continue ### SWM Specific
             if ( '#' in flag ): continue
             flag = flag.replace('True','true').replace('False','false')
-            fid.write( flag )
-
+            fid.write( ' '+flag[:-1]+'\\\n' )
         fid.close()
 
         print '\nSetting up submission files for: ', name
         CWD = getcwd()
         chdir( name )
 
-        rosetta_submit_cmd = 'rosetta_submit.py README_FARNA FARNA %d %d' % (njobs, args.nhours )
+        make_readme_farna_cmd = 'source README_SETUP'
+        system( make_readme_farna_cmd )
+
+        rosetta_submit_cmd = 'rosetta_submit.py README_FARFAR FARFAR %d %d' % (njobs, args.nhours )
         if args.save_logs:
             rosetta_submit_cmd += ' -save_logs'
         system( rosetta_submit_cmd )
