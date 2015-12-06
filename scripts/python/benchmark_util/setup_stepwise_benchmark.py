@@ -24,6 +24,7 @@ parser.add_argument('-extra_flags', default=default_extra_flags_benchmark, help=
 parser.add_argument('-nhours', default='16', type=int, help='Number of hours to queue each job.')
 parser.add_argument('-j','--njobs', default='10', type=int, help='Number of cores for each job.')
 parser.add_argument('--swa', action='store_true', help='Additional flag for setting up SWA runs.')
+parser.add_argument('--farna', action='store_true', help='Additional flag for setting up FARNA runs.')
 parser.add_argument('--extra_min_res_off', action='store_true', help='Additional flag for turning extra_min_res off.')
 parser.add_argument('--save_times_off', action='store_true', help='Additional flag for turning save_times flag off.')
 parser.add_argument('--path_to_rosetta', default='', help='Path to working copy of rosetta.')
@@ -99,6 +100,7 @@ extra_min_res = {}
 cutpoint_closed = {}
 jump_res = {}
 loop_res = {}
+input_resnum_fullmodel = {}
 VDW_rep_screen_pdb = {}
 VDW_rep_screen_info = {}
 bps = ['au','ua','gc','cg','ug','gu']
@@ -194,7 +196,7 @@ for name in names:
             input_chains_by_block.append(  [] )
             get_resnum_chain( input_res_blocks[m], input_resnums_by_block[m], input_chains_by_block[m] )
 
-    input_resnum_fullmodel = map( lambda x: get_fullmodel_number(x,resnums[name],chains[name]), zip( input_resnums, input_chains ) )
+    input_resnum_fullmodel[name] = map( lambda x: get_fullmodel_number(x,resnums[name],chains[name]), zip( input_resnums, input_chains ) )
 
 
     # create secstruct if not defined
@@ -226,11 +228,11 @@ for name in names:
 
         already_in_input_res = False
         for m in helix_resnum:
-            if m in input_resnum_fullmodel: already_in_input_res = True
+            if m in input_resnum_fullmodel[name]: already_in_input_res = True
         if already_in_input_res: continue
 
         helix_files[ name ].append( helix_file )
-        input_resnum_fullmodel += helix_resnum
+        input_resnum_fullmodel[name] += helix_resnum
 
         if exists( helix_file ): continue
         command = 'rna_helix.py -seq %s  -o %s -resnum %s' % ( helix_seq, helix_file, \
@@ -245,11 +247,11 @@ for name in names:
     terminal_res[ name ] = []
     extra_min_res[ name ] = []
     for m in range( 1, L+1 ):
-        if ( m not in input_resnum_fullmodel ): continue
+        if ( m not in input_resnum_fullmodel[name] ): continue
         right_before_chainbreak = ( m == L or m in chainbreak_pos )
         right_after_chainbreak  = ( m == 1 or m - 1 in chainbreak_pos )
-        prev_moving = ( m - 1 not in input_resnum_fullmodel ) and ( m != 1 ) and not right_after_chainbreak
-        next_moving = ( m + 1 not in input_resnum_fullmodel ) and ( m != L ) and not right_before_chainbreak
+        prev_moving = ( m - 1 not in input_resnum_fullmodel[name] ) and ( m != 1 ) and not right_after_chainbreak
+        next_moving = ( m + 1 not in input_resnum_fullmodel[name] ) and ( m != L ) and not right_before_chainbreak
         if ( ( right_after_chainbreak and not next_moving ) or \
              ( right_before_chainbreak and not prev_moving ) ):
             terminal_res[ name ].append( m )
@@ -296,10 +298,7 @@ for name in names:
     if not exists( fasta[ name ] ):
         fid = open( fasta[ name ], 'w' )
         assert( len( sequences ) == len( working_res_blocks ) )
-        ### splitting up sequence in fasta may cause errors in SWA runs
         for n in range( len( sequences ) ): fid.write( '>%s %s\n%s\n' % (name,working_res_blocks[n],sequences[n]) )
-        #fid.write( popen( 'pdb2fasta.py %s' % (  working_native[ name ] ) ).read() )
-        #fid.write( '>%s %s\n%s\n' % ( name,string.join(working_res_blocks,' '),string.join(sequences,'') ) )
         fid.close()
 
     # get sample loop res
@@ -394,7 +393,7 @@ for name in names:
         if ( len( extra_flags[name] ) > 0 ) and ( extra_flags[ name ] != '-' ) :
             for flag in parse_flags_string( extra_flags[ name ] ):
                 flag = flag.replace('true','True').replace('false','False')
-                fid.write( ' -%s' % flag )
+                fid.write( ' %s' % flag )
 
         # extra flags for whole benchmark
         weights_file = ''
@@ -433,6 +432,63 @@ for name in names:
 
         fid_qsub.write( 'cd %s; source ./README_SWA && source ./SUBMIT_SWA; cd %s\n' % ( dirname, CWD ) )
 
+    elif args.farna: # Fragment Assembly of RNA
+        # can we unify some of this stuff with stepwise?
+        fid = open( '%s/README_SETUP' % name, 'w' )
+
+        fid.write( 'rna_denovo @flags -out:file:silent farna_rebuild.out\n' )
+        fid.close()
+
+        fid = open( '%s/flags' % name, 'w' )
+        if len( start_files ) > 0 :
+            fid.write( '-s' )
+            for infile in start_files:  fid.write( ' %s' % (basename(infile) ) )
+            fid.write( '\n' )
+            fid.write( '-input_res %s\n' % make_tag_with_dashes( input_resnum_fullmodel[ name ] ) )
+
+        if len( native[ name ] ) > 0:
+            fid.write( '-native %s\n' % basename( working_native[name] ) )
+        if len( extra_min_res[ name ] ) > 0 and not args.extra_min_res_off:
+            ### FARNA does not currently accept 'conventional numbering' -- use full_model numbering.
+            fid.write( '-extra_minimize_res %s \n' % make_tag_with_dashes( extra_min_res[ name ] ) )
+        fid.write( '-fasta %s.fasta\n' % name )
+        if not cycles_flag_found:   fid.write( '-cycles 20000\n' )
+        if not nstruct_flag_found:  fid.write( '-nstruct 20\n' )
+        if not args.save_times_off: fid.write( '-save_times\n' )
+
+        # silly, currently required for FARNA, but hopefully not in future
+        fid.write( '-output_res_num %s\n' % make_tag_with_dashes( resnums[ name ], chains[ name ] ) )
+
+        # case-specific extra flags
+        if ( len( extra_flags[name] ) > 0 ) and ( extra_flags[ name ] != '-' ) :
+            for flag in parse_flags_string( extra_flags[ name ] ):
+                flag = flag.replace('true','True').replace('false','False')
+                fid.write( '%s\n' % flag )
+
+        # extra flags for whole benchmark
+        weights_file = ''
+        for flag in extra_flags_benchmark:
+            if ( '-motif_mode' in flag ): continue ### SWM Specific
+            if ( '#' in flag ): continue
+            flag = flag.replace('True','true').replace('False','false')
+            fid.write( flag )
+
+        fid.close()
+
+        print '\nSetting up submission files for: ', name
+        CWD = getcwd()
+        chdir( name )
+
+        rosetta_submit_cmd = 'rosetta_submit.py README_FARNA FARNA %d %d' % (njobs, args.nhours )
+        if args.save_logs:
+            rosetta_submit_cmd += ' -save_logs'
+        system( rosetta_submit_cmd )
+
+        chdir( CWD )
+
+        fid_qsub.write( 'cd %s; source %s; cd %s\n' % ( name, qsub_file,  CWD ) )
+
+
     # SETUP for StepWise Monte Carlo
     else:
 
@@ -456,13 +512,9 @@ for name in names:
                 fid.write( '-jump_res %s \n' % make_tag_with_conventional_numbering( jump_res[ name ], resnums[ name ], chains[ name ] ) )
                 fid.write( '-cutpoint_closed %s \n' % make_tag_with_conventional_numbering( cutpoint_closed[ name ], resnums[ name ], chains[ name ] ) )
         fid.write( '-fasta %s.fasta\n' % name )
-        if not cycles_flag_found:
-            fid.write( '-cycles 200\n' )
-        if not nstruct_flag_found:
-            fid.write( '-nstruct 20\n' )
-        #fid.write( '-intermolecular_frequency 0.0\n' )
-        if not args.save_times_off:
-            fid.write( '-save_times\n' )
+        if not cycles_flag_found:   fid.write( '-cycles 200\n' )
+        if not nstruct_flag_found:  fid.write( '-nstruct 20\n' )
+        if not args.save_times_off: fid.write( '-save_times\n' )
 
         # case-specific extra flags
         if ( len( extra_flags[name] ) > 0 ) and ( extra_flags[ name ] != '-' ) :
