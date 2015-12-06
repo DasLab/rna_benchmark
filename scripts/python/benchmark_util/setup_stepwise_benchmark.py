@@ -469,7 +469,7 @@ for name in names:
         CWD = getcwd()
         chdir( name )
 
-        make_readme_farna_cmd = 'source README_SETUP'
+        make_readme_farna_cmd = 'sh README_SETUP'
         system( make_readme_farna_cmd )
 
         rosetta_submit_cmd = 'rosetta_submit.py README_FARFAR FARFAR %d %d' % (njobs, args.nhours )
