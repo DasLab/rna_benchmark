@@ -266,13 +266,16 @@ for name in names:
         jump_res[ name ] = []
         cutpoint_closed[ name ] = []
         jump_bps = []
+        stems_all = stems
         stems_gen = get_all_stems( secstruct_gen_joined )
-        for i in range( len( stems_gen ) ):
-            stem_gen = stems_gen[i]
-            for bp in stem_gen:
+        for stem in stems_gen:
+            if stem not in stems_all: stems_all.append( stem )
+        for i in range( len( stems_all ) ):
+            stem = stems_all[i]
+            for bp in stem:
                 jump_bps.append( bp )
                 jump_res[ name ].extend( [ bp[ 0 ], bp[ 1 ] ] )
-                if ( bp != stem_gen[ -1] ): cutpoint_closed[ name ].append( bp[ 0 ] )
+                if ( bp != stem[ -1] ): cutpoint_closed[ name ].append( bp[ 0 ] )
         # need to be really explicit about cutpoints_closed in stepwise right now... there is an edge case (srl_fixed)
         # where jumps don't quite work.
         for i in range( len( input_resnums_by_block ) ):
@@ -292,7 +295,6 @@ for name in names:
                     if not cut_exists_for_jump:
                         cutpoint_closed[ name ].append( jump_bp[ 0 ] )
                         cuts.append( jump_bp[ 0 ] )
-
     # create fasta
     fasta[ name ] = '%s/%s.fasta' % (inpath,name)
     if not exists( fasta[ name ] ):
@@ -447,6 +449,7 @@ for name in names:
         fid.write( ' -working_res %s\\\n' % working_res[ name ].replace( ',',' ') )
         if len( extra_min_res[ name ] ) > 0 and not args.extra_min_res_off:
             fid.write( ' -extra_minimize_res %s\\\n' % make_tag_with_conventional_numbering( extra_min_res[ name ], resnums[ name ], chains[ name ] ) )
+        fid.write( '  -no_minimize\\\n' )
         if not cycles_flag_found:   fid.write( ' -cycles 20000\\\n' )
         if not nstruct_flag_found:  fid.write( ' -nstruct 20\\\n' )
         if not args.save_times_off: fid.write( ' -save_times\\\n' )
