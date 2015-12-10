@@ -266,12 +266,10 @@ for name in names:
         jump_res[ name ] = []
         cutpoint_closed[ name ] = []
         jump_bps = []
-        stems_all = stems
-        stems_gen = get_all_stems( secstruct_gen_joined )
-        for stem in stems_gen:
-            if stem not in stems_all: stems_all.append( stem )
-        for i in range( len( stems_all ) ):
-            stem = stems_all[i]
+        stems = get_all_stems( secstruct_gen_joined )
+        if len( stems ) == 0: stems = get_all_stems( secstruct_joined )
+        for i in range( len( stems ) ):
+            stem = stems[i]
             for bp in stem:
                 jump_bps.append( bp )
                 jump_res[ name ].extend( [ bp[ 0 ], bp[ 1 ] ] )
