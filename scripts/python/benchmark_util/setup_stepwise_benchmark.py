@@ -504,6 +504,7 @@ for name in names:
             if ( len( jump_res[ name ] ) > 0 ):
                 fid.write( '-jump_res %s \n' % make_tag_with_conventional_numbering( jump_res[ name ], resnums[ name ], chains[ name ] ) )
                 fid.write( '-cutpoint_closed %s \n' % make_tag_with_conventional_numbering( cutpoint_closed[ name ], resnums[ name ], chains[ name ] ) )
+            fid.write( ' -include_neighbor_base_stacks\n' ) # Need to match FARNA.
         fid.write( '-fasta %s.fasta\n' % name )
         if not cycles_flag_found:   fid.write( '-cycles 200\n' )
         if not nstruct_flag_found:  fid.write( '-nstruct 20\n' )
