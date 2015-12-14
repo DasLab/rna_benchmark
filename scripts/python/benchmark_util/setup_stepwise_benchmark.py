@@ -504,6 +504,7 @@ for name in names:
         if args.stepwise_lores:
             if ( len( jump_res[ name ] ) > 0 ):
                 fid.write( '-jump_res %s \n' % make_tag_with_conventional_numbering( jump_res[ name ], resnums[ name ], chains[ name ] ) )
+            if ( len( cutpoint_closed[ name ] ) > 0 ):
                 fid.write( '-cutpoint_closed %s \n' % make_tag_with_conventional_numbering( cutpoint_closed[ name ], resnums[ name ], chains[ name ] ) )
             fid.write( '-include_neighbor_base_stacks\n' ) # Need to match FARNA.
         fid.write( '-fasta %s.fasta\n' % name )
