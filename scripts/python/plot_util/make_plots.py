@@ -57,6 +57,9 @@ def make_plots( inpaths, outfilenames=[], target_files=['favorites.txt','favorit
 	base_inpaths = map( lambda x: basename(x), inpaths )
 
 	# Get the max number of outfiles to be plotted for a single inpath
+        if len( outfiles_list ) == 0:
+                print 'No .out or .sc files found!'
+                exit()
 	noutfiles = np.max( map( lambda x: len(x), outfiles_list ) )
 
 	###################################################
