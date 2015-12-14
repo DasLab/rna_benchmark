@@ -123,9 +123,15 @@ assert( exists( inpath ) )
 # read info_file
 def parse_flags_string( flag_string ):
     flags = []
-    for flag in flag_string.split('-'):
-        if not len( flag ): continue
-        flags.append( '-%s\n' % flag )
+    cols = flag_string.split()
+    flag = ''
+    for col in cols:
+        if len( col ) == 0: continue
+        if ( col[ 0 ] == '-' ):
+            if len( flag ) > 0: flags.append( flag+'\n' )
+            flag = col
+        else: flag += ' '+col
+    if len( flag ) > 0: flags.append( flag + '\n' )
     return flags
 
 for info_file_line in open( info_file ).readlines():
@@ -447,7 +453,7 @@ for name in names:
         fid.write( ' -working_res %s\\\n' % working_res[ name ].replace( ',',' ') )
         if len( extra_min_res[ name ] ) > 0 and not args.extra_min_res_off:
             fid.write( ' -extra_minimize_res %s\\\n' % make_tag_with_conventional_numbering( extra_min_res[ name ], resnums[ name ], chains[ name ] ) )
-        fid.write( '  -no_minimize\\\n' )
+        fid.write( ' -no_minimize\\\n' )
         if not cycles_flag_found:   fid.write( ' -cycles 20000\\\n' )
         if not nstruct_flag_found:  fid.write( ' -nstruct 20\\\n' )
         if not args.save_times_off: fid.write( ' -save_times\\\n' )
