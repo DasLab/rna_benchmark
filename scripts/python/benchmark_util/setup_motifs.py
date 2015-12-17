@@ -12,8 +12,15 @@ import rnamake.pose_factory as pf
 RNAMAKE=os.path.expandvars("$RNAMAKE")
 assert(os.path.exists(RNAMAKE))
 
-info_fid = file_handlers.TargetDefinitionsFile()
-input_pdb = sys.argv[1]
+
+
+def usage():
+    print "usage:", __file__, " [-radius <RADIUS>] [-design_bps]"
+
+try:
+    input_pdb = sys.argv[1]
+except:
+    usage()
 
 design_bps = "-design_bps" in sys.argv
 
@@ -22,6 +29,10 @@ if '-radius' in sys.argv:
     radius_idx = sys.argv.index('-radius')
     radius = int(sys.argv[radius_idx+1])
     print "using radius = ",radius
+
+
+
+info_fid = file_handlers.TargetDefinitionsFile()
 
 #Read in pose
 #p = rnamake.pose.Pose(RNAMAKE+"/examples/getting_started/resources/p4p6")
