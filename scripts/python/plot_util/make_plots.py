@@ -11,7 +11,7 @@ from matplotlib.font_manager import FontProperties
 
 ##########################################################
 
-def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], target_files=['favorites.txt','favorites2.txt','challenges.txt'], targets=['*'], colorcode=None, xvars=['rms_fill'], yvars=['score'] ):
+def make_plots( inpaths, outfilenames=[], target_files=['favorites.txt','favorites2.txt','challenges.txt'], targets=['*'], colorcode=None, xvars=['rms_fill'], yvars=['score'] ):
 
 	# initialize lists
 	data = []
@@ -57,6 +57,9 @@ def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], targ
 	base_inpaths = map( lambda x: basename(x), inpaths )
 
 	# Get the max number of outfiles to be plotted for a single inpath
+        if len( outfiles_list ) == 0:
+                print 'No .out or .sc files found!'
+                exit()
 	noutfiles = np.max( map( lambda x: len(x), outfiles_list ) )
 
 	###################################################
@@ -94,6 +97,9 @@ def make_plots( inpaths, outfilenames=['swm_rebuild.out','swm_rebuild.sc'], targ
 
 			# plot data, and reference lines (x=1, x=2)
 			ax.plot( xvar_data, yvar_data, marker='.', markersize=4, color=colorcode[n], linestyle=' ', label=base_inpaths[n] )
+                        #ylim = plt.ylim()
+                        #ylim = ( max( ylim[0], -500 ) , min( ylim[1],  100 ) )
+                        #ax.set_ylim( ylim )
 			ax.plot( [1 for y in plt.ylim()], plt.ylim(), color='black', linestyle=':')
 			ax.plot( [2 for y in plt.ylim()], plt.ylim(), color='black')
 			ax.set_xlim( 0, 16 )
@@ -143,10 +149,10 @@ if __name__=='__main__':
 
 	parser = argparse.ArgumentParser(description='Make plots of scores from silent files.')
 	parser.add_argument('inpaths', nargs='+', help='List of paths too silent files.')
-	parser.add_argument('-outfilenames', nargs='*', help='Name of silent file.', default=['swm_rebuild.out','swm_rebuild.sc'])
+	parser.add_argument('-outfilenames', nargs='*', help='Name of silent file.', default=['swm_rebuild.out','swm_rebuild.sc','farna_rebuild.sc','farna_rebuild.out'])
 	parser.add_argument('-target_files', nargs='+', help='List of additional target files.', default=['favorites.txt','favorites2.txt','challenges.txt'])
 	parser.add_argument('-targets', nargs='+', help='List of targets.', default=['*'])
-	parser.add_argument('-xvar', nargs='*', help='Name of x variable(s).', default=['rms_fill'])
+	parser.add_argument('-xvar', nargs='*', help='Name of x variable(s).', default=['rms_fill','rms'])
 	parser.add_argument('-yvar', nargs='*', help='Name of y variable(s).', default=['score'])
 	args=parser.parse_args()
 

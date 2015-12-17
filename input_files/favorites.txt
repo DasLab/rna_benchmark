@@ -1,3 +1,5 @@
+Benchmark_flags: -superimpose_over_all
+
 Name:          gcaa_tetraloop
 Sequence:      gcgcaagc
 Secstruct:     ((....))
@@ -81,8 +83,9 @@ Extra_flags:   -
 Name:          srl_fixed
 Sequence:      ccuaguacgagaggaccgg
 Secstruct:     ((.....(....)....))
+Secstruct_gen: ((.....((..))....))
 Working_res:   A:651-669
-Input_res:     A:651-652,658-663,668-669
+Input_res:     A:651-652,A:658-663,A:668-669
 Native:        1q9a_RNA.pdb
 Extra_flags:   -
 

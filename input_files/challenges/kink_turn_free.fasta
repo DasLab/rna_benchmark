@@ -1,2 +1,4 @@
->kink_turn_free A:16-22 30-39
-guggaggccgaugaaac
+>kink_turn_free A:16-22
+guggagg
+>kink_turn_free A:30-39
+ccgaugaaac
