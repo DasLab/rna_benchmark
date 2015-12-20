@@ -49,7 +49,7 @@ ROSETTA=args.path_to_rosetta
 if ( not len( ROSETTA ) ) or ( not exists( ROSETTA ) ):
     ROSETTA=expandvars( '$ROSETTA' )
     if ( not len( ROSETTA ) ) or ( not exists( ROSETTA ) ):
-        print 'WARNING: $ROSETTA must be defined as the path to a working rosetta repository!!!'
+        print 'WARNING: ROSETTA must be defined as the path to a working rosetta repository'
         print 'Export this variable, by putting the following in your .bashrc or .zshrc:'
         print 'export ROSETTA=/path/to/rosetta/\n'
         exit(0)
