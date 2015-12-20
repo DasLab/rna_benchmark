@@ -190,6 +190,7 @@ for name in names:
     input_chains  = []
     input_resnums_by_block = []
     input_chains_by_block = []
+    input_resnum_fullmodel_by_block = []
     if input_res[ name ] != '-':
         input_res_blocks = string.split( input_res[ name ], ';' )
         for m in range( len ( input_res_blocks ) ):
@@ -201,6 +202,7 @@ for name in names:
             input_resnums_by_block.append( [] )
             input_chains_by_block.append(  [] )
             get_resnum_chain( input_res_blocks[m], input_resnums_by_block[m], input_chains_by_block[m] )
+            input_resnum_fullmodel_by_block.append( map( lambda x: get_fullmodel_number(x,resnums[name],chains[name]), zip( input_resnums_by_block[m], input_chains_by_block[m] ) ) )
 
     input_resnum_fullmodel[name] = map( lambda x: get_fullmodel_number(x,resnums[name],chains[name]), zip( input_resnums, input_chains ) )
 
@@ -239,6 +241,7 @@ for name in names:
 
         helix_files[ name ].append( helix_file )
         input_resnum_fullmodel[name] += helix_resnum
+        input_resnum_fullmodel_by_block.append( helix_resnum )
 
         if exists( helix_file ): continue
         command = 'rna_helix.py -seq %s  -o %s -resnum %s' % ( helix_seq, helix_file, \
@@ -252,12 +255,21 @@ for name in names:
     L = len( sequence_joined )
     terminal_res[ name ] = []
     extra_min_res[ name ] = []
+    def get_domain( m ): # allows testing if a residue moves relative to next one (e.g., if they are in different helices)
+        for i, block in enumerate( input_resnum_fullmodel_by_block ):
+            if m in block: return i
+        return 0
+
     for m in range( 1, L+1 ):
         if ( m not in input_resnum_fullmodel[name] ): continue
         right_before_chainbreak = ( m == L or m in chainbreak_pos )
         right_after_chainbreak  = ( m == 1 or m - 1 in chainbreak_pos )
-        prev_moving = ( m - 1 not in input_resnum_fullmodel[name] ) and ( m != 1 ) and not right_after_chainbreak
-        next_moving = ( m + 1 not in input_resnum_fullmodel[name] ) and ( m != L ) and not right_before_chainbreak
+        prev_moving = ( m - 1 not in input_resnum_fullmodel[name] or \
+                        ( get_domain( m-1 )!=0 and get_domain( m )!=0 and get_domain( m-1 )!=get_domain(m) ) ) and \
+                      ( m != 1 ) and not right_after_chainbreak
+        next_moving = ( m + 1 not in input_resnum_fullmodel[name] or \
+                        ( get_domain( m )!=0 and get_domain( m+1 )!=0 and get_domain( m )!=get_domain(m+1)  ) ) and \
+                      ( m != L ) and not right_before_chainbreak
         if ( ( right_after_chainbreak and not next_moving ) or \
              ( right_before_chainbreak and not prev_moving ) ):
             terminal_res[ name ].append( m )
