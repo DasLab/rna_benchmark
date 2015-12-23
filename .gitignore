@@ -2,3 +2,4 @@ new/*/
 Figures/*
 *.pyc
 INSTALL
+.DS*

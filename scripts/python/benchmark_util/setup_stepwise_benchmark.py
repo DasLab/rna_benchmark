@@ -166,7 +166,6 @@ for info_file_line in open( info_file ).readlines():
 # check that each dictionary is the same size
 assert( len( names ) == len( sequence ) == len( secstruct ) == len( working_res ) == len( input_res ) == len( native ))
 
-
 # iterate over names
 for name in names:
 
@@ -181,7 +180,7 @@ for name in names:
     # working_native
     assert( native[ name ] != '-' ) # for now, require a native, since this is a benchmark.
     prefix = '%s/%s_' % ( inpath,name)
-    working_native[ name ] = slice_out( inpath, prefix, native[ name ], string.join( working_res_blocks ) )
+    working_native[ name ] = slice_out( inpath, prefix, native[ name ], string.join( working_res_blocks ), check_sequence=True )
     assert( string.join(sequences,'') == string.join(get_sequences( working_native[name] )[0],'') )
 
     # create starting PDBs
