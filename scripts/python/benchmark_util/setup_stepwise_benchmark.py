@@ -28,6 +28,7 @@ parser.add_argument('--farna', action='store_true', help='Additional flag for se
 parser.add_argument('--extra_min_res_off', action='store_true', help='Additional flag for turning extra_min_res off.')
 parser.add_argument('--save_times_off', action='store_true', help='Additional flag for turning save_times flag off.')
 parser.add_argument('--path_to_rosetta', default='', help='Path to working copy of rosetta.')
+parser.add_argument('--no_align_pdb', action='store_true', help='Do not read in align_pdb; forces alignment to native, useful for native_screen runs.')
 parser.add_argument('-v', '--verbose', help="increase output verbosity", action="store_true")
 parser.add_argument('-motif_mode_off', help="temporary hack for turning off hardcoded '-motif_mode' flag", action="store_true")
 parser.add_argument('--save_logs', help="save .out and .err logs for each job.", action="store_true")
@@ -380,9 +381,11 @@ for name in names:
 # write qsubMINIs, READMEs and SUBMITs
 qsub_file = 'qsubMINI'
 hostname = uname()[1]
+
 if hostname.find( 'stampede' ) > -1: qsub_file = 'qsubMPI'
-if hostname.find( 'sh' ) > -1: qsub_file = 'sbatchMINI'
+if hostname.find( 'sherlock' ) > -1: qsub_file = 'sbatchMPI'
 fid_qsub = open( qsub_file, 'w' )
+
 for name in names:
 
     dirname = name
@@ -534,20 +537,15 @@ for name in names:
         if ( len( extra_flags[name] ) > 0 ) and ( extra_flags[ name ] != '-' ) :
             #fid.write( '%s\n' % extra_flags[name] )
             cols = extra_flags[ name ].split( ' ' )
-            if '-align_pdb' in cols:
+            if '-align_pdb' in cols and not args.no_align_pdb:
                 align_pdb = cols[ cols.index( '-align_pdb' )+1 ]
                 assert( exists( inpath+'/'+align_pdb ) )
                 system( 'cp %s/%s %s' % (inpath, align_pdb, name ) )
 
-            for m in range( len( cols ) ):
-                col = cols[ m ]
-                if len( col ) == 0: continue
-                col = col.replace('True','true').replace('False','false')
-                if ( col[ 0 ] == '-' ):
-                    fid.write( '\n'+col )
-                else:
-                    fid.write( ' ' + col  )
-            if len( cols ) > 0: fid.write( '\n' )
+            for flag in parse_flags_string( extra_flags[ name ] ):
+                flag = flag.replace('True','true').replace('False','false')
+                if ( args.no_align_pdb and flag.find( '-align_pdb' ) > -1 ): continue
+                fid.write( flag )
 
         # extra flags for whole benchmark
         weights_file = ''
