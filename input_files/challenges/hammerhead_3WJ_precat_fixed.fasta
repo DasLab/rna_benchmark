@@ -1,2 +1,6 @@
->hammerhead_3WJ_precat_fixed A:4-14 B:19-25 B:34-38
-gucugaugaggccgaaacgucac
+>hammerhead_3WJ_precat_fixed A:4-14
+gucugaugagg
+>hammerhead_3WJ_precat_fixed B:19-25
+ccgaaac
+>hammerhead_3WJ_precat_fixed B:34-38
+gucac

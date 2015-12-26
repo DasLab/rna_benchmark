@@ -35,7 +35,7 @@ Extra_flags:   -
 Name:          kink_turn_fixed
 Sequence:      guggagg,ccgaugaaac
 Secstruct:     ((...((,))......))
-Working_res:   A:16-22,30-39
+Working_res:   A:16-22,A:30-39
 Input_res:     16-17,21-22,30-31,38-39
 Native:        2gis_RNA.pdb
 Extra_flags:   -

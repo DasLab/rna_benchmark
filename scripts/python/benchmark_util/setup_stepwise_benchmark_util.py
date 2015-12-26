@@ -5,12 +5,18 @@
 import string
 from os.path import exists
 from os import system
+from parse_options import get_resnum_chain
 from make_tag import make_tag_with_dashes
-
+from get_sequence import get_sequences
 #####################################################################################################################
 
+def flatten( l ):
+    new_l = []
+    for e in l: new_l.extend( e )
+    return new_l
+
 # helper function for PDB processing
-def slice_out( inpath_dir, prefix, pdb, res_string, excise=False ):
+def slice_out( inpath_dir, prefix, pdb, res_string, excise=False, check_sequence=False ):
     starting_native = inpath_dir+'/'+pdb
     assert( exists( starting_native ) )
     slice_pdb = prefix + pdb
@@ -19,6 +25,15 @@ def slice_out( inpath_dir, prefix, pdb, res_string, excise=False ):
         else:       command = 'pdbslice.py %s -subset %s %s ' % ( starting_native, res_string, prefix )
         system( command )
     assert( exists( slice_pdb ) )
+    if check_sequence:
+        target_resnums = []
+        target_chains = []
+        for col in res_string.split(' '):
+            get_resnum_chain( col, target_resnums, target_chains )
+        ( sequences, all_chains, all_resnums ) = get_sequences( slice_pdb )
+        assert( flatten(all_resnums) == target_resnums )
+        assert( flatten(all_chains) == target_chains )
+
     return slice_pdb
 
 #####################################################################################################################
@@ -41,14 +56,14 @@ def get_align_res( screen_pdb, working_pdb, working_fixed_res ):
     for n in xrange( len( screen_pdb_info[4] ) ):
         screen_chain = screen_pdb_info[3][n]
         screen_res = screen_pdb_info[4][n]
-        #working_reschain = pdb2pose( working_pdb_info[3], working_pdb_info[4], screen_chain, screen_res )   
+        #working_reschain = pdb2pose( working_pdb_info[3], working_pdb_info[4], screen_chain, screen_res )
         working_reschain = ( 0, '' )
         for m in xrange( len( working_pdb_info[3] ) ):
-            if ( working_pdb_info[4][m] == screen_res ) and ( working_pdb_info[3][m] == screen_chain ): 
+            if ( working_pdb_info[4][m] == screen_res ) and ( working_pdb_info[3][m] == screen_chain ):
                 working_reschain = ( working_pdb_info[4][m], working_pdb_info[3][m] )
         if ( working_reschain[0] > 0 ):# and ( working_reschain[0] in working_fixed_res ):
             screen_align_res.append( n )
-            working_align_res.append( get_fullmodel_number(working_reschain,working_pdb_info[4],working_pdb_info[3]) ) 
+            working_align_res.append( get_fullmodel_number(working_reschain,working_pdb_info[4],working_pdb_info[3]) )
     if len( screen_align_res ): screen_align_res_tag = make_tag_with_dashes( screen_align_res )
     else:   screen_align_res_tag = '0-0'
     if len( working_align_res ):    working_align_res_tag = make_tag_with_dashes( working_align_res )
