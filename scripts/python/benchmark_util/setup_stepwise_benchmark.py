@@ -379,11 +379,16 @@ for name in names:
 
 # write qsubMINIs, READMEs and SUBMITs
 qsub_file = 'qsubMINI'
-hostname = uname()[1]
+qsub_file2 = ''
 
+hostname = uname()[1]
 if hostname.find( 'stampede' ) > -1: qsub_file = 'qsubMPI'
-if hostname.find( 'sherlock' ) > -1: qsub_file = 'sbatchMPI'
+if hostname.find( 'sherlock' ) > -1:
+    qsub_file  = 'sbatchMINI'
+    qsub_file2 = 'sbatchMPI'
 fid_qsub = open( qsub_file, 'w' )
+if len( qsub_file2 ) > 0:
+    fid_qsub2 = open( qsub_file2, 'w' )
 
 for name in names:
 
@@ -501,7 +506,7 @@ for name in names:
         chdir( CWD )
 
         fid_qsub.write( 'cd %s; source %s; cd %s\n' % ( name, qsub_file,  CWD ) )
-
+        if len( qsub_file2 ) > 0: fid_qsub2.write( 'cd %s; source %s; cd %s\n' % ( name, qsub_file2,  CWD ) )
 
     # SETUP for StepWise Monte Carlo
     else:
@@ -577,7 +582,9 @@ for name in names:
         chdir( CWD )
 
         fid_qsub.write( 'cd %s; source %s; cd %s\n' % ( name, qsub_file,  CWD ) )
+        if len( qsub_file2 ) > 0: fid_qsub2.write( 'cd %s; source %s; cd %s\n' % ( name, qsub_file2,  CWD ) )
 
 
 fid_qsub.close()
+if len( qsub_file2 ) > 0: fid_qsub2.close()
 
