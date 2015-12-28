@@ -97,6 +97,8 @@ helix_files = {}
 working_native = {}
 input_pdbs = {}
 terminal_res = {}
+block_stack_above_res = {}
+block_stack_below_res = {}
 extra_min_res = {}
 cutpoint_closed = {}
 jump_res = {}
@@ -206,7 +208,6 @@ for name in names:
 
     input_resnum_fullmodel[name] = map( lambda x: get_fullmodel_number(x,resnums[name],chains[name]), zip( input_resnums, input_chains ) )
 
-
     # create secstruct if not defined
     if secstruct[ name ] == '-': secstruct[ name ] = string.join( [ '.' * len( seq ) for seq in sequences ], ',' )
     # secstruct general can include obligate pairs (even non-canonical!)
@@ -254,6 +255,8 @@ for name in names:
     # deprecate this python block in 2015 after testing -- rd2014
     L = len( sequence_joined )
     terminal_res[ name ] = []
+    block_stack_above_res[ name ] = []
+    block_stack_below_res[ name ] = []
     extra_min_res[ name ] = []
     def get_domain( m ): # allows testing if a residue moves relative to next one (e.g., if they are in different helices)
         for i, block in enumerate( input_resnum_fullmodel_by_block ):
@@ -270,12 +273,33 @@ for name in names:
         next_moving = ( m + 1 not in input_resnum_fullmodel[name] or \
                         ( get_domain( m )!=0 and get_domain( m+1 )!=0 and get_domain( m )!=get_domain(m+1)  ) ) and \
                       ( m != L ) and not right_before_chainbreak
-        if ( ( right_after_chainbreak and not next_moving ) or \
-             ( right_before_chainbreak and not prev_moving ) ):
-            terminal_res[ name ].append( m )
+
+        if right_after_chainbreak:
+            if not next_moving:
+                block_stack_below_res[ name ].append( m )
+                terminal_res[ name ].append( m )
+            else:
+                # special case -- singlet base pairs cannot be called 'terminal' but can enforce block_stack at 5' nts.
+                for stem in stems:
+                    if m == stem[0][0] or m == stem[-1][1]:
+                        block_stack_below_res[ name ].append( m )
+                        break
+
+        if right_before_chainbreak:
+            if not prev_moving:
+                block_stack_above_res[ name ].append( m )
+                if ( m not in terminal_res[ name ] ): terminal_res[ name ].append( m )
+            else:
+                # special case -- singlet base pairs cannot be called 'terminal' but can enforce block_stack at 3' nts.
+                for stem in stems:
+                    if m == stem[0][1] or m == stem[-1][0]:
+                        block_stack_above_res[ name ].append( m )
+                        break
+
         if ( ( prev_moving and not next_moving and not right_before_chainbreak ) or \
              ( next_moving and not prev_moving and not right_after_chainbreak ) ):
             extra_min_res[ name ].append( m )
+
     if not '-motif_mode\n' in extra_flags_benchmark and not motif_mode_off:
         extra_flags_benchmark.append( '-motif_mode\n' )
 
@@ -524,6 +548,10 @@ for name in names:
             fid.write( '-native %s\n' % basename( working_native[name] ) )
         if len( terminal_res[ name ] ) > 0:
             fid.write( '-terminal_res %s  \n' % make_tag_with_conventional_numbering( terminal_res[ name ], resnums[ name ], chains[ name ] ) )
+        if len( block_stack_above_res[ name ] ) > 0:
+            fid.write( '-block_stack_above_res %s  \n' % make_tag_with_conventional_numbering( block_stack_above_res[ name ], resnums[ name ], chains[ name ] ) )
+        if len( block_stack_below_res[ name ] ) > 0:
+            fid.write( '-block_stack_below_res %s  \n' % make_tag_with_conventional_numbering( block_stack_below_res[ name ], resnums[ name ], chains[ name ] ) )
         if len( extra_min_res[ name ] ) > 0 and not args.extra_min_res_off: ### Turn extra_min_res off for SWM when comparing to SWA
             fid.write( '-extra_min_res %s \n' % make_tag_with_conventional_numbering( extra_min_res[ name ], resnums[ name ], chains[ name ] ) )
         if args.stepwise_lores:
