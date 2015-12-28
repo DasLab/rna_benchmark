@@ -24,7 +24,7 @@ def make_plots( inpaths, outfilenames=[], target_files=['favorites.txt','favorit
 
 	# Get colorcode for plotting
 	if not colorcode:
-		colorcode = [ (0.0, 0.0, 0.0, 1.0), (1.0, 0.0, 0.0, 1.0), (0.0, 0.5, 1.0, 1.0), (0.2, 0.7, 0.0, 1.0)  ]
+		colorcode = [ (0.0, 0.0, 0.0, 1.0), (1.0, 0.0, 0.0, 1.0), (0.0, 0.5, 1.0, 1.0), (0.2, 0.7, 0.0, 1.0), (1.0, 0.0, 1.0)  ]
 	if len(colorcode) < len(inpaths):
 		colorcode = jet( len(inpaths) )
 

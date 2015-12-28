@@ -195,7 +195,7 @@ for name in names:
         input_res_blocks = string.split( input_res[ name ], ';' )
         for m in range( len ( input_res_blocks ) ):
             prefix = '%s/%s_START%d_' % ( inpath,name,m+1)
-            input_pdb = slice_out( inpath, prefix, native[ name ],input_res_blocks[m] )
+            input_pdb = slice_out( inpath, prefix, native[ name ],input_res_blocks[m], check_sequence = True )
             input_pdbs[ name ].append( input_pdb )
             get_resnum_chain( input_res_blocks[m], input_resnums, input_chains )
             # useful for checking jumps & cutpoints; see below.
