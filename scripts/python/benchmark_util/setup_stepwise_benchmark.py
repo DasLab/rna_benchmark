@@ -27,6 +27,7 @@ parser.add_argument('--swa', action='store_true', help='Additional flag for sett
 parser.add_argument('--farna', action='store_true', help='Additional flag for setting up FARNA runs.')
 parser.add_argument('--extra_min_res_off', action='store_true', help='Additional flag for turning extra_min_res off.')
 parser.add_argument('--save_times_off', action='store_true', help='Additional flag for turning save_times flag off.')
+parser.add_argument('--block_stack_off', action='store_true', help='Additional flag for turning off -block_stack_above_res & -block_stack_below_res.')
 parser.add_argument('--path_to_rosetta', default='', help='Path to working copy of rosetta.')
 parser.add_argument('--no_align_pdb', action='store_true', help='Do not read in align_pdb; forces alignment to native, useful for native_screen runs.')
 parser.add_argument('-v', '--verbose', help="increase output verbosity", action="store_true")
@@ -548,10 +549,11 @@ for name in names:
             fid.write( '-native %s\n' % basename( working_native[name] ) )
         if len( terminal_res[ name ] ) > 0:
             fid.write( '-terminal_res %s  \n' % make_tag_with_conventional_numbering( terminal_res[ name ], resnums[ name ], chains[ name ] ) )
-        if len( block_stack_above_res[ name ] ) > 0:
-            fid.write( '-block_stack_above_res %s  \n' % make_tag_with_conventional_numbering( block_stack_above_res[ name ], resnums[ name ], chains[ name ] ) )
-        if len( block_stack_below_res[ name ] ) > 0:
-            fid.write( '-block_stack_below_res %s  \n' % make_tag_with_conventional_numbering( block_stack_below_res[ name ], resnums[ name ], chains[ name ] ) )
+        if not args.block_stack_off:
+            if len( block_stack_above_res[ name ] ) > 0:
+                fid.write( '-block_stack_above_res %s  \n' % make_tag_with_conventional_numbering( block_stack_above_res[ name ], resnums[ name ], chains[ name ] ) )
+            if len( block_stack_below_res[ name ] ) > 0:
+                fid.write( '-block_stack_below_res %s  \n' % make_tag_with_conventional_numbering( block_stack_below_res[ name ], resnums[ name ], chains[ name ] ) )
         if len( extra_min_res[ name ] ) > 0 and not args.extra_min_res_off: ### Turn extra_min_res off for SWM when comparing to SWA
             fid.write( '-extra_min_res %s \n' % make_tag_with_conventional_numbering( extra_min_res[ name ], resnums[ name ], chains[ name ] ) )
         if args.stepwise_lores:
