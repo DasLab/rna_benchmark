@@ -6,7 +6,7 @@ Secstruct:     ((......[[.)),((]].....))
 Working_res:   X:29-41,X:58-68
 Input_res:     -
 Native:        1y26_RNA.pdb
-Extra_flags:   -align_pdb ALIGN_2bp_1y26_RNA.pdb -rmsd_screen 2.0
+Extra_flags:   -align_pdb ALIGN_2bp_1y26_RNA.pdb -rmsd_screen 4.0
 
 Name:          just_tr_P4P6
 Sequence:      ccuaaguc,gauaugg
@@ -40,6 +40,7 @@ Input_res:     A:1-2,A:5-6,B:1-2,C:7-8
 Native:        swm_rebuild_forcebulge_CSA100.out.1_REBUILD_BULGE.out.1.pdb
 Extra_flags:   -bulge_res C:4
 
+# too easy -- not in use.
 #Name:          gaaa_minor_fixed
 #Sequence:      ccgaaagg,gaccu,agguu
 #Secstruct:     ((....)),(((((,)))))
@@ -54,7 +55,7 @@ Secstruct:     ((....)),(((((,)))))
 Working_res:   P:58-65,Q:2-6,Q:46-50
 Input_res:     -
 Native:        2oiu_RNA.pdb
-Extra_flags:   -jump_res P:63 Q:48 -align_pdb ALIGN_2bp_2oiu_RNA.pdb -rmsd_screen 2.0
+Extra_flags:   -jump_res P:63 Q:48 -align_pdb ALIGN_2bp_2oiu_RNA.pdb -rmsd_screen 4.0
 
 Name:          cg_helix
 Sequence:      cgcg,cgcg
