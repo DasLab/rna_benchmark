@@ -36,7 +36,7 @@ Name:          kink_turn_fixed
 Sequence:      guggagg,ccgaugaaac
 Secstruct:     ((...((,))......))
 Working_res:   A:16-22,A:30-39
-Input_res:     16-17,21-22,30-31,38-39
+Input_res:     A:16-17,A:21-22,A:30-31,A:38-39
 Native:        2gis_RNA.pdb
 Extra_flags:   -
 
@@ -44,7 +44,7 @@ Name:          tl_tr_P4P6
 Sequence:      ggaaac,ccuaaguc,gauaugg
 Secstruct:     (....),((...(((,)))..))
 Working_res:   R:149-154,R:222-229,R:245-251
-Input_res:     149,154,222-223,250-251
+Input_res:     R:149,R:154,R:222-223,R:250-251
 Native:        2r8s_RNA.pdb
 Extra_flags:   -
 
@@ -52,7 +52,7 @@ Name:          j55a_P4P6_fixed
 Sequence:      ggucaacagcc,ggacaugguc
 Secstruct:     ((((.....((,))....))))
 Working_res:   R:118-128,R:194-203
-Input_res:     118-121,127-128,194-195,200-203
+Input_res:     R:118-121,R:127-128,R:194-195,R:200-203
 Native:        2r8s_RNA.pdb
 Extra_flags:   -
 
