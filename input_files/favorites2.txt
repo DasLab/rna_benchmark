@@ -12,7 +12,7 @@ Name:          kiss_add_fixed
 Sequence:      aaugauaugguuu,agccuuaaacu
 Secstruct:     ((.........)),((.......))
 Working_res:   X:29-41,X:58-68
-Input_res:     29-30,40-41,58-59,67-68
+Input_res:     X:29-30,X:40-41,X:58-59,X:67-68
 Native:        1y26_RNA.pdb
 Extra_flags:   -
 
@@ -20,7 +20,7 @@ Name:          kiss_add_L2_fixed
 Sequence:      aaugauaugguuu,agccuuaaacu
 Secstruct:     ((.........)),((.......))
 Working_res:   X:29-41,X:58-68
-Input_res:     29-30,40-41,58-68
+Input_res:     X:29-30,X:40-41,X:58-68
 Native:        1y26_RNA.pdb
 Extra_flags:   -
 
@@ -28,7 +28,7 @@ Name:          kiss_add_L3_fixed
 Sequence:      aaugauaugguuu,agccuuaaacu
 Secstruct:     ((.........)),((.......))
 Working_res:   X:29-41,X:58-68
-Input_res:     29-41,58-59,67-68
+Input_res:     X:29-41,X:58-59,X:67-68
 Native:        1y26_RNA.pdb
 Extra_flags:   -
 
