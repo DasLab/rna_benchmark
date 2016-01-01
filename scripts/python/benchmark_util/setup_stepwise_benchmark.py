@@ -182,7 +182,7 @@ for name in names:
 
     # working_native
     assert( native[ name ] != '-' ) # for now, require a native, since this is a benchmark.
-    prefix = '%s/%s_' % ( inpath,name)
+    prefix = '%s/%s_NATIVE_' % ( inpath,name)
     working_native[ name ] = slice_out( inpath, prefix, native[ name ], string.join( working_res_blocks ), check_sequence=True )
     assert( string.join(sequences,'') == string.join(get_sequences( working_native[name] )[0],'') )
 
