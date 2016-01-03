@@ -24,7 +24,7 @@ def make_plots( inpaths, outfilenames=[], target_files=['favorites.txt','favorit
 
 	# Get colorcode for plotting
 	if not colorcode:
-		colorcode = [ (0.0, 0.0, 0.0, 1.0), (1.0, 0.0, 0.0, 1.0) ]
+		colorcode = [ (0.0, 0.0, 0.0, 1.0), (1.0, 0.0, 0.0, 1.0), (0.0, 0.5, 1.0, 1.0), (0.2, 0.7, 0.0, 1.0), (1.0, 0.0, 1.0)  ]
 	if len(colorcode) < len(inpaths):
 		colorcode = jet( len(inpaths) )
 
@@ -70,6 +70,7 @@ def make_plots( inpaths, outfilenames=[], target_files=['favorites.txt','favorit
 	# setup pdf and figure, return handles
 	( pp, fullpdfname ) = setup_pdf_page( base_inpaths, targets )
 	( fig, nplots, nrows, ncols ) = setup_figure( noutfiles )
+        title_fontsize = get_title_fontsize( ncols, nplots )
 
 	# iterate over runs
 	for n in xrange( len(inpaths) ):
@@ -105,10 +106,7 @@ def make_plots( inpaths, outfilenames=[], target_files=['favorites.txt','favorit
 			ax.set_xlim( 0, 16 )
 
 			# set title and axes labels, adjust axis properties
-			title_fontsize = 'medium'
-			if nplots > 20:
-				title_fontsize = 6
-			ax.set_title( get_title(target), fontsize=title_fontsize, weight='bold' )
+			ax.set_title( get_title( target ), fontsize=title_fontsize, weight='bold' )
 			ax.set_ylabel( string.join(yvars, ', '), fontsize=6 )
 			ax.set_xlabel( string.join(xvars, ', '), fontsize=6 )
 			for ticklabel in ax.yaxis.get_ticklabels()+ax.xaxis.get_ticklabels():

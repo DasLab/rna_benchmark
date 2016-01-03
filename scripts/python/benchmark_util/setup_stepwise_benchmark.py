@@ -27,7 +27,9 @@ parser.add_argument('--swa', action='store_true', help='Additional flag for sett
 parser.add_argument('--farna', action='store_true', help='Additional flag for setting up FARNA runs.')
 parser.add_argument('--extra_min_res_off', action='store_true', help='Additional flag for turning extra_min_res off.')
 parser.add_argument('--save_times_off', action='store_true', help='Additional flag for turning save_times flag off.')
+parser.add_argument('--block_stack_off', action='store_true', help='Additional flag for turning off -block_stack_above_res & -block_stack_below_res.')
 parser.add_argument('--path_to_rosetta', default='', help='Path to working copy of rosetta.')
+parser.add_argument('--no_align_pdb', action='store_true', help='Do not read in align_pdb; forces alignment to native, useful for native_screen runs.')
 parser.add_argument('-v', '--verbose', help="increase output verbosity", action="store_true")
 parser.add_argument('-motif_mode_off', help="temporary hack for turning off hardcoded '-motif_mode' flag", action="store_true")
 parser.add_argument('--save_logs', help="save .out and .err logs for each job.", action="store_true")
@@ -49,7 +51,7 @@ ROSETTA=args.path_to_rosetta
 if ( not len( ROSETTA ) ) or ( not exists( ROSETTA ) ):
     ROSETTA=expandvars( '$ROSETTA' )
     if ( not len( ROSETTA ) ) or ( not exists( ROSETTA ) ):
-        print 'WARNING: $ROSETTA must be defined as the path to a working rosetta repository!!!'
+        print 'WARNING: ROSETTA must be defined as the path to a working rosetta repository'
         print 'Export this variable, by putting the following in your .bashrc or .zshrc:'
         print 'export ROSETTA=/path/to/rosetta/\n'
         exit(0)
@@ -96,6 +98,8 @@ helix_files = {}
 working_native = {}
 input_pdbs = {}
 terminal_res = {}
+block_stack_above_res = {}
+block_stack_below_res = {}
 extra_min_res = {}
 cutpoint_closed = {}
 jump_res = {}
@@ -166,7 +170,6 @@ for info_file_line in open( info_file ).readlines():
 # check that each dictionary is the same size
 assert( len( names ) == len( sequence ) == len( secstruct ) == len( working_res ) == len( input_res ) == len( native ))
 
-
 # iterate over names
 for name in names:
 
@@ -180,8 +183,8 @@ for name in names:
 
     # working_native
     assert( native[ name ] != '-' ) # for now, require a native, since this is a benchmark.
-    prefix = '%s/%s_' % ( inpath,name)
-    working_native[ name ] = slice_out( inpath, prefix, native[ name ], string.join( working_res_blocks ) )
+    prefix = '%s/%s_NATIVE_' % ( inpath,name)
+    working_native[ name ] = slice_out( inpath, prefix, native[ name ], string.join( working_res_blocks ), check_sequence=True )
     assert( string.join(sequences,'') == string.join(get_sequences( working_native[name] )[0],'') )
 
     # create starting PDBs
@@ -190,20 +193,21 @@ for name in names:
     input_chains  = []
     input_resnums_by_block = []
     input_chains_by_block = []
+    input_resnum_fullmodel_by_block = []
     if input_res[ name ] != '-':
         input_res_blocks = string.split( input_res[ name ], ';' )
         for m in range( len ( input_res_blocks ) ):
             prefix = '%s/%s_START%d_' % ( inpath,name,m+1)
-            input_pdb = slice_out( inpath, prefix, native[ name ],input_res_blocks[m] )
+            input_pdb = slice_out( inpath, prefix, native[ name ],input_res_blocks[m], check_sequence = True )
             input_pdbs[ name ].append( input_pdb )
             get_resnum_chain( input_res_blocks[m], input_resnums, input_chains )
             # useful for checking jumps & cutpoints; see below.
             input_resnums_by_block.append( [] )
             input_chains_by_block.append(  [] )
             get_resnum_chain( input_res_blocks[m], input_resnums_by_block[m], input_chains_by_block[m] )
+            input_resnum_fullmodel_by_block.append( map( lambda x: get_fullmodel_number(x,resnums[name],chains[name]), zip( input_resnums_by_block[m], input_chains_by_block[m] ) ) )
 
     input_resnum_fullmodel[name] = map( lambda x: get_fullmodel_number(x,resnums[name],chains[name]), zip( input_resnums, input_chains ) )
-
 
     # create secstruct if not defined
     if secstruct[ name ] == '-': secstruct[ name ] = string.join( [ '.' * len( seq ) for seq in sequences ], ',' )
@@ -239,6 +243,7 @@ for name in names:
 
         helix_files[ name ].append( helix_file )
         input_resnum_fullmodel[name] += helix_resnum
+        input_resnum_fullmodel_by_block.append( helix_resnum )
 
         if exists( helix_file ): continue
         command = 'rna_helix.py -seq %s  -o %s -resnum %s' % ( helix_seq, helix_file, \
@@ -251,19 +256,51 @@ for name in names:
     # deprecate this python block in 2015 after testing -- rd2014
     L = len( sequence_joined )
     terminal_res[ name ] = []
+    block_stack_above_res[ name ] = []
+    block_stack_below_res[ name ] = []
     extra_min_res[ name ] = []
+    def get_domain( m ): # allows testing if a residue moves relative to next one (e.g., if they are in different helices)
+        for i, block in enumerate( input_resnum_fullmodel_by_block ):
+            if m in block: return i
+        return 0
+
     for m in range( 1, L+1 ):
         if ( m not in input_resnum_fullmodel[name] ): continue
         right_before_chainbreak = ( m == L or m in chainbreak_pos )
         right_after_chainbreak  = ( m == 1 or m - 1 in chainbreak_pos )
-        prev_moving = ( m - 1 not in input_resnum_fullmodel[name] ) and ( m != 1 ) and not right_after_chainbreak
-        next_moving = ( m + 1 not in input_resnum_fullmodel[name] ) and ( m != L ) and not right_before_chainbreak
-        if ( ( right_after_chainbreak and not next_moving ) or \
-             ( right_before_chainbreak and not prev_moving ) ):
-            terminal_res[ name ].append( m )
+        prev_moving = ( m - 1 not in input_resnum_fullmodel[name] or \
+                        ( get_domain( m-1 )!=0 and get_domain( m )!=0 and get_domain( m-1 )!=get_domain(m) ) ) and \
+                      ( m != 1 ) and not right_after_chainbreak
+        next_moving = ( m + 1 not in input_resnum_fullmodel[name] or \
+                        ( get_domain( m )!=0 and get_domain( m+1 )!=0 and get_domain( m )!=get_domain(m+1)  ) ) and \
+                      ( m != L ) and not right_before_chainbreak
+
+        if right_after_chainbreak:
+            if not next_moving:
+                block_stack_below_res[ name ].append( m )
+                terminal_res[ name ].append( m )
+            else:
+                # special case -- singlet base pairs cannot be called 'terminal' but can enforce block_stack at 5' nts.
+                for stem in stems:
+                    if m == stem[0][0] or m == stem[-1][1]:
+                        block_stack_below_res[ name ].append( m )
+                        break
+
+        if right_before_chainbreak:
+            if not prev_moving:
+                block_stack_above_res[ name ].append( m )
+                if ( m not in terminal_res[ name ] ): terminal_res[ name ].append( m )
+            else:
+                # special case -- singlet base pairs cannot be called 'terminal' but can enforce block_stack at 3' nts.
+                for stem in stems:
+                    if m == stem[0][1] or m == stem[-1][0]:
+                        block_stack_above_res[ name ].append( m )
+                        break
+
         if ( ( prev_moving and not next_moving and not right_before_chainbreak ) or \
              ( next_moving and not prev_moving and not right_after_chainbreak ) ):
             extra_min_res[ name ].append( m )
+
     if not '-motif_mode\n' in extra_flags_benchmark and not motif_mode_off:
         extra_flags_benchmark.append( '-motif_mode\n' )
 
@@ -367,10 +404,17 @@ for name in names:
 
 # write qsubMINIs, READMEs and SUBMITs
 qsub_file = 'qsubMINI'
+qsub_file2 = ''
+
 hostname = uname()[1]
 if hostname.find( 'stampede' ) > -1: qsub_file = 'qsubMPI'
-if hostname.find( 'sh' ) > -1: qsub_file = 'sbatchMINI'
+if hostname.find( 'sherlock' ) > -1:
+    qsub_file  = 'sbatchMINI'
+    qsub_file2 = 'sbatchMPI'
 fid_qsub = open( qsub_file, 'w' )
+if len( qsub_file2 ) > 0:
+    fid_qsub2 = open( qsub_file2, 'w' )
+
 for name in names:
 
     dirname = name
@@ -487,7 +531,7 @@ for name in names:
         chdir( CWD )
 
         fid_qsub.write( 'cd %s; source %s; cd %s\n' % ( name, qsub_file,  CWD ) )
-
+        if len( qsub_file2 ) > 0: fid_qsub2.write( 'cd %s; source %s; cd %s\n' % ( name, qsub_file2,  CWD ) )
 
     # SETUP for StepWise Monte Carlo
     else:
@@ -505,6 +549,11 @@ for name in names:
             fid.write( '-native %s\n' % basename( working_native[name] ) )
         if len( terminal_res[ name ] ) > 0:
             fid.write( '-terminal_res %s  \n' % make_tag_with_conventional_numbering( terminal_res[ name ], resnums[ name ], chains[ name ] ) )
+        if not args.block_stack_off:
+            if len( block_stack_above_res[ name ] ) > 0:
+                fid.write( '-block_stack_above_res %s  \n' % make_tag_with_conventional_numbering( block_stack_above_res[ name ], resnums[ name ], chains[ name ] ) )
+            if len( block_stack_below_res[ name ] ) > 0:
+                fid.write( '-block_stack_below_res %s  \n' % make_tag_with_conventional_numbering( block_stack_below_res[ name ], resnums[ name ], chains[ name ] ) )
         if len( extra_min_res[ name ] ) > 0 and not args.extra_min_res_off: ### Turn extra_min_res off for SWM when comparing to SWA
             fid.write( '-extra_min_res %s \n' % make_tag_with_conventional_numbering( extra_min_res[ name ], resnums[ name ], chains[ name ] ) )
         if args.stepwise_lores:
@@ -522,20 +571,15 @@ for name in names:
         if ( len( extra_flags[name] ) > 0 ) and ( extra_flags[ name ] != '-' ) :
             #fid.write( '%s\n' % extra_flags[name] )
             cols = extra_flags[ name ].split( ' ' )
-            if '-align_pdb' in cols:
+            if '-align_pdb' in cols and not args.no_align_pdb:
                 align_pdb = cols[ cols.index( '-align_pdb' )+1 ]
                 assert( exists( inpath+'/'+align_pdb ) )
                 system( 'cp %s/%s %s' % (inpath, align_pdb, name ) )
 
-            for m in range( len( cols ) ):
-                col = cols[ m ]
-                if len( col ) == 0: continue
-                col = col.replace('True','true').replace('False','false')
-                if ( col[ 0 ] == '-' ):
-                    fid.write( '\n'+col )
-                else:
-                    fid.write( ' ' + col  )
-            if len( cols ) > 0: fid.write( '\n' )
+            for flag in parse_flags_string( extra_flags[ name ] ):
+                flag = flag.replace('True','true').replace('False','false')
+                if ( args.no_align_pdb and flag.find( '-align_pdb' ) > -1 ): continue
+                fid.write( flag )
 
         # extra flags for whole benchmark
         weights_file = ''
@@ -568,7 +612,9 @@ for name in names:
         chdir( CWD )
 
         fid_qsub.write( 'cd %s; source %s; cd %s\n' % ( name, qsub_file,  CWD ) )
+        if len( qsub_file2 ) > 0: fid_qsub2.write( 'cd %s; source %s; cd %s\n' % ( name, qsub_file2,  CWD ) )
 
 
 fid_qsub.close()
+if len( qsub_file2 ) > 0: fid_qsub2.close()
 

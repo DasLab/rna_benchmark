@@ -60,7 +60,7 @@ Name:          srp_domainIV_fixed
 Sequence:      gucagguc,gaagcagc
 Secstruct:     ((....((,))....))
 Working_res:   A:3-10,B:15-22
-Input_res:     3-4,9-10,15-16,21-22
+Input_res:     A:3-4,A:9-10,B:15-16,B:21-22
 Native:        native_1lnt_RNA.pdb
 Extra_flags:   -
 
