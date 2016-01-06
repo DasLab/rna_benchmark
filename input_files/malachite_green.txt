@@ -1,0 +1,23 @@
+Name:          MG_TMR_Uturn
+Sequence:      cccgacu,agguaacgaaugg,Z[ROS]
+Secstruct:     ((((.((,))....))...)),.
+Working_res:   A:5-11,A:22-34,A:101
+Input_res:     A:5-11,A:22-23,A:28-34,A:101
+Native:        1f1t_RNA.pdb
+Extra_flags:   -extra_res_fa ROS.params
+
+Name:          MG_TMR_Aflap
+Sequence:      cccgacu,agguaacgaaugg,Z[ROS]
+Secstruct:     ((((.((,))....))...)),.
+Working_res:   A:5-11,A:22-34,A:101
+Input_res:     A:5-8,A:10-11,A:22-29,A:33-34,A:101
+Native:        1f1t_RNA.pdb
+Extra_flags:   -extra_res_fa ROS.params
+
+Name:          MG_seed_sandwich
+Sequence:      cccgacu,agguaacgaaugg,Z[ROS]
+Secstruct:     ((((.((,))....))...)),.
+Working_res:   A:5-11,A:22-34,A:101
+Input_res:     A:7-8,A:28-29,A:101
+Native:        1f1t_RNA.pdb
+Extra_flags:   -extra_res_fa ROS.params

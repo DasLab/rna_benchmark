@@ -252,16 +252,30 @@ for name in names:
         system( command )
 
 
+    def onelettersequence( sequence ):
+        # replace nonstandard names like Z[Mg] with Z
+        sequence_clean = []
+        in_non_standard = False
+        for c in sequence:
+            if c == '[':
+                in_non_standard = True
+                continue
+            if c == ']':
+                in_non_standard = False
+                continue
+            if not in_non_standard: sequence_clean += c
+        return sequence_clean
+
     # following is now 'hard-coded' into Rosetta option '-motif_mode'
     # deprecate this python block in 2015 after testing -- rd2014
-    L = len( sequence_joined )
+    L = len( onelettersequence( sequence_joined ) )
     terminal_res[ name ] = []
     block_stack_above_res[ name ] = []
     block_stack_below_res[ name ] = []
     extra_min_res[ name ] = []
     def get_domain( m ): # allows testing if a residue moves relative to next one (e.g., if they are in different helices)
         for i, block in enumerate( input_resnum_fullmodel_by_block ):
-            if m in block: return i
+            if m in block: return i+1
         return 0
 
     for m in range( 1, L+1 ):
@@ -276,7 +290,7 @@ for name in names:
                       ( m != L ) and not right_before_chainbreak
 
         if right_after_chainbreak:
-            if not next_moving:
+            if not next_moving and not right_before_chainbreak:
                 block_stack_below_res[ name ].append( m )
                 terminal_res[ name ].append( m )
             else:
@@ -287,7 +301,7 @@ for name in names:
                         break
 
         if right_before_chainbreak:
-            if not prev_moving:
+            if not prev_moving and not right_after_chainbreak:
                 block_stack_above_res[ name ].append( m )
                 if ( m not in terminal_res[ name ] ): terminal_res[ name ].append( m )
             else:
@@ -571,10 +585,16 @@ for name in names:
         if ( len( extra_flags[name] ) > 0 ) and ( extra_flags[ name ] != '-' ) :
             #fid.write( '%s\n' % extra_flags[name] )
             cols = extra_flags[ name ].split( ' ' )
-            if '-align_pdb' in cols and not args.no_align_pdb:
-                align_pdb = cols[ cols.index( '-align_pdb' )+1 ]
-                assert( exists( inpath+'/'+align_pdb ) )
-                system( 'cp %s/%s %s' % (inpath, align_pdb, name ) )
+
+            def copy_extra_files( tag ):
+                if tag in cols:
+                    filename = cols[ cols.index( tag )+1 ]
+                    print filename
+                    assert( exists( inpath+'/'+filename ) )
+                    system( 'cp %s/%s %s' % (inpath, filename, name ) )
+
+            if not args.no_align_pdb: copy_extra_files( '-align_pdb')
+            copy_extra_files( '-extra_res_fa')
 
             for flag in parse_flags_string( extra_flags[ name ] ):
                 flag = flag.replace('True','true').replace('False','false')
