@@ -456,6 +456,7 @@ for name in names:
         # case-specific extra flags
         if ( len( extra_flags[name] ) > 0 ) and ( extra_flags[ name ] != '-' ) :
             for flag in parse_flags_string( extra_flags[ name ] ):
+                if flag == '-block_stack_off\n': continue
                 flag = flag.replace('true','True').replace('false','False')
                 fid.write( ' %s' % flag )
 
@@ -540,7 +541,7 @@ for name in names:
         rosetta_submit_cmd = 'rosetta_submit.py README_FARFAR FARFAR %d %d' % (njobs, args.nhours )
         if args.save_logs:
             rosetta_submit_cmd += ' -save_logs'
-        system( rosetta_submit_cmd )
+        syste( rosetta_submit_cmd )
 
         chdir( CWD )
 
@@ -563,7 +564,7 @@ for name in names:
             fid.write( '-native %s\n' % basename( working_native[name] ) )
         if len( terminal_res[ name ] ) > 0:
             fid.write( '-terminal_res %s  \n' % make_tag_with_conventional_numbering( terminal_res[ name ], resnums[ name ], chains[ name ] ) )
-        if not args.block_stack_off:
+        if not args.block_stack_off and not extra_flags[ name ].index( '-block_stack_off') > -1:
             if len( block_stack_above_res[ name ] ) > 0:
                 fid.write( '-block_stack_above_res %s  \n' % make_tag_with_conventional_numbering( block_stack_above_res[ name ], resnums[ name ], chains[ name ] ) )
             if len( block_stack_below_res[ name ] ) > 0:
@@ -598,6 +599,7 @@ for name in names:
 
             for flag in parse_flags_string( extra_flags[ name ] ):
                 flag = flag.replace('True','true').replace('False','false')
+                if flag == '-block_stack_off\n': continue
                 if ( args.no_align_pdb and flag.find( '-align_pdb' ) > -1 ): continue
                 fid.write( flag )
 
