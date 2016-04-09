@@ -9,6 +9,11 @@
 # A simple MATLAB scripts compares energies of these models with standard
 # Turner parameters (37C, 1M NaCl), and also suggests how to refit.
 
+
+#######################################################
+# To just get started, skip the 'make the model' step, and run the MATLAB code based on 
+# models that are already in pdb/
+ 
 #######################################################
 # Make the models
 
@@ -31,7 +36,12 @@ README_HELIX
 #  should make this a flag. 
 #
 # Models show up in pdb/ file. Old runs are in pdb_TRY18, etc. ...
-# To see what results they gave in matlab analysis (see next), can copy their results into pdb.
+#
+# Before doing a new run, I usually copy the old models to a new directory:
+#
+cp pdb pdb_SOME_USEFUL_NAME
+#
+# To see what results these old models gave in matlab analysis (see next), copy their results into pdb/.
 
 #######################################################
 # launch MATLAB, and change directory into matlab/.
