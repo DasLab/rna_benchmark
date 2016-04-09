@@ -71,7 +71,7 @@ Secstruct:     (...,...)
 Working_res:   A:1-4,B:1-4
 Input_res:     -
 Native:        ZDNA_2ACJ.pdb
-Extra_flags:   -sample_sugar_res A:1-4 B:1-4  -force_syn_chi_res_list A:2 A:4 B:2 B:4
+Extra_flags:   -sample_sugar_res A:1-4 B:1-4  -force_syn_chi_res_list A:2 A:4 B:2 B:4 -block_stack_off
 
 Name:          P5b_connect
 Sequence:      agucucaggggaaacuuugagaug

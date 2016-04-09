@@ -23,6 +23,7 @@ default_extra_flags_benchmark = 'extra_flags_benchmark.txt'
 parser.add_argument('-extra_flags', default=default_extra_flags_benchmark, help='Filename of text file with extra_flags for all cases.')
 parser.add_argument('-nhours', default='16', type=int, help='Number of hours to queue each job.')
 parser.add_argument('-j','--njobs', default='10', type=int, help='Number of cores for each job.')
+parser.add_argument('-queue', default='', help='Queue for cluster submission.')
 parser.add_argument('--swa', action='store_true', help='Additional flag for setting up SWA runs.')
 parser.add_argument('--farna', action='store_true', help='Additional flag for setting up FARNA runs.')
 parser.add_argument('--extra_min_res_off', action='store_true', help='Additional flag for turning extra_min_res off.')
@@ -456,6 +457,7 @@ for name in names:
         # case-specific extra flags
         if ( len( extra_flags[name] ) > 0 ) and ( extra_flags[ name ] != '-' ) :
             for flag in parse_flags_string( extra_flags[ name ] ):
+                if flag == '-block_stack_off\n': continue
                 flag = flag.replace('true','True').replace('false','False')
                 fid.write( ' %s' % flag )
 
@@ -538,9 +540,9 @@ for name in names:
         system( make_readme_farna_cmd )
 
         rosetta_submit_cmd = 'rosetta_submit.py README_FARFAR FARFAR %d %d' % (njobs, args.nhours )
-        if args.save_logs:
-            rosetta_submit_cmd += ' -save_logs'
-        system( rosetta_submit_cmd )
+        if args.save_logs: rosetta_submit_cmd += ' -save_logs'
+        if len(args.queue) > 0: rosetta_submit_cmd += ' -queue %s' % args.queue
+        syste( rosetta_submit_cmd )
 
         chdir( CWD )
 
@@ -563,7 +565,7 @@ for name in names:
             fid.write( '-native %s\n' % basename( working_native[name] ) )
         if len( terminal_res[ name ] ) > 0:
             fid.write( '-terminal_res %s  \n' % make_tag_with_conventional_numbering( terminal_res[ name ], resnums[ name ], chains[ name ] ) )
-        if not args.block_stack_off:
+        if not args.block_stack_off and extra_flags[ name ].find( '-block_stack_off') == -1:
             if len( block_stack_above_res[ name ] ) > 0:
                 fid.write( '-block_stack_above_res %s  \n' % make_tag_with_conventional_numbering( block_stack_above_res[ name ], resnums[ name ], chains[ name ] ) )
             if len( block_stack_below_res[ name ] ) > 0:
@@ -598,6 +600,7 @@ for name in names:
 
             for flag in parse_flags_string( extra_flags[ name ] ):
                 flag = flag.replace('True','true').replace('False','false')
+                if flag == '-block_stack_off\n': continue
                 if ( args.no_align_pdb and flag.find( '-align_pdb' ) > -1 ): continue
                 fid.write( flag )
 
@@ -625,8 +628,8 @@ for name in names:
         chdir( name )
 
         rosetta_submit_cmd = 'rosetta_submit.py README_SWM SWM %d %d' % (njobs, args.nhours )
-        if args.save_logs:
-            rosetta_submit_cmd += ' -save_logs'
+        if args.save_logs: rosetta_submit_cmd += ' -save_logs'
+        if len(args.queue) > 0: rosetta_submit_cmd += ' -queue %s' % args.queue
         system( rosetta_submit_cmd )
 
         chdir( CWD )
