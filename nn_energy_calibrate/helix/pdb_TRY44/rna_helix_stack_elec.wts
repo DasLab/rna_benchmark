@@ -1,0 +1,16 @@
+UNFOLDED_ENERGIES_TYPE UNFOLDED_RNA
+NO_HB_ENV_DEP
+fa_atr          0.32
+fa_rep          0.24
+fa_intra_rep    0.0029
+fa_stack        0.077
+rna_torsion     5.5
+rna_sugar_close 1.0
+hbond_sc        0.58
+lk_nonpolar     0.15
+geom_sol        0.17
+fa_elec_rna_phos_phos 1.0
+stack_elec_base_base      0.50
+stack_elec_base_bb        0.40
+unfolded        2.15
+intermol        -1.5
