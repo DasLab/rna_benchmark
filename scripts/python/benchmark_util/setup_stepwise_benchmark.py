@@ -186,7 +186,11 @@ for name in names:
     assert( native[ name ] != '-' ) # for now, require a native, since this is a benchmark.
     prefix = '%s/%s_NATIVE_' % ( inpath,name)
     working_native[ name ] = slice_out( inpath, prefix, native[ name ], string.join( working_res_blocks ), check_sequence=True )
-    assert( string.join(sequences,'') == string.join(get_sequences( working_native[name] )[0],'') )
+    if not ( string.join(sequences,'') == string.join(get_sequences( working_native[name] )[0],'') ):
+        print 'Mismatch in native sequences!'
+        print string.join(sequences,'')
+        print string.join(get_sequences( working_native[name] )[0],'')
+        assert( string.join(sequences,'') == string.join(get_sequences( working_native[name] )[0],'') )
 
     # create starting PDBs
     input_pdbs[ name ] = []
@@ -355,6 +359,9 @@ for name in names:
     fasta[ name ] = '%s/%s.fasta' % (inpath,name)
     if not exists( fasta[ name ] ):
         fid = open( fasta[ name ], 'w' )
+        if not ( len( sequences ) == len( working_res_blocks ) ):
+            print sequences
+            print working_res_blocks
         assert( len( sequences ) == len( working_res_blocks ) )
         for n in range( len( sequences ) ): fid.write( '>%s %s\n%s\n' % (name,working_res_blocks[n],sequences[n]) )
         fid.close()

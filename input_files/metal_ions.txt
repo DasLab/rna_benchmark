@@ -1,0 +1,7 @@
+Name:          just_Arich_bulge_fixedMg
+Sequence:      aguac,guaauaa,cu,Z[MG],Z[MG]
+Secstruct:     ((.((,)).....,)),.,.
+Working_res:   R:133-137,R:181-187,R:189-190,R:1,R:2
+Input_res:     R:133-137,R:181-182,R:187,R:189-190,R:1,R:2
+Native:        2r8s_RNA.pdb
+Extra_flags:   -
