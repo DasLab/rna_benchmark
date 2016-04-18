@@ -1,0 +1,49 @@
+
+Basic usage:  /Users/rhiju/src/rosetta/main/source/bin/rna_helix  -seq <sequence of first strand> <sequence of second strand>   -o <name of output pdb file> 
+
+ Type -help for full slate of options.
+
+core.init: Rosetta version 900a3f8029e53e874deb0ed762a2fd79b3ecf1fd 2013-07-15 13:39:17 -0700 from git@github.com:RosettaCommons/main.git
+core.init: command: /Users/rhiju/src/rosetta/main/source/bin/rna_helix -rna::corrected_geo -score:rna_torsion_potential RNA11_based_new -geom_sol_correct_acceptor_base -chemical::enlarge_H_lj -analytic_etable_evaluation 0 -o /var/folders/ny/89x7h6vd0j73xbhl6l0pmfcc0000gn/T/tmppTORYs -seq cc gg
+core.init: 'RNG device' seed mode, using '/dev/urandom', seed=-48418770 seed_offset=0 real_seed=-48418770
+core.init.random: RandomGenerator:init: Normal mode, seed=-48418770 RG_type=mt19937
+core.init: Resolved executable path: /Users/rhiju/src/rosetta/main/source/bin/rna_helix
+core.init: Looking for database based on location of executable: /Users/rhiju/src/rosetta/main/database/
+core.chemical.ResidueTypeSet: Finished initializing rna_phenix residue type set.  Created 2774 residue types
+core.scoring.etable: Starting energy table calculation
+core.scoring.etable: smooth_etable: changing atr/rep split to bottom of energy well
+core.scoring.etable: smooth_etable: spline smoothing lj etables (maxdis = 6)
+core.scoring.etable: smooth_etable: spline smoothing solvation etables (max_dis = 6)
+core.scoring.etable: Finished calculating energy tables.
+-----------------------------------------------------------------------------------
+USER INPUTTED path_to_torsion_files_=/Users/rhiju/src/rosetta/main/database/scoring/rna/torsion_potentials/RNA11_based_new
+Path name ends with 'new'... Turn on the new torsional potential
+-----------------------------------------------------------------------------------
+basic.io.database: Database file opened: scoring/score_functions/hbonds/sp2_elec_params/HBPoly1D.csv
+basic.io.database: Database file opened: scoring/score_functions/hbonds/sp2_elec_params/HBFadeIntervals.csv
+basic.io.database: Database file opened: scoring/score_functions/hbonds/sp2_elec_params/HBEval.csv
+Sequence of first strand:  gccc
+Sequence of second strand: gggc
+RT -0.994805 -0.0315594 0.0967856 -0.0422993 0.992919 -0.111004 -0.092597 -0.114522 -0.989096 6.34696 -0.449942 0.334582  
+Building on base pair: 2
+protocols.rna.rna_protocol_util: BASEPAIR: Adding rna_force_atom_pair constraint: c  2 <-->  g  3    N3  <-->  H1 .  [ 16-31]
+protocols.rna.rna_protocol_util: BASEPAIR: Adding rna_force_atom_pair constraint: c  2 <-->  g  3    O2  <--> 2H2 .  [ 15-33]
+protocols.rna.rna_protocol_util: BASEPAIR: Adding rna_force_atom_pair constraint: c  2 <-->  g  3   2H4  <-->  O6 .  [ 29-20]
+protocols.rna.rna_protocol_util: BASEPAIR: Adding rna_force_atom_pair constraint: g  1 <-->  c  4    H1  <-->  N3 .  [ 31-16]
+protocols.rna.rna_protocol_util: BASEPAIR: Adding rna_force_atom_pair constraint: g  1 <-->  c  4   2H2  <-->  O2 .  [ 33-15]
+protocols.rna.rna_protocol_util: BASEPAIR: Adding rna_force_atom_pair constraint: g  1 <-->  c  4    O6  <--> 2H4 .  [ 20-29]
+Building on base pair: 3
+protocols.rna.rna_protocol_util: BASEPAIR: Adding rna_force_atom_pair constraint: c  3 <-->  g  4    N3  <-->  H1 .  [ 16-31]
+protocols.rna.rna_protocol_util: BASEPAIR: Adding rna_force_atom_pair constraint: c  3 <-->  g  4    O2  <--> 2H2 .  [ 15-33]
+protocols.rna.rna_protocol_util: BASEPAIR: Adding rna_force_atom_pair constraint: c  3 <-->  g  4   2H4  <-->  O6 .  [ 29-20]
+protocols.rna.rna_protocol_util: BASEPAIR: Adding rna_force_atom_pair constraint: c  2 <-->  g  5    N3  <-->  H1 .  [ 16-31]
+protocols.rna.rna_protocol_util: BASEPAIR: Adding rna_force_atom_pair constraint: c  2 <-->  g  5    O2  <--> 2H2 .  [ 15-33]
+protocols.rna.rna_protocol_util: BASEPAIR: Adding rna_force_atom_pair constraint: c  2 <-->  g  5   2H4  <-->  O6 .  [ 29-20]
+Building on base pair: 4
+protocols.rna.rna_protocol_util: BASEPAIR: Adding rna_force_atom_pair constraint: c  4 <-->  g  5    N3  <-->  H1 .  [ 16-31]
+protocols.rna.rna_protocol_util: BASEPAIR: Adding rna_force_atom_pair constraint: c  4 <-->  g  5    O2  <--> 2H2 .  [ 15-33]
+protocols.rna.rna_protocol_util: BASEPAIR: Adding rna_force_atom_pair constraint: c  4 <-->  g  5   2H4  <-->  O6 .  [ 29-20]
+protocols.rna.rna_protocol_util: BASEPAIR: Adding rna_force_atom_pair constraint: c  3 <-->  g  6    N3  <-->  H1 .  [ 16-31]
+protocols.rna.rna_protocol_util: BASEPAIR: Adding rna_force_atom_pair constraint: c  3 <-->  g  6    O2  <--> 2H2 .  [ 15-33]
+protocols.rna.rna_protocol_util: BASEPAIR: Adding rna_force_atom_pair constraint: c  3 <-->  g  6   2H4  <-->  O6 .  [ 29-20]
+Rosetta cmdline: /Users/rhiju/src/rosetta/main/source/bin/rna_helix -rna::corrected_geo  -score:rna_torsion_potential RNA11_based_new -geom_sol_correct_acceptor_base -chemical::enlarge_H_lj -analytic_etable_evaluation 0 -o /var/folders/ny/89x7h6vd0j73xbhl6l0pmfcc0000gn/T/tmppTORYs -seq cc gg 
