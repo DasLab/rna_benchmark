@@ -1,9 +1,12 @@
 function do_the_fit( score_terms_to_fit, delG_NN, delG_NN_err, data, seq_labels, coeff_matrix );
 
-prediction_scale_factor = 0.616; % convert to kcal/mol
+prediction_scale_factor = 0.5; % convert to kcal/mol
+%prediction_scale_factor = 0.616; % convert to kcal/mol
 fprintf(  'Multiplying input scores by %f!\n', prediction_scale_factor );
-data.scores = data.scores * 0.616;
+data.scores = data.scores * prediction_scale_factor;
+%data.scores = data.scores * 0.616;
 
+% This happens in fit_weights_to_full_model_energies
 if ~exist( 'coeff_matrix' ); coeff_matrix = eye( length( delG_NN ) ); end;
   
 fit_idx = get_fit_idx( score_terms_to_fit, data.score_labels );
@@ -16,10 +19,15 @@ regularization_weights( find( strcmp( data.score_labels( fit_idx ), 'intermol' )
 %regularization_weights( find( strcmp( data.score_labels( fit_idx ), 'fa_rep' ) ) )  =  1/0.01^2;
 %regularization_weights( find( strcmp( data.score_labels( fit_idx ), 'rna_sugar_close' ) ) )  =  1/0.01^2;
 %regularization_weights( find( strcmp( data.score_labels( fit_idx ), 'unfolded' ) ) ) = 0.0;
-regularization_weights( find( strcmp( data.score_labels( fit_idx ), 'unfolded_a' ) ) ) = 0.0;
-regularization_weights( find( strcmp( data.score_labels( fit_idx ), 'unfolded_c' ) ) ) = 0.0;
-regularization_weights( find( strcmp( data.score_labels( fit_idx ), 'unfolded_g' ) ) ) = 0.0;
-regularization_weights( find( strcmp( data.score_labels( fit_idx ), 'unfolded_u' ) ) ) = 0.0;
+regularization_weights( find( strcmp( data.score_labels( fit_idx ), 'unfolded_a' ) ) ) = 0.5;
+regularization_weights( find( strcmp( data.score_labels( fit_idx ), 'unfolded_c' ) ) ) = 0.5;
+regularization_weights( find( strcmp( data.score_labels( fit_idx ), 'unfolded_g' ) ) ) = 0.5;
+regularization_weights( find( strcmp( data.score_labels( fit_idx ), 'unfolded_u' ) ) ) = 0.5;
+
+%regularization_weights( find( strcmp( data.score_labels( fit_idx ), 'unfolded_a' ) ) ) = 0.0;
+%regularization_weights( find( strcmp( data.score_labels( fit_idx ), 'unfolded_c' ) ) ) = 0.0;
+%regularization_weights( find( strcmp( data.score_labels( fit_idx ), 'unfolded_g' ) ) ) = 0.0;
+%regularization_weights( find( strcmp( data.score_labels( fit_idx ), 'unfolded_u' ) ) ) = 0.0;
 
 D = data.scores(:,fit_idx);
 data_weights = (1 ./ delG_NN_err.^2);
@@ -31,7 +39,8 @@ new_weights = inv(A) * B;
 
 output_weights( new_weights, data.score_labels( fit_idx ), 0.0 );
 
-delG_fit =  coeff_matrix * data.scores( :, fit_idx ) * new_weights;
+%delG_fit =  coeff_matrix * data.scores( :, fit_idx ) * new_weights;
+delG_fit =  coeff_matrix * D * new_weights;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 % make plots

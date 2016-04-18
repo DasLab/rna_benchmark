@@ -53,6 +53,15 @@ fit_weights
 # Computes energies of each model from NN rules and compares to rosetta energies:
 fit_weights_to_full_model_energies
 
+# In do_the_fit_ref_wts_only, there are 3 options of what to fit
+# 1) Fit weights on a subset of score terms and a single weight on the sum of the rest of the scores (for example: 
+#    fit all the ref weights and then a single weight on the sum of the remaining terms
+# 2) Fit weights on a subset of score terms only (for example: fit all the ref weights, but do not fit a weight on
+#    on the rest of the score terms)
+# 3) Fit only an additional length dependent term (totally ignores the score_terms_to_fit argument)
+# Currently, it's a very hacky function, so need to go uncomment the appropriate portion of the code
+# (these three different options are denoted with comments)
+
 # Both the fits above are least-squares fits, and include some regularization to make sure new weights 
 #  are not radically different from old weights. Otherwise, you get crazy new weights (negative numbers) and
 #  garbage upon reminimizing models.

@@ -8,7 +8,8 @@ for n = 1:length(rna_char)
   r = rna_char(n);
   unfolded_score_labels{n} = ['unfolded_',r];
   for m = 1:length( tags );
-    unfolded( m, n ) = ref_weights(n) * length( strfind( tags{m}, r ) );
+    % 04-14-16 does not work if you don't do char(tags{m)) (matlab v2014a)
+    unfolded( m, n ) = ref_weights(n) * length( strfind( char(tags{m}), r ) );
   end
 end
 

@@ -4,9 +4,11 @@ seq_labels = {}; delG_NN = [];
 
 delG_NN = zeros( length(tags ), 1 );
 for i = 1:length( tags )
-  pdb_file = basename( tags{i} );
+  pdb_file = tags{i};
+  %pdb_file = basename( tags{i} );
 
-  cols = split_string( pdb_file, '_' );
+  cols = strsplit(char(pdb_file), '_' );
+  %cols = split_string( pdb_file, '_' );
   seq1 = cols{1};
   seq2 = cols{2};
   
