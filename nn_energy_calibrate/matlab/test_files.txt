@@ -1,0 +1,16 @@
+../helix/pdb/aa_uu_helix.pdb
+../helix/pdb/ac_gu_helix.pdb
+../helix/pdb/ag_cu_helix.pdb
+../helix/pdb/au_au_helix.pdb
+../helix/pdb/ca_ug_helix.pdb
+../helix/pdb/cc_gg_helix.pdb
+../helix/pdb/cg_cg_helix.pdb
+../helix/pdb/cu_ag_helix.pdb
+../helix/pdb/ga_uc_helix.pdb
+../helix/pdb/gc_gc_helix.pdb
+../helix/pdb/gg_cc_helix.pdb
+../helix/pdb/gu_ac_helix.pdb
+../helix/pdb/ua_ua_helix.pdb
+../helix/pdb/uc_ga_helix.pdb
+../helix/pdb/ug_ca_helix.pdb
+../helix/pdb/uu_aa_helix.pdb

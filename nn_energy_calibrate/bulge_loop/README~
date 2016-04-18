@@ -1,0 +1,5 @@
+# check README_BULGE for modeling 
+
+rm pdb_scores.out
+rna_score -score:weights rna_loop49.wts  -s *pdb -analytic_etable_evaluation false -out:file:silent pdb_scores.out -rna:corrected_geo -score:rna_torsion_potential RNA11_based_new  -geom_sol_correct_acceptor_base  -chemical::enlarge_H_lj
+grep SCORE pdb_scores.out

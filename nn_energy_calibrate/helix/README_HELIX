@@ -1,0 +1,12 @@
+./generate_helix.py  -weights rna_helix_stack_elec.wts #-put_intra_into_total
+
+cp rna_helix_stack_elec.wts pdb_scores.out pdb/
+
+#cp save_dangle/*.pdb pdb
+
+rm pdb_scores.out
+#rna_score -score:weights rna_helix_stack_elec.wts  -s pdb/*pdb -analytic_etable_evaluation false -out:file:silent pdb_scores.out -rna:corrected_geo -score:rna_torsion_potential RNA11_based_new  -geom_sol_correct_acceptor_base  -chemical::enlarge_H_lj
+
+rna_score -score:weights rna_helix_stack_elec.wts  -s pdb/*pdb -analytic_etable_evaluation false -out:file:silent pdb_scores.out -rna:corrected_geo -score:rna_torsion_potential RNA11_based_new  -chemical::enlarge_H_lj 
+
+grep SCORE pdb_scores.out
