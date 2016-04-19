@@ -24,11 +24,11 @@ column_labels = [
 	"Motif Properties",
 	"Best of Five Lowest Energy Cluster Centers",
 	"Lowest RMSD Model",
-	"Lowest Energy Sampled" 
+	"Lowest Energy Sampled"
 ]
 subcolumn_labels = [
-	# " "*10 
-	"Motif Name",	
+	# " "*10
+	"Motif Name",
 	# Motif Properties
 	"Length",
 	"PDB",
@@ -37,7 +37,7 @@ subcolumn_labels = [
 	"RMSD",
 	"Rosetta Energy (RU)",
 	# Lowest RMSD Model
-	"RMSD", 
+	"RMSD",
 	# Lowest Energy Sampled
 	"Rosetta Energy (RU)",
 	"E-Gap to Opt. Exp. (RU)"
@@ -69,12 +69,12 @@ class Command(object):
 			return None
 		if x is None or y is None:
 			return x if y is None else y
-		return delim.join([str(x),str(y)]) 
+		return delim.join([str(x),str(y)])
 
 	def _submit(self):
-		pipe = sp.Popen( self.command, shell=True, 
-						 stdout=self._stderr, 
-						 stderr=self._stderr ) 
+		pipe = sp.Popen( self.command, shell=True,
+						 stdout=self._stderr,
+						 stderr=self._stderr )
 		self._out, self._err = pipe.communicate()
 		self._check_error()
 		self._save_logs()
@@ -84,7 +84,11 @@ class Command(object):
 		self._success = True
 		if self._err and len(self._err):
 			if not self.silent:
-				print "\nFAILED:", self.command
+				print
+				print "[ERROR]"
+				print " * path:   ", os.getcwd()
+				print " * command:", self.command
+				print
 			self._success = False
 		return self._success
 
@@ -114,7 +118,7 @@ class Command(object):
 	def submit(self):
 		self._submit()
 		return self._success
-	
+
 	def output(self):
 		self._submit()
 		return self._out if self._success else None
@@ -154,10 +158,10 @@ class Table(object):
 			return "%-*.2f" % (width, value)
 		value = "--" if value is None else str(value)
 		return "%-*s" % (width, str(value))
-		
+
 	def _row_to_string(self, row):
-		return self.delimiter.join(map(self._format_string, row)) 
-	
+		return self.delimiter.join(map(self._format_string, row))
+
 	def _table_to_string(self):
 		return self.newline.join(map(self._row_to_string, self._rows))
 
@@ -203,7 +207,7 @@ class Table(object):
 	def save(self):
 		with open( self.filename, 'w' ) as f:
 			f.write( self._table_to_string() )
-		return 
+		return
 
 	def merge_tables(self, filenames):
 		if not isinstance(filenames, list):
@@ -242,7 +246,7 @@ def get_rosetta_exe( exe, tools=False ):
 	rosetta = expandvars('$ROSETTA')
 	if '$' in rosetta:
 		rosetta = '~/src/rosetta/'
-	if tools:
+        if tools:
 		rosetta += '/tools/'
 	else:
 		rosetta += '/main/source/bin/'
@@ -261,7 +265,7 @@ def get_target_names():
 				if name in target_names:
 					continue
 				target_names.append( name )
-	return target_names 
+	return target_names
 
 ################################################################################
 def get_score_data( filename, colnames=['score'], sort=None, filters=None, tags=None, keep=None ):
@@ -291,7 +295,7 @@ def get_score_data( filename, colnames=['score'], sort=None, filters=None, tags=
 			data[-1] = tuple(data[-1])
 	if filters is not None:
 		if not isinstance(filters, list):
-			filters = [ filters ] 
+			filters = [ filters ]
 		for idx, value in enumerate(filters):
 			if value is None:
 				continue
@@ -302,7 +306,7 @@ def get_score_data( filename, colnames=['score'], sort=None, filters=None, tags=
 		sort = colnames.index(sort) if isinstance(sort, str) else sort-1
 		data = sorted(data, key=operator.itemgetter(sort))
 	if len(colidx) == 1:
-		data = [d[0] for d in data] 
+		data = [d[0] for d in data]
 	if keep is not None:
 		keep = min(keep, len(data))
 		data = data[0] if keep == 1 else data[:keep]
@@ -338,7 +342,10 @@ def get_silent_file( filename=['region_FINAL.out','swm_rebuild.out'], dir=None )
 ################################################################################
 def get_native_pdb():
 	target = get_working_target()
-	native_pdb = glob( target+'_????_RNA.pdb' )[0]
+	try:
+		native_pdb = glob( target+'_????_RNA.pdb' )[0]
+	except:
+		native_pdb = glob( target+'_NATIVE_*.pdb' )[0]
 	return native_pdb
 
 ################################################################################
@@ -373,7 +380,7 @@ def get_opt_exp_score( inpaths ):
 		cutoffs = [None, 1.5]
 		data = get_score_data( silent_file, colnames=score_types, sort='score', filters=cutoffs, keep=1 )
 		if data is None:
-			continue 
+			continue
 		score = data[score_types.index('score')]
 		if opt_exp_score is not None and score >= opt_exp_score:
 			continue
@@ -385,7 +392,7 @@ def get_flag( flag ):
 	if exists( 'flags' ):
 		with open( 'flags', 'r' ) as f:
 			for line in f:
-				if flag not in line: 
+				if flag not in line:
 					continue
 				return line.strip()
 	if exists( 'README_SWA' ):
@@ -395,14 +402,24 @@ def get_flag( flag ):
 				if flag not in line:
 					continue
 				return line.strip()
-	return None 	
+	if "-score:weights" in flag:
+		return "-score:weights rna_res_level_energy4.wts"
+	if "-score:rna_torsion_potential" in flag:
+		return "-score:rna_torsion_potential RNA11_based_new"
+	return None
 
 ################################################################################
 def virtualize_missing_residues( silent_file ):
 	silent_file_out = silent_file.replace(".out","_full_model.out")
 	build_full_model_exe = get_rosetta_exe( "build_full_model" )
-	weights = get_flag( "-score:weights" ).split(' ')[-1]
-	torsion_potential = get_flag( "-score:rna_torsion_potential" ).split(' ')[-1]
+	try:
+		weights = get_flag( "-score:weights" ).split(' ')[-1]
+	except:
+		weights = None
+	try:
+		torsion_potential = get_flag( "-score:rna_torsion_potential" ).split(' ')[-1]
+	except:
+		torsion_potential = None
 	command = Command( build_full_model_exe )
 	command.add_argument( "-in:file:silent", value=silent_file )
 	command.add_argument( "-out:file:silent", value=silent_file_out )
@@ -425,7 +442,7 @@ def get_full_model_parameter(silent_file, parameter):
 			if parameter not in line:
 				continue
 			cols = line.strip().split()
-			return cols[cols.index(parameter)+1] 		
+			return cols[cols.index(parameter)+1]
 	return None
 
 ################################################################################
@@ -438,7 +455,9 @@ def make_res_list(tag):
 			for x in xrange(int(subtag[0]),int(subtag[1])+1):
 				new_list.append(str(x))
 		else:
-			res_list.append(subres)
+			subtag = subtag.replace(',', ' ').split(' ')
+			for x in subtag:
+				new_list.append(x)
 	return new_list
 
 ################################################################################
@@ -452,7 +471,7 @@ def make_res_tag(res, exclude=None, delim=' ', dashes=True):
 			res_list[idx] = res_list[idx] + '-' + res_list.pop(idx+1)
 	res_tag = delim.join(res_list)
 	return res_tag
-	
+
 ################################################################################
 def create_common_args_file( silent_file ):
 	common_args_file = 'SWA_cluster_common_args_'+silent_file
@@ -462,6 +481,7 @@ def create_common_args_file( silent_file ):
 	sample_res = get_full_model_parameter(silent_file, 'CALC_RMS')
 	if sample_res is None:
 		sample_res = get_full_model_parameter(silent_file, 'SAMPLE')
+	sample_res = sample_res.replace(',' , ' ')
 	fixed_res = make_res_tag(working_res, exclude=sample_res)
 	common_args = []
 	common_args.append( '-in:file:silent_struct_type binary_rna' )
@@ -472,13 +492,13 @@ def create_common_args_file( silent_file ):
 		common_args.append( get_flag('-VDW_rep_screen_info') )
 		common_args.append( '-VDW_rep_delete_matching_res false' )
 	common_args.append( '-jump_point_pairs ' + working_res )
-	common_args.append( '-alignment_res ' + working_res ) 
+	common_args.append( '-alignment_res ' + working_res )
 	common_args.append( '-fixed_res ' + fixed_res )
 	common_args.append( '-input_res ' + fixed_res )
  	common_args.append( '-input_res2 ' + sample_res )
- 	common_args.append( '-global_sample_res_list ' + sample_res ) 
-	common_args.append( '-sample_res ' + sample_res ) 
-	common_args.append( '-rmsd_res ' + sample_res ) 
+ 	common_args.append( '-global_sample_res_list ' + sample_res )
+	common_args.append( '-sample_res ' + sample_res )
+	common_args.append( '-rmsd_res ' + sample_res )
 	with open( common_args_file, 'w' ) as fid:
 		fid.write(' ')
 		fid.write(' '.join(filter(None, common_args)))
@@ -495,8 +515,8 @@ def create_cluster_silent_file( silent_file ):
 		if not silent_file_virt or not exists( silent_file_virt ):
 			return silent_file
 		silent_file = silent_file_virt
-	cluster_rmsd = 2.0 
-	suite_cluster_rmsd = 2.5 
+	cluster_rmsd = 2.0
+	suite_cluster_rmsd = 2.5
 	rename_tags = False
 	no_graphic = False
 	ignore_unmatched_virtual_res = False
@@ -512,12 +532,12 @@ def create_cluster_silent_file( silent_file ):
 	command = Command( cluster_exe )
 	command.add_argument( "-num_pose_kept", value=100 )
 	command.add_argument( "-distinguish_pucker", value="false" )
-	command.add_argument( "-extract_pdb ", value="False" ) 
+	command.add_argument( "-extract_pdb ", value="False" )
 	command.add_argument( "-cluster_rmsd", value=cluster_rmsd )
 	command.add_argument( "-suite_cluster_rmsd", value=suite_cluster_rmsd )
 	command.add_argument( "-silent_file", value=silent_file )
 	command.add_argument( "-native_pdb", value=native_pdb )
-	command.add_argument( "-output_filename", value=cluster_silent_file )	
+	command.add_argument( "-output_filename", value=cluster_silent_file )
 	command.add_argument( "-full_length_loop_rmsd_clustering", value="True" )
 	if not rename_tags:
 		command.add_argument( "-clusterer_rename_tags", value="false" )
@@ -534,7 +554,7 @@ def create_cluster_silent_file( silent_file ):
 
 ################################################################################
 def get_lowest_energy_cluster_centers( nclusters=5 ):
-	silent_file = get_silent_file()	
+	silent_file = get_silent_file()
 	cluster_silent_file = create_cluster_silent_file( silent_file )
 	if cluster_silent_file is None or not exists( cluster_silent_file ):
 		print "\n[WARNING] cluster_silent_file not found for target: %s" % get_working_target()
@@ -543,9 +563,9 @@ def get_lowest_energy_cluster_centers( nclusters=5 ):
 	score_types = ['score', get_rmsd_type(cluster_silent_file)]
 	data = None
 	if 'swm' in silent_file:
-		# PROBLEM: we need to build/virtualize missing residues in SWM silent files before 
-		# clustering with SWA_cluster.py, but the scores before and after build_full_model 
-		# are not matching up (yet!) ... 
+		# PROBLEM: we need to build/virtualize missing residues in SWM silent files before
+		# clustering with SWA_cluster.py, but the scores before and after build_full_model
+		# are not matching up (yet!) ...
 		# SOLUTION: use 'build_full_model -virtualize_built' output for clustering, but get
 		# original scores of poses, using the tags found in clusterer output
 		tags = get_score_data( cluster_silent_file, colnames='description' )
@@ -565,7 +585,7 @@ def get_lowest_energy_cluster_centers( nclusters=5 ):
 ### MAIN FUNCTIONS
 ################################################################################
 def get_target_properties():
-	''' 
+	'''
 		column:	| Motif Properties |
 		subcolumn: | Length | PDB	 |
 
