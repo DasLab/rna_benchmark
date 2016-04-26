@@ -24,6 +24,8 @@ from get_sequence import get_sequence, get_sequences_for_res
 from parse_tag import parse_tag
 import re
 from difflib import SequenceMatcher
+import seaborn as sns 
+
 
 ##########################################################
 
@@ -238,7 +240,7 @@ def get_figure_dimensions( nplots ):
 
 ###########################################################
 
-def setup_figure( nplots, landscape = False ):
+def setup_figure( nplots, landscape = True ):
 	( nplots, nrows, ncols ) = get_figure_dimensions( nplots )
 	fig = plt.figure()
 	if ( landscape is True ): # landscape
@@ -261,17 +263,18 @@ def finalize_figure( fig, nplots, nrows, ncols ):
 				    wspace=.3, hspace=.5)
 
 	# get date printed to figure
+	'''
 	plt.figtext(0.95,0.02,
 		    get_date(),
 		    horizontalalignment='right',
 		    fontsize='small')
-
+	'''
 	# setup global legend based on inpaths
 	legend_size = 6
 	plot_idx = nplots - 1 if ncols > 1 else nplots
-	ax = fig.add_subplot( nrows, ncols, plot_idx)
-	legend = ax.legend(bbox_to_anchor=(0., .0, 1., -.225),
-			   loc=9, numpoints=1, prop={'size':legend_size})
+	#ax = fig.add_subplot( nrows, ncols, plot_idx)
+	#legend = ax.legend(bbox_to_anchor=(0., .0, 1., -.225),
+	#		   loc=9, numpoints=1, prop={'size':legend_size})
        	return
 
 ###########################################################
