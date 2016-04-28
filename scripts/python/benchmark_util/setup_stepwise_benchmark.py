@@ -37,8 +37,8 @@ args = parser.parse_args()
 
 #####################################################################################################################
 motif_mode_off = ( args.motif_mode_off or args.swa )
-njobs = 150 if args.swa else 10 
-njobs = njobs if args.njobs is None else args.njobs 
+njobs = 150 if args.swa else 10
+njobs = njobs if args.njobs is None else args.njobs
 
 # get path to rosetta, required for now
 helpers.init_environ(args)
@@ -99,7 +99,7 @@ full_model_info = {}
 for target in targets:
 
     full_model_info[ target.name ] = FullModelInfo( target.name )
-    
+
     sequences          = string.split( target.sequence, ',' )
     working_res_blocks = string.split( target.working_res, ',' )
 
@@ -121,7 +121,7 @@ for target in targets:
 
     # create starting PDBs
     target.input_pdbs = []
-    input_res_blocks = [] 
+    input_res_blocks = []
     if target.input_res != '-':
         input_res_blocks += target.input_res.split(';')
     if input_res_benchmark:
@@ -130,7 +130,7 @@ for target in targets:
         prefix = '%s/%s_START%d_' % ( inpath,target.name,m+1)
         input_pdb = slice_out( inpath, prefix, target.native,input_res_block )
         target.input_pdbs.append( input_pdb )
-    input_resnum_fullmodel = full_model_info[ target.name ].conventional_tag_to_full( 
+    input_resnum_fullmodel = full_model_info[ target.name ].conventional_tag_to_full(
         input_res_blocks
     )
     input_resnum_fullmodel.sort()
@@ -177,7 +177,7 @@ for target in targets:
             make_tag_with_conventional_numbering( helix_resnum, resnums, chains) )
         print command
         os.system( command )
-    
+
 
     # following is now 'hard-coded' into Rosetta option '-motif_mode'
     # deprecate this python block in 2015 after testing -- rd2014
@@ -202,7 +202,7 @@ for target in targets:
         )
         extra_res_full = filter(input_resnum_fullmodel.count, extra_res_full)
         target.extra_min_res += extra_res_full
-        target.extra_min_res = sorted(list(set(target.extra_min_res))) 
+        target.extra_min_res = sorted(list(set(target.extra_min_res)))
         motif_mode_off = True
     if extra_min_res_benchmark:
         extra_res_full = full_model_info[ target.name ].conventional_tag_to_full(
@@ -210,7 +210,7 @@ for target in targets:
         )
         extra_res_full = filter(input_resnum_fullmodel.count, extra_res_full)
         target.extra_min_res += extra_res_full
-        target.extra_min_res = sorted(list(set(target.extra_min_res))) 
+        target.extra_min_res = sorted(list(set(target.extra_min_res)))
         motif_mode_off = True
     if not motif_mode_off and '-motif_mode' not in extra_flags_benchmark:
         extra_flags_benchmark['-motif_mode'] = ''
@@ -321,7 +321,7 @@ for target in targets:
 submit_files = init_submit_files()
 
 for target in targets:
-    
+
     dirname = target.name
     if not exists( dirname ): os.system( 'mkdir '+dirname )
 
@@ -380,7 +380,7 @@ for target in targets:
                 fid.write(' -apply_VDW_rep_delete_matching_res False')
             flag = ' '.join([key, value]).strip()
             fid.write(' %s' % flag)
-            
+
         fid.close()
 
         print '\nSetting up submission files for: ', target.name
@@ -430,6 +430,7 @@ for target in targets:
 
         # case-specific extra flags
         for key, value in target.extra_flags.iteritems():
+            value = value.replace('True','true').replace('False','false')
             flag = ' '.join([key, value]).strip()
             fid.write('%s\n' % flag)
 
@@ -449,7 +450,7 @@ for target in targets:
                 value = basename(target.VDW_rep_screen_info)
             flag = ' '.join([key, value]).strip()
             fid.write('%s\n' % flag)
-                
+
         fid.close()
 
         print '\nSetting up submission files for: ', target.name
