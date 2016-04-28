@@ -19,6 +19,7 @@ from get_sequence import get_sequences
 ### GLOBAL DEFINITIONS
 ################################################################################
 benchmark_dir = abspath(__file__).split('benchmark/')[0] + 'benchmark/'
+benchmark_dir = "/home/calebgeniesse/src/stepwise_benchmark/"
 column_labels = [
 	" "*10,
 	"Motif Properties",
@@ -409,6 +410,54 @@ def get_flag( flag ):
 	return None
 
 ################################################################################
+def virtualize_missing_residues_FARFAR( silent_file ):
+	silent_file_out = silent_file.replace(".out","_full_model.out")
+	FARFAR_run_script = 'default.README_FARFAR'
+
+        # extract all pdbs? then loop over each
+        # get seq/ss
+        seq = None
+        ss = None
+        nstruct = 1
+        
+        setup_cmd = Command( 'rna_denovo_setup.py' )
+        setup_cmd.add_argument( "-sequence",  value='\"' + seq.lower() + '\"')
+        setup_cmd.add_argument( '-secstruct', value='\"' + ss + '\"')
+        setup_cmd.add_argument( '-nstruct', value = str(nstruct))
+        setup_cmd.add_argument( '-tag', value = 'default')
+        setup_cmd.add_argument( '-out_script', value=FARFAR_run_script)
+        setup_cmd.add_argument( '-fixed_stems' )
+        
+        ## may need to handle cutpoints
+        ## figure out pdbs, extra min res, global minimize
+
+        ## run setup script
+        
+        ## source FARFAR_run_script
+
+        build_full_model_exe = get_rosetta_exe( "build_full_model" )
+	try:
+		weights = get_flag( "-score:weights" ).split(' ')[-1]
+	except:
+		weights = None
+	try:
+		torsion_potential = get_flag( "-score:rna_torsion_potential" ).split(' ')[-1]
+	except:
+		torsion_potential = None
+	command = Command( build_full_model_exe )
+	command.add_argument( "-in:file:silent", value=silent_file )
+	command.add_argument( "-out:file:silent", value=silent_file_out )
+	command.add_argument( "-out:overwrite", value="true" )
+	if weights is not None:
+		command.add_argument( "-score:weights", value=weights )
+	if torsion_potential is not None:
+		command.add_argument( "-score:rna_torsion_potential", value=torsion_potential )
+	command.add_argument( "-virtualize_built", value="true" )
+	command.save_logs()
+	success = command.submit()
+	return silent_file_out if success is True else None
+
+################################################################################
 def virtualize_missing_residues( silent_file ):
 	silent_file_out = silent_file.replace(".out","_full_model.out")
 	build_full_model_exe = get_rosetta_exe( "build_full_model" )
@@ -429,7 +478,8 @@ def virtualize_missing_residues( silent_file ):
 	if torsion_potential is not None:
 		command.add_argument( "-score:rna_torsion_potential", value=torsion_potential )
 	command.add_argument( "-virtualize_built", value="true" )
-	command.save_logs()
+	command.add_argument( "-rna:farna:cycles", value="500" )
+        command.save_logs()
 	success = command.submit()
 	return silent_file_out if success is True else None
 
@@ -508,6 +558,37 @@ def create_common_args_file( silent_file ):
 	return common_args_file
 
 ################################################################################
+def create_cluster_silent_file_rna_cluster( silent_file ):
+        '''
+        rna_cluster -in:file:silent swm_rebuild_full_model.out -out:file:silent swm_rebuild_full_model.out.cluster.out -cluster:radius 2.0 -out:file:silent_struct_type binary_rna -nstruct 5000
+        '''
+	if 'swm' in silent_file:
+		silent_file_virt = virtualize_missing_residues( silent_file )
+		if not silent_file_virt or not exists( silent_file_virt ):
+			return silent_file
+		silent_file = silent_file_virt
+	cluster_rmsd = 2.0
+	native_pdb = get_native_pdb()
+	cluster_exe = "rna_cluster"
+	cluster_exe = get_rosetta_exe( cluster_exe, tools=False )
+	top_energy_clusters_folder = "TOP_ENERGY_CLUSTERS/"
+	cluster_silent_file = "%s/top_energy_clusters.rna_cluster.out" % top_energy_clusters_folder
+	if exists( cluster_silent_file ):
+		Command( "rm -f ", args=cluster_silent_file ).submit()
+	elif not exists( top_energy_clusters_folder ):
+		Command( "mkdir -p", args=top_energy_clusters_folder ).submit()
+	command = Command( cluster_exe )
+	command.add_argument( "-nstruct", value=100 )
+	command.add_argument( "-cluster:radius", value=cluster_rmsd )
+	command.add_argument( "-in:file:silent", value=silent_file )
+	command.add_argument( "-in:file:native", value=native_pdb )
+	command.add_argument( "-out:file:silent", value=cluster_silent_file )
+	command.add_argument( "-out:file:silent_struct_type", value="binary_rna" )
+	command.save_logs()
+	success = command.submit()
+	return cluster_silent_file if success is True else None
+
+
 def create_cluster_silent_file( silent_file ):
 	common_args_file = create_common_args_file( silent_file )
 	if 'swm' in silent_file:
@@ -555,7 +636,8 @@ def create_cluster_silent_file( silent_file ):
 ################################################################################
 def get_lowest_energy_cluster_centers( nclusters=5 ):
 	silent_file = get_silent_file()
-	cluster_silent_file = create_cluster_silent_file( silent_file )
+	#cluster_silent_file = create_cluster_silent_file( silent_file )
+	cluster_silent_file = create_cluster_silent_file_rna_cluster( silent_file )
 	if cluster_silent_file is None or not exists( cluster_silent_file ):
 		print "\n[WARNING] cluster_silent_file not found for target: %s" % get_working_target()
 		cluster_silent_file = silent_file
