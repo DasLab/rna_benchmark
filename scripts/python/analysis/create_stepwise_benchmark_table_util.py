@@ -186,6 +186,7 @@ class Table(object):
 			idx = 0
 			for col in data:
 				if col is None or isinstance(col, str):
+                                        col = 0.0
 					increment = 0.0
 				else:
 					col = float( col )
