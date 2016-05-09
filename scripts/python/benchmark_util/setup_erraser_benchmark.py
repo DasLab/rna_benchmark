@@ -68,6 +68,7 @@ if err and len(err):
 		print 
 		exit(0)
 
+'''
 command = './convert_to_phenix_python'
 out, err = subprocess.Popen( command, shell=True,
 							 stdout=subprocess.PIPE,
@@ -77,7 +78,7 @@ if (err and len(err)):
 	print 'OUTPUT: '+out
 	print 'ERROR: '+err
 	exit(0)
-
+'''
 chdir( CWD )
 
 
