@@ -1,0 +1,2 @@
+cd azo_groupI_product; source qsubMINI; cd /Users/rhiju/Dropbox/projects/stepwise/benchmark/new/metal_ions_test
+cd azo_groupI_substrate; source qsubMINI; cd /Users/rhiju/Dropbox/projects/stepwise/benchmark/new/metal_ions_test
