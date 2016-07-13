@@ -1,0 +1,2 @@
+#setup_stepwise_benchmark.py metal_ions.txt -nhours 48 --save_logs
+setup_stepwise_benchmark.py metal_ions.txt azo_groupI_product azo_groupI_substrate -nhours 48 --save_logs -j20

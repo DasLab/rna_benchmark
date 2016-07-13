@@ -1,0 +1,17 @@
+-s azo_groupI_substrate_START1_3BO3_altB.pdb
+-native azo_groupI_substrate_NATIVE_3BO3_altB.pdb
+-terminal_res  B:8 B:12 B:127 B:137 B:169 B:179 D:1  
+-block_stack_above_res  B:12 B:137 B:179  
+-block_stack_below_res  B:8 B:127 B:169 D:1  
+-extra_min_res  D:2 
+-fasta azo_groupI_substrate.fasta
+-nstruct 20
+-save_times
+-score:weights stepwise/rna/rna_res_level_energy4.wts
+-set_weights mg_lig 1.0 mg_sol 0.2
+-cycles 2000
+-rmsd_screen 2.0
+-add_proposal_density_factor 1000
+
+
+-motif_mode

@@ -1,0 +1,68 @@
+
+Basic usage:  /home/rhiju/src/rosetta//main/source/bin/stepwise  -fasta <fasta file with sequence> -s <start pdb> -input_res <input pdb1> [ -native <native pdb file> ] 
+
+ Type -help for full slate of options.
+
+core.init: Rosetta version exported  from http://www.rosettacommons.org
+core.init: command: /home/rhiju/src/rosetta//main/source/bin/stepwise -s azo_groupI_product_START1_3BO3_altA.pdb -native azo_groupI_product_NATIVE_3BO3_altA.pdb -terminal_res B:8 B:12 B:127 B:137 B:169 B:179 D:1 -block_stack_above_res B:12 B:137 B:179 -block_stack_below_res B:8 B:127 B:169 D:1 -extra_min_res D:2 -fasta azo_groupI_product.fasta -nstruct 20 -save_times -score:weights stepwise/rna/rna_res_level_energy4.wts -set_weights mg_lig 1.0 mg_sol 0.2 hoh_ref 1.0 -cycles 2000 -magnesium:hydrate -motif_mode -out:file:silent SWM/3/swm_rebuild.out
+core.init: 'RNG device' seed mode, using '/dev/urandom', seed=-1626584702 seed_offset=0 real_seed=-1626584702
+core.init.random: RandomGenerator:init: Normal mode, seed=-1626584702 RG_type=mt19937
+core.init: Resolved executable path: /biox3/home/rhiju/src/rosetta/main/source/cmake/build_release/stepwise
+core.init: Looking for database based on location of executable: /biox3/home/rhiju/src/rosetta/main/database/
+core.chemical.ResidueTypeSet: Finished initializing fa_standard residue type set.  Created 382 residue types
+core.chemical.ResidueTypeSet: Total time to initialize 1.52 seconds.
+core.scoring.ScoreFunctionFactory: SCOREFUNCTION: stepwise/rna/rna_res_level_energy4.wts
+core.scoring.etable: Starting energy table calculation
+core.scoring.etable: smooth_etable: changing atr/rep split to bottom of energy well
+core.scoring.etable: smooth_etable: spline smoothing lj etables (maxdis = 6)
+core.scoring.etable: smooth_etable: spline smoothing solvation etables (max_dis = 6)
+core.scoring.etable: Finished calculating energy tables.
+basic.io.database: Database file opened: scoring/score_functions/hbonds/sp2_elec_params/HBPoly1D.csv
+basic.io.database: Database file opened: scoring/score_functions/hbonds/sp2_elec_params/HBFadeIntervals.csv
+basic.io.database: Database file opened: scoring/score_functions/hbonds/sp2_elec_params/HBEval.csv
+core.scoring.ScoreFunctionFactory: Setting/modifying scorefxn weight from command line: mg_lig 1
+core.scoring.ScoreFunctionFactory: Setting/modifying scorefxn weight from command line: mg_sol 0.2
+core.scoring.ScoreFunctionFactory: Setting/modifying scorefxn weight from command line: hoh_ref 1
+core.io.pdb.file_data_fixup: Flipping atom xyz for  H21 and  H22 for residue   G
+core.io.pdb.file_data_fixup: Flipping atom xyz for  H21 and  H22 for residue   G
+core.io.pdb.file_data_fixup: Number of flip-atom fixups exceeds output limit. Rerun with -show_all_fixes to show everything.
+core.io.pdb.file_data: Adding undetected upper terminus type to residue 27
+core.conformation.Conformation: [ WARNING ] Building missing atom ( P  ) at root of residue tree, using stubs:  O5'  C5'  C4'
+This probably means that a torsion angle is being taken from the ideal residue and
+should be further optimized...
+protocols.stepwise.setup.FullModelInfoSetupFromCommandLine: 0 1 0 0
+core.io.pdb.file_data: Adding undetected upper terminus type to residue 27
+core.conformation.Conformation: [ WARNING ] Building missing atom ( P  ) at root of residue tree, using stubs:  O5'  C5'  C4'
+This probably means that a torsion angle is being taken from the ideal residue and
+should be further optimized...
+protocols.stepwise.monte_carlo.submotif.SubMotifLibrary: Reading in submotif: /biox3/home/rhiju/src/rosetta/main/database/sampling/rna/submotif//base_pairs/cg_standard.pdb
+protocols.stepwise.monte_carlo.submotif.SubMotifLibrary: Reading in submotif: /biox3/home/rhiju/src/rosetta/main/database/sampling/rna/submotif//base_pairs/ua_handle_1q9a.pdb
+protocols.stepwise.monte_carlo.submotif.SubMotifLibrary: Reading in submotif: /biox3/home/rhiju/src/rosetta/main/database/sampling/rna/submotif//base_pairs/gg_1raw_RNA.pdb
+protocols.stepwise.monte_carlo.submotif.SubMotifLibrary: Reading in submotif: /biox3/home/rhiju/src/rosetta/main/database/sampling/rna/submotif//base_pairs/gg_2grb_RNA.pdb
+protocols.stepwise.monte_carlo.submotif.SubMotifLibrary: Reading in submotif: /biox3/home/rhiju/src/rosetta/main/database/sampling/rna/submotif//uturns/uturn_t_loop_3l0u_RNA.pdb
+protocols.stepwise.monte_carlo.submotif.SubMotifLibrary: Reading in submotif: /biox3/home/rhiju/src/rosetta/main/database/sampling/rna/submotif//uturns/uturn_t_loop_3l0u_RNA_thread_to_uaa.pdb
+protocols.stepwise.monte_carlo.submotif.SubMotifLibrary: Reading in submotif: /biox3/home/rhiju/src/rosetta/main/database/sampling/rna/submotif//srl/GUA_GA_430d.pdb
+protocols.stepwise.setup.StepWiseMonteCarloJobDistributor: 
+protocols.stepwise.setup.StepWiseMonteCarloJobDistributor: Embarking on structure 1 of 20
+protocols.stepwise.modeler.align.StepWisePoseAligner: RMSD 0.000 (0 atoms in ), superimposed on 501 atoms in 1-28 30 34-36 (RMSD 0.0000003) 
+core.scoring.etable: Starting energy table calculation
+core.scoring.etable: smooth_etable: changing atr/rep split to bottom of energy well
+core.scoring.etable: smooth_etable: spline smoothing lj etables (maxdis = 6)
+core.scoring.etable: smooth_etable: spline smoothing solvation etables (max_dis = 6)
+core.scoring.etable: Finished calculating energy tables.
+About to prepare rotations 
+remove_redundant finished in 0.51 seconds.
+Done preparing rotations 
+protocols.stepwise.modeler.StepWiseMinimizer: Score minimized from 1351.176 to 1353.874   [original:  841.471]
+protocols.stepwise.monte_carlo.StepWiseMonteCarlo: 
+protocols.stepwise.monte_carlo.StepWiseMonteCarlo: Embarking on cycle 1 of 2000
+protocols.stepwise.monte_carlo.StepWiseMonteCarlo: Modeling: 1-28 30-31 34-46
+protocols.stepwise.monte_carlo.mover.AddOrDeleteMover: Choice ADD res 29 with attachments  BOND_TO_PREVIOUS:28
+protocols.stepwise.modeler.align.StepWisePoseAligner: RMSD 3.555 (23 atoms in 29), superimposed on 501 atoms in 1-28 30 34-36 (RMSD 0.0000003) 
+protocols.stepwise.StepWiseSampleAndScreen: Number of tries: 1661. Number of successes: 20
+caught exception 
+
+[ERROR] EXCN_utility_exit has been thrown from: /home/rhiju/src/rosetta/main/source/src/protocols/magnesium/MgHydrater.cc line: 407
+ERROR: count <= 6
+
+
