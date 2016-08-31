@@ -186,11 +186,11 @@ for name in names:
     assert( native[ name ] != '-' ) # for now, require a native, since this is a benchmark.
     prefix = '%s/%s_NATIVE_' % ( inpath,name)
     working_native[ name ] = slice_out( inpath, prefix, native[ name ], string.join( working_res_blocks ), check_sequence=True )
-    if not ( string.join(sequences,'') == string.join(get_sequences( working_native[name] )[0],'') ):
+    if not ( string.join(sequences,'') == string.join(get_sequences( working_native[name], True )[0],'') ):
         print 'Mismatch in native sequences!'
         print string.join(sequences,'')
-        print string.join(get_sequences( working_native[name] )[0],'')
-        assert( string.join(sequences,'') == string.join(get_sequences( working_native[name] )[0],'') )
+        print string.join(get_sequences( working_native[name], True )[0],'')
+        assert( string.join(sequences,'') == string.join(get_sequences( working_native[name], True )[0],'') )
 
     # create starting PDBs
     input_pdbs[ name ] = []
@@ -215,6 +215,8 @@ for name in names:
     input_resnum_fullmodel[name] = map( lambda x: get_fullmodel_number(x,resnums[name],chains[name]), zip( input_resnums, input_chains ) )
 
     # create secstruct if not defined
+    # AMW TOOD: We can get around this for now, but we need to make sure it doesn't do this
+	# for noncanonical nucleotides eventually.
     if secstruct[ name ] == '-': secstruct[ name ] = string.join( [ '.' * len( seq ) for seq in sequences ], ',' )
     # secstruct general can include obligate pairs (even non-canonical!)
     if name not in secstruct_gen.keys(): secstruct_gen[ name ] = string.join( [ '.' * len( seq ) for seq in sequences ], ',' )
@@ -224,6 +226,8 @@ for name in names:
     helix_files[ name ] = []
     (sequence_joined, chainbreak_pos)           = join_sequence( sequence[name] )
     (secstruct_joined,chainbreak_pos_secstruct) = join_sequence( secstruct[name] )
+    print sequence_joined, chainbreak_pos
+    print secstruct_joined, chainbreak_pos_secstruct
     (secstruct_gen_joined,chainbreak_pos_secstruct_gen) = join_sequence( secstruct_gen[name] )
     assert( chainbreak_pos == chainbreak_pos_secstruct )
     stems = get_all_stems( secstruct_joined, chainbreak_pos, sequence_joined  )

@@ -137,9 +137,18 @@ for name in names:
 		for res_idx in xrange( len( working_residues ) ):
 			xres   = working_residues[ res_idx ]
 			xchain = working_chains  [ res_idx ]
-			xseq   = sequence[ xchain ][ xres ].replace( ' ', '' ).lower()
-			assert( xseq in [ 'a', 'u', 'c', 'g' ] )
-			working_sequence += xseq
+			#xseq   = sequence[ xchain ][ xres ].replace( ' ', '' ).lower()
+			#assert( xseq in [ 'a', 'u', 'c', 'g' ] )
+			# If we're looking at a NCNT, the working_sequence has to add
+			# X[name3]... no lowercase
+			# This makes the following assumptions:
+			# 1. No patches that aren't reflected in name3
+			# 2. base_name == name3 for these RTs
+			xseq   = sequence[ xchain ][ xres ].replace( ' ', '' )
+			if not xseq.lower() in [ 'a', 'u', 'c', 'g' ]:
+				working_sequence += 'X[%s]' % xseq
+			else:
+				working_sequence += xseq.lower()
 		assert( len( working_sequence ) )
 		working_sequences.append( working_sequence )
 	sequence[ name ] = string.join( working_sequences, ',' )

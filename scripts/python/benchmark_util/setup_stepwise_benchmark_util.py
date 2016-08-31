@@ -31,6 +31,8 @@ def slice_out( inpath_dir, prefix, pdb, res_string, excise=False, check_sequence
         for col in res_string.split(' '):
             get_resnum_chain( col, target_resnums, target_chains )
         ( sequences, all_chains, all_resnums ) = get_sequences( slice_pdb )
+        print all_resnums
+        print flatten(all_resnums), target_resnums
         assert( flatten(all_resnums) == target_resnums )
         assert( flatten(all_chains) == target_chains )
 
