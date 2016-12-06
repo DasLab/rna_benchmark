@@ -124,6 +124,19 @@ assert( exists( info_file ) )
 inpath = info_file.replace('.txt', '' ) + '/'
 assert( exists( inpath ) )
 
+def onelettersequence( sequence ):
+    # replace nonstandard names like Z[Mg] with Z
+    sequence_clean = []
+    in_non_standard = False
+    for c in sequence:
+        if c == '[':
+            in_non_standard = True
+            continue
+        if c == ']':
+            in_non_standard = False
+            continue
+        if not in_non_standard: sequence_clean += c
+    return sequence_clean
 
 # read info_file
 def parse_flags_string( flag_string ):
@@ -215,9 +228,9 @@ for name in names:
     input_resnum_fullmodel[name] = map( lambda x: get_fullmodel_number(x,resnums[name],chains[name]), zip( input_resnums, input_chains ) )
 
     # create secstruct if not defined
-    if secstruct[ name ] == '-': secstruct[ name ] = string.join( [ '.' * len( seq ) for seq in sequences ], ',' )
+    if secstruct[ name ] == '-': secstruct[ name ] = string.join( [ '.' * len( onelettersequence(seq) ) for seq in sequences ], ',' )
     # secstruct general can include obligate pairs (even non-canonical!)
-    if name not in secstruct_gen.keys(): secstruct_gen[ name ] = string.join( [ '.' * len( seq ) for seq in sequences ], ',' )
+    if name not in secstruct_gen.keys(): secstruct_gen[ name ] = string.join( [ '.' * len( onelettersequence(seq) ) for seq in sequences ], ',' )
 
 
     # create any helices.
@@ -255,21 +268,6 @@ for name in names:
             make_tag_with_conventional_numbering( helix_resnum, resnums[ name ], chains[ name ] ) )
         print command
         system( command )
-
-
-    def onelettersequence( sequence ):
-        # replace nonstandard names like Z[Mg] with Z
-        sequence_clean = []
-        in_non_standard = False
-        for c in sequence:
-            if c == '[':
-                in_non_standard = True
-                continue
-            if c == ']':
-                in_non_standard = False
-                continue
-            if not in_non_standard: sequence_clean += c
-        return sequence_clean
 
     # following is now 'hard-coded' into Rosetta option '-motif_mode'
     # deprecate this python block in 2015 after testing -- rd2014
