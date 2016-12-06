@@ -203,7 +203,10 @@ for name in names:
         print 'Mismatch in native sequences!'
         print string.join(sequences,'')
         print string.join(get_sequences( working_native[name] )[0],'')
-        assert( string.join(sequences,'') == string.join(get_sequences( working_native[name] )[0],'') )
+        # Terribly, we have to sort sequences... necessary because components
+        # can be in variable orders. A much more sophisticated slice/join mechanism
+        # would also solve this.
+        assert( sorted(string.join(sequences,'')) == sorted(string.join(get_sequences( working_native[name] )[0],'')) )
 
     # create starting PDBs
     input_pdbs[ name ] = []
