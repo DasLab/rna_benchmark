@@ -201,12 +201,16 @@ for name in names:
     working_native[ name ] = slice_out( inpath, prefix, native[ name ], string.join( working_res_blocks ), check_sequence=True )
     if not ( string.join(sequences,'') == string.join(get_sequences( working_native[name] )[0],'') ):
         print 'Mismatch in native sequences!'
-        print string.join(sequences,'')
-        print string.join(get_sequences( working_native[name] )[0],'')
+        #print string.join(sequences,'')
+        #print string.join(get_sequences( working_native[name] )[0],'')
+        print string.join(sorted(sequences),'')
+        print string.join(sorted(get_sequences( working_native[name] )[0]),'')
+        #print sorted(string.join(sorted(sequences),''))
+        #print sorted(string.join(sorted(get_sequences( working_native[name] )[0]),''))
         # Terribly, we have to sort sequences... necessary because components
         # can be in variable orders. A much more sophisticated slice/join mechanism
         # would also solve this.
-        assert( sorted(string.join(sequences,'')) == sorted(string.join(get_sequences( working_native[name] )[0],'')) )
+        assert( sorted(string.join(sorted(sequences),'')) == sorted(string.join(sorted(get_sequences( working_native[name] )[0]),'')) )
 
     # create starting PDBs
     input_pdbs[ name ] = []
