@@ -533,6 +533,7 @@ for name in names:
             fid.write( '-working_native %s\n' % basename( working_native[ name ] ) );
         add_start_files_flag( fid, start_files )
         fid.write( '-working_res %s\n' % working_res[ name ].replace( ',',' ') )
+        add_block_stack_flags( args, extra_flags, block_stack_above_res, block_stack_below_res, fid )
         if len( extra_min_res[ name ] ) > 0 and not args.extra_min_res_off:
             fid.write( '-extra_minimize_res %s\n' % make_tag_with_conventional_numbering( extra_min_res[ name ], resnums[ name ], chains[ name ] ) )
         if args.farfar: fid.write( '-minimize_rna true\n' )
@@ -584,7 +585,7 @@ for name in names:
             fid.write( '-native %s\n' % basename( working_native[name] ) )
         if len( terminal_res[ name ] ) > 0:
             fid.write( '-terminal_res %s  \n' % make_tag_with_conventional_numbering( terminal_res[ name ], resnums[ name ], chains[ name ] ) )
-        add_block_stack_flags( args, extra_flags, block_stack_above_res, block_stack_below_res, fid )
+        add_block_stack_flags( args, extra_flags, block_stack_above_res, block_stack_below_res, fid ) # could probably get rid of terminal_res.
         if len( extra_min_res[ name ] ) > 0 and not args.extra_min_res_off: ### Turn extra_min_res off for SWM when comparing to SWA
             fid.write( '-extra_min_res %s \n' % make_tag_with_conventional_numbering( extra_min_res[ name ], resnums[ name ], chains[ name ] ) )
         if args.stepwise_lores:
