@@ -550,9 +550,7 @@ for name in names:
         #fid.write( '-output_res_num %s\n' % make_tag_with_dashes( resnums[ name ], chains[ name ] ) )
         # extra flags for whole benchmark
         for flag in extra_flags_benchmark:
-            if ( '-motif_mode' in flag ):
-                print "-motif mode needs to be set up for FARNA/FARFAR -- CHECK!" ### SWM Specific
-                continue
+            if ( '-motif_mode' in flag ): continue # not really checked in FARFAR; use block_stack + extra_min_res instead.
             if ( '#' in flag ): continue
             flag = flag.replace('True','true').replace('False','false')
             fid.write( flag[:-1]+'\n' )
