@@ -109,6 +109,7 @@ loop_res = {}
 input_resnum_fullmodel = {}
 VDW_rep_screen_pdb = {}
 VDW_rep_screen_info = {}
+dock_partners = {}
 bps = ['au','ua','gc','cg','ug','gu']
 
 
@@ -356,6 +357,47 @@ for name in names:
                     if not cut_exists_for_jump:
                         cutpoint_closed[ name ].append( jump_bp[ 0 ] )
                         cuts.append( jump_bp[ 0 ] )
+
+    # for cases that require docking two chains & farna, need to recognize and set up chain_connections flag
+    dock_partners[ name ] = []
+    if args.farna or args.farfar:
+        strand_num = 1
+        strand = {}
+        for m in range( 1, L+1 ):
+            strand[m] = strand_num
+            if ( m in chainbreak_pos ): strand_num += 1
+        # which strands are connected up?
+        strand_connected = {}
+        for m in range(1,strand_num+1):
+            strand_connected[ m ] = {}
+            for n in range(1,strand_num+1): strand_connected[ m ][ n ] = False
+        for domain in input_resnum_fullmodel_by_block:
+            for m in domain:
+                for n in domain:
+                    strand_connected[ strand[m] ][ strand[n] ] = True
+        # are there any separated clusters?
+        already_in_cluster = {}
+        clusters = []
+        for m in range(1,strand_num+1): already_in_cluster[ m ] = False
+        for m in range(1,strand_num+1):
+            if already_in_cluster[ m ]: continue
+            strand_cluster = set( [ m ] )
+            for n in range(1,strand_num+1):
+                if strand_connected[ m ][ n ]:
+                    strand_cluster.add( n )
+                    already_in_cluster[ n ] = True
+            clusters.append( strand_cluster )
+        assert( len( clusters ) > 0 )
+        if len( clusters ) > 1:
+            assert( len( clusters ) == 2 )
+            dock_partners[ name ] = [ [], [] ]
+            for m in range( 1, L+1 ):
+                if strand[ m ] in clusters[ 0 ]:
+                    dock_partners[ name ][ 0 ].append( m )
+                else:
+                    assert( strand[ m ] in clusters[ 1 ])
+                    dock_partners[ name ][ 1 ].append( m )
+
     # create fasta
     fasta[ name ] = '%s/%s.fasta' % (inpath,name)
     if not exists( fasta[ name ] ):
@@ -464,6 +506,29 @@ for name in names:
             for infile in start_files:  fid.write( ' %s' % (basename(infile) ) )
             fid.write( '\n' )
 
+
+    def copy_extra_files( tag ):
+        if tag in cols:
+            filename = cols[ cols.index( tag )+1 ]
+            print filename
+            assert( exists( inpath+'/'+filename ) )
+            system( 'cp %s/%s %s' % (inpath, filename, name ) )
+
+    def add_extra_flags_for_name( fid, extra_flags, name ):
+        # case-specific extra flags
+        if ( len( extra_flags[name] ) > 0 ) and ( extra_flags[ name ] != '-' ) :
+            #fid.write( '%s\n' % extra_flags[name] )
+            cols = extra_flags[ name ].split( ' ' )
+
+            if not args.no_align_pdb: copy_extra_files( '-align_pdb')
+            copy_extra_files( '-extra_res_fa')
+
+            for flag in parse_flags_string( extra_flags[ name ] ):
+                flag = flag.replace('True','true').replace('False','false')
+                if flag == '-block_stack_off\n': continue
+                if ( args.no_align_pdb and flag.find( '-align_pdb' ) > -1 ): continue
+                fid.write( flag )
+
     # SETUP for StepWise Assembly
     if args.swa:
 
@@ -541,13 +606,11 @@ for name in names:
         if not cycles_flag_found:   fid.write( '-cycles 20000\n' )
         if not nstruct_flag_found:  fid.write( '-nstruct 20\n' )
         if not args.save_times_off: fid.write( '-save_times\n' )
-        # case-specific extra flags
-        if ( len( extra_flags[name] ) > 0 ) and ( extra_flags[ name ] != '-' ) :
-            for flag in parse_flags_string( extra_flags[ name ] ):
-                flag = flag.replace('true','True').replace('false','False')
-                fid.write( ' %s\n' % flag[:-1] )
-        # silly, currently required for FARNA, but hopefully not in future
-        #fid.write( '-output_res_num %s\n' % make_tag_with_dashes( resnums[ name ], chains[ name ] ) )
+        if len( dock_partners[ name ] ) > 0:
+            fid.write( '-chain_connection SET1 %s SET2 %s\n' % ( make_tag_with_conventional_numbering( dock_partners[ name ][ 0 ], resnums[ name ], chains[ name ] ), \
+                                                                 make_tag_with_conventional_numbering( dock_partners[ name ][ 1 ], resnums[ name ], chains[ name ] ) ) )
+
+        add_extra_flags_for_name(fid, extra_flags, name)
         # extra flags for whole benchmark
         for flag in extra_flags_benchmark:
             if ( '-motif_mode' in flag ): continue # not really checked in FARFAR; use block_stack + extra_min_res instead.
@@ -596,27 +659,7 @@ for name in names:
         if not cycles_flag_found:   fid.write( '-cycles 200\n' )
         if not nstruct_flag_found:  fid.write( '-nstruct 20\n' )
         if not args.save_times_off: fid.write( '-save_times\n' )
-
-        # case-specific extra flags
-        if ( len( extra_flags[name] ) > 0 ) and ( extra_flags[ name ] != '-' ) :
-            #fid.write( '%s\n' % extra_flags[name] )
-            cols = extra_flags[ name ].split( ' ' )
-
-            def copy_extra_files( tag ):
-                if tag in cols:
-                    filename = cols[ cols.index( tag )+1 ]
-                    print filename
-                    assert( exists( inpath+'/'+filename ) )
-                    system( 'cp %s/%s %s' % (inpath, filename, name ) )
-
-            if not args.no_align_pdb: copy_extra_files( '-align_pdb')
-            copy_extra_files( '-extra_res_fa')
-
-            for flag in parse_flags_string( extra_flags[ name ] ):
-                flag = flag.replace('True','true').replace('False','false')
-                if flag == '-block_stack_off\n': continue
-                if ( args.no_align_pdb and flag.find( '-align_pdb' ) > -1 ): continue
-                fid.write( flag )
+        add_extra_flags_for_name(fid, extra_flags, name)
 
         # extra flags for whole benchmark
         weights_file = ''
