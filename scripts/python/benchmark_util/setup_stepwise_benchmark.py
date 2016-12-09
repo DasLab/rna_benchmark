@@ -189,6 +189,7 @@ for name in names:
 
     sequences          = string.split( sequence[name], ',' )
     working_res_blocks = string.split( working_res[name], ',' )
+    print sequences
 
     # store information on 'conventional' residue numbers and chains.
     resnums[ name ] = []
@@ -199,17 +200,13 @@ for name in names:
     assert( native[ name ] != '-' ) # for now, require a native, since this is a benchmark.
     prefix = '%s/%s_NATIVE_' % ( inpath,name)
     working_native[ name ] = slice_out( inpath, prefix, native[ name ], string.join( working_res_blocks ), check_sequence=True )
-    if not ( string.join(sequences,'') == string.join(get_sequences( working_native[name] )[0],'') ):
+    # Terribly, we have to sort sequences... necessary because components
+    # can be in variable orders. A much more sophisticated slice/join mechanism
+    # would also solve this.
+    if not ( sorted(string.join(sequences,'')) == sorted(string.join(get_sequences( working_native[name] )[0],'')) ):
         print 'Mismatch in native sequences!'
-        #print string.join(sequences,'')
-        #print string.join(get_sequences( working_native[name] )[0],'')
         print string.join(sorted(sequences),'')
         print string.join(sorted(get_sequences( working_native[name] )[0]),'')
-        #print sorted(string.join(sorted(sequences),''))
-        #print sorted(string.join(sorted(get_sequences( working_native[name] )[0]),''))
-        # Terribly, we have to sort sequences... necessary because components
-        # can be in variable orders. A much more sophisticated slice/join mechanism
-        # would also solve this.
         assert( sorted(string.join(sorted(sequences),'')) == sorted(string.join(sorted(get_sequences( working_native[name] )[0]),'')) )
 
     # create starting PDBs
@@ -248,17 +245,35 @@ for name in names:
     assert( chainbreak_pos == chainbreak_pos_secstruct )
     stems = get_all_stems( secstruct_joined, chainbreak_pos, sequence_joined  )
 
+    # instead of sequence_joined, we have to look at fasta_entities to get the real story,
+    # NCNTs and all
+    fasta_entities = []
+    i = 0
+    while i < len(sequence_joined):
+        if i == len(sequence_joined) - 1 or sequence_joined[i+1] != '[':
+            # simple case
+            fasta_entities.append(sequence_joined[i])
+        else:
+            entity = sequence_joined[i]
+            i += 1
+            while sequence_joined[i] != ']':
+                entity += sequence_joined[i]
+                i += 1
+                entity += ']'
+            fasta_entities.append(entity)
+        i += 1
+
     for i in range( len( stems ) ):
         helix_file =  '%s/%s_HELIX%d.pdb' % (inpath,name,(i+1))
 
         stem = stems[i]
         helix_seq = ''; helix_resnum = [];
         for bp in stem:
-            helix_seq    += sequence_joined[ bp[0] - 1 ]
+            helix_seq    += fasta_entities[ bp[0] - 1 ] #sequence_joined[ bp[0] - 1 ]
             helix_resnum.append( bp[0] )
         helix_seq += ' '
         for bp in stem[::-1]:
-            helix_seq    += sequence_joined[ bp[1] - 1 ]
+            helix_seq    += fasta_entities[ bp[1] - 1 ]
             helix_resnum.append( bp[1] )
 
         already_in_input_res = False

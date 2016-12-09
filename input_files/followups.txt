@@ -22,6 +22,15 @@ Input_res:     -
 Native:        1ehz.pdb
 Extra_flags:   -
 
+# It looks absurd but this is the only way it'll parse right, I think.
+Name:          g_quadruplex_fixed
+Sequence:      ggX[I]gu,ggX[I]gu,ggX[I]gu,ggX[I]gu
+Secstruct:     .....,.....,.....,.....
+Working_res:   A:2-6,B:2-6,C:2-6,D:2-6
+Input_res:     A:2,B:2,C:2,D:2
+Native:        2grb.pdb
+Extra_flags:   -
+
 Name:          hammerhead_3WJ_cat_fixed
 Sequence:      agcugaugagu,acgaaac,guX[OMC]cu
 Secstruct:     -
@@ -32,12 +41,12 @@ Extra_flags:   -
 
 Name:          hammerhead_3WJ_cat
 Sequence:      agcugaugagu,acgaaac,guX[OMC]cu
-Secstruct:     -
+#Secstruct:     -
 # Can't do this because the work of:
 # 1. expanding the complements dict
 # 2. totally change the stem-validating parser
 # just isn't worth it.
-#Secstruct:     ((.......((,))...((,)).))
+Secstruct:     ((.......((,))...((,)).))
 Working_res:   A:13-23,A:34-40,B:4-8
 Input_res:     -
 Native:        2oeu.pdb
