@@ -40,14 +40,6 @@ def slice_out( inpath_dir, prefix, pdb, res_string, excise=False ):
         else:       command = 'pdbslice.py %s -subset %s %s ' % ( starting_native, res_string, prefix )
         system( command )
     assert( exists( slice_pdb ) )
-    if check_sequence:
-        target_resnums = []
-        target_chains = []
-        for col in res_string.split(' '):
-            get_resnum_chain( col, target_resnums, target_chains )
-        ( sequences, all_chains, all_resnums ) = get_sequences( slice_pdb )
-        assert( sorted(flatten(all_resnums)) == sorted(target_resnums) )
-        assert( sorted(flatten(all_chains)) == sorted(target_chains) )
 
     return slice_pdb
 
