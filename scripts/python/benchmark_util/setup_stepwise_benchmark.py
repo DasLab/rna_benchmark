@@ -23,7 +23,6 @@ parser.add_argument("info_file",       help='text file with information, in same
 parser.add_argument("user_input_runs", nargs='*',help='specify particular cases to run (default: run all in info_file)' )
 parser.add_argument('-extra_flags', default='extra_flags_benchmark.txt', help='Filename of text file with extra_flags for all cases.')
 parser.add_argument('-nhours', default='16', type=int, help='Number of hours to queue each job.')
-<<<<<<< HEAD
 parser.add_argument('-j','--njobs', default='10', type=int, help='Number of cores for each job.')
 parser.add_argument('--swa', action='store_true', help='Additional flag for setting up SWA runs.')
 parser.add_argument('--extra_min_res_off', action='store_true', help='Additional flag for turning extra_min_res off.')
