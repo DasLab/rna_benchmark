@@ -196,6 +196,7 @@ for target in targets:
         helix_file =  '%s/%s_HELIX%d.pdb' % (inpath,target.name,(i+1))
 
         stem = stems[i]
+        print stems[i]
         helix_seq = ''; helix_resnum = [];
         for bp in stem:
             helix_seq    += fasta_entities[ bp[0] - 1 ] #sequence_joined[ bp[0] - 1 ]
