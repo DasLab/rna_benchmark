@@ -19,6 +19,8 @@ class TargetDefinition(object):
         self.working_res = None
         self.native = None
         self.input_res = None
+        self.block_stack_above_res = None
+        self.block_stack_below_res = None
         self.extra_flags = None
 
     def ordered_attrs(self):

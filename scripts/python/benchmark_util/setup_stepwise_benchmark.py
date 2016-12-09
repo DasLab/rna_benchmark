@@ -169,7 +169,8 @@ for target in targets:
     target.helix_files = []
     (sequence_joined, chainbreak_pos)           = join_sequence( target.sequence )
     (secstruct_joined,chainbreak_pos_secstruct) = join_sequence( target.secstruct )
-    assert( chainbreak_pos == chainbreak_pos_secstruct )
+    # This is going to be a huge pain to handle so just ignore
+    #assert( chainbreak_pos == chainbreak_pos_secstruct )
     stems = get_all_stems( secstruct_joined, chainbreak_pos, sequence_joined  )
 
     # instead of sequence_joined, we have to look at fasta_entities to get the real story,
@@ -205,7 +206,7 @@ for target in targets:
 
         already_in_input_res = False
         for m in helix_resnum:
-            if m in input_resnum_fullmodel[name]: already_in_input_res = True
+            if m in input_resnum_fullmodel: already_in_input_res = True
         if already_in_input_res: continue
 
         target.helix_files.append( helix_file )
@@ -221,16 +222,32 @@ for target in targets:
 
     # following is now 'hard-coded' into Rosetta option '-motif_mode'
     # deprecate this python block in 2015 after testing -- rd2014
-    L = len( sequence_joined )
+    # AMW: recall that the length of the sequence is probably a lie.
+    #L = len( sequence_joined )
+    L = len( fasta_entities )
     target.terminal_res = []
     target.extra_min_res = []
+    target.block_stack_above_res = []
+    target.block_stack_below_res = []
     for m in range( 1, L+1 ):
-        if ( m not in input_resnum_fullmodel[name] ): continue
+        if ( m not in input_resnum_fullmodel ): continue
+        prev_moving = ( m - 1 not in input_resnum_fullmodel ) and ( m != 1 )
+        next_moving = ( m + 1 not in input_resnum_fullmodel ) and ( m != L )
         right_before_chainbreak = ( m == L or m in chainbreak_pos )
         right_after_chainbreak  = ( m == 1 or m - 1 in chainbreak_pos )
+        if ( ( right_after_chainbreak and not next_moving ) or \
+            ( right_before_chainbreak and not prev_moving ) ):
+            target.terminal_res.append( m )
+            if right_after_chainbreak:
+				target.block_stack_below_res.append( m )
+            if right_before_chainbreak:
+				target.block_stack_above_res.append( m )
+        if ( ( prev_moving and not next_moving and not right_before_chainbreak ) or \
+            ( next_moving and not prev_moving and not right_after_chainbreak ) ):
+            target.extra_min_res.append( m )
 
-    if not '-motif_mode\n' in extra_flags_benchmark and not motif_mode_off:
-        extra_flags_benchmark.append( '-motif_mode\n' )
+    if not '-motif_mode\n' in extra_flags_benchmark.keys() and not motif_mode_off:
+        extra_flags_benchmark[ '-motif_mode' ] = ''# \n' )
 
     # needed for stepwise_lores to work with base pair steps that include flanking helices:
     if args.stepwise_lores:
@@ -256,8 +273,8 @@ for target in targets:
                      ( m_full in cutpoint_closed[ name ] ) ):
                     cuts.append( m_full )
             for jump_bp in jump_bps:
-                if ( ( resnums[ name ][ jump_bp[0]-1 ], chains[ name ][ jump_bp[0]-1 ] ) in zip( input_resnums_by_block[i], input_chains_by_block[i] ) and \
-                     ( resnums[ name ][ jump_bp[1]-1 ], chains[ name ][ jump_bp[1]-1 ] ) in zip( input_resnums_by_block[i], input_chains_by_block[i] ) ):
+                if ( ( target.resnums[ jump_bp[0]-1 ], target.chains[ jump_bp[0]-1 ] ) in zip( input_resnums_by_block[i], input_chains_by_block[i] ) and \
+                     ( target.resnums[ jump_bp[1]-1 ], target.chains[ jump_bp[1]-1 ] ) in zip( input_resnums_by_block[i], input_chains_by_block[i] ) ):
                     cut_exists_for_jump = False
                     for cut in cuts:
                         if ( cut >= jump_bp[0] and cut < jump_bp[1] ): cut_exists_for_jump = True
@@ -460,7 +477,7 @@ for target in targets:
             fid.write( '\\\n' )
         fid.write( ' -working_res %s\\\n' % working_res[ name ].replace( ',',' ') )
         if len( extra_min_res[ name ] ) > 0 and not args.extra_min_res_off:
-            fid.write( ' -extra_minimize_res %s\\\n' % make_tag_with_conventional_numbering( extra_min_res[ name ], resnums[ name ], chains[ name ] ) )
+            fid.write( ' -extra_minimize_res %s\\\n' % make_tag_with_conventional_numbering( extra_min_res[ name ], target.resnums, target.chains ) )
         fid.write( ' -no_minimize\\\n' )
         if not cycles_flag_found:   fid.write( ' -cycles 20000\\\n' )
         if not nstruct_flag_found:  fid.write( ' -nstruct 20\\\n' )
@@ -471,7 +488,7 @@ for target in targets:
                 flag = flag.replace('true','True').replace('false','False')
                 fid.write( ' %s\\\n' % flag[:-1] )
         # silly, currently required for FARNA, but hopefully not in future
-        #fid.write( '-output_res_num %s\n' % make_tag_with_dashes( resnums[ name ], chains[ name ] ) )
+        #fid.write( '-output_res_num %s\n' % make_tag_with_dashes( target.resnums, target.chains ) )
         # extra flags for whole benchmark
         for flag in extra_flags_benchmark:
             if ( '-motif_mode' in flag ): continue ### SWM Specific
@@ -512,16 +529,16 @@ for target in targets:
         if len( target.native ) > 0:
             fid.write( '-native %s\n' % basename( target.working_native ) )
         # Copied from master.
-        if not args.block_stack_off and extra_flags[ name ].find( '-block_stack_off') == -1:
-            if len( block_stack_above_res[ name ] ) > 0:
-                fid.write( '-block_stack_above_res %s  \n' % make_tag_with_conventional_numbering( block_stack_above_res[ name ], resnums[ name ], chains[ name ] ) )
-            if len( block_stack_below_res[ name ] ) > 0:
-                fid.write( '-block_stack_below_res %s  \n' % make_tag_with_conventional_numbering( block_stack_below_res[ name ], resnums[ name ], chains[ name ] ) )
+        if not args.block_stack_off and '-block_stack_off' not in extra_flags_benchmark:
+            if len( target.block_stack_above_res ) > 0:
+                fid.write( '-block_stack_above_res %s  \n' % make_tag_with_conventional_numbering( target.block_stack_above_res, target.resnums, target.chains ) )
+            if len( target.block_stack_below_res ) > 0:
+                fid.write( '-block_stack_below_res %s  \n' % make_tag_with_conventional_numbering( target.block_stack_below_res, target.resnums, target.chains ) )
         if args.stepwise_lores:
             if ( len( jump_res[ name ] ) > 0 ):
-                fid.write( '-jump_res %s \n' % make_tag_with_conventional_numbering( jump_res[ name ], resnums[ name ], chains[ name ] ) )
+                fid.write( '-jump_res %s \n' % make_tag_with_conventional_numbering( target.jump_res, target.resnums, target.chains ) )
             if ( len( cutpoint_closed[ name ] ) > 0 ):
-                fid.write( '-cutpoint_closed %s \n' % make_tag_with_conventional_numbering( cutpoint_closed[ name ], resnums[ name ], chains[ name ] ) )
+                fid.write( '-cutpoint_closed %s \n' % make_tag_with_conventional_numbering( target.cutpoint_closed, target.resnums, target.chains ) )
             fid.write( '-include_neighbor_base_stacks\n' ) # Need to match FARNA.
         if motif_mode_off:
             if len( target.terminal_res ) > 0:
