@@ -72,7 +72,6 @@ else:
 
 # initialize directories
 targets = []
->>>>>>> calebgeniesse/devel
 bps = ['au','ua','gc','cg','ug','gu']
 
 
