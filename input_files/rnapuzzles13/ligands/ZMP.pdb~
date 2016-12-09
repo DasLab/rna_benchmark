@@ -1,0 +1,89 @@
+HETATM    1  N   AMZ B1002       7.139  -4.500  32.417  1.00 59.18           N  
+HETATM    2  C   AMZ B1002       8.099  -5.971  29.813  1.00 56.88           C  
+HETATM    3  O   AMZ B1002       8.771  -5.336  30.929  1.00 57.39           O  
+HETATM    4  P   AMZ B1002       6.514  -3.176  27.419  1.00 49.20           P  
+HETATM    5  C1  AMZ B1002       7.923  -5.716  32.004  1.00 58.13           C  
+HETATM    6  N1  AMZ B1002       5.634  -2.652  32.174  1.00 60.13           N  
+HETATM    7  O1  AMZ B1002       7.339  -8.109  31.993  1.00 59.55           O  
+HETATM    8  C2  AMZ B1002       6.870  -6.786  31.696  1.00 57.98           C  
+HETATM    9  N2  AMZ B1002       4.860  -0.753  34.123  1.00 64.15           N  
+HETATM   10  O2  AMZ B1002       6.367  -7.686  29.559  1.00 57.02           O  
+HETATM   11  C3  AMZ B1002       6.692  -6.462  30.220  1.00 57.10           C  
+HETATM   12  C3A AMZ B1002       6.127  -2.713  33.464  1.00 60.84           C  
+HETATM   13  N3  AMZ B1002       7.751  -4.216  34.783  1.00 59.63           N  
+HETATM   14  O3  AMZ B1002       6.964  -3.999  28.753  1.00 52.83           O  
+HETATM   15  C4  AMZ B1002       7.985  -5.017  28.613  1.00 55.97           C  
+HETATM   16  O4  AMZ B1002       5.565  -1.931  27.771  1.00 50.44           O  
+HETATM   17  C5  AMZ B1002       6.268  -3.721  31.639  1.00 59.11           C  
+HETATM   18  O5  AMZ B1002       6.089  -1.640  35.680  1.00 64.54           O  
+HETATM   19  C6  AMZ B1002       5.703  -1.674  34.508  1.00 63.16           C  
+HETATM   20  C7A AMZ B1002       7.031  -3.814  33.606  1.00 60.02           C  
+HETATM   21  OP1 AMZ B1002       5.740  -4.286  26.535  1.00 50.20           O1-
+HETATM   22  OP2 AMZ B1002       7.848  -2.655  26.688  1.00 47.54           O  
+CONECT    1    5
+CONECT    1   17
+CONECT    1   17
+CONECT    1   17
+CONECT    1   17
+CONECT    1   20
+CONECT    1   20
+CONECT    1   20
+CONECT    1   20
+CONECT    2    3   11   15
+CONECT    3    2    5
+CONECT    4   14   16   21
+CONECT    4   22
+CONECT    4   22
+CONECT    5    1    3    8
+CONECT    6   12
+CONECT    6   12
+CONECT    6   12
+CONECT    6   12
+CONECT    6   17
+CONECT    6   17
+CONECT    6   17
+CONECT    6   17
+CONECT    7    8
+CONECT    8    5    7   11
+CONECT    9   19
+CONECT   10   11
+CONECT   11    2    8   10
+CONECT   12    6
+CONECT   12    6
+CONECT   12    6
+CONECT   12    6
+CONECT   12   19
+CONECT   12   20
+CONECT   12   20
+CONECT   12   20
+CONECT   12   20
+CONECT   13   20
+CONECT   14    4   15
+CONECT   15    2   14
+CONECT   16    4
+CONECT   17    1
+CONECT   17    1
+CONECT   17    1
+CONECT   17    1
+CONECT   17    6
+CONECT   17    6
+CONECT   17    6
+CONECT   17    6
+CONECT   18   19
+CONECT   18   19
+CONECT   19    9   12
+CONECT   19   18
+CONECT   19   18
+CONECT   20    1
+CONECT   20    1
+CONECT   20    1
+CONECT   20    1
+CONECT   20   12
+CONECT   20   12
+CONECT   20   12
+CONECT   20   12
+CONECT   20   13
+CONECT   21    4
+CONECT   22    4
+CONECT   22    4
+END
