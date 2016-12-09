@@ -510,7 +510,7 @@ for target in targets:
         if len( target.native ) > 0:
             fid.write( '-native %s\n' % basename( target.working_native ) )
         # Copied from master.
-		if not args.block_stack_off and extra_flags[ name ].find( '-block_stack_off') == -1:
+        if not args.block_stack_off and extra_flags[ name ].find( '-block_stack_off') == -1:
             if len( block_stack_above_res[ name ] ) > 0:
                 fid.write( '-block_stack_above_res %s  \n' % make_tag_with_conventional_numbering( block_stack_above_res[ name ], resnums[ name ], chains[ name ] ) )
             if len( block_stack_below_res[ name ] ) > 0:
@@ -576,10 +576,4 @@ for target in targets:
         for submit_file in submit_files:
             with open(submit_file,'a') as fid_submit:
                 fid_submit.write( 'cd %s; source %s; cd %s\n' % ( target.name, submit_file,  CWD ) )
-
-<<<<<<< HEAD
-fid_qsub.close()
-if len( qsub_file2 ) > 0: fid_qsub2.close()
-=======
->>>>>>> calebgeniesse/devel
 
