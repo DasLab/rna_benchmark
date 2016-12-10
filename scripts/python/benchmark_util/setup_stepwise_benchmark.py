@@ -505,7 +505,6 @@ for name in names:
             for infile in start_files:  fid.write( ' %s' % (basename(infile) ) )
             fid.write( '\n' )
 
-
     def copy_extra_files( tag ):
         if tag in cols:
             filename = cols[ cols.index( tag )+1 ]
