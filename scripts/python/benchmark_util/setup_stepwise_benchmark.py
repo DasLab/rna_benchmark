@@ -453,9 +453,8 @@ for name in names:
     VDW_rep_screen_info[ name ] = '%s' % ( basename( VDW_rep_screen_pdb[name] ) )
 
     if VDW_rep_screen_info_flag_found:
-
         if not exists( VDW_rep_screen_pdb[ name ] ):
-
+            print "Creating ... ", VDW_rep_screen_pdb[ name ]
             loopres_list=string.split( loop_res[ name ][ 'conventional' ], ' ' )
             periph_res_tag = get_surrounding_res_tag( inpath+native[ name ], sample_res_list=loopres_list, radius=periph_res_radius, verbose=args.verbose )
             assert( len( periph_res_tag ) )
@@ -528,6 +527,26 @@ for name in names:
                 if flag == '-block_stack_off\n': continue
                 if ( args.no_align_pdb and flag.find( '-align_pdb' ) > -1 ): continue
                 fid.write( flag )
+
+    def add_extra_flags_benchmark( fid, extra_flags_benchmark, motif_mode_OK = True ):
+        # extra flags for whole benchmark
+        weights_file = ''
+        for flag in extra_flags_benchmark:
+            if ( not motif_mode_OK and '-motif_mode' in flag ): continue
+            if ( '#' in flag ): continue
+            flag = flag.replace('True','true').replace('False','false')
+            if ( '-single_stranded_loop_mode' in flag ): continue ### SWA Specific
+            if ( '-score:weights' in flag ): weights_file = string.split( flag )[1]
+            if ( '-VDW_rep_screen_info true' in flag ):
+                flag = flag.replace( 'true', basename( VDW_rep_screen_info[ name ] ) )#-VDW_rep_screen_info 1zih_RNA.pdb
+            fid.write( flag )
+
+        if len( weights_file ) > 0:
+            if not exists( weights_file ):
+                weights_file = ROSETTA_DB+'/scoring/weights/'+weights_file
+            assert( exists( weights_file ) )
+            system( 'cp ' + weights_file + ' ' + name )
+
 
     # SETUP for StepWise Assembly
     if args.swa:
@@ -611,12 +630,7 @@ for name in names:
                                                                  make_tag_with_conventional_numbering( dock_partners[ name ][ 1 ], resnums[ name ], chains[ name ] ) ) )
 
         add_extra_flags_for_name(fid, extra_flags, name)
-        # extra flags for whole benchmark
-        for flag in extra_flags_benchmark:
-            if ( '-motif_mode' in flag ): continue # not really checked in FARFAR; use block_stack + extra_min_res instead.
-            if ( '#' in flag ): continue
-            flag = flag.replace('True','true').replace('False','false')
-            fid.write( flag[:-1]+'\n' )
+        add_extra_flags_benchmark(fid, extra_flags_benchmark, motif_mode_OK = False )
         fid.close()
 
         print '\nSetting up submission files for: ', name
@@ -660,23 +674,7 @@ for name in names:
         if not nstruct_flag_found:  fid.write( '-nstruct 20\n' )
         if not args.save_times_off: fid.write( '-save_times\n' )
         add_extra_flags_for_name(fid, extra_flags, name)
-
-        # extra flags for whole benchmark
-        weights_file = ''
-        for flag in extra_flags_benchmark:
-            if ( '#' in flag ): continue
-            flag = flag.replace('True','true').replace('False','false')
-            if ( '-single_stranded_loop_mode' in flag ): continue ### SWA Specific
-            if ( '-score:weights' in flag ): weights_file = string.split( flag )[1]
-            if ( '-VDW_rep_screen_info true' in flag ):
-                flag = flag.replace( 'true', basename( VDW_rep_screen_info[ name ] ) )#-VDW_rep_screen_info 1zih_RNA.pdb
-            fid.write( flag )
-
-        if len( weights_file ) > 0:
-            if not exists( weights_file ):
-                weights_file = ROSETTA_DB+'/scoring/weights/'+weights_file
-            assert( exists( weights_file ) )
-            system( 'cp ' + weights_file + ' ' + name )
+        add_extra_flags_benchmark( fid, extra_flags_benchmark )
 
         fid.close()
 
