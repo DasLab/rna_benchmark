@@ -1,13 +1,107 @@
-Name	Sequence	Secstruct	Working_res	Native	Input_res	Extra_flags
-gcaa_tetraloop	gcgcaagc	((....))	A:3-10	1zih_RNA.pdb	-	-
-uucg_tetraloop	acuucggu	((....))	A:4-11	2koc_RNA.pdb	-	-
-gagua_pentaloop	cggaguacg	((.....))	A:20-28	1xjr_RNA.pdb	-	-
-tandem_ga_imino	cggacg,cggacg	((..((,))..))	A:2-7,B:10-15	1mis_RNA.pdb	-	-
-tandem_ga_sheared	gcgagc,gcgagc	((..((,))..))	A:2-7,B:10-15	1yfv_RNA.pdb	-	-
-gg_mismatch	caggc,gcgug	((.((,)).))	A:2-6,B:5-9	1f5g.pdb	-	-
-srp_domainIV	gucagguc,gaagcagc	((....((,))....))	A:3-10,B:15-22	native_1lnt_RNA.pdb	-	-
-srp_domainIV_fixed	gucagguc,gaagcagc	((....((,))....))	A:3-10,B:15-22	native_1lnt_RNA.pdb	3-4,9-10,15-16,21-22	-
-r2_4x4	ugaagccc,ggaggaca	((....((,))....))	A:2-9,B:13-20	2l8f_RNA.pdb	-	-
-j44a_p4p6	ggaaaggg,ccuaacc	((...(((,)))..))	A:111-118,A:203-209	1gid_RNAA.pdb	-	-
-srl_fixed	ccuaguacgagaggaccgg	((.....(....)....))	A:651-669	1q9a_RNA.pdb	A:651-652,658-663,668-669	-
-srl_free_bulgedG	ccuaguac,ggaccgg	((.....(,)....))	A:651-658,A:663-669	1q9a_RNA.pdb	-	-
+Benchmark_flags: -superimpose_over_all
+
+Name:          gcaa_tetraloop
+Sequence:      gcgcaagc
+Secstruct:     ((....))
+Working_res:   A:3-10
+Input_res:     -
+Native:        1zih_RNA.pdb
+Extra_flags:   -
+
+Name:          uucg_tetraloop
+Sequence:      acuucggu
+Secstruct:     ((....))
+Working_res:   A:4-11
+Input_res:     -
+Native:        2koc_RNA.pdb
+Extra_flags:   -
+
+Name:          gagua_pentaloop
+Sequence:      cggaguacg
+Secstruct:     ((.....))
+Working_res:   A:20-28
+Input_res:     -
+Native:        1xjr_RNA.pdb
+Extra_flags:   -
+
+Name:          tandem_ga_imino
+Sequence:      cggacg,cggacg
+Secstruct:     ((..((,))..))
+Working_res:   A:2-7,B:10-15
+Input_res:     -
+Native:        1mis_RNA.pdb
+Extra_flags:   -
+
+Name:          tandem_ga_sheared
+Sequence:      gcgagc,gcgagc
+Secstruct:     ((..((,))..))
+Working_res:   A:2-7,B:10-15
+Input_res:     -
+Native:        1yfv_RNA.pdb
+Extra_flags:   -
+
+Name:          gg_mismatch
+Sequence:      caggc,gcgug
+Secstruct:     ((.((,)).))
+Working_res:   A:2-6,B:5-9
+Input_res:     -
+Native:        1f5g.pdb
+Extra_flags:   -
+
+Name:          srp_domainIV
+Sequence:      gucagguc,gaagcagc
+Secstruct:     ((....((,))....))
+Working_res:   A:3-10,B:15-22
+Input_res:     -
+Native:        native_1lnt_RNA.pdb
+Extra_flags:   -
+
+Name:          srp_domainIV_fixed
+Sequence:      gucagguc,gaagcagc
+Secstruct:     ((....((,))....))
+Working_res:   A:3-10,B:15-22
+Input_res:     A:3-4,A:9-10,B:15-16,B:21-22
+Native:        native_1lnt_RNA.pdb
+Extra_flags:   -
+
+Name:          r2_4x4
+Sequence:      ugaagccc,ggaggaca
+Secstruct:     ((....((,))....))
+Working_res:   A:2-9,B:13-20
+Input_res:     -
+Native:        2l8f_RNA.pdb
+Extra_flags:   -
+
+Name:          j44a_p4p6
+Sequence:      ggaaaggg,ccuaacc
+Secstruct:     ((...(((,)))..))
+Working_res:   A:111-118,A:203-209
+Input_res:     -
+Native:        1gid_RNAA.pdb
+Extra_flags:   -
+
+Name:          srl_fixed
+Sequence:      ccuaguacgagaggaccgg
+Secstruct:     ((.....(....)....))
+Secstruct_gen: ((.....((..))....))
+Working_res:   A:651-669
+Input_res:     A:651-652,A:658-663,A:668-669
+Native:        1q9a_RNA.pdb
+Extra_flags:   -
+
+#Name:          srl_free
+#Sequence:      ccuaguacgagaggaccgg
+#Secstruct:     ((.....(....)....))
+#Working_res:   A:651-669
+#Input_res:     -
+#Native:        1q9a_RNA.pdb
+#Extra_flags:   -
+
+Name:          srl_free_bulgedG
+Sequence:      ccuaguac,ggaccgg
+Secstruct:     ((.....(,)....))
+Working_res:   A:651-658,A:663-669
+Input_res:     -
+Native:        1q9a_RNA.pdb
+Extra_flags:   -
+
