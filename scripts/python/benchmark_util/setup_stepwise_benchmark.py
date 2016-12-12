@@ -112,6 +112,9 @@ if len(args.user_input_runs):
     target_definitions = [td for td in target_definitions if td.name not in args.user_input_runs]
 targets = [info_handlers.Target(td) for td in target_definitions]
 
+if extra_flags_benchmark == {}:
+    extra_flags_benchmark = info_fid.extra_flags_benchmark
+
 
 # misc dicts
 full_model_info = {}
@@ -476,18 +479,19 @@ for target in targets:
     # target.extra_flags here.
     def add_extra_flags_for_name( fid, extra_flags, name ):
         # case-specific extra flags
-        if ( len( extra_flags ) > 0 ) and ( extra_flags != '-' ) :
-            #fid.write( '%s\n' % extra_flags[name] )
-            cols = extra_flags.split( ' ' )
+        if len( extra_flags ) == 0 or extra_flags == '-': return
 
-            if not args.no_align_pdb: copy_extra_files( '-align_pdb')
-            copy_extra_files( '-extra_res_fa')
+        #fid.write( '%s\n' % extra_flags[name] )
+        #cols = extra_flags.split( ' ' )
 
-            for flag in parse_flags_string( extra_flags ):
-                flag = flag.replace('True','true').replace('False','false')
-                if flag == '-block_stack_off\n': continue
-                if ( args.no_align_pdb and flag.find( '-align_pdb' ) > -1 ): continue
-                fid.write( flag )
+        if not args.no_align_pdb: copy_extra_files( '-align_pdb')
+        copy_extra_files( '-extra_res_fa')
+
+        for flag in parse_flags_string( extra_flags ):
+            flag = flag.replace('True','true').replace('False','false')
+            if flag == '-block_stack_off\n': continue
+            if ( args.no_align_pdb and flag.find( '-align_pdb' ) > -1 ): continue
+            fid.write( flag )
 
     # SETUP for StepWise Assembly
     if args.swa:

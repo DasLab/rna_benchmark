@@ -24,25 +24,48 @@ class TargetDefinitionsFile(object):
         attrs, values = None, None
         if not isinstance(fid, file):
             fid = open(fid)
-        for line in fid:
-            # parse/check values
-            values = line.split('#')[0].strip().split('\t')
-            if len(values) < 2:
-                continue
-            # header line
-            if attrs is None:
-                attrs = [v.lower() for v in values]
-                continue
-            # new target definition
-            target_definition = info_handlers.TargetDefinition()
-            for attr, value in zip(attrs, values):
-                # AMW: Don't do this! Then we lose our carefully X[FOO]-ified sequence!
-                #if attr in 'sequence':
-                #    value = value.lower()
-                setattr(target_definition, attr, value)
-            target_definition.finalize()
-            print "Loading TargetDefinition for:", target_definition.name
-            self.add_target_definition( target_definition )
+        # get all lines and iterate through -- this way we can check for 
+        # alternate formats...
+        lines = fid.readlines()
+        # 'old format' == charaterized by 'Name\t' first characters
+        if lines[0].startswith("Name\t"):
+            for line in lines:
+                # parse/check values
+                values = line.split('#')[0].strip().split('\t')
+                if len(values) < 2:
+                    continue
+                # header line
+                if attrs is None:
+                    attrs = [v.lower() for v in values]
+                    continue
+                # new target definition
+                target_definition = info_handlers.TargetDefinition()
+                for attr, value in zip(attrs, values):
+                    # AMW: Don't do this! Then we lose our carefully X[FOO]-ified sequence!
+                    #if attr in 'sequence':
+                    #    value = value.lower()
+                    setattr(target_definition, attr, value)
+                target_definition.finalize()
+                print "Loading TargetDefinition for:", target_definition.name
+                self.add_target_definition( target_definition )
+        else:
+            i = 0
+            while i < len(lines):
+                # Re-handle extra flags benchmark later
+                if len(lines[i]) <= 4 or lines[i].split()[0] == "Benchmark_flags:": 
+					i += 1
+					continue
+                if lines[i].split()[0] == "Name:":
+                    # new thing
+                    target_definition = info_handlers.TargetDefinition()
+                    while len(lines[i]) > 4: # forgive a little extra whitespace
+                        setattr(target_definition, lines[i].split()[0].split(':')[0].lower(), lines[i].split()[1])
+                        i += 1
+                    target_definition.finalize()
+                    print "Loading TargetDefinition for:", target_definition.name
+                    self.add_target_definition( target_definition )
+
+                i += 1
         fid.close()
         return True
 
