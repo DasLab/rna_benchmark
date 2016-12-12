@@ -248,7 +248,8 @@ for target in targets:
     target.extra_min_res = []
     target.block_stack_above_res = []
     target.block_stack_below_res = []
-    # 'new way' but regression
+    # 'caleb branch way' provides regression -- RHIJU confirms correctness
+    # of the NEW WAY.
     #for m in range( 1, L+1 ):
     #    if ( m not in input_resnum_fullmodel ): continue
     #    prev_moving = ( m - 1 not in input_resnum_fullmodel ) and ( m != 1 )
