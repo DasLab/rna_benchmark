@@ -112,8 +112,14 @@ if len(args.user_input_runs):
     target_definitions = [td for td in target_definitions if td.name not in args.user_input_runs]
 targets = [info_handlers.Target(td) for td in target_definitions]
 
+# If we weren't given extra_flags_benchmark.txt on the command line
+# use the "new format file" 'Benchmark_flags:' cue instead.
 if extra_flags_benchmark == {}:
     extra_flags_benchmark = info_fid.extra_flags_benchmark
+if input_res_benchmark is None:
+    input_res_benchmark = info_fid.input_res_benchmark
+if extra_min_res_benchmark is None:
+    extra_min_res_benchmark = info_fid.extra_min_res_benchmark
 
 
 # misc dicts

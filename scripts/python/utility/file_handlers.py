@@ -14,6 +14,9 @@ class TargetDefinitionsFile(object):
     
     def __init__(self):
         self.target_definitions = []
+        self.extra_flags_benchmark = {}
+        self.input_res_benchmark = []
+        self.extra_min_res_benchmark = []
 
     def add_target_definition(self, target_definition):
         assert( target_definition.name != td.name for td in self.target_definitions )
@@ -52,9 +55,26 @@ class TargetDefinitionsFile(object):
             i = 0
             while i < len(lines):
                 # Re-handle extra flags benchmark later
-                if len(lines[i]) <= 4 or lines[i].split()[0] == "Benchmark_flags:": 
-					i += 1
-					continue
+                if len(lines[i]) <= 4:
+                    i += 1
+                    continue
+                elif lines[i].split()[0] == "Benchmark_flags:": 
+                    substrings = lines[i].split()[1:]
+                    substrings = [s for s in substrings if s not in ['','-','#']]
+                    flags = []
+                    for idx, substring in enumerate(substrings):
+                        if substring.startswith('-'):
+                            flags.append([substring])
+                            continue
+                        if not len(flags):
+                            continue
+                        flags[-1].append(substring)
+                    self.extra_flags_benchmark = dict([(f.pop(0), ' '.join(f)) for f in flags])
+                    if '-input_res' in self.extra_flags_benchmark:
+                        self.input_res_benchmark = extra_flags_benchmark.pop('-input_res')
+                    if '-extra_min_res' in self.extra_flags_benchmark:
+                        self.extra_min_res_benchmark = extra_flags_benchmark.pop('-extra_min_res')
+                    
                 if lines[i].split()[0] == "Name:":
                     # new thing
                     target_definition = info_handlers.TargetDefinition()
