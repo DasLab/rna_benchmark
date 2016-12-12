@@ -370,8 +370,12 @@ for target in targets:
         if '-align_pdb' in target.extra_flags:
             target.extra_flags.pop('-align_pdb')
     elif '-align_pdb' in target.extra_flags:
+        # For some reason, this doesn't try to create the file for you. I defy this and have added the next 3 lines.
+        #prefix = '%s/%s_ALIGN_' % (inpath, target.name)
+        #align_res = ','.join(input_res_blocks)
+        #target.align_pdb = slice_out(inpath, prefix, target.native, align_res)
         target.align_pdb = inpath+'/'+target.extra_flags['-align_pdb']
-        assert( exists(align_pdb) )
+        assert( exists(target.align_pdb) )
     else:
         target.align_pdb = None
 
@@ -474,15 +478,15 @@ for target in targets:
             fid.write( '\n' )
 
 
-    def copy_extra_files( tag ):
-        if tag in cols:
-            filename = cols[ cols.index( tag )+1 ]
+    def copy_extra_files( tag, cols, name ):
+        # This had assumed that we are passing a vector not a dict as cols. Huh.
+        if tag in cols.keys():
+            #filename = cols[ cols.index( tag )+1 ]
+            filename = cols[ tag ]
             print filename
             assert( exists( inpath+'/'+filename ) )
             system( 'cp %s/%s %s' % (inpath, filename, name ) )
 
-    # We don't need name again because we actually just pass
-    # target.extra_flags here.
     def add_extra_flags_for_name( fid, extra_flags, name ):
         # case-specific extra flags
         if len( extra_flags ) == 0 or extra_flags == '-': return
@@ -490,10 +494,11 @@ for target in targets:
         #fid.write( '%s\n' % extra_flags[name] )
         #cols = extra_flags.split( ' ' )
 
-        if not args.no_align_pdb: copy_extra_files( '-align_pdb')
-        copy_extra_files( '-extra_res_fa')
+        if not args.no_align_pdb: copy_extra_files( '-align_pdb', extra_flags, name )
+        copy_extra_files( '-extra_res_fa', extra_flags, name)
 
-        for flag in parse_flags_string( extra_flags ):
+        # These are already all parsed.
+        for flag in extra_flags.keys():#parse_flags( extra_flags ):
             flag = flag.replace('True','true').replace('False','false')
             if flag == '-block_stack_off\n': continue
             if ( args.no_align_pdb and flag.find( '-align_pdb' ) > -1 ): continue
@@ -588,7 +593,7 @@ for target in targets:
             fid.write( '-chain_connection SET1 %s SET2 %s\n' % ( make_tag_with_conventional_numbering( target.dock_partners[ 0 ], target.resnums, target.chains ), \
                 make_tag_with_conventional_numbering( target.dock_partners[ 1 ], target.resnums, target.chains ) ) )
                                                         
-        add_extra_flags_for_name(fid, extra_flags, target.name)
+        add_extra_flags_for_name(fid, target.extra_flags, target.name)
 
         # extra flags for whole benchmark
         for flag in extra_flags_benchmark:

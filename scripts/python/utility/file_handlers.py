@@ -79,7 +79,7 @@ class TargetDefinitionsFile(object):
                     # new thing
                     target_definition = info_handlers.TargetDefinition()
                     while len(lines[i]) > 4: # forgive a little extra whitespace
-                        setattr(target_definition, lines[i].split()[0].split(':')[0].lower(), lines[i].split()[1])
+                        setattr(target_definition, lines[i].split()[0].split(':')[0].lower(), " ".join( lines[i].split()[1:] ) )
                         i += 1
                     target_definition.finalize()
                     print "Loading TargetDefinition for:", target_definition.name
