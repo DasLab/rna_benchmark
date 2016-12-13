@@ -683,8 +683,7 @@ for target in targets:
         if len( target.native ) > 0:
             fid.write( '-native %s\n' % basename( target.working_native ) )
         
-        # AMW: used to be gated by if motif_mode_off
-        if len( target.terminal_res ) > 0:
+        if motif_mode_off and len( target.terminal_res ) > 0:
             fid.write( '-terminal_res %s  \n' % make_tag_with_conventional_numbering( target.terminal_res, target.resnums, target.chains ) )
         
         # Copied from master.
@@ -702,9 +701,7 @@ for target in targets:
                 fid.write( '-cutpoint_closed %s \n' % make_tag_with_conventional_numbering( target.cutpoint_closed, target.resnums, target.chains ) )
             fid.write( '-include_neighbor_base_stacks\n' ) # Need to match FARNA.
 
-        #if motif_mode_off:
-        # AMW: It makes no sense to only output these if motif_mode is off.
-        if len( target.extra_min_res ) > 0 and not args.extra_min_res_off: ### Turn extra_min_res off for SWM when comparing to SWA
+        if motif_mode_off and len( target.extra_min_res ) > 0 and not args.extra_min_res_off: ### Turn extra_min_res off for SWM when comparing to SWA
             fid.write( '-extra_min_res %s \n' % make_tag_with_conventional_numbering( target.extra_min_res, target.resnums, target.chains ) )
 
         #if ( len( input_target.pdbs ) == 0 ):
