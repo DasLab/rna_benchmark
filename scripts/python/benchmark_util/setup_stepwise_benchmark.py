@@ -2,14 +2,16 @@
 
 import string
 import argparse
+import os
+import sys
 from os.path import exists,basename,dirname,expandvars
-from os import system, getcwd, chdir, popen, uname
 from make_tag import *
 from parse_options import get_resnum_chain
 from parse_tag import parse_tag
 from get_sequence import get_sequences
 from rna_server_conversions import get_all_stems, join_sequence
 from get_surrounding_res import get_surrounding_res_tag
+from utility import helpers, info_handlers, file_handlers
 from setup_stepwise_benchmark_util import *
 from sys import argv, exit
 import subprocess
@@ -19,97 +21,58 @@ import subprocess
 parser = argparse.ArgumentParser(description='Setup benchmark for stepwise monte carlo')
 parser.add_argument("info_file",       help='text file with information, in same directory as input_files/ (e.g., "../favorites.txt")')
 parser.add_argument("user_input_runs", nargs='*',help='specify particular cases to run (default: run all in info_file)' )
-default_extra_flags_benchmark = 'extra_flags_benchmark.txt'
-parser.add_argument('-extra_flags', default=default_extra_flags_benchmark, help='Filename of text file with extra_flags for all cases.')
+parser.add_argument('-extra_flags', default='extra_flags_benchmark.txt', help='Filename of text file with extra_flags for all cases.')
 parser.add_argument('-nhours', default='16', type=int, help='Number of hours to queue each job.')
 parser.add_argument('-j','--njobs', default='10', type=int, help='Number of cores for each job.')
-parser.add_argument('-queue', default='', help='Queue for cluster submission.')
 parser.add_argument('--swa', action='store_true', help='Additional flag for setting up SWA runs.')
 parser.add_argument('--farna', action='store_true', help='Additional flag for setting up FARNA runs (no minimize).')
 parser.add_argument('--farfar', action='store_true', help='Additional flag for setting up FARFAR runs (FARNA+minimize).')
 parser.add_argument('--extra_min_res_off', action='store_true', help='Additional flag for turning extra_min_res off.')
 parser.add_argument('--save_times_off', action='store_true', help='Additional flag for turning save_times flag off.')
-parser.add_argument('--block_stack_off', action='store_true', help='Additional flag for turning off -block_stack_above_res & -block_stack_below_res.')
-parser.add_argument('--path_to_rosetta', default='', help='Path to working copy of rosetta.')
+parser.add_argument('-motif_mode_off', help="temporary hack for turning off hardcoded '-motif_mode' flag", action="store_true")
+#parser.add_argument('--path_to_rosetta', default='', help='Path to working copy of rosetta.')
+parser.add_argument('--rosetta', default='', help='Path to working copy of rosetta.')
 parser.add_argument('--no_align_pdb', action='store_true', help='Do not read in align_pdb; forces alignment to native, useful for native_screen runs.')
 parser.add_argument('-v', '--verbose', help="increase output verbosity", action="store_true")
-parser.add_argument('-motif_mode_off', help="temporary hack for turning off hardcoded '-motif_mode' flag", action="store_true")
 parser.add_argument('--save_logs', help="save .out and .err logs for each job.", action="store_true")
+parser.add_argument('-queue', default='', help='Queue for cluster submission.')
+parser.add_argument('--block_stack_off', action='store_true', help='Additional flag for turning off -block_stack_above_res & -block_stack_below_res.')
 parser.add_argument('-stepwise_lores',action='store_true', help='used to setup stepwise_lores mode (FARNA optimization)')
+parser.add_argument('--design', help="design all working residues not in input structures", action="store_true")
 args = parser.parse_args()
 
 #####################################################################################################################
 motif_mode_off = ( args.motif_mode_off or args.swa )
-
-if args.swa and args.njobs == 10:
-    # set default njobs to 150 for SWA jobs
-    njobs = 150
-else:
-    njobs = args.njobs
-
+njobs = 150 if args.swa else 10
+njobs = njobs if args.njobs is None else args.njobs
 
 # get path to rosetta, required for now
-ROSETTA=args.path_to_rosetta
-if ( not len( ROSETTA ) ) or ( not exists( ROSETTA ) ):
-    ROSETTA=expandvars( '$ROSETTA' )
-    if ( not len( ROSETTA ) ) or ( not exists( ROSETTA ) ):
-        print 'WARNING: ROSETTA must be defined as the path to a working rosetta repository'
-        print 'Export this variable, by putting the following in your .bashrc or .zshrc:'
-        print 'export ROSETTA=/path/to/rosetta/\n'
-        exit(0)
-assert( exists( ROSETTA ) )
-ROSETTA_DB=ROSETTA+'/main/database/'
-SWA_DAGMAN_TOOLS=ROSETTA+'/tools/SWA_RNA_python/SWA_dagman_python/'
+helpers.init_environ(args)
+
+# replace python/c++ syntax accordingly
+replacements = { 'True' : 'true', 'False' : 'false' }
+if args.swa:
+    replacements = { 'true' : 'True', 'false' : 'False' }
 
 
-# get extra_flags_benchmark
-VDW_rep_screen_info_flag_found = False
-cycles_flag_found = False
-nstruct_flag_found = False
-if len (args.extra_flags) > 0:
-    if exists( args.extra_flags ):
-        extra_flags_benchmark = open( args.extra_flags ).readlines()
+# parse extra_flags_benchmark
+extra_flags_benchmark = {}
+input_res_benchmark = None
+extra_min_res_benchmark = None
+if exists(args.extra_flags):
+    with open(args.extra_flags, 'r') as fid:
+        lines = filter(None, [l.split('#')[0].strip() for l in fid])
+    extra_flags_benchmark = parse_flags(lines, replacements)
+    if '-input_res' in extra_flags_benchmark:
+        input_res_benchmark = extra_flags_benchmark.pop('-input_res')
+    if '-extra_min_res' in extra_flags_benchmark:
+        extra_min_res_benchmark = extra_flags_benchmark.pop('-extra_min_res')
+else:
+    print args.extra_flags,"doesn't exist, not using extra flags for benchmark"
 
-        for flag in extra_flags_benchmark:
-            if ( '-VDW_rep_screen_info' in flag ):
-                VDW_rep_screen_info_flag_found = True
-                continue
-            if ( '-cycles' in flag ):
-                cycles_flag_found = True
-                continue
-            if ( '-nstruct' in flag ):
-                nstruct_flag_found = True
-    else:
-        extra_flags_benchmark = []
-        print 'Did not find ', args.extra_flags, ' so not using any extra flags for the benchmark'
-        assert ( args.extra_flags == default_extra_flags_benchmark )
 
 # initialize directories
-names = []
-sequence = {}
-secstruct = {}
-secstruct_gen = {}
-working_res = {}
-native = {}
-input_res = {}
-extra_flags = {}
-fasta = {}
-resnums = {}
-chains  = {}
-helix_files = {}
-working_native = {}
-input_pdbs = {}
-terminal_res = {}
-block_stack_above_res = {}
-block_stack_below_res = {}
-extra_min_res = {}
-cutpoint_closed = {}
-jump_res = {}
-loop_res = {}
-input_resnum_fullmodel = {}
-VDW_rep_screen_pdb = {}
-VDW_rep_screen_info = {}
-dock_partners = {}
+targets = []
 bps = ['au','ua','gc','cg','ug','gu']
 
 
@@ -126,209 +89,231 @@ assert( exists( info_file ) )
 inpath = info_file.replace('.txt', '' ) + '/'
 assert( exists( inpath ) )
 
+def onelettersequence( sequence ):
+    # replace nonstandard names like Z[Mg] with Z
+    sequence_clean = []
+    in_non_standard = False
+    for c in sequence:
+        if c == '[':
+            in_non_standard = True
+            continue
+        if c == ']':
+            in_non_standard = False
+            continue
+        if not in_non_standard: sequence_clean += c
+    return sequence_clean
 
 # read info_file
-def parse_flags_string( flag_string ):
-    flags = []
-    cols = flag_string.split()
-    flag = ''
-    for col in cols:
-        if len( col ) == 0: continue
-        if ( col[ 0 ] == '-' ):
-            if len( flag ) > 0: flags.append( flag+'\n' )
-            flag = col
-        else: flag += ' '+col
-    if len( flag ) > 0: flags.append( flag + '\n' )
-    return flags
+info_fid = file_handlers.TargetDefinitionsFile()
+info_fid.load(open(info_file))
+assert( info_fid.validate() )
+target_definitions = info_fid.target_definitions
+if len(args.user_input_runs):
+    target_definitions = [td for td in target_definitions if td.name not in args.user_input_runs]
+targets = [info_handlers.Target(td) for td in target_definitions]
 
-for info_file_line in open( info_file ).readlines():
+# If we weren't given extra_flags_benchmark.txt on the command line
+# use the "new format file" 'Benchmark_flags:' cue instead.
+if extra_flags_benchmark == {}:
+    extra_flags_benchmark = info_fid.extra_flags_benchmark
+if input_res_benchmark is None:
+    input_res_benchmark = info_fid.input_res_benchmark
+if extra_min_res_benchmark is None:
+    extra_min_res_benchmark = info_fid.extra_min_res_benchmark
 
-    if info_file_line[0] == '#' : continue
-    if len( info_file_line ) < 5: continue
-    cols = string.split( info_file_line.replace( '\n','' ) )
-    assert( len( cols ) >= 2 )
 
-    if cols[0] == 'Benchmark_flags:':
-        extra_flags_benchmark.extend( parse_flags_string( string.join( cols[1:] ) ) )
-        name = ''
-
-    if cols[0] == 'Name:':
-        name = cols[1]
-        if ( len( args.user_input_runs ) > 0 ) and ( name not in args.user_input_runs ): continue
-        print 'Reading in info for: ', name
-        assert( name not in names )
-        names.append( name )
-        continue
-
-    if ( len( args.user_input_runs ) > 0 ) and ( name not in args.user_input_runs ): continue
-
-    if   cols[0] == 'Sequence:'    :    sequence   [ name ] = cols[1]
-    elif cols[0] == 'Secstruct:'   :    secstruct  [ name ] = cols[1]
-    elif cols[0] == 'Secstruct_gen:':   secstruct_gen[ name ] = cols[1]
-    elif cols[0] == 'Working_res:' :    working_res[ name ] = cols[1]
-    elif cols[0] == 'Input_res:'   :    input_res  [ name ] = cols[1]
-    elif cols[0] == 'Native:'      :    native     [ name ] = cols[1]
-    elif cols[0] == 'Extra_flags:' :    extra_flags[ name ] = string.join( cols[1:] )
-
-# check that each dictionary is the same size
-assert( len( names ) == len( sequence ) == len( secstruct ) == len( working_res ) == len( input_res ) == len( native ))
+# misc dicts
+full_model_info = {}
 
 # iterate over names
-for name in names:
+for target in targets:
 
-    sequences          = string.split( sequence[name], ',' )
-    working_res_blocks = string.split( working_res[name], ',' )
+    full_model_info[ target.name ] = FullModelInfo( target.name )
+
+    sequences          = string.split( target.sequence, ',' )
+    working_res_blocks = string.split( target.working_res, ',' )
 
     # store information on 'conventional' residue numbers and chains.
-    resnums[ name ] = []
-    chains[ name ] = []
-    for working_res_block in working_res_blocks: get_resnum_chain( working_res_block, resnums[ name ], chains[ name ] )
+    resnums = []
+    chains = []
+    for working_res_block in working_res_blocks:
+        get_resnum_chain( working_res_block, resnums, chains )
+    full_model_info[ target.name ].set_resnums( resnums )
+    full_model_info[ target.name ].set_chains( chains )
+    target.chains = chains
+    target.resnums = resnums
 
     # working_native
-    assert( native[ name ] != '-' ) # for now, require a native, since this is a benchmark.
-    prefix = '%s/%s_NATIVE_' % ( inpath,name)
-    working_native[ name ] = slice_out( inpath, prefix, native[ name ], string.join( working_res_blocks ), check_sequence=True )
-    if not ( string.join(sequences,'') == string.join(get_sequences( working_native[name] )[0],'') ):
-        print 'Mismatch in native sequences!'
-        print string.join(sequences,'')
-        print string.join(get_sequences( working_native[name] )[0],'')
-        assert( string.join(sequences,'') == string.join(get_sequences( working_native[name] )[0],'') )
+    # AMW: naming it with _NATIVE_ is unnecessary but prevents a regression that is otherwise distracting
+    assert( target.native != '-' ) # for now, require a native, since this is a benchmark.
+    prefix = '%s/%s_NATIVE_' % ( inpath, target.name)
+    target.working_native = slice_out( inpath, prefix, target.native, string.join( working_res_blocks ) )
+    # We need to sort the sequences first. That's absurd, of course, but otherwise we'd need a
+    # vastly more clever sequence determination algorithm. That's a TODO.
+    assert( sorted(string.join(sequences,'')) == sorted(string.join(get_sequences( target.working_native )[0],'')) )
 
     # create starting PDBs
-    input_pdbs[ name ] = []
-    input_resnums = []
-    input_chains  = []
+    target.input_pdbs = []
+    input_res_blocks = []
     input_resnums_by_block = []
     input_chains_by_block = []
     input_resnum_fullmodel_by_block = []
-    if input_res[ name ] != '-':
-        input_res_blocks = string.split( input_res[ name ], ';' )
-        for m in range( len ( input_res_blocks ) ):
-            prefix = '%s/%s_START%d_' % ( inpath,name,m+1)
-            input_pdb = slice_out( inpath, prefix, native[ name ],input_res_blocks[m], check_sequence = True )
-            input_pdbs[ name ].append( input_pdb )
-            get_resnum_chain( input_res_blocks[m], input_resnums, input_chains )
-            # useful for checking jumps & cutpoints; see below.
-            input_resnums_by_block.append( [] )
-            input_chains_by_block.append(  [] )
-            get_resnum_chain( input_res_blocks[m], input_resnums_by_block[m], input_chains_by_block[m] )
-            input_resnum_fullmodel_by_block.append( map( lambda x: get_fullmodel_number(x,resnums[name],chains[name]), zip( input_resnums_by_block[m], input_chains_by_block[m] ) ) )
+    if target.input_res != '-':
+        input_res_blocks += target.input_res.split(';')
+    if input_res_benchmark:
+        input_res_blocks += input_res_benchmark.split(';')
+    for m,input_res_block in enumerate(input_res_blocks):
+        prefix = '%s/%s_START%d_' % ( inpath,target.name,m+1)
+        input_pdb = slice_out( inpath, prefix, target.native,input_res_block )
+        target.input_pdbs.append( input_pdb )
+        input_resnums_by_block.append( [] )
+        input_chains_by_block.append(  [] )
+        get_resnum_chain( input_res_blocks[m], input_resnums_by_block[m], input_chains_by_block[m] )
+        input_resnum_fullmodel_by_block.append( map( lambda x: get_fullmodel_number(x,target.resnums,target.chains), zip( input_resnums_by_block[m], input_chains_by_block[m] ) ) )
+    input_resnum_fullmodel = full_model_info[ target.name ].conventional_tag_to_full(
+        input_res_blocks
+    )
+    input_resnum_fullmodel.sort()
 
-    input_resnum_fullmodel[name] = map( lambda x: get_fullmodel_number(x,resnums[name],chains[name]), zip( input_resnums, input_chains ) )
+    #input_resnum_fullmodel = map( lambda x: get_fullmodel_number(x,resnums[name],chains[name]), zip( input_resnums, input_chains ) )
+
 
     # create secstruct if not defined
-    if secstruct[ name ] == '-': secstruct[ name ] = string.join( [ '.' * len( seq ) for seq in sequences ], ',' )
-    # secstruct general can include obligate pairs (even non-canonical!)
-    if name not in secstruct_gen.keys(): secstruct_gen[ name ] = string.join( [ '.' * len( seq ) for seq in sequences ], ',' )
+    if target.secstruct == '-':
+        target.secstruct = string.join( [ '.' * len( seq ) for seq in sequences ], ',' )
 
 
     # create any helices.
-    helix_files[ name ] = []
-    (sequence_joined, chainbreak_pos)           = join_sequence( sequence[name] )
-    (secstruct_joined,chainbreak_pos_secstruct) = join_sequence( secstruct[name] )
-    (secstruct_gen_joined,chainbreak_pos_secstruct_gen) = join_sequence( secstruct_gen[name] )
-    assert( chainbreak_pos == chainbreak_pos_secstruct )
+    target.helix_files = []
+    (sequence_joined, chainbreak_pos)           = join_sequence( target.sequence )
+    (secstruct_joined,chainbreak_pos_secstruct) = join_sequence( target.secstruct )
+    # This is going to be a huge pain to handle so just ignore
+    #assert( chainbreak_pos == chainbreak_pos_secstruct )
     stems = get_all_stems( secstruct_joined, chainbreak_pos, sequence_joined  )
 
+    # instead of sequence_joined, we have to look at fasta_entities to get the real story,
+    # NCNTs and all
+    fasta_entities = []
+    i = 0
+    while i < len(sequence_joined):
+        if i == len(sequence_joined) - 1 or sequence_joined[i+1] != '[':
+            # simple case
+            fasta_entities.append(sequence_joined[i])
+        else:
+            entity = sequence_joined[i]
+            i += 1
+            while sequence_joined[i] != ']':
+                entity += sequence_joined[i]
+                i += 1
+                entity += ']'
+            fasta_entities.append(entity)
+        i += 1
+
     for i in range( len( stems ) ):
-        helix_file =  '%s/%s_HELIX%d.pdb' % (inpath,name,(i+1))
+        helix_file =  '%s/%s_HELIX%d.pdb' % (inpath,target.name,(i+1))
 
         stem = stems[i]
         helix_seq = ''; helix_resnum = [];
         for bp in stem:
-            helix_seq    += sequence_joined[ bp[0] - 1 ]
+            helix_seq    += fasta_entities[ bp[0] - 1 ] #sequence_joined[ bp[0] - 1 ]
             helix_resnum.append( bp[0] )
         helix_seq += ' '
         for bp in stem[::-1]:
-            helix_seq    += sequence_joined[ bp[1] - 1 ]
+            helix_seq    += fasta_entities[ bp[1] - 1 ]
             helix_resnum.append( bp[1] )
 
         already_in_input_res = False
         for m in helix_resnum:
-            if m in input_resnum_fullmodel[name]: already_in_input_res = True
+            if m in input_resnum_fullmodel: already_in_input_res = True
         if already_in_input_res: continue
 
-        helix_files[ name ].append( helix_file )
-        input_resnum_fullmodel[name] += helix_resnum
-        input_resnum_fullmodel_by_block.append( helix_resnum )
+        target.helix_files.append( helix_file )
+        input_resnum_fullmodel += helix_resnum
+        input_resnum_fullmodel.sort()
 
         if exists( helix_file ): continue
         command = 'rna_helix.py -seq %s  -o %s -resnum %s' % ( helix_seq, helix_file, \
-            make_tag_with_conventional_numbering( helix_resnum, resnums[ name ], chains[ name ] ) )
+            make_tag_with_conventional_numbering( helix_resnum, resnums, chains) )
         print command
-        system( command )
+        os.system( command )
 
-
-    def onelettersequence( sequence ):
-        # replace nonstandard names like Z[Mg] with Z
-        sequence_clean = []
-        in_non_standard = False
-        for c in sequence:
-            if c == '[':
-                in_non_standard = True
-                continue
-            if c == ']':
-                in_non_standard = False
-                continue
-            if not in_non_standard: sequence_clean += c
-        return sequence_clean
 
     # following is now 'hard-coded' into Rosetta option '-motif_mode'
     # deprecate this python block in 2015 after testing -- rd2014
-    L = len( onelettersequence( sequence_joined ) )
-    terminal_res[ name ] = []
-    block_stack_above_res[ name ] = []
-    block_stack_below_res[ name ] = []
-    extra_min_res[ name ] = []
-    def get_domain( m ): # allows testing if a residue moves relative to next one (e.g., if they are in different helices)
+    # AMW: recall that the length of the sequence is probably a lie.
+    #L = len( sequence_joined )
+    L = len( fasta_entities )
+    target.terminal_res = []
+    target.extra_min_res = []
+    target.block_stack_above_res = []
+    target.block_stack_below_res = []
+    # 'caleb branch way' provides regression -- RHIJU confirms correctness
+    # of the NEW WAY.
+    #for m in range( 1, L+1 ):
+    #    if ( m not in input_resnum_fullmodel ): continue
+    #    prev_moving = ( m - 1 not in input_resnum_fullmodel ) and ( m != 1 )
+    #    next_moving = ( m + 1 not in input_resnum_fullmodel ) and ( m != L )
+    #    right_before_chainbreak = ( m == L or m in chainbreak_pos )
+    #    right_after_chainbreak  = ( m == 1 or m - 1 in chainbreak_pos )
+    #    if ( ( right_after_chainbreak and not next_moving ) or \
+    #        ( right_before_chainbreak and not prev_moving ) ):
+    #        target.terminal_res.append( m )
+    #        if right_after_chainbreak:
+    #            target.block_stack_below_res.append( m )
+    #        if right_before_chainbreak:
+    #            target.block_stack_above_res.append( m )
+    #    if ( ( prev_moving and not next_moving and not right_before_chainbreak ) or \
+    #        ( next_moving and not prev_moving and not right_after_chainbreak ) ):
+    #        target.extra_min_res.append( m )
+    def get_domain( m ):
         for i, block in enumerate( input_resnum_fullmodel_by_block ):
             if m in block: return i+1
         return 0
 
     for m in range( 1, L+1 ):
-        if ( m not in input_resnum_fullmodel[name] ): continue
+        if ( m not in input_resnum_fullmodel ): continue
         right_before_chainbreak = ( m == L or m in chainbreak_pos )
         right_after_chainbreak  = ( m == 1 or m - 1 in chainbreak_pos )
-        prev_moving = ( m - 1 not in input_resnum_fullmodel[name] or \
-                        ( get_domain( m-1 )!=0 and get_domain( m )!=0 and get_domain( m-1 )!=get_domain(m) ) ) and \
-                      ( m != 1 ) and not right_after_chainbreak
-        next_moving = ( m + 1 not in input_resnum_fullmodel[name] or \
-                        ( get_domain( m )!=0 and get_domain( m+1 )!=0 and get_domain( m )!=get_domain(m+1)  ) ) and \
-                      ( m != L ) and not right_before_chainbreak
+        prev_moving = ( m - 1 not in input_resnum_fullmodel or \
+            ( get_domain( m-1 )!=0 and get_domain( m )!=0 and get_domain( m-1 )!=get_domain(m) ) ) and \
+            ( m != 1 ) and not right_after_chainbreak
+        next_moving = ( m + 1 not in input_resnum_fullmodel or \
+            ( get_domain( m )!=0 and get_domain( m+1 )!=0 and get_domain( m )!=get_domain(m+1)  ) ) and \
+            ( m != L ) and not right_before_chainbreak
 
         if right_after_chainbreak:
             if not next_moving and not right_before_chainbreak:
-                block_stack_below_res[ name ].append( m )
-                terminal_res[ name ].append( m )
+                target.block_stack_below_res.append( m )
+                target.terminal_res.append( m )
             else:
                 # special case -- singlet base pairs cannot be called 'terminal' but can enforce block_stack at 5' nts.
-                for stem in stems:
+                   for stem in stems:
                     if m == stem[0][0] or m == stem[-1][1]:
-                        block_stack_below_res[ name ].append( m )
+                        target.block_stack_below_res.append( m )
                         break
 
         if right_before_chainbreak:
             if not prev_moving and not right_after_chainbreak:
-                block_stack_above_res[ name ].append( m )
-                if ( m not in terminal_res[ name ] ): terminal_res[ name ].append( m )
+                target.block_stack_above_res.append( m )
+                if ( m not in target.terminal_res ): target.terminal_res.append( m )
             else:
                 # special case -- singlet base pairs cannot be called 'terminal' but can enforce block_stack at 3' nts.
                 for stem in stems:
                     if m == stem[0][1] or m == stem[-1][0]:
-                        block_stack_above_res[ name ].append( m )
+                        target.block_stack_above_res.append( m )
                         break
 
         if ( ( prev_moving and not next_moving and not right_before_chainbreak ) or \
              ( next_moving and not prev_moving and not right_after_chainbreak ) ):
-            extra_min_res[ name ].append( m )
+            target.extra_min_res.append( m )
 
-    if not '-motif_mode\n' in extra_flags_benchmark and not motif_mode_off:
-        extra_flags_benchmark.append( '-motif_mode\n' )
+    if not '-motif_mode\n' in extra_flags_benchmark.keys() and not motif_mode_off:
+        extra_flags_benchmark[ '-motif_mode' ] = ''# \n' )
 
     # needed for stepwise_lores to work with base pair steps that include flanking helices:
     if args.stepwise_lores:
-        jump_res[ name ] = []
-        cutpoint_closed[ name ] = []
+        target.jump_res = []
+        target.cutpoint_closed = []
         jump_bps = []
         stems = get_all_stems( secstruct_gen_joined )
         if len( stems ) == 0: stems = get_all_stems( secstruct_joined )
@@ -336,30 +321,30 @@ for name in names:
             stem = stems[i]
             for bp in stem:
                 jump_bps.append( bp )
-                jump_res[ name ].extend( [ bp[ 0 ], bp[ 1 ] ] )
-                if ( bp != stem[ -1] ): cutpoint_closed[ name ].append( bp[ 0 ] )
+                target.jump_res.extend( [ bp[ 0 ], bp[ 1 ] ] )
+                if ( bp != stem[ -1] ): target.cutpoint_closed.append( bp[ 0 ] )
         # need to be really explicit about cutpoints_closed in stepwise right now... there is an edge case (srl_fixed)
         # where jumps don't quite work.
         for i in range( len( input_resnums_by_block ) ):
             cuts  = []
             for m in range(1, len( input_resnums_by_block[i] ) ):
-                m_full = get_fullmodel_number( (input_resnums_by_block[i][m-1],input_chains_by_block[i][m-1]),resnums[name],chains[name] )
+                m_full = get_fullmodel_number( (input_resnums_by_block[i][m-1],input_chains_by_block[i][m-1]), target.resnums, target.chains )
                 if ( ( input_resnums_by_block[ i ][ m ] != input_resnums_by_block[ i ][ m-1 ] + 1 ) or
                      ( input_chains_by_block[ i ][ m ]  != input_chains_by_block[ i ][ m-1 ] ) or
-                     ( m_full in cutpoint_closed[ name ] ) ):
+                     ( m_full in cutpoint_target.closed ) ):
                     cuts.append( m_full )
             for jump_bp in jump_bps:
-                if ( ( resnums[ name ][ jump_bp[0]-1 ], chains[ name ][ jump_bp[0]-1 ] ) in zip( input_resnums_by_block[i], input_chains_by_block[i] ) and \
-                     ( resnums[ name ][ jump_bp[1]-1 ], chains[ name ][ jump_bp[1]-1 ] ) in zip( input_resnums_by_block[i], input_chains_by_block[i] ) ):
+                if ( ( target.resnums[ jump_bp[0]-1 ], target.chains[ jump_bp[0]-1 ] ) in zip( input_resnums_by_block[i], input_chains_by_block[i] ) and \
+                     ( target.resnums[ jump_bp[1]-1 ], target.chains[ jump_bp[1]-1 ] ) in zip( input_resnums_by_block[i], input_chains_by_block[i] ) ):
                     cut_exists_for_jump = False
                     for cut in cuts:
                         if ( cut >= jump_bp[0] and cut < jump_bp[1] ): cut_exists_for_jump = True
                     if not cut_exists_for_jump:
-                        cutpoint_closed[ name ].append( jump_bp[ 0 ] )
+                        cutpoint_target.closed.append( jump_bp[ 0 ] )
                         cuts.append( jump_bp[ 0 ] )
 
     # for cases that require docking two chains & farna, need to recognize and set up chain_connections flag
-    dock_partners[ name ] = []
+    target.dock_partners = []
     if args.farna or args.farfar:
         strand_num = 1
         strand = {}
@@ -390,34 +375,66 @@ for name in names:
         assert( len( clusters ) > 0 )
         if len( clusters ) > 1:
             assert( len( clusters ) == 2 )
-            dock_partners[ name ] = [ [], [] ]
+            target.dock_partners = [ [], [] ]
             for m in range( 1, L+1 ):
                 if strand[ m ] in clusters[ 0 ]:
-                    dock_partners[ name ][ 0 ].append( m )
+                    target.dock_partners[ 0 ].append( m )
                 else:
                     assert( strand[ m ] in clusters[ 1 ])
-                    dock_partners[ name ][ 1 ].append( m )
+                    target.dock_partners[ 1 ].append( m )
 
     # create fasta
-    fasta[ name ] = '%s/%s.fasta' % (inpath,name)
-    if not exists( fasta[ name ] ):
-        fid = open( fasta[ name ], 'w' )
-        if not ( len( sequences ) == len( working_res_blocks ) ):
-            print sequences
-            print working_res_blocks
+    target.fasta = '%s/%s.fasta' % (inpath,target.name)
+    if args.design:
+        target.fasta = target.fasta.replace('.fasta', '_design.fasta')
+        sequence_joined, chainbreak_pos = join_sequence( target.sequence )
+        design_sequences = ['']
+        for res_idx, res in enumerate(sequence_joined, start=1):
+            if not res_idx in input_resnum_fullmodel:
+                res = 'n'
+            if res_idx - 1 in chainbreak_pos:
+                design_sequences.append('')
+            design_sequences[-1] += res
+        sequences = design_sequences
+        target.sequence = ','.join(design_sequences)
+        print input_resnum_fullmodel
+        print sequences
+    if args.swa:
+        target.fasta = target.fasta.replace('.fasta', '_SWA.fasta')
+    if not exists( target.fasta ):
+        fid = open( target.fasta, 'w' )
         assert( len( sequences ) == len( working_res_blocks ) )
-        for n in range( len( sequences ) ): fid.write( '>%s %s\n%s\n' % (name,working_res_blocks[n],sequences[n]) )
+        if args.swa:
+            fid.write( '>%s %s\n%s\n' % ( target.name,string.join(working_res_blocks,' '),string.join(sequences,'') ) )
+        else:
+            ### splitting up sequence in fasta may cause errors in SWA runs
+            for n in range( len( sequences ) ): fid.write( '>%s %s\n%s\n' % (target.name,working_res_blocks[n],sequences[n]) )
+        #fid.write( os.popen( 'pdb2fasta.py %s' % (  working_target.native ) ).read() )
         fid.close()
 
+    # get align_pdb
+    if '-align_pdb' in extra_flags_benchmark:
+        prefix = '%s/%s_ALIGN_' % (inpath, target.name)
+        align_res = ','.join(input_res_blocks)
+        target.align_pdb = slice_out(inpath, prefix, target.native, align_res)
+        if '-align_pdb' in target.extra_flags:
+            target.extra_flags.pop('-align_pdb')
+    elif '-align_pdb' in target.extra_flags:
+        target.align_pdb = inpath+'/'+target.extra_flags['-align_pdb']
+        assert( exists(target.align_pdb) )
+    else:
+        target.align_pdb = None
+
     # get sample loop res
-    loop_res[ name ] = {}
-    if input_res[ name ] == '-':
+    target.loop_res = {}
+
+    if target.input_res == '-':
         if args.swa:
-            print "WARNING: input_res[ name ] == '-' "
+            print "WARNING: input_target.res == '-' "
         continue
 
-    ( workres , workchains  ) = parse_tag( working_res[ name ], alpha_sort=True )
-    ( inputres , inputchains  ) = parse_tag( input_res[ name ], alpha_sort=True )
+    ( workres , workchains  ) = parse_tag( target.working_res, alpha_sort=True )
+    ( inputres , inputchains  ) = parse_tag( target.input_res, alpha_sort=True )
 
     loopres_tag = []
     for ii in xrange( len( workres ) ):
@@ -432,71 +449,72 @@ for name in names:
     loopres_tag = string.join( loopres_tag, ',' )
 
     ( loopres , loopchains  ) = parse_tag( loopres_tag, alpha_sort=True )
-    ( workres , workchains  ) = parse_tag( working_res[ name ], alpha_sort=True )
+    ( workres , workchains  ) = parse_tag( target.working_res, alpha_sort=True )
 
     loopres_conventional = [ str(workchains[idx])+':'+str(workres[idx]) for idx in xrange( len( workres ) ) if (workres[idx] in loopres and workchains[idx] == loopchains[loopres.index(workres[idx])]) ]
     loopres_conventional = string.join( [ str(x) for x in loopres_conventional ] ,' ')
-    loop_res[ name ][ 'conventional' ] = loopres_conventional
+    target.loop_res[ 'conventional' ] = loopres_conventional
 
     if args.swa:
         loopres_swa = [ idx+1 for idx in xrange( len( workres ) ) if (workres[idx] in loopres and workchains[idx] == loopchains[loopres.index(workres[idx])]) ]
         loopres_swa = string.join( [ str(x) for x in loopres_swa ] ,' ')
-        loop_res[ name ][ 'swa' ]  = loopres_swa
+        target.loop_res[ 'swa' ]  = loopres_swa
 
 
     # get VDW_rep_screen_info, it will only be used if -VDW_rep_screen_info flag is set in extra_flags_benchmark
-    periph_res_radius = 50.0
-    if ( 'rrna' in name ) or ( 'rRNA' in name ):    periph_res_radius = 100.0
+    if '-VDW_rep_screen_info' in extra_flags_benchmark:
 
-    prefix = '%s/%s_%d_ANGSTROM_GRID_' % ( inpath, name, periph_res_radius )
-    VDW_rep_screen_pdb[ name ] = prefix + native[ name ]
-    VDW_rep_screen_info[ name ] = '%s' % ( basename( VDW_rep_screen_pdb[name] ) )
+        periph_res_radius = 50.0
+        if ( 'rrna' in target.name ) or ( 'rRNA' in target.name ):
+            periph_res_radius = 100.0
 
-    if VDW_rep_screen_info_flag_found:
-        if not exists( VDW_rep_screen_pdb[ name ] ):
-            print "Creating ... ", VDW_rep_screen_pdb[ name ]
-            loopres_list=string.split( loop_res[ name ][ 'conventional' ], ' ' )
-            periph_res_tag = get_surrounding_res_tag( inpath+native[ name ], sample_res_list=loopres_list, radius=periph_res_radius, verbose=args.verbose )
+        prefix = '%s/%s_%d_ANGSTROM_GRID_' % (inpath, target.name, periph_res_radius)
+        target.VDW_rep_screen_pdb = prefix + target.native
+        target.VDW_rep_screen_info = basename(target.VDW_rep_screen_pdb)
+
+        if not exists( target.VDW_rep_screen_pdb ):
+
+            loopres_list=string.split( target.loop_res[ 'conventional' ], ' ' )
+            periph_res_tag = get_surrounding_res_tag( inpath+target.native, sample_res_list=loopres_list, radius=periph_res_radius, verbose=args.verbose )
             assert( len( periph_res_tag ) )
-            slice_out( inpath, prefix, native[ name ], periph_res_tag )
+            slice_out( inpath, prefix, target.native, periph_res_tag )
 
             if args.verbose:
-                print 'loopres_list for '+name+' = '+string.join(loopres_list)
-                print 'periph_res for '+name+' = '+periph_res_tag
+                print 'loopres_list for '+target.name+' = '+string.join(loopres_list)
+                print 'periph_res for '+target.name+' = '+periph_res_tag
 
 
 
 # write qsubMINIs, READMEs and SUBMITs
-qsub_file = 'qsubMINI'
-qsub_file2 = ''
+submit_files = init_submit_files()
 
-hostname = uname()[1]
-if hostname.find( 'stampede' ) > -1: qsub_file = 'qsubMPI'
-if hostname.find( 'sherlock' ) > -1:
-    qsub_file  = 'sbatchMINI'
-    qsub_file2 = 'sbatchMPI'
-fid_qsub = open( qsub_file, 'w' )
-if len( qsub_file2 ) > 0:
-    fid_qsub2 = open( qsub_file2, 'w' )
+for target in targets:
 
-for name in names:
-
-    dirname = name
-    if not exists( dirname ): system( 'mkdir '+dirname )
+    dirname = target.name
+    if not exists( dirname ): os.system( 'mkdir '+dirname )
 
     # move all required files to the correct directory
-    start_files = helix_files[ name ] + input_pdbs[ name ]
-    infiles = start_files + [ fasta[name], working_native[ name ] ]
-    if VDW_rep_screen_info_flag_found:  infiles.append( VDW_rep_screen_pdb[ name ] )
-    for infile in infiles:  system( 'cp %s %s/ ' % ( infile, dirname ) )
+    start_files = target.helix_files + target.input_pdbs
+    infiles = start_files + [ target.fasta, target.working_native ]
+    if target.VDW_rep_screen_pdb:
+        infiles.append(target.VDW_rep_screen_pdb)
+    if target.align_pdb:
+        if '-align_pdb' in extra_flags_benchmark:
+            extra_flags_benchmark['-align_pdb'] = basename(target.align_pdb)
+        infiles.append(target.align_pdb)
+    if '-input_pdb' in target.extra_flags:
+        input_pdb = inpath+'/'+target.extra_flags['-input_pdb']
+        assert( exists(input_pdb) )
+        infiles.append(input_pdb)
+    os.system( 'cp %s %s/ ' % (' '.join(infiles), dirname) )
 
-    def add_block_stack_flags( args, extra_flags, block_stack_above_res, block_stack_below_res, fid ):
+    def add_block_stack_flags( args, extra_flags, target, fid ):
         # used in FARNA & SWM
-        if not args.block_stack_off and extra_flags[ name ].find( '-block_stack_off') == -1:
-            if len( block_stack_above_res[ name ] ) > 0:
-                fid.write( '-block_stack_above_res %s  \n' % make_tag_with_conventional_numbering( block_stack_above_res[ name ], resnums[ name ], chains[ name ] ) )
-            if len( block_stack_below_res[ name ] ) > 0:
-                fid.write( '-block_stack_below_res %s  \n' % make_tag_with_conventional_numbering( block_stack_below_res[ name ], resnums[ name ], chains[ name ] ) )
+        if not args.block_stack_off and '-block_stack_off' not in extra_flags:
+            if len( target.block_stack_above_res ) > 0:
+                fid.write( '-block_stack_above_res %s  \n' % make_tag_with_conventional_numbering( target.block_stack_above_res, target.resnums, target.chains ) )
+            if len( target.block_stack_below_res ) > 0:
+                fid.write( '-block_stack_below_res %s  \n' % make_tag_with_conventional_numbering( target.block_stack_below_res, target.resnums, target.chains ) )
         return
 
     def add_start_files_flag( fid, start_files ):
@@ -505,193 +523,201 @@ for name in names:
             for infile in start_files:  fid.write( ' %s' % (basename(infile) ) )
             fid.write( '\n' )
 
-    def copy_extra_files( tag ):
-        if tag in cols:
-            filename = cols[ cols.index( tag )+1 ]
-            print filename
+    def copy_extra_files( tag, cols, name ):
+        # This had assumed that we are passing a vector not a dict as cols. Huh.
+        if tag in cols.keys():
+            #filename = cols[ cols.index( tag )+1 ]
+            filename = cols[ tag ]
             assert( exists( inpath+'/'+filename ) )
             system( 'cp %s/%s %s' % (inpath, filename, name ) )
 
     def add_extra_flags_for_name( fid, extra_flags, name ):
         # case-specific extra flags
-        if ( len( extra_flags[name] ) > 0 ) and ( extra_flags[ name ] != '-' ) :
-            #fid.write( '%s\n' % extra_flags[name] )
-            cols = extra_flags[ name ].split( ' ' )
+        if len( extra_flags ) == 0 or extra_flags == '-': return
 
-            if not args.no_align_pdb: copy_extra_files( '-align_pdb')
-            copy_extra_files( '-extra_res_fa')
+        #fid.write( '%s\n' % extra_flags[name] )
+        #cols = extra_flags.split( ' ' )
 
-            for flag in parse_flags_string( extra_flags[ name ] ):
-                flag = flag.replace('True','true').replace('False','false')
-                if flag == '-block_stack_off\n': continue
-                if ( args.no_align_pdb and flag.find( '-align_pdb' ) > -1 ): continue
-                fid.write( flag )
+        if not args.no_align_pdb: copy_extra_files( '-align_pdb', extra_flags, name )
+        copy_extra_files( '-extra_res_fa', extra_flags, name)
+
+        # These are already all parsed.
+        for flag in extra_flags.keys():#parse_flags( extra_flags ):
+            extra_flags[ flag ] = extra_flags[ flag ].replace('True','true').replace('False','false')
+            if flag == '-block_stack_off': continue
+            if ( args.no_align_pdb and flag.find( '-align_pdb' ) > -1 ): continue
+            fid.write( flag+" "+extra_flags[ flag ]+"\n" )
 
     def add_extra_flags_benchmark( fid, extra_flags_benchmark, motif_mode_OK = True ):
         # extra flags for whole benchmark
         weights_file = ''
-        for flag in extra_flags_benchmark:
-            if ( not motif_mode_OK and '-motif_mode' in flag ): continue
-            if ( '#' in flag ): continue
-            flag = flag.replace('True','true').replace('False','false')
-            if ( '-single_stranded_loop_mode' in flag ): continue ### SWA Specific
-            if ( '-score:weights' in flag ): weights_file = string.split( flag )[1]
-            if ( '-VDW_rep_screen_info true' in flag ):
-                flag = flag.replace( 'true', basename( VDW_rep_screen_info[ name ] ) )#-VDW_rep_screen_info 1zih_RNA.pdb
-            fid.write( flag )
-
-        if len( weights_file ) > 0:
-            if not exists( weights_file ):
-                weights_file = ROSETTA_DB+'/scoring/weights/'+weights_file
-            assert( exists( weights_file ) )
-            system( 'cp ' + weights_file + ' ' + name )
+        for key, value in extra_flags_benchmark.iteritems():
+            if ( not motif_mode_OK and '-motif_mode' in key ): continue
+            if ( '#' in key ): continue
+            if '-single_stranded_loop_mode' in key: continue ### SWA Specific
+            if '-score:weights' in key:
+                weights_file = value
+                if not exists(weights_file):
+                    weights_file = os.environ['ROSETTA_DB_WEIGHTS'] + weights_file
+                assert( exists(weights_file) )
+                os.system( 'cp %s %s' % (weights_file, target.name) )
+            if '-VDW_rep_screen_info' in key and 'true' in value:
+                if target.VDW_rep_screen_info is None:
+                    continue
+                value = basename(target.VDW_rep_screen_info)
+            flag = ' '.join([key, value]).strip()
+            fid.write('%s\n' % flag)
 
 
     # SETUP for StepWise Assembly
     if args.swa:
 
         fid = open( '%s/README_SWA' % dirname, 'w' )
-        fid.write( SWA_DAGMAN_TOOLS+'/SWA_DAG/setup_SWA_RNA_dag_job_files.py' )
+        fid.write( os.environ['SWA_DAGMAN_TOOLS']+'/SWA_DAG/setup_SWA_RNA_dag_job_files.py' )
         if len( start_files ) > 0 :
             fid.write( ' -s' )
             for infile in start_files:  fid.write( ' %s' % (basename(infile) ) )
-        if len( native[ name ] ) > 0:
-            fid.write( ' -native_pdb %s' % basename( working_native[name] ) )
-        fid.write( ' -fasta %s.fasta' %  name )
-        fid.write( ' -sample_res %s' % loop_res[ name ][ 'swa' ] )
+        if len( target.native ) > 0:
+            fid.write( ' -native_pdb %s' % basename( target.working_native ) )
+        fid.write( ' -fasta %s' %  basename( target.fasta ) )
+        fid.write( ' -sample_res %s' % target.loop_res[ 'swa' ] )
 
         # case-specific extra flags
-        if ( len( extra_flags[name] ) > 0 ) and ( extra_flags[ name ] != '-' ) :
-            for flag in parse_flags_string( extra_flags[ name ] ):
-                if flag == '-block_stack_off\n': continue
-                flag = flag.replace('true','True').replace('false','False')
-                fid.write( ' %s' % flag )
+        for key, value in target.extra_flags.iteritems():
+            flag = ' '.join([key, value]).strip()
+            fid.write(' %s' % flag)
 
         # extra flags for whole benchmark
-        weights_file = ''
-        for flag in extra_flags_benchmark:
-            if ( '#' in flag ): continue
-            flag = flag.replace('true','True').replace('false','False')
-            if ( '-analytic_etable_evaluation' in flag ): continue ### SWM Specific
-            if ( '-motif_mode' in flag ): continue ### SWM Specific
-            if ( '-score:weights' in flag ):
-                flag = flag.replace( '-score:weights', '-force_field_file' )
-                weights_file = string.split( flag )[1]
-            if ( '-score:rna_torsion_potential' in flag ):
-                flag = flag.replace( '-score:rna_torsion_potential', '-rna_torsion_potential_folder' )
-            if ( '-VDW_rep_screen_info True' in flag ):
-                flag = flag.replace( 'True', VDW_rep_screen_info[ name ] ) #-VDW_rep_screen_info 1zih_RNA.pdb
-                flag = flag + ' -apply_VDW_rep_delete_matching_res False'
-            flag = ' '+flag.replace( '\n', '' )
-            fid.write( flag )
-        if len( weights_file ) > 0:
-            if not exists( weights_file ):
-                weights_file = ROSETTA_DB+'/scoring/weights/'+weights_file
-            assert( exists( weights_file ) )
-            system( 'cp ' + weights_file + ' ' + name )
+        for key, value in extra_flags_benchmark.iteritems():
+            if '-analytic_etable_evaluation' in key:
+                continue ### SWM Specific
+            if '-motif_mode' in key:
+                continue ### SWM Specific
+            if '-score:weights' in key:
+                key = '-force_field_file'
+                weights_file = value
+                if not exists( weights_file ):
+                    weights_file = os.environ['ROSETTA_DB_WEIGHTS'] + weights_file
+                assert( exists(weights_file) )
+                os.system( 'cp %s %s' % (weights_file, target.name) )
+            if '-score:rna_torsion_potential' in key:
+                key = '-rna_torsion_potential_folder'
+            if '-VDW_rep_screen_info' in key and 'True' in value:
+                if target.VDW_rep_screen_info is None:
+                    continue
+                value = target.VDW_rep_screen_info
+                fid.write(' -apply_VDW_rep_delete_matching_res False')
+            flag = ' '.join([key, value]).strip()
+            fid.write(' %s' % flag)
 
         fid.close()
 
-        print '\nSetting up submission files for: ', name
-        CWD = getcwd()
+        print '\nSetting up submission files for: ', target.name
+        CWD = os.getcwd()
         fid_submit = open( dirname+'/SUBMIT_SWA', 'w' )
-        fid_submit.write( SWA_DAGMAN_TOOLS+'/dagman/submit_DAG_job.py' )
-        fid_submit.write( ' -master_wall_time %d' % 72 ) #args.nhours )
+        fid_submit.write( os.environ['SWA_DAGMAN_TOOLS']+'/dagman/submit_DAG_job.py' )
+        fid_submit.write( ' -master_wall_time %d' % args.nhours )
         fid_submit.write( ' -master_memory_reserve 2048' )
         fid_submit.write( ' -num_slave_nodes %d' % njobs )
         fid_submit.write( ' -dagman_file rna_build.dag' )
         fid_submit.close()
 
-        fid_qsub.write( 'cd %s; source ./README_SWA && source ./SUBMIT_SWA; cd %s\n' % ( dirname, CWD ) )
+        for submit_file in submit_files:
+            with open(submit_file,'a') as fid_submit:
+                fid_submit.write( 'cd %s; source ./README_SWA && source ./SUBMIT_SWA; cd %s\n' % ( dirname, CWD ) )
 
-    elif args.farna or args.farfar: # Fragment Assembly of RNA
+    elif args.farna or args.farfar: # SETUP for Fragment Assembly of RNA
 
-        fid = open( '%s/README_FARFAR' % name, 'w' )
+        fid = open( '%s/README_FARFAR' % target.name, 'w' )
         fid.write( 'rna_denovo @flags -out:file:silent farna_rebuild.out\n' )
         fid.close()
 
-        fid = open( '%s/flags' % name, 'w' )
-        fid.write( '-fasta %s.fasta\n' % name )
-        if len( native[ name ] ) > 0:
-            fid.write( '-working_native %s\n' % basename( working_native[ name ] ) );
+        fid = open( '%s/flags' % target.name, 'w' )
+        fid.write( '-fasta %s.fasta\n' % target.name )
+        if len( target.native ) > 0:
+            fid.write( '-working_native %s\n' % basename( target.working_native ) );
         add_start_files_flag( fid, start_files )
-        fid.write( '-working_res %s\n' % working_res[ name ].replace( ',',' ') )
-        add_block_stack_flags( args, extra_flags, block_stack_above_res, block_stack_below_res, fid )
-        if len( extra_min_res[ name ] ) > 0 and not args.extra_min_res_off:
-            fid.write( '-extra_minimize_res %s\n' % make_tag_with_conventional_numbering( extra_min_res[ name ], resnums[ name ], chains[ name ] ) )
+        fid.write( '-working_res %s\n' % target.working_res.replace( ',',' ') )
+        add_block_stack_flags( args, target.extra_flags, target, fid )
+        if len( target.extra_min_res ) > 0 and not args.extra_min_res_off:
+            fid.write( '-extra_minimize_res %s\n' % make_tag_with_conventional_numbering( target.extra_min_res, target.resnums, target.chains ) )
         if args.farfar: fid.write( '-minimize_rna true\n' )
         else: fid.write( '-minimize_rna false\n' )
-        if not cycles_flag_found:   fid.write( '-cycles 20000\n' )
-        if not nstruct_flag_found:  fid.write( '-nstruct 20\n' )
+        if '-cycles' not in extra_flags_benchmark:   fid.write( '-cycles 20000\n' )
+        if '-nstruct' not in extra_flags_benchmark: fid.write( '-nstruct 20\n' )
         if not args.save_times_off: fid.write( '-save_times\n' )
-        if len( dock_partners[ name ] ) > 0:
-            fid.write( '-chain_connection SET1 %s SET2 %s\n' % ( make_tag_with_conventional_numbering( dock_partners[ name ][ 0 ], resnums[ name ], chains[ name ] ), \
-                                                                 make_tag_with_conventional_numbering( dock_partners[ name ][ 1 ], resnums[ name ], chains[ name ] ) ) )
-
-        add_extra_flags_for_name(fid, extra_flags, name)
+        if len( target.dock_partners ) > 0:
+            fid.write( '-chain_connection SET1 %s SET2 %s\n' % ( make_tag_with_conventional_numbering( target.dock_partners[ 0 ], target.resnums, target.chains ), \
+                                                                 make_tag_with_conventional_numbering( target.dock_partners[ 1 ], target.resnums, target.chains ) ) )
+        add_extra_flags_for_name(fid, target.extra_flags, target.name)
         add_extra_flags_benchmark(fid, extra_flags_benchmark, motif_mode_OK = False )
         fid.close()
 
-        print '\nSetting up submission files for: ', name
-        CWD = getcwd()
-        chdir( name )
+        print '\nSetting up submission files for: ', target.name
+        CWD = os.getcwd()
+        os.chdir( target.name )
 
         rosetta_submit_cmd = 'rosetta_submit.py README_FARFAR FARFAR %d %d' % (njobs, args.nhours )
         if args.save_logs: rosetta_submit_cmd += ' -save_logs'
         if len(args.queue) > 0: rosetta_submit_cmd += ' -queue %s' % args.queue
-        system( rosetta_submit_cmd )
+        os.system( rosetta_submit_cmd )
 
-        chdir( CWD )
+        os.chdir( CWD )
 
-        fid_qsub.write( 'cd %s; source %s; cd %s\n' % ( name, qsub_file,  CWD ) )
-        if len( qsub_file2 ) > 0: fid_qsub2.write( 'cd %s; source %s; cd %s\n' % ( name, qsub_file2,  CWD ) )
+        for submit_file in submit_files:
+            with open(submit_file,'a') as fid_submit:
+                fid_submit.write( 'cd %s; source %s; cd %s\n' % ( target.name, submit_file,  CWD ) )
 
     # SETUP for StepWise Monte Carlo
     else:
 
-        fid = open( '%s/README_SWM' % name, 'w' )
-        fid.write( 'stepwise @flags -out:file:silent swm_rebuild.out\n' )
+        fid = open( '%s/README_SWM' % target.name, 'w' )
+        fid.write( os.environ['ROSETTA_BIN'] + 'stepwise @flags -out:file:silent swm_rebuild.out\n' )
         fid.close()
 
-        fid = open( '%s/flags' % name, 'w' )
+        fid = open( '%s/flags' % target.name, 'w' )
         add_start_files_flag( fid, start_files )
-        if len( native[ name ] ) > 0:
-            fid.write( '-native %s\n' % basename( working_native[name] ) )
-        if len( terminal_res[ name ] ) > 0:
-            fid.write( '-terminal_res %s  \n' % make_tag_with_conventional_numbering( terminal_res[ name ], resnums[ name ], chains[ name ] ) )
-        add_block_stack_flags( args, extra_flags, block_stack_above_res, block_stack_below_res, fid ) # could probably get rid of terminal_res.
-        if len( extra_min_res[ name ] ) > 0 and not args.extra_min_res_off: ### Turn extra_min_res off for SWM when comparing to SWA
-            fid.write( '-extra_min_res %s \n' % make_tag_with_conventional_numbering( extra_min_res[ name ], resnums[ name ], chains[ name ] ) )
+        if len( target.native ) > 0:
+            fid.write( '-native %s\n' % basename( target.working_native ) )
+
+        if motif_mode_off and len( target.terminal_res ) > 0:
+            fid.write( '-terminal_res %s  \n' % make_tag_with_conventional_numbering( target.terminal_res, target.resnums, target.chains ) )
+
+        add_block_stack_flags( args, extra_flags, target, fid )
+
         if args.stepwise_lores:
-            if ( len( jump_res[ name ] ) > 0 ):
-                fid.write( '-jump_res %s \n' % make_tag_with_conventional_numbering( jump_res[ name ], resnums[ name ], chains[ name ] ) )
-            if ( len( cutpoint_closed[ name ] ) > 0 ):
-                fid.write( '-cutpoint_closed %s \n' % make_tag_with_conventional_numbering( cutpoint_closed[ name ], resnums[ name ], chains[ name ] ) )
+            if ( len( target.jump_res ) > 0 ):
+                fid.write( '-jump_res %s \n' % make_tag_with_conventional_numbering( target.jump_res, target.resnums, target.chains ) )
+            if ( len( target.cutpoint_closed ) > 0 ):
+                fid.write( '-cutpoint_closed %s \n' % make_tag_with_conventional_numbering( target.cutpoint_closed, target.resnums, target.chains ) )
             fid.write( '-include_neighbor_base_stacks\n' ) # Need to match FARNA.
-        fid.write( '-fasta %s.fasta\n' % name )
-        if not cycles_flag_found:   fid.write( '-cycles 200\n' )
-        if not nstruct_flag_found:  fid.write( '-nstruct 20\n' )
+        if motif_mode_off and len( target.extra_min_res ) > 0 and not args.extra_min_res_off: ### Turn extra_min_res off for SWM when comparing to SWA
+            fid.write( '-extra_min_res %s \n' % make_tag_with_conventional_numbering( target.extra_min_res, target.resnums, target.chains ) )
+        #if ( len( input_target.pdbs ) == 0 ):
+        #    fid.write( '-superimpose_over_all\n' ) # RMSD over everything -- better test since helices are usually native
+        fid.write( '-fasta %s\n' % basename( target.fasta) )
+        if '-move' not in extra_flags_benchmark:
+            if '-cycles' not in extra_flags_benchmark:  fid.write( '-cycles 200\n' )
+            if '-nstruct' not in extra_flags_benchmark: fid.write( '-nstruct 20\n' )
         if not args.save_times_off: fid.write( '-save_times\n' )
-        add_extra_flags_for_name(fid, extra_flags, name)
-        add_extra_flags_benchmark( fid, extra_flags_benchmark )
+
+        add_extra_flags_for_name(fid, target.extra_flags, target.name)
+        add_extra_flags_benchmark(fid, extra_flags_benchmark, motif_mode_OK = False )
 
         fid.close()
 
-        print '\nSetting up submission files for: ', name
-        CWD = getcwd()
-        chdir( name )
+        print '\nSetting up submission files for: ', target.name
+        CWD = os.getcwd()
+        os.chdir( target.name )
 
         rosetta_submit_cmd = 'rosetta_submit.py README_SWM SWM %d %d' % (njobs, args.nhours )
-        if args.save_logs: rosetta_submit_cmd += ' -save_logs'
-        if len(args.queue) > 0: rosetta_submit_cmd += ' -queue %s' % args.queue
-        system( rosetta_submit_cmd )
+        if args.save_logs:
+            rosetta_submit_cmd += ' -save_logs'
+        os.system( rosetta_submit_cmd )
 
-        chdir( CWD )
+        os.chdir( CWD )
 
-        fid_qsub.write( 'cd %s; source %s; cd %s\n' % ( name, qsub_file,  CWD ) )
-        if len( qsub_file2 ) > 0: fid_qsub2.write( 'cd %s; source %s; cd %s\n' % ( name, qsub_file2,  CWD ) )
-
-
-fid_qsub.close()
-if len( qsub_file2 ) > 0: fid_qsub2.close()
+        for submit_file in submit_files:
+            with open(submit_file,'a') as fid_submit:
+                fid_submit.write( 'cd %s; source %s; cd %s\n' % ( target.name, submit_file,  CWD ) )
 

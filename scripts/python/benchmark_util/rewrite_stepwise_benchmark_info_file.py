@@ -15,7 +15,7 @@ from get_surrounding_res import get_surrounding_res_tag
 
 parser = argparse.ArgumentParser(description='Rewrite info text files with new format')
 parser.add_argument('info_file', help='text file with motif definitions, in same directory as input_files/ (e.g., "input_files/favorites.txt")',default=None )
-parser.add_argument('--old_format', help="revert to old file format", action="store_true")	
+parser.add_argument('--tsv', help="convert to TSV file format", action="store_true")	
 parser.add_argument('-v', '--verbose', help="increase output verbosity", action="store_true")	
 args = parser.parse_args()
 
@@ -94,22 +94,19 @@ assert( len( names ) == len( sequence ) == len( secstruct ) == len( working_res 
 
 # write new file
 info_fid = open( info_file, 'w' )
-if args.old_format:	
-	info_fid.write( '%-30s\t%-30s\t%-30s\t%-30s\t%-30s\t%-30s\t%-30s\n' % ( header[0],
-																			header[1],
-																			header[2],
-																			header[3],
-																			header[4],
-																			header[5],
-																			header[6] ))
-	for name in names:
-		info_fid.write( '%-30s\t%-30s\t%-30s\t%-30s\t%-30s\t%-30s\t%-30s\n' % ( name, 
-																				sequence   [ name ], 
-																				secstruct  [ name ], 
-																				working_res[name], 
-																				native     [name], 
-																				input_res  [name], 
-																				extra_flags[ name ] ) )
+if args.tsv:	
+        lines = [ header ]
+        for name in names:
+                lines.append([
+                        name,
+                        sequence[ name ],
+                        secstruct[ name ],
+                        working_res[ name ],
+                        native[ name ],
+                        input_res[ name ],
+                        extra_flags[ name ]
+                ])  
+        info_fid.write('\n'.join(map('\t'.join, lines)))
 else:
 	for name in names:
 		info_fid.write( '%-15s%s\n' % ( 'Name:'       , name                ) )

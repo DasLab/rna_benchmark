@@ -41,6 +41,15 @@ easy_cat.py SWM
 to concatenate models from various subdirectories for each target.
 - Copy or rsync files to your local computer for visualization.
 
+Regression tests
+----------------
+
+You should run regression tests before making any merge to the `master` branch. Since these regression tests are VERY FAST (~15s), ideally you should run these regression tests more often than that.
+- Go to the `test/` directory.
+- Run `test.sh` on master to generate reference results (in `ref``).
+- Check out your new branch, commit of interest, or whatever.
+- Re-run `test.sh` to generate new results (in `new/`). The script will report on the diff automatically.
+
 Visualizing benchmark runs
 --------------------------
 Plotting with Python

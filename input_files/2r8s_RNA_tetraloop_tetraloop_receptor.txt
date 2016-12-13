@@ -1,0 +1,2 @@
+Name	Sequence	Secstruct	Working_res	Native	Input_res	Extra_flags
+2r8s_RNA_149-154_223-226_249-250	agucucaggggaaacuuuga,gccaaguccuaagucaa,cuguugauauggaug	....................,.................,...............	A:140-159,A:215-231,A:240-254	2r8s_RNA.pdb	A:140-148,A:155-159,A:215-222,A:227-231,A:240-248,A:251-254	-

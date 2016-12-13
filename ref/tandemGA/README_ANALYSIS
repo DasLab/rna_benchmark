@@ -1,0 +1,2 @@
+cd <run directory>
+../../../scripts/python/analysis/rna_predict_chem_map.py -targets tandemGA* -ndecoys 20

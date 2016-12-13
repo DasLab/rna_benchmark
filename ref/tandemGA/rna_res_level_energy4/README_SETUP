@@ -1,0 +1,1 @@
+../../../scripts/python/benchmark_util/setup_stepwise_benchmark.py ../../../input_files/tandemGA.txt -nhours 48

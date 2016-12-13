@@ -1,0 +1,2 @@
+-score:weights stepwise/rna/rna_res_level_energy4.wts
+-cycles 2000
