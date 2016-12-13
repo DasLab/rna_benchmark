@@ -107,7 +107,7 @@ info_fid.load(open(info_file))
 assert( info_fid.validate() )
 target_definitions = info_fid.target_definitions
 if len(args.user_input_runs):
-    target_definitions = [td for td in target_definitions if td.name not in args.user_input_runs]
+    target_definitions = [td for td in target_definitions if td.name in args.user_input_runs]
 targets = [info_handlers.Target(td) for td in target_definitions]
 
 extra_flags_benchmark.update( info_fid.extra_flags_benchmark )
