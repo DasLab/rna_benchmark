@@ -331,7 +331,7 @@ for target in targets:
                 m_full = get_fullmodel_number( (input_resnums_by_block[i][m-1],input_chains_by_block[i][m-1]), target.resnums, target.chains )
                 if ( ( input_resnums_by_block[ i ][ m ] != input_resnums_by_block[ i ][ m-1 ] + 1 ) or
                      ( input_chains_by_block[ i ][ m ]  != input_chains_by_block[ i ][ m-1 ] ) or
-                     ( m_full in cutpoint_target.closed ) ):
+                     ( m_full in target.cutpoint_closed ) ):
                     cuts.append( m_full )
             for jump_bp in jump_bps:
                 if ( ( target.resnums[ jump_bp[0]-1 ], target.chains[ jump_bp[0]-1 ] ) in zip( input_resnums_by_block[i], input_chains_by_block[i] ) and \
@@ -340,7 +340,7 @@ for target in targets:
                     for cut in cuts:
                         if ( cut >= jump_bp[0] and cut < jump_bp[1] ): cut_exists_for_jump = True
                     if not cut_exists_for_jump:
-                        cutpoint_target.closed.append( jump_bp[ 0 ] )
+                        target.cutpoint_closed.append( jump_bp[ 0 ] )
                         cuts.append( jump_bp[ 0 ] )
 
     # for cases that require docking two chains & farna, need to recognize and set up chain_connections flag
@@ -375,13 +375,13 @@ for target in targets:
         assert( len( clusters ) > 0 )
         if len( clusters ) > 1:
             assert( len( clusters ) == 2 )
-            dock_target.partners = [ [], [] ]
+            target.dock_partners = [ [], [] ]
             for m in range( 1, L+1 ):
                 if strand[ m ] in clusters[ 0 ]:
-                    dock_target.partners[ 0 ].append( m )
+                    target.dock_partners[ 0 ].append( m )
                 else:
                     assert( strand[ m ] in clusters[ 1 ])
-                    dock_target.partners[ 1 ].append( m )
+                    target.dock_partners[ 1 ].append( m )
 
     # create fasta
     target.fasta = '%s/%s.fasta' % (inpath,target.name)
@@ -409,7 +409,7 @@ for target in targets:
         else:
             ### splitting up sequence in fasta may cause errors in SWA runs
             for n in range( len( sequences ) ): fid.write( '>%s %s\n%s\n' % (target.name,working_res_blocks[n],sequences[n]) )
-        #fid.write( os.popen( 'pdb2fasta.py %s' % (  working_target.native ) ).read() )
+        #fid.write( os.popen( 'pdb2fasta.py %s' % (  target.working_native ) ).read() )
         fid.close()
 
     # get align_pdb
@@ -430,7 +430,7 @@ for target in targets:
 
     if target.input_res == '-':
         if args.swa:
-            print "WARNING: input_target.res == '-' "
+            print "WARNING: target.input_res == '-' "
         continue
 
     ( workres , workchains  ) = parse_tag( target.working_res, alpha_sort=True )
@@ -511,10 +511,10 @@ for target in targets:
     def add_block_stack_flags( args, extra_flags, block_stack_above_res, block_stack_below_res, fid ):
         # used in FARNA & SWM
         if not args.block_stack_off and '-block_stack_off' not in extra_flags:
-            if len( block_stack_above_target.res ) > 0:
-                fid.write( '-block_stack_above_res %s  \n' % make_tag_with_conventional_numbering( block_stack_above_target.res, target.resnums, target.chains ) )
-            if len( block_stack_below_target.res ) > 0:
-                fid.write( '-block_stack_below_res %s  \n' % make_tag_with_conventional_numbering( block_stack_below_target.res, target.resnums, target.chains ) )
+            if len( target.block_stack_above_res ) > 0:
+                fid.write( '-block_stack_above_res %s  \n' % make_tag_with_conventional_numbering( target.block_stack_above_res, target.resnums, target.chains ) )
+            if len( target.block_stack_below_res ) > 0:
+                fid.write( '-block_stack_below_res %s  \n' % make_tag_with_conventional_numbering( target.block_stack_below_res, target.resnums, target.chains ) )
         return
 
     def add_start_files_flag( fid, start_files ):
@@ -698,7 +698,7 @@ for target in targets:
         if motif_mode_off and len( target.extra_min_res ) > 0 and not args.extra_min_res_off: ### Turn extra_min_res off for SWM when comparing to SWA
             fid.write( '-extra_min_res %s \n' % make_tag_with_conventional_numbering( target.extra_min_res, target.resnums, target.chains ) )
 
-        #if ( len( input_target.pdbs ) == 0 ):
+        #if ( len( target.input_pdbs ) == 0 ):
         #    fid.write( '-superimpose_over_all\n' ) # RMSD over everything -- better test since helices are usually native
         fid.write( '-fasta %s\n' % basename( target.fasta) )
         if '-move' not in extra_flags_benchmark:
