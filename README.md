@@ -45,10 +45,10 @@ Regression tests
 ----------------
 
 You should run regression tests before making any merge to the `master` branch. Since these regression tests are VERY FAST (~15s), ideally you should run these regression tests more often than that.
-1. Go to the `test/` directory.
-2. Run `test.sh` on master to generate reference results (in `ref``).
-3. Check out your new branch, commit of interest, or whatever.
-4. Re-run `test.sh` to generate new results (in `new/`). The script will report on the diff automatically.
+- Go to the `test/` directory.
+- Run `test.sh` on master to generate reference results (in `ref``).
+- Check out your new branch, commit of interest, or whatever.
+- Re-run `test.sh` to generate new results (in `new/`). The script will report on the diff automatically.
 
 Visualizing benchmark runs
 --------------------------
