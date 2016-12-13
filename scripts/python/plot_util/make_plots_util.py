@@ -177,8 +177,11 @@ def get_target_names_from_file( filename, target_names ):
 def get_path_to_dir( dirnames ):
 	for dirname in dirnames:
 		pwd = popen( 'pwd' ).readline()[:-1].split( '/' )
-		if dirname not in pwd: continue
-		return string.join( pwd[:pwd.index( dirname )+1], '/' )
+		for subdir_idx, subdir in enumerate(pwd):
+                        if dirname not in subdir:
+                                continue
+                        return string.join( pwd[:subdir_idx+1], '/' )
+
 
 ###########################################################
 
@@ -298,7 +301,7 @@ def setup_pdf_page( inpaths, targets, pdfname = None ):
 		#pdfname += '_' + '_vs_'.join(inpaths)
 		#pdfname = pdfname if pdfname[0] != '_' else pdfname[1:]
 	pdfname += '.pdf' if '.pdf' not in pdfname else ''
-	if './' in pdfname:
+	if '/' in pdfname and exists(dirname(pdfname)):
 		fullpdfname = pdfname
 	else:
 		figure_dir = get_path_to_dir(['stepwise_benchmark','benchmark']) + '/Figures/'
