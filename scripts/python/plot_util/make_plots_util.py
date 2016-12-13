@@ -24,7 +24,7 @@ from get_sequence import get_sequence, get_sequences_for_res
 from parse_tag import parse_tag
 import re
 from difflib import SequenceMatcher
-import seaborn as sns 
+import seaborn as sns
 
 
 ##########################################################
@@ -82,7 +82,7 @@ def get_outfiles( inpath, targets, outfilenames ):
 			outfiles.pop(outfiles.index(outfile))
 			continue
 		assert( exists( outfile ) )
-                
+
 	return outfiles
 
 ##########################################################
@@ -121,7 +121,7 @@ def load_data( inpaths, targets, outfilenames ):
 	for inpath_idx, inpath in enumerate(inpaths):
 		outfiles = get_outfiles( inpath, targets, outfilenames )
 		if not len(outfiles):
-			continue    
+			continue
                 for outfile in outfiles:
                         print 'Reading in ... '+outfile
                 score_data_list = map(load_score_data, outfiles)
@@ -157,7 +157,7 @@ def get_target_names_from_inpaths( inpaths ):
         for inpath in inpaths:
                 target_names += glob.glob('/'.join([inpath, '*']))
         target_names = list(set(map(basename, filter(isdir, target_names))))
-        return target_names 
+        return target_names
 
 ###########################################################
 
@@ -167,7 +167,7 @@ def get_target_names_from_file( filename, target_names ):
         info_fid.load(open(filename))
         assert( info_fid.validate() )
         return [td.name for td in info_fid.target_definitions]
-        
+
 ###########################################################
 
 def get_path_to_dir( dirnames ):
@@ -282,9 +282,13 @@ def finalize_figure( fig, nplots, nrows, ncols ):
 def setup_pdf_page( inpaths, targets, pdfname = None ):
 	inpaths = [basename(x) for x in inpaths]
 	if not pdfname:
-		pdfname = '_'.join(targets)
-		pdfname += '_' + '_vs_'.join(inpaths)
-		pdfname = pdfname if pdfname[0] != '_' else pdfname[1:]
+                pdfname = ''
+	        #if len( targets ) > 0 and targets[0] != '*': pdfname += string.join(targets, '_') + '_'
+	        pdfname += string.join(inpaths, '_vs_') + '.pdf'
+                # following was from calebgeniesse -- includes all target names -- huge filename!
+		#pdfname = '_'.join(targets)
+		#pdfname += '_' + '_vs_'.join(inpaths)
+		#pdfname = pdfname if pdfname[0] != '_' else pdfname[1:]
 	pdfname += '.pdf' if '.pdf' not in pdfname else ''
 	if './' in pdfname:
 		fullpdfname = pdfname
@@ -334,16 +338,16 @@ def get_fasta_from_silent_file(outfile):
 
         fasta_file = outfile+".fasta"
         fasta = open(fasta_file,'w')
-        
+
         tags, sequences, n_res = get_sequences_from_silent_file(outfile)
-        
+
         for tag, sequence in zip(tags,sequences):
                 fasta.write(">{}\n{}\n".format(tag,sequence))
         fasta.close()
         return fasta_file, n_res
 
 def get_sequences_from_silent_file(outfile,tags=None):
-        
+
         original_sequence = ""
         seqname = ""
         res_num, res_chain = None, None
@@ -357,7 +361,7 @@ def get_sequences_from_silent_file(outfile,tags=None):
                 line = line.strip()
 
                 if "FULL_SEQUENCE" in line:
-                        
+
                         line = line.split()
                         full_seq_index = line.index("FULL_SEQUENCE")
                         original_sequence = line[full_seq_index+1]
@@ -375,7 +379,7 @@ def get_sequences_from_silent_file(outfile,tags=None):
                         index_list += [idx+1 for idx in index_list if idx+1 not in index_list]
                         index_list.sort()
 
-                        n_res = [conventional_res[i] for i in index_list]      
+                        n_res = [conventional_res[i] for i in index_list]
                         continue
 
                 if "ANNOTATED_SEQUENCE:" in line:
@@ -384,26 +388,26 @@ def get_sequences_from_silent_file(outfile,tags=None):
                         if tags and seqname not in tags:
                                 continue
 
-                        if seqname != line[-1] or other_pose: 
+                        if seqname != line[-1] or other_pose:
                                 continue
 
                         sequence = re.sub(r'\[.*?\]', '', line[1])
-                        
+
                         if len(original_sequence) != len(sequence):
-                               
+
                                 filled_sequence = ""
                                 for res, char in zip(conventional_res, original_sequence):
                                         if res not in res_num:
                                                 filled_sequence += 'n'
                                         else:
                                                 filled_sequence += sequence[res_num.index(res)]
-                                         
+
                                 sequence = filled_sequence
 
                         assert (len(sequence) == len(original_sequence))
-                        
+
                         sequence = "".join([sequence[i] for i in range(len(sequence)) if i in index_list])
-                                                
+
                         sequences.append(sequence)
                         good_tags.append(seqname)
                         continue
@@ -411,7 +415,7 @@ def get_sequences_from_silent_file(outfile,tags=None):
                 if "RES_NUM" in line:
 
                         line = line.split()
-                        
+
                         other_pose = (seqname == line[-1])
                         if not other_pose:
                                 seqname = line[-1]
@@ -427,7 +431,7 @@ def get_sequences_from_silent_file(outfile,tags=None):
 
 def get_sequence_recovery(inpath, target, outfilenames, tag):
 
-        outfilenames = [name for name in outfilenames if not name.endswith(".sc")] 
+        outfilenames = [name for name in outfilenames if not name.endswith(".sc")]
         outfiles = get_outfiles(inpath, target, outfilenames)
 
         if not len(outfiles):
@@ -437,7 +441,7 @@ def get_sequence_recovery(inpath, target, outfilenames, tag):
 
         if len(sequences) == 0:
                 return 0
-                
+
         sequence = sequences[0]
         target_pdbs = glob.glob('/'.join([inpath, target, target+"*RNA.pdb"]))
         native_pdb = [ pdb for pdb in target_pdbs if "START" not in pdb and "HELIX" not in pdb]
@@ -445,13 +449,13 @@ def get_sequence_recovery(inpath, target, outfilenames, tag):
                 return 0
         n_res = " ".join(map(str,n_res))
         native = "".join(get_sequences_for_res(native_pdb[0],n_res))
-       
+
         seq_recovery = 1
         # go through letters of native sequence
         # mark 1 if match
         # len(sequence)
         # match/sequence * 100
         seq_recovery = SequenceMatcher(None, sequence, native).ratio()*100
-        print sequence 
-        print native, seq_recovery 
+        print sequence
+        print native, seq_recovery
         return seq_recovery

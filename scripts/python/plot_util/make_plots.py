@@ -12,7 +12,7 @@ from make_plots_util import *
 import subprocess
 from matplotlib.font_manager import FontProperties
 import argparse
-import seaborn as sns 
+import seaborn as sns
 
 ###############################################################################
 ### main functions
@@ -41,10 +41,10 @@ def make_plots(argv):
 
 	# Load data for all targets in all inpaths
 	data = load_data( inpaths, targets, outfilenames )
-	
+
 	inpaths = [x for x in inpaths if x in data.keys()]
 	nplots = len(set([k for v in data.values() for k in v.keys()]))
-		
+
 	# get and print out runtimes, stored in the silent files
 	times_list = get_times( inpaths, data, targets, verbose=True )
 
@@ -87,7 +87,7 @@ def make_plots(argv):
 			# get index of first xvar/yvar found in score_labels
 			score_labels = data[inpath][target].score_labels
 
-			# check for sequence recovery 
+			# check for sequence recovery
 			if "sequence_recovery" in xvars+yvars:
 				score_labels.append("sequence_recovery")
 
@@ -97,9 +97,8 @@ def make_plots(argv):
 					tag = score[tag_idx]
 					seq_recovery = get_sequence_recovery(inpath, target, outfilenames, tag)
 					data[inpath][target].scores[idx].append(seq_recovery)
-									
-		 	xvar_idx = -1
 
+		 	xvar_idx = -1
 			for xvar in xvars:
 				if not xvar in score_labels:
 					continue
@@ -117,7 +116,8 @@ def make_plots(argv):
 				break
 
 			# get data from scores using xvar_idx and yvar_idx
-			assert( xvar_idx > -1 and yvar_idx > -1 )
+			assert( xvar_idx > -1 )
+                        assert( yvar_idx > -1 )
 			xvar_data, yvar_data = [], []
 			#xvar_cutoff, yvar_cutoff = 100.0, 5.0
 			for score in data[inpath][target].scores:
@@ -145,7 +145,7 @@ def make_plots(argv):
 			c2 = 'blue'
 
 			# plot data, and reference lines (x=1, x=2)
-			label = 'StepWise Assembly'# (SWA)' 
+			label = 'StepWise Assembly'# (SWA)'
 			if 'swm' in basename(inpath):
 				label = 'StepWise Monte Carlo'# (SWM)'
 
@@ -171,7 +171,7 @@ def make_plots(argv):
 
 			if "sequence_recovery" in yvars:
 					ax.set_ylim( -10, 110)
-					
+
 			if "missing" in xvars:
 					ax.set_xlim( min(xvar_data)-1, max(xvar_data)+1)
 
@@ -183,11 +183,11 @@ def make_plots(argv):
 
 			ax.set_xlim(0, 8)
 			if '3P_j55a' in target:
-				ax.set_ylim(-40, -10) 
+				ax.set_ylim(-40, -10)
 			if 'l1' in target:
-				ax.set_ylim(-70, -50) 
+				ax.set_ylim(-70, -50)
 			if 'hepatitis' in target:
-				ax.set_ylim(-28, -18) 
+				ax.set_ylim(-28, -18)
 			# set title and axes labels, adjust axis properties
 			title_fontsize = 20 # 'small' if nrows < 3 else 8
 			#ax.set_title( get_title(target), fontsize=title_fontsize, weight='bold' )
@@ -215,7 +215,10 @@ def make_plots(argv):
 	plt.legend(numpoints=1, loc=4, prop={'size':16})
 
 	finalize_figure( fig, nplots, nrows, ncols )
-	fig.savefig('figures-new/'+targets[0]+'_score_v_rmsd-'+c1+'+'+c2+'-'+str(markersize)+'.png')
+
+        # this is random calebgeniesse stuff.
+	#fig.savefig('figures-new/'+targets[0]+'_score_v_rmsd-'+c1+'+'+c2+'-'+str(markersize)+'.png')
+
 	# save as pdf and close
 	pp.savefig()
 	pp.close()
@@ -223,7 +226,7 @@ def make_plots(argv):
 	# open pdf
 	out, err = subprocess.Popen(['uname'], stdout=subprocess.PIPE).communicate()
 	if 'Darwin' in out:
-		pass#subprocess.call(['open',fullpdfname])
+		subprocess.call(['open',fullpdfname])
 	if 'Linux' in out:
 		pass#subprocess.call(['xdg-open',fullpdfname])
 
@@ -252,6 +255,8 @@ def init_options_parser():
 		help='Name of silent file.',
 		default=['swm_rebuild.out',
 			 'swm_rebuild.sc',
+                         'farna_rebuild.sc',
+                         'farna_rebuild.out',
 			 'region_FINAL.out']
 	)
 	parser.add_argument(
@@ -270,7 +275,7 @@ def init_options_parser():
 		'-xvar',
 		nargs='*',
 		help='Name of x variable(s).',
-		default=['rms_fill','NAT_rmsd']
+		default=['rms_fill','rms','NAT_rmsd']
 	)
 	parser.add_argument(
 		'-yvar',
@@ -296,4 +301,4 @@ def init_options_parser():
 ###############################################################################
 if __name__=='__main__':
 	sys.exit(make_plots(sys.argv[1:]))
-	
+
