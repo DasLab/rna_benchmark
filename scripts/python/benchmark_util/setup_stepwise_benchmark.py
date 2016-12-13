@@ -675,7 +675,7 @@ for target in targets:
         if not args.save_times_off: fid.write( '-save_times\n' )
 
         add_extra_flags_for_name(fid, target.extra_flags, target.name)
-        add_extra_flags_benchmark(fid, extra_flags_benchmark, motif_mode_OK = False )
+        add_extra_flags_benchmark(fid, extra_flags_benchmark )
 
         fid.close()
 
