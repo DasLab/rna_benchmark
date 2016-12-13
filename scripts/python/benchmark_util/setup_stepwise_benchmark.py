@@ -485,9 +485,9 @@ for target in targets:
         infiles.append(input_pdb)
     os.system( 'cp %s %s/ ' % (' '.join(infiles), dirname) )
 
-    def add_block_stack_flags( args, extra_flags, target, fid ):
+    def add_block_stack_flags( args, target, fid ):
         # used in FARNA & SWM
-        if not args.block_stack_off and '-block_stack_off' not in extra_flags:
+        if not args.block_stack_off and '-block_stack_off' not in target.extra_flags:
             if len( target.block_stack_above_res ) > 0:
                 fid.write( '-block_stack_above_res %s  \n' % make_tag_with_conventional_numbering( target.block_stack_above_res, target.resnums, target.chains ) )
             if len( target.block_stack_below_res ) > 0:
@@ -611,7 +611,7 @@ for target in targets:
             fid.write( '-working_native %s\n' % basename( target.working_native ) );
         add_start_files_flag( fid, start_files )
         fid.write( '-working_res %s\n' % target.working_res.replace( ',',' ') )
-        add_block_stack_flags( args, target.extra_flags, target, fid )
+        add_block_stack_flags( args, target, fid )
         if len( target.extra_min_res ) > 0 and not args.extra_min_res_off:
             fid.write( '-extra_minimize_res %s\n' % make_tag_with_conventional_numbering( target.extra_min_res, target.resnums, target.chains ) )
         if args.farfar: fid.write( '-minimize_rna true\n' )
@@ -657,7 +657,7 @@ for target in targets:
             # note that this is redundant with -motif mode -- deprecate in early 2017
             fid.write( '-terminal_res %s  \n' % make_tag_with_conventional_numbering( target.terminal_res, target.resnums, target.chains ) )
 
-        add_block_stack_flags( args, extra_flags, target, fid )
+        add_block_stack_flags( args, target, fid )
 
         if args.stepwise_lores:
             if ( len( target.jump_res ) > 0 ):
