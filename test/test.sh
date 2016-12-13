@@ -28,7 +28,7 @@ else
 	mkdir ref
 	cd ref
 	for benchmark in RNA_loop_motifs_PS2011 favorites favorites2 challenges ; do
-		../../scripts/python/benchmark_util/setup_stepwise_benchmark.py ../../input_files/$benchmark.txt
+		../../scripts/python/benchmark_util/setup_stepwise_benchmark.py ../../input_files/$benchmark.txt >/dev/null
 	done
 	cd ..
 fi
