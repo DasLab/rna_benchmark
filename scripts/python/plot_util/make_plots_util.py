@@ -20,7 +20,11 @@ import matplotlib.cm as cmx
 import numpy as np
 from datetime import datetime
 from utility import file_handlers, info_handlers
-from get_sequence import get_sequence, get_sequences_for_res
+try:
+        from get_sequence import get_sequence, get_sequences_for_res
+except Exception, e:
+        print e
+        print "WARNING ... could not import get_sequences_for_res, required for sequence recovery plotting"
 from parse_tag import parse_tag
 import re
 from difflib import SequenceMatcher
