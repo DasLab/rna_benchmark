@@ -9,7 +9,7 @@ if [[ -d ref ]] ; then
 		../../scripts/python/benchmark_util/setup_stepwise_benchmark.py ../../input_files/$benchmark.txt >/dev/null
 	done
 	cd ..
-	diff -r -u -I '#PBS.*' -I '/Users/amw579/nucleic/stepwise_benchmark/test' -x '*.sh' -x 'qsubMINI' -x 'bsubMINI' -x 'sbatchMINI' -x 'sbatchMPI' -x 'condorMINI' -x 'MPI_ONEBATCH.job' -x 'sbatch_files' -x 'sbatch_files_MPI' -x 'sbatchMPI_ONEBATCH' -x 'README_SWM' --exclude="*/qsub_files" new ref > tempdiff
+	diff -r -u -I '#PBS.*' -I '/Users/amw579/nucleic/stepwise_benchmark/test' -x '*.sh' -x 'qsubMINI' -x 'bsubMINI' -x 'sbatchMINI' -x 'sbatchMPI' -x 'condorMINI' -x 'MPI_ONEBATCH.job' -x 'sbatch_files' -x 'sbatch_files_MPI' -x 'sbatchMPI_ONEBATCH' -x 'README_SWM' --exclude="*/qsub_files" ref new > tempdiff
 	if [[ -s tempdiff ]]; then
 		echo "Directories were meaningfully different; do not commit these changes until you are certain the diff is correct."
 	else
