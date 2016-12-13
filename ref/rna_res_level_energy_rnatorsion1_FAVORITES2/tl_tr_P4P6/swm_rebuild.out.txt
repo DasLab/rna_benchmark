@@ -1,3 +1,0 @@
-000 SWM/2/swm_rebuild.out
-001 SWM/5/swm_rebuild.out
-002 SWM/8/swm_rebuild.out

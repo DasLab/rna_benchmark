@@ -1,8 +1,0 @@
--score:weights stepwise/rna/rna_res_level_energy4.wts
--set_weights mg_lig 1.0 mg_sol 0.2 hoh_ref 1.0
--cycles 2000
--magnesium:hydrate
--rmsd_screen 2.0
--add_proposal_density_factor 1000
-
-

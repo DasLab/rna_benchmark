@@ -1,9 +1,0 @@
-+TGProject = "TG-MCB090153"
-universe = vanilla
-notification = never
-
-executable = /home/geniesse/src/rosetta//main/source/bin/stepwise
-arguments = -s tandemGA-18-cGAg-cGAg_HELIX1.pdb tandemGA-18-cGAg-cGAg_HELIX2.pdb -native tandemGA-18-cGAg-cGAg_1mis_RNA_18-cGAg-cGAg.pdb -terminal_res A:1 A:16 -extra_min_res A:3 A:6 A:11 A:14 -superimpose_over_all -fasta tandemGA-18-cGAg-cGAg.fasta -cycles 200 -nstruct 20 -intermolecular_frequency 0.0 -save_times -score:weights stepwise/rna/rna_res_level_energy4.wts -cycles 200 -motif_mode -out:file:silent SWM/$(Process)/swm_rebuild.out
-output = $(Process).out
-error  = $(Process).err
-Queue 10

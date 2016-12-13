@@ -1,5 +1,0 @@
-cd just_Arich_bulge_fixedMg; source qsubMINI; cd /biox3/scratch/users/rhiju/projects/stepwise/benchmark/new/metal_ions_hydrate
-cd Arich_bulge_P4_fixedMg; source qsubMINI; cd /biox3/scratch/users/rhiju/projects/stepwise/benchmark/new/metal_ions_hydrate
-cd hcv_ires_IIa; source qsubMINI; cd /biox3/scratch/users/rhiju/projects/stepwise/benchmark/new/metal_ions_hydrate
-cd azo_groupI_substrate; source qsubMINI; cd /biox3/scratch/users/rhiju/projects/stepwise/benchmark/new/metal_ions_hydrate
-cd azo_groupI_product; source qsubMINI; cd /biox3/scratch/users/rhiju/projects/stepwise/benchmark/new/metal_ions_hydrate

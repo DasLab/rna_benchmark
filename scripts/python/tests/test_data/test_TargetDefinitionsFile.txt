@@ -1,3 +1,0 @@
-Name	Sequence	Secstruct	Working_res	Native	Input_res	Extra_flags
-test_1	gcgcaagc	((....))	A:3-10	1zih_RNA.pdb	-	-
-test_2	acuucggu	((....))	A:4-11	2koc_RNA.pdb	-	-

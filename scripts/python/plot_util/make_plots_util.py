@@ -251,7 +251,7 @@ def setup_figure( nplots, landscape = True ):
 
 ###########################################################
 
-def finalize_figure( fig, nplots, nrows, ncols ):
+def finalize_figure( fig, nplots, nrows, ncols, seaborn=False ):
 	# adjust spacing of plots on figure
 	if ( nplots == 1 or nrows < ncols ): # landscape
 		plt.subplots_adjust(top=.90, bottom=.1,
@@ -263,18 +263,22 @@ def finalize_figure( fig, nplots, nrows, ncols ):
 				    wspace=.3, hspace=.5)
 
 	# get date printed to figure
-	'''
-	plt.figtext(0.95,0.02,
+	if seaborn:
+                # add legend
+                plt.legend(numpoints=1, loc=4, prop={'size':16})
+        else:
+                # display date in bottom right corner
+                plt.figtext(0.95,0.02,
 		    get_date(),
 		    horizontalalignment='right',
 		    fontsize='small')
-	'''
-	# setup global legend based on inpaths
-	legend_size = 6
-	plot_idx = nplots - 1 if ncols > 1 else nplots
-	#ax = fig.add_subplot( nrows, ncols, plot_idx)
-	#legend = ax.legend(bbox_to_anchor=(0., .0, 1., -.225),
-	#		   loc=9, numpoints=1, prop={'size':legend_size})
+	
+                # setup global legend based on inpaths
+                legend_size = 6
+                plot_idx = nplots - 1 if ncols > 1 else nplots
+                ax = fig.add_subplot( nrows, ncols, plot_idx)
+                legend = ax.legend(bbox_to_anchor=(0., .0, 1., -.225),
+                                   loc=9, numpoints=1, prop={'size':legend_size})
        	return
 
 ###########################################################
@@ -310,7 +314,9 @@ def setup_pdf_page( inpaths, targets, pdfname = None ):
 
 ###########################################################
 
-def get_colorcode( size ):
+def get_colorcode( size, seaborn=False ):
+        if seaborn:
+                return ["#ff0000","#0000ff", "#696969"]
 	if size <= 2:
 		return [(0.0, 0.0, 0.0, 1.0), (1.0, 0.0, 0.0, 1.0)]
 	cmap = plt.get_cmap( 'hot' )

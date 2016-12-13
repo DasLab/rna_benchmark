@@ -1,9 +1,0 @@
-+TGProject = "TG-MCB090153"
-universe = vanilla
-notification = never
-
-executable = /home/rhiju/src/rosetta//main/source/bin/stepwise
-arguments = -s just_Arich_bulge_fixedMg_START1_2R8S.pdb -native just_Arich_bulge_fixedMg_NATIVE_2R8S.pdb -terminal_res R:133 R:137 R:181 R:189-190 -block_stack_above_res R:137 R:190 -block_stack_below_res R:133 R:181 R:189 -extra_min_res R:182 -fasta just_Arich_bulge_fixedMg.fasta -nstruct 20 -save_times -score:weights stepwise/rna/rna_res_level_energy4.wts -set_weights mg_lig 1.0 mg_sol 0.2 -cycles 2000 -rmsd_screen 2.0 -add_proposal_density_factor 1000 -motif_mode -out:file:silent SWM/$(Process)/swm_rebuild.out
-output = $(Process).out
-error  = $(Process).err
-Queue 10

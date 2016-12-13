@@ -1,4 +1,0 @@
-Name	Sequence	Secstruct	Working_res	Native	Input_res	Extra_flags
-1gid_RNA_150-153_223-226_248-250	gucucaggggaaacuuuga,ccaaguccuaagucaac,cuguugauauggaug	...................,.................,...............	A:141-159,A:216-232,A:240-254	1gid_RNA.pdb	A:141-149,A:154-159,A:216-222,A:227-232,A:240-247,A:251-254	-
-1gid_RNA_150-153	gucucaggggaaacuuuga,ccaaguccuaagucaac,cuguugauauggaug	...................,.................,...............	A:141-159,A:216-232,A:240-254	1gid_RNA.pdb	A:141-149,A:154-159,A:216-232,A:240-254	-
-1gid_RNA_223-226_248-250	gucucaggggaaacuuuga,ccaaguccuaagucaac,cuguugauauggaug	...................,.................,...............	A:141-159,A:216-232,A:240-254	1gid_RNA.pdb	A:141-159,A:216-222,A:227-232,A:240-247,A:251-254	-

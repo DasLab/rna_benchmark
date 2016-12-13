@@ -1,2 +1,0 @@
-#fetch_pdb.py 2R8S
-make_rna_rosetta_ready.py p4p6.pdb -no_renumber -remove_ions

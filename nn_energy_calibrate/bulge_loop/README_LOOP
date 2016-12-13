@@ -1,5 +1,0 @@
-rna_minimize -s cgcg_cgcg_helix.pdb -input_res 1-4 8-11  -fasta triloop.fasta -analytic_etable_evaluation false  -score:weights rna_loop49.wts  -rna:corrected_geo -score:rna_torsion_potential RNA11_based_new  -geom_sol_correct_acceptor_base  -chemical::enlarge_H_lj
-mv cgcg_cgcg_helix_minimize.pdb cgcg_cgcg_triloop.pdb
-
-rna_minimize -s cgcg_cgcg_helix.pdb -input_res 1-4 9-12  -fasta tetraloop.fasta -analytic_etable_evaluation false  -score:weights rna_loop49.wts  -rna:corrected_geo -score:rna_torsion_potential RNA11_based_new  -geom_sol_correct_acceptor_base  -chemical::enlarge_H_lj
-mv cgcg_cgcg_helix_minimize.pdb cgcg_cgcg_tetraloop.pdb

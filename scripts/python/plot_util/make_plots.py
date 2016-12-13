@@ -53,7 +53,8 @@ def make_plots(argv):
 	# setup pdf and figure, return handles
 	( pp, fullpdfname ) = setup_pdf_page( inpaths, targets, pdfname=pdfname )
 	( fig, nplots, nrows, ncols ) = setup_figure( nplots )
-	colorcode = get_colorcode( len(inpaths) )
+	colorcode = get_colorcode( len(inpaths), seaborn=options.seaborn )
+        markersize = 4
 
 	xlabels = []
 	ylabels = []
@@ -116,14 +117,9 @@ def make_plots(argv):
 				break
 
 			# get data from scores using xvar_idx and yvar_idx
-			assert( xvar_idx > -1 )
-                        assert( yvar_idx > -1 )
+			assert( xvar_idx > -1 and yvar_idx > -1 )
 			xvar_data, yvar_data = [], []
-			#xvar_cutoff, yvar_cutoff = 100.0, 5.0
 			for score in data[inpath][target].scores:
-				#if ( float(score[xvar_idx]) > xvar_cutoff or
-				#	 float(score[yvar_idx]) > yvar_cutoff ):
-				#	continue
 
 				if options.ignore_missing:
 					missing_idx = score_labels.index("missing")
@@ -132,23 +128,21 @@ def make_plots(argv):
 
 				xvar_data.append( float(score[xvar_idx]) )
 				yvar_data.append( float(score[yvar_idx]) )
+                        
+                        label = basename(inpath)
+			if options.seaborn:
+                                sns.set_style("darkgrid")
+                                sns.set_context("poster")
+                                markersize = 10
+                               
+                                label = 'StepWise Assembly'# (SWA)'
+                                if 'swm' in basename(inpath):
+                                        label = 'StepWise Monte Carlo'# (SWM)'
+                                if 'farfar' in basename(inpath).lower():
+                                        label = 'FARFAR'# (SWM)'
 
-			sns.set_style("darkgrid")
-			sns.set_context("poster")
-			colorcode = [
-				#"#696969", #grey
-				"#ff0000", #red
-				"#0000ff", #blue
-			]
-			markersize = 10
-			c1 = 'red'
-			c2 = 'blue'
 
 			# plot data, and reference lines (x=1, x=2)
-			label = 'StepWise Assembly'# (SWA)'
-			if 'swm' in basename(inpath):
-				label = 'StepWise Monte Carlo'# (SWM)'
-
 			h = ax.plot( xvar_data,
 				 yvar_data,
 				 marker='o',
@@ -157,50 +151,38 @@ def make_plots(argv):
 				 linestyle=' ',
 				 label=label )
 			handles.append(h)
-			'''
-			ax.plot( [1 for y in plt.ylim()],
-				 plt.ylim(),
-				 color='black',
-				 linestyle=':')
-			ax.plot( [2 for y in plt.ylim()],
-				 plt.ylim(),
-				 color='black')
-			'''
-			if "sequence_recovery" in xvars:
-					ax.set_xlim( -10, 110)
-
-			if "sequence_recovery" in yvars:
-					ax.set_ylim( -10, 110)
-
-			if "missing" in xvars:
-					ax.set_xlim( min(xvar_data)-1, max(xvar_data)+1)
-
-			if "missing" in yvars:
-					ax.set_ylim( min(yvar_data)-1, max(yvar_data)+1)
-
-                        if any("rms" in xvar for xvar in xvars):
-                                ax.set_xlim( 0, 8 )
-
-			ax.set_xlim(0, 8)
-			if '3P_j55a' in target:
-				ax.set_ylim(-40, -10)
-			if 'l1' in target:
-				ax.set_ylim(-70, -50)
-			if 'hepatitis' in target:
-				ax.set_ylim(-28, -18)
+			
+                        if options.seaborn is False:
+                                ax.plot( [1 for y in plt.ylim()],
+                                         plt.ylim(),
+                                         color='black',
+                                         linestyle=':')
+                                ax.plot( [2 for y in plt.ylim()],
+                                         plt.ylim(),
+                                         color='black')
+			
 			# set title and axes labels, adjust axis properties
-			title_fontsize = 20 # 'small' if nrows < 3 else 8
-			#ax.set_title( get_title(target), fontsize=title_fontsize, weight='bold' )
-			#ax.set_ylabel('Rosetta Energy', fontsize=20, weight='bold')#string.join(ylabels, ', '), fontsize=6 )
-			#ax.set_xlabel(r'RMSD ($\AA$)', fontsize=20, weight='bold')#string.join(xlabels, ', '), fontsize=6 )
-			for ticklabel in ax.yaxis.get_ticklabels()+ax.xaxis.get_ticklabels():
-				ticklabel.set_fontsize(14)
+			title_fontsize = 'small' if nrows < 3 else 8
+                        ax.set_title( get_title(target), fontsize=title_fontsize, weight='bold' )
+                        ax.set_ylabel(string.join(ylabels, ', '), fontsize=6 )
+                        ax.set_xlabel(string.join(xlabels, ', '), fontsize=6 )
+                        for ticklabel in ax.yaxis.get_ticklabels()+ax.xaxis.get_ticklabels():
+                                ticklabel.set_fontsize(6)
+			ax.set_xlim(0, 16)
+        
+                        if options.seaborn:
+                                ax.set_title( get_title(target), fontsize=20, weight='bold' )
+                                ax.set_ylabel('Rosetta Energy', fontsize=20, weight='bold')
+                                ax.set_xlabel(r'RMSD ($\AA$)', fontsize=20, weight='bold')
+                                for ticklabel in ax.yaxis.get_ticklabels()+ax.xaxis.get_ticklabels():
+                                        ticklabel.set_fontsize(14)
+			
 
 			# print times in plots (if available)
-			monospace_font = FontProperties()
-			monospace_font.set_family( 'monospace' )
-			if False: #times_list[inpath_idx][target_idx-1].times_found():
-				xpos, ypos = 0.92, (0.10*len(inpaths)) - (0.015*6*inpath_idx)
+                        if options.seaborn is False and times_list[inpath_idx][target_idx-1].times_found():
+                                monospace_font = FontProperties()
+                                monospace_font.set_family( 'monospace' )
+                                xpos, ypos = 0.92, (0.10*len(inpaths)) - (0.015*6*inpath_idx)
 				ax.text( xpos,
 					 ypos,
 					 times_list[inpath_idx][target_idx-1].get_label(),
@@ -209,15 +191,11 @@ def make_plots(argv):
 					 transform=ax.transAxes,
 					 color=colorcode[inpath_idx],
 					 fontsize=6,
-										 fontproperties=monospace_font )
+					 fontproperties=monospace_font )
 
 	# finalize (adjust spacing, print date)
-	plt.legend(numpoints=1, loc=4, prop={'size':16})
+	finalize_figure( fig, nplots, nrows, ncols, seaborn=options.seaborn )
 
-	finalize_figure( fig, nplots, nrows, ncols )
-
-        # this is random calebgeniesse stuff.
-	#fig.savefig('figures-new/'+targets[0]+'_score_v_rmsd-'+c1+'+'+c2+'-'+str(markersize)+'.png')
 
 	# save as pdf and close
 	pp.savefig()
@@ -291,6 +269,11 @@ def init_options_parser():
 	parser.add_argument(
 		'--ignore_missing',
 		help='Ignore structures with unbuilt residues.',
+		action = "store_true"
+	)
+	parser.add_argument(
+		'--seaborn',
+		help='Use seaborn plotting styles.',
 		action = "store_true"
 	)
 	return parser

@@ -1,3 +1,0 @@
-Name	Sequence	Secstruct	Working_res	Native	Input_res	Extra_flags
-gcaa_tetraloop	gcgcaagc	((....))	A:3-10	1zih_RNA.pdb	-	-
-uucg_tetraloop	acuucggu	((....))	A:4-11	2koc_RNA.pdb	-	-
