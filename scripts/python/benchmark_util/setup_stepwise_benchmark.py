@@ -213,7 +213,6 @@ for target in targets:
         helix_file =  '%s/%s_HELIX%d.pdb' % (inpath,target.name,(i+1))
 
         stem = stems[i]
-        print stems[i]
         helix_seq = ''; helix_resnum = [];
         for bp in stem:
             helix_seq    += fasta_entities[ bp[0] - 1 ] #sequence_joined[ bp[0] - 1 ]
@@ -421,10 +420,6 @@ for target in targets:
         if '-align_pdb' in target.extra_flags:
             target.extra_flags.pop('-align_pdb')
     elif '-align_pdb' in target.extra_flags:
-        # For some reason, this doesn't try to create the file for you. I defy this and have added the next 3 lines.
-        #prefix = '%s/%s_ALIGN_' % (inpath, target.name)
-        #align_res = ','.join(input_res_blocks)
-        #target.align_pdb = slice_out(inpath, prefix, target.native, align_res)
         target.align_pdb = inpath+'/'+target.extra_flags['-align_pdb']
         assert( exists(target.align_pdb) )
     else:
@@ -515,7 +510,7 @@ for target in targets:
 
     def add_block_stack_flags( args, extra_flags, block_stack_above_res, block_stack_below_res, fid ):
         # used in FARNA & SWM
-        if not args.block_stack_off and extra_target.flags.find( '-block_stack_off') == -1:
+        if not args.block_stack_off and '-block_stack_off' not in extra_flags:
             if len( block_stack_above_target.res ) > 0:
                 fid.write( '-block_stack_above_res %s  \n' % make_tag_with_conventional_numbering( block_stack_above_target.res, target.resnums, target.chains ) )
             if len( block_stack_below_target.res ) > 0:
@@ -534,7 +529,6 @@ for target in targets:
         if tag in cols.keys():
             #filename = cols[ cols.index( tag )+1 ]
             filename = cols[ tag ]
-            print filename
             assert( exists( inpath+'/'+filename ) )
             system( 'cp %s/%s %s' % (inpath, filename, name ) )
 
@@ -550,10 +544,10 @@ for target in targets:
 
         # These are already all parsed.
         for flag in extra_flags.keys():#parse_flags( extra_flags ):
-            flag = flag.replace('True','true').replace('False','false')
-            if flag == '-block_stack_off\n': continue
+            extra_flags[ flag ] = extra_flags[ flag ].replace('True','true').replace('False','false')
+            if flag == '-block_stack_off': continue
             if ( args.no_align_pdb and flag.find( '-align_pdb' ) > -1 ): continue
-            fid.write( flag+"\n" )
+            fid.write( flag+" "+extra_flags[ flag ]+"\n" )
 
     # SETUP for StepWise Assembly
     if args.swa:
@@ -717,9 +711,10 @@ for target in targets:
             fid.write( '-save_times\n' )
 
         # case-specific extra flags
-        for key, value in target.extra_flags.iteritems():
-            flag = ' '.join([key, value]).strip()
-            fid.write('%s\n' % flag)
+        # AMW: we write these out before...
+        #for key, value in target.extra_flags.iteritems():
+        #    flag = ' '.join([key, value]).strip()
+        #    fid.write('%s\n' % flag)
       
         add_extra_flags_for_name(fid, target.extra_flags, target.name)
 
