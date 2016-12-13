@@ -28,7 +28,6 @@ except Exception, e:
 from parse_tag import parse_tag
 import re
 from difflib import SequenceMatcher
-import seaborn as sns
 
 
 ##########################################################
@@ -247,7 +246,7 @@ def get_figure_dimensions( nplots ):
 
 ###########################################################
 
-def setup_figure( nplots, landscape = True ):
+def setup_figure( nplots, landscape = False ):
 	( nplots, nrows, ncols ) = get_figure_dimensions( nplots )
 	fig = plt.figure()
 	if ( landscape is True ): # landscape
@@ -258,7 +257,7 @@ def setup_figure( nplots, landscape = True ):
 
 ###########################################################
 
-def finalize_figure( fig, nplots, nrows, ncols, seaborn=False ):
+def finalize_figure( fig, nplots, nrows, ncols, options=None ):
 	# adjust spacing of plots on figure
 	if ( nplots == 1 or nrows < ncols ): # landscape
 		plt.subplots_adjust(top=.90, bottom=.1,
@@ -270,7 +269,7 @@ def finalize_figure( fig, nplots, nrows, ncols, seaborn=False ):
 				    wspace=.3, hspace=.5)
 
 	# get date printed to figure
-	if seaborn:
+	if options and options.seaborn is True:
                 # add legend
                 plt.legend(numpoints=1, loc=4, prop={'size':16})
         else:
@@ -321,8 +320,8 @@ def setup_pdf_page( inpaths, targets, pdfname = None ):
 
 ###########################################################
 
-def get_colorcode( size, seaborn=False ):
-        if seaborn:
+def get_colorcode( size, options=None ):
+        if options and options.seaborn is True:
                 return ["#ff0000","#0000ff", "#696969"]
 	if size <= 2:
 		return [(0.0, 0.0, 0.0, 1.0), (1.0, 0.0, 0.0, 1.0)]
