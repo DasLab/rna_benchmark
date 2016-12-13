@@ -225,6 +225,7 @@ for target in targets:
         target.helix_files.append( helix_file )
         input_resnum_fullmodel += helix_resnum
         input_resnum_fullmodel.sort()
+        input_resnum_fullmodel_by_block.append( helix_resnum )
 
         if exists( helix_file ): continue
         command = 'rna_helix.py -seq %s  -o %s -resnum %s' % ( helix_seq, helix_file, \
@@ -234,7 +235,7 @@ for target in targets:
 
 
     # following is now 'hard-coded' into Rosetta option '-motif_mode'
-    # deprecate this python block in 2015 after testing -- rd2014
+    # deprecate this python block in early 2017 after testing -- rd2014
     # AMW: recall that the length of the sequence is probably a lie.
     #L = len( sequence_joined )
     L = len( fasta_entities )
@@ -308,7 +309,7 @@ for target in targets:
                 m_full = get_fullmodel_number( (input_resnums_by_block[i][m-1],input_chains_by_block[i][m-1]), target.resnums, target.chains )
                 if ( ( input_resnums_by_block[ i ][ m ] != input_resnums_by_block[ i ][ m-1 ] + 1 ) or
                      ( input_chains_by_block[ i ][ m ]  != input_chains_by_block[ i ][ m-1 ] ) or
-                     ( m_full in cutpoint_target.closed ) ):
+                     ( m_full in target.cutpoint_closed ) ):
                     cuts.append( m_full )
             for jump_bp in jump_bps:
                 if ( ( target.resnums[ jump_bp[0]-1 ], target.chains[ jump_bp[0]-1 ] ) in zip( input_resnums_by_block[i], input_chains_by_block[i] ) and \
@@ -317,7 +318,7 @@ for target in targets:
                     for cut in cuts:
                         if ( cut >= jump_bp[0] and cut < jump_bp[1] ): cut_exists_for_jump = True
                     if not cut_exists_for_jump:
-                        cutpoint_target.closed.append( jump_bp[ 0 ] )
+                        target.cutpoint_closed.append( jump_bp[ 0 ] )
                         cuts.append( jump_bp[ 0 ] )
 
     # for cases that require docking two chains & farna, need to recognize and set up chain_connections flag
@@ -386,7 +387,7 @@ for target in targets:
         else:
             ### splitting up sequence in fasta may cause errors in SWA runs
             for n in range( len( sequences ) ): fid.write( '>%s %s\n%s\n' % (target.name,working_res_blocks[n],sequences[n]) )
-        #fid.write( os.popen( 'pdb2fasta.py %s' % (  working_target.native ) ).read() )
+        #fid.write( os.popen( 'pdb2fasta.py %s' % (  target.working_native ) ).read() )
         fid.close()
 
     # get align_pdb
@@ -407,7 +408,7 @@ for target in targets:
 
     if target.input_res == '-':
         if args.swa:
-            print "WARNING: input_target.res == '-' "
+            print "WARNING: target.input_res == '-' "
         continue
 
     ( workres , workchains  ) = parse_tag( target.working_res, alpha_sort=True )
@@ -510,10 +511,6 @@ for target in targets:
     def add_extra_flags_for_name( fid, extra_flags, name ):
         # case-specific extra flags
         if len( extra_flags ) == 0 or extra_flags == '-': return
-
-        #fid.write( '%s\n' % extra_flags[name] )
-        #cols = extra_flags.split( ' ' )
-
         if not args.no_align_pdb: copy_extra_files( '-align_pdb', extra_flags, name )
         copy_extra_files( '-extra_res_fa', extra_flags, name)
 
@@ -671,8 +668,6 @@ for target in targets:
         if motif_mode_off and len( target.extra_min_res ) > 0 and not args.extra_min_res_off: ### Turn extra_min_res off for SWM when comparing to SWA
             # note that this is redundant with -motif mode -- deprecate in early 2017
             fid.write( '-extra_min_res %s \n' % make_tag_with_conventional_numbering( target.extra_min_res, target.resnums, target.chains ) )
-        #if ( len( input_target.pdbs ) == 0 ):
-        #    fid.write( '-superimpose_over_all\n' ) # RMSD over everything -- better test since helices are usually native
         fid.write( '-fasta %s\n' % basename( target.fasta) )
         if '-move' not in extra_flags_benchmark:
             if '-cycles' not in extra_flags_benchmark:  fid.write( '-cycles 200\n' )
