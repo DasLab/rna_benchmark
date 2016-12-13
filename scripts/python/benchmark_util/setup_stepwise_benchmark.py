@@ -75,7 +75,6 @@ else:
 targets = []
 bps = ['au','ua','gc','cg','ug','gu']
 
-
 # make sure the info file is specified correctly and exists
 info_file = args.info_file
 assert( len( info_file ) > 0 )
@@ -83,7 +82,6 @@ assert( '.txt' in info_file )
 if not exists( info_file ): info_file = dirname(argv[ 0 ]) + "/../../../input_files/" + info_file
 print info_file
 assert( exists( info_file ) )
-
 
 # define and check paths
 inpath = info_file.replace('.txt', '' ) + '/'
@@ -112,15 +110,12 @@ if len(args.user_input_runs):
     target_definitions = [td for td in target_definitions if td.name not in args.user_input_runs]
 targets = [info_handlers.Target(td) for td in target_definitions]
 
-# If we weren't given extra_flags_benchmark.txt on the command line
-# use the "new format file" 'Benchmark_flags:' cue instead.
-if extra_flags_benchmark == {}:
-    extra_flags_benchmark = info_fid.extra_flags_benchmark
+extra_flags_benchmark.update( info_fid.extra_flags_benchmark )
+# are these actually used in any benchmarks?
 if input_res_benchmark is None:
     input_res_benchmark = info_fid.input_res_benchmark
 if extra_min_res_benchmark is None:
     extra_min_res_benchmark = info_fid.extra_min_res_benchmark
-
 
 # misc dicts
 full_model_info = {}
@@ -144,7 +139,7 @@ for target in targets:
     target.resnums = resnums
 
     # working_native
-    # AMW: naming it with _NATIVE_ is unnecessary but prevents a regression that is otherwise distracting
+    # including the _NATIVE_ tag makes it easier to find the file for Pymol viewing after runs.
     assert( target.native != '-' ) # for now, require a native, since this is a benchmark.
     prefix = '%s/%s_NATIVE_' % ( inpath, target.name)
     target.working_native = slice_out( inpath, prefix, target.native, string.join( working_res_blocks ) )
@@ -247,24 +242,6 @@ for target in targets:
     target.extra_min_res = []
     target.block_stack_above_res = []
     target.block_stack_below_res = []
-    # 'caleb branch way' provides regression -- RHIJU confirms correctness
-    # of the NEW WAY.
-    #for m in range( 1, L+1 ):
-    #    if ( m not in input_resnum_fullmodel ): continue
-    #    prev_moving = ( m - 1 not in input_resnum_fullmodel ) and ( m != 1 )
-    #    next_moving = ( m + 1 not in input_resnum_fullmodel ) and ( m != L )
-    #    right_before_chainbreak = ( m == L or m in chainbreak_pos )
-    #    right_after_chainbreak  = ( m == 1 or m - 1 in chainbreak_pos )
-    #    if ( ( right_after_chainbreak and not next_moving ) or \
-    #        ( right_before_chainbreak and not prev_moving ) ):
-    #        target.terminal_res.append( m )
-    #        if right_after_chainbreak:
-    #            target.block_stack_below_res.append( m )
-    #        if right_before_chainbreak:
-    #            target.block_stack_above_res.append( m )
-    #    if ( ( prev_moving and not next_moving and not right_before_chainbreak ) or \
-    #        ( next_moving and not prev_moving and not right_after_chainbreak ) ):
-    #        target.extra_min_res.append( m )
     def get_domain( m ):
         for i, block in enumerate( input_resnum_fullmodel_by_block ):
             if m in block: return i+1
@@ -308,7 +285,7 @@ for target in targets:
             target.extra_min_res.append( m )
 
     if not '-motif_mode\n' in extra_flags_benchmark.keys() and not motif_mode_off:
-        extra_flags_benchmark[ '-motif_mode' ] = ''# \n' )
+        extra_flags_benchmark[ '-motif_mode' ] = ''
 
     # needed for stepwise_lores to work with base pair steps that include flanking helices:
     if args.stepwise_lores:
@@ -459,7 +436,6 @@ for target in targets:
         loopres_swa = [ idx+1 for idx in xrange( len( workres ) ) if (workres[idx] in loopres and workchains[idx] == loopchains[loopres.index(workres[idx])]) ]
         loopres_swa = string.join( [ str(x) for x in loopres_swa ] ,' ')
         target.loop_res[ 'swa' ]  = loopres_swa
-
 
     # get VDW_rep_screen_info, it will only be used if -VDW_rep_screen_info flag is set in extra_flags_benchmark
     if '-VDW_rep_screen_info' in extra_flags_benchmark:
@@ -643,7 +619,7 @@ for target in targets:
             fid.write( '-extra_minimize_res %s\n' % make_tag_with_conventional_numbering( target.extra_min_res, target.resnums, target.chains ) )
         if args.farfar: fid.write( '-minimize_rna true\n' )
         else: fid.write( '-minimize_rna false\n' )
-        if '-cycles' not in extra_flags_benchmark:   fid.write( '-cycles 20000\n' )
+        if '-cycles' not in extra_flags_benchmark: fid.write( '-cycles 20000\n' )
         if '-nstruct' not in extra_flags_benchmark: fid.write( '-nstruct 20\n' )
         if not args.save_times_off: fid.write( '-save_times\n' )
         if len( target.dock_partners ) > 0:
@@ -680,7 +656,8 @@ for target in targets:
         if len( target.native ) > 0:
             fid.write( '-native %s\n' % basename( target.working_native ) )
 
-        if motif_mode_off and len( target.terminal_res ) > 0:
+        if len( target.terminal_res ) > 0:
+            # note that this is redundant with -motif mode -- deprecate in early 2017
             fid.write( '-terminal_res %s  \n' % make_tag_with_conventional_numbering( target.terminal_res, target.resnums, target.chains ) )
 
         add_block_stack_flags( args, extra_flags, target, fid )
@@ -692,6 +669,7 @@ for target in targets:
                 fid.write( '-cutpoint_closed %s \n' % make_tag_with_conventional_numbering( target.cutpoint_closed, target.resnums, target.chains ) )
             fid.write( '-include_neighbor_base_stacks\n' ) # Need to match FARNA.
         if motif_mode_off and len( target.extra_min_res ) > 0 and not args.extra_min_res_off: ### Turn extra_min_res off for SWM when comparing to SWA
+            # note that this is redundant with -motif mode -- deprecate in early 2017
             fid.write( '-extra_min_res %s \n' % make_tag_with_conventional_numbering( target.extra_min_res, target.resnums, target.chains ) )
         #if ( len( input_target.pdbs ) == 0 ):
         #    fid.write( '-superimpose_over_all\n' ) # RMSD over everything -- better test since helices are usually native
