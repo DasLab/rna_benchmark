@@ -12,13 +12,13 @@ from make_plots_util import *
 import subprocess
 from matplotlib.font_manager import FontProperties
 import argparse
-import seaborn as sns
 
 ###############################################################################
 ### main functions
 ###############################################################################
 def make_plots(argv):
 
+        
 	# initialize options
 	options = init_options(argv)
 	inpaths = options.inpaths
@@ -27,6 +27,14 @@ def make_plots(argv):
 	targets = options.targets
 	xvars, yvars = options.xvar, options.yvar
 	pdfname = options.pdfname
+
+        # option-dependent imports
+        if options.seaborn is True:
+                print "[option-dependent imports]"
+                print " * options.seaborn:", options.seaborn
+                print " * importing seaborn as sns"
+                import seaborn as sns
+
 
 	# check options
 	inpaths = [abspath(x) for x in inpaths if exists(x) and isdir(x)]
@@ -53,7 +61,7 @@ def make_plots(argv):
 	# setup pdf and figure, return handles
 	( pp, fullpdfname ) = setup_pdf_page( inpaths, targets, pdfname=pdfname )
 	( fig, nplots, nrows, ncols ) = setup_figure( nplots )
-	colorcode = get_colorcode( len(inpaths), seaborn=options.seaborn )
+	colorcode = get_colorcode( len(inpaths), options=options )
         markersize = 4
 
 	xlabels = []
@@ -130,7 +138,7 @@ def make_plots(argv):
 				yvar_data.append( float(score[yvar_idx]) )
                         
                         label = basename(inpath)
-			if options.seaborn:
+                      	if options.seaborn is True:
                                 sns.set_style("darkgrid")
                                 sns.set_context("poster")
                                 markersize = 10
@@ -170,7 +178,7 @@ def make_plots(argv):
                                 ticklabel.set_fontsize(6)
 			ax.set_xlim(0, 16)
         
-                        if options.seaborn:
+                        if options.seaborn is True:
                                 ax.set_title( get_title(target), fontsize=20, weight='bold' )
                                 ax.set_ylabel('Rosetta Energy', fontsize=20, weight='bold')
                                 ax.set_xlabel(r'RMSD ($\AA$)', fontsize=20, weight='bold')
@@ -194,7 +202,7 @@ def make_plots(argv):
 					 fontproperties=monospace_font )
 
 	# finalize (adjust spacing, print date)
-	finalize_figure( fig, nplots, nrows, ncols, seaborn=options.seaborn )
+	finalize_figure( fig, nplots, nrows, ncols, options=options )
 
 
 	# save as pdf and close
@@ -206,7 +214,7 @@ def make_plots(argv):
 	if 'Darwin' in out:
 		subprocess.call(['open',fullpdfname])
 	if 'Linux' in out:
-		pass#subprocess.call(['xdg-open',fullpdfname])
+		subprocess.call(['xdg-open',fullpdfname])
 
 	return True
 
