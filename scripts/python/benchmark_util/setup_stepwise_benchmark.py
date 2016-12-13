@@ -285,7 +285,7 @@ for target in targets:
              ( next_moving and not prev_moving and not right_after_chainbreak ) ):
             target.extra_min_res.append( m )
 
-    if not '-motif_mode\n' in extra_flags_benchmark.keys() and not motif_mode_off:
+    if not '-motif_mode' in extra_flags_benchmark.keys() and not motif_mode_off:
         extra_flags_benchmark[ '-motif_mode' ] = ''
 
     # needed for stepwise_lores to work with base pair steps that include flanking helices:
