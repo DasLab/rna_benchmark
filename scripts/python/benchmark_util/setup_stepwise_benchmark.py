@@ -665,7 +665,7 @@ for target in targets:
             if ( len( target.cutpoint_closed ) > 0 ):
                 fid.write( '-cutpoint_closed %s \n' % make_tag_with_conventional_numbering( target.cutpoint_closed, target.resnums, target.chains ) )
             fid.write( '-include_neighbor_base_stacks\n' ) # Need to match FARNA.
-        if motif_mode_off and len( target.extra_min_res ) > 0 and not args.extra_min_res_off: ### Turn extra_min_res off for SWM when comparing to SWA
+        if len( target.extra_min_res ) > 0 and not args.extra_min_res_off: ### Turn extra_min_res off for SWM when comparing to SWA
             # note that this is redundant with -motif mode -- deprecate in early 2017
             fid.write( '-extra_min_res %s \n' % make_tag_with_conventional_numbering( target.extra_min_res, target.resnums, target.chains ) )
         fid.write( '-fasta %s\n' % basename( target.fasta) )
