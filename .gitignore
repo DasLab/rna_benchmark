@@ -1,9 +1,6 @@
 new/*/
 Figures/*
 *.pyc
-<<<<<<< HEAD
 INSTALL
 .DS*
-=======
-INSTALL
->>>>>>> calebgeniesse/devel
+*~
