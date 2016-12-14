@@ -35,10 +35,22 @@ subcolumn_labels = [
 	# Best of Five Lowest Energy Cluster Centers
 	"Cluster Rank",
 	"RMSD",
+	"N_WC",
+	"N_NWC",
+	"fWC",
+	"fNWC",
 	"Rosetta Energy (RU)",
 	# Lowest RMSD Model
 	"RMSD", 
+	"N_WC",
+	"N_NWC",
+	"fWC",
+	"fNWC",
 	# Lowest Energy Sampled
+	"N_WC",
+	"N_NWC",
+	"fWC",
+	"fNWC",
 	"Rosetta Energy (RU)",
 	"E-Gap to Opt. Exp. (RU)"
 ]
