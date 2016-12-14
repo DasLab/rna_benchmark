@@ -20,11 +20,14 @@ import matplotlib.cm as cmx
 import numpy as np
 from datetime import datetime
 from utility import file_handlers, info_handlers
-from get_sequence import get_sequence, get_sequences_for_res
+try:
+        from get_sequence import get_sequence, get_sequences_for_res
+except Exception, e:
+        print e
+        print "WARNING ... could not import get_sequences_for_res, required for sequence recovery plotting"
 from parse_tag import parse_tag
 import re
 from difflib import SequenceMatcher
-import seaborn as sns
 
 
 ##########################################################
@@ -173,8 +176,11 @@ def get_target_names_from_file( filename, target_names ):
 def get_path_to_dir( dirnames ):
 	for dirname in dirnames:
 		pwd = popen( 'pwd' ).readline()[:-1].split( '/' )
-		if dirname not in pwd: continue
-		return string.join( pwd[:pwd.index( dirname )+1], '/' )
+		for subdir_idx, subdir in enumerate(pwd):
+                        if dirname not in subdir:
+                                continue
+                        return string.join( pwd[:subdir_idx+1], '/' )
+
 
 ###########################################################
 
@@ -240,7 +246,7 @@ def get_figure_dimensions( nplots ):
 
 ###########################################################
 
-def setup_figure( nplots, landscape = True ):
+def setup_figure( nplots, landscape = False ):
 	( nplots, nrows, ncols ) = get_figure_dimensions( nplots )
 	fig = plt.figure()
 	if ( landscape is True ): # landscape
@@ -251,7 +257,7 @@ def setup_figure( nplots, landscape = True ):
 
 ###########################################################
 
-def finalize_figure( fig, nplots, nrows, ncols ):
+def finalize_figure( fig, nplots, nrows, ncols, options=None ):
 	# adjust spacing of plots on figure
 	if ( nplots == 1 or nrows < ncols ): # landscape
 		plt.subplots_adjust(top=.90, bottom=.1,
@@ -263,18 +269,22 @@ def finalize_figure( fig, nplots, nrows, ncols ):
 				    wspace=.3, hspace=.5)
 
 	# get date printed to figure
-	'''
-	plt.figtext(0.95,0.02,
+	if options and options.seaborn is True:
+                # add legend
+                plt.legend(numpoints=1, loc=4, prop={'size':16})
+        else:
+                # display date in bottom right corner
+                plt.figtext(0.95,0.02,
 		    get_date(),
 		    horizontalalignment='right',
 		    fontsize='small')
-	'''
-	# setup global legend based on inpaths
-	legend_size = 6
-	plot_idx = nplots - 1 if ncols > 1 else nplots
-	#ax = fig.add_subplot( nrows, ncols, plot_idx)
-	#legend = ax.legend(bbox_to_anchor=(0., .0, 1., -.225),
-	#		   loc=9, numpoints=1, prop={'size':legend_size})
+	
+                # setup global legend based on inpaths
+                legend_size = 6
+                plot_idx = nplots - 1 if ncols > 1 else nplots
+                ax = fig.add_subplot( nrows, ncols, plot_idx)
+                legend = ax.legend(bbox_to_anchor=(0., .0, 1., -.225),
+                                   loc=9, numpoints=1, prop={'size':legend_size})
        	return
 
 ###########################################################
@@ -290,7 +300,7 @@ def setup_pdf_page( inpaths, targets, pdfname = None ):
 		#pdfname += '_' + '_vs_'.join(inpaths)
 		#pdfname = pdfname if pdfname[0] != '_' else pdfname[1:]
 	pdfname += '.pdf' if '.pdf' not in pdfname else ''
-	if './' in pdfname:
+	if '/' in pdfname and exists(dirname(pdfname)):
 		fullpdfname = pdfname
 	else:
 		figure_dir = get_path_to_dir(['stepwise_benchmark','benchmark']) + '/Figures/'
@@ -310,7 +320,9 @@ def setup_pdf_page( inpaths, targets, pdfname = None ):
 
 ###########################################################
 
-def get_colorcode( size ):
+def get_colorcode( size, options=None ):
+        if options and options.seaborn is True:
+                return ["#ff0000","#0000ff", "#696969"]
 	if size <= 2:
 		return [(0.0, 0.0, 0.0, 1.0), (1.0, 0.0, 0.0, 1.0)]
 	cmap = plt.get_cmap( 'hot' )
