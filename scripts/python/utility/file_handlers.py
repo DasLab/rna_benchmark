@@ -30,7 +30,7 @@ class TargetDefinitionsFile(object):
         # get all lines and iterate through -- this way we can check for
         # alternate formats...
         lines = fid.readlines()
-        # 'old format' == charaterized by 'Name\t' first characters
+        # 'old format' == characterized by 'Name\t' first characters
         if lines[0].startswith("Name\t"):
             for line in lines:
                 # parse/check values
@@ -76,7 +76,7 @@ class TargetDefinitionsFile(object):
                         self.extra_min_res_benchmark = extra_flags_benchmark.pop('-extra_min_res')
 
                 if lines[i].split()[0] == "Name:":
-                    # new thing
+                    # new format
                     target_definition = info_handlers.TargetDefinition()
                     while i < len(lines) and len(lines[i]) > 4: # forgive a little extra whitespace
                         setattr(target_definition, lines[i].split()[0].split(':')[0].lower(), " ".join( lines[i].split()[1:] ) )

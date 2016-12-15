@@ -18,7 +18,7 @@ import argparse
 ###############################################################################
 def make_plots(argv):
 
-        
+
 	# initialize options
 	options = init_options(argv)
 	inpaths = options.inpaths
@@ -136,13 +136,13 @@ def make_plots(argv):
 
 				xvar_data.append( float(score[xvar_idx]) )
 				yvar_data.append( float(score[yvar_idx]) )
-                        
+
                         label = basename(inpath)
                       	if options.seaborn is True:
                                 sns.set_style("darkgrid")
                                 sns.set_context("poster")
                                 markersize = 10
-                               
+
                                 label = 'StepWise Assembly'# (SWA)'
                                 if 'swm' in basename(inpath):
                                         label = 'StepWise Monte Carlo'# (SWM)'
@@ -159,7 +159,7 @@ def make_plots(argv):
 				 linestyle=' ',
 				 label=label )
 			handles.append(h)
-			
+
                         if options.seaborn is False:
                                 ax.plot( [1 for y in plt.ylim()],
                                          plt.ylim(),
@@ -168,7 +168,7 @@ def make_plots(argv):
                                 ax.plot( [2 for y in plt.ylim()],
                                          plt.ylim(),
                                          color='black')
-			
+
 			# set title and axes labels, adjust axis properties
 			title_fontsize = 'small' if nrows < 3 else 8
                         ax.set_title( get_title(target), fontsize=title_fontsize, weight='bold' )
@@ -177,14 +177,14 @@ def make_plots(argv):
                         for ticklabel in ax.yaxis.get_ticklabels()+ax.xaxis.get_ticklabels():
                                 ticklabel.set_fontsize(6)
 			ax.set_xlim(0, 16)
-        
+
                         if options.seaborn is True:
                                 ax.set_title( get_title(target), fontsize=20, weight='bold' )
                                 ax.set_ylabel('Rosetta Energy', fontsize=20, weight='bold')
                                 ax.set_xlabel(r'RMSD ($\AA$)', fontsize=20, weight='bold')
                                 for ticklabel in ax.yaxis.get_ticklabels()+ax.xaxis.get_ticklabels():
                                         ticklabel.set_fontsize(14)
-			
+
 
 			# print times in plots (if available)
                         if options.seaborn is False and times_list[inpath_idx][target_idx-1].times_found():
@@ -233,7 +233,7 @@ def init_options_parser():
 	parser.add_argument(
 		'inpaths',
 		nargs='+',
-		help='List of paths too silent files.'
+		help='List of paths to silent files.'
 	)
 	parser.add_argument(
 		'-outfilenames',
@@ -249,7 +249,7 @@ def init_options_parser():
 		'-target_files',
 		nargs='+',
 		help='List of additional target files.',
-		default=None
+		default=['favorites.txt','favorites2.txt','challenges.txt','RNA_loop_motifs_PS2011.txt']
 	)
 	parser.add_argument(
 		'-targets',
