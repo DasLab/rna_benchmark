@@ -141,7 +141,6 @@ for target in targets:
     # including the _NATIVE_ tag makes it easier to find the file for Pymol viewing after runs.
     assert( target.native != '-' ) # for now, require a native, since this is a benchmark.
     prefix = '%s/%s_NATIVE_' % ( inpath, target.name)
-    print target.native
     target.working_native = slice_out( inpath, prefix, target.native, string.join( working_res_blocks ) )
     # We need to sort the sequences first. That's absurd, of course, but otherwise we'd need a
     # vastly more clever sequence determination algorithm. That's a TODO.
