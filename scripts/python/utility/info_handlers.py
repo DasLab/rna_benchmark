@@ -21,6 +21,7 @@ class TargetDefinition(object):
         self.input_res = None
         self.block_stack_above_res = None
         self.block_stack_below_res = None
+        self.align_res = None
         self.extra_flags = None
 
     def ordered_attrs(self):
@@ -40,14 +41,14 @@ class TargetDefinition(object):
             self.input_res,
             self.extra_flags
         ]
-        return sep.join([('-' if attr is None else attr) for attr in attrs]) 
-        
+        return sep.join([('-' if attr is None else attr) for attr in attrs])
+
 
 ###############################################################################
 class Target(TargetDefinition):
 
     def __init__(self, definition):
-        
+
         # inherit definition data
         self.name = definition.name
         self.sequence = definition.sequence
@@ -55,8 +56,9 @@ class Target(TargetDefinition):
         self.working_res = definition.working_res
         self.native = definition.native
         self.input_res = definition.input_res
+        self.align_res = definition.align_res
         self.extra_flags = definition.extra_flags
-        
+
         # new member data
         self.fasta = None
         self.resnums = None

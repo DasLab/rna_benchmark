@@ -1,0 +1,206 @@
+Benchmark_flags: -superimpose_over_all -submotif_frequency 0.0
+
+# Several of these challenges replace explicit "-align_pdb" flag with
+# "Align_res" -- keeps poses within 4 Angstrom rmsd_screen to native at those residues.
+
+Name:          j55a_P4P6_align
+Sequence:      ggucaacagcc,ggacaugguc
+Secstruct:     ((((.....((,))....))))
+Working_res:   R:118-128,R:194-203
+Input_res:     -
+Native:        2r8s_RNA.pdb
+Align_res:     R:118-121,R:127-128,R:194-195,R:200-203
+Extra_flags:   -
+
+Name:          gg_mismatch_fixed
+Sequence:      caggc,gcgug
+Secstruct:     ((.((,)).))
+Working_res:   A:2-6,B:5-9
+Input_res:     A:2-3,A:5-6,B:5-6,B:8-9
+Native:        1f5g.pdb
+Extra_flags:   -
+
+Name:          tandem_ga_imino_fixed
+Sequence:      cggacg,cggacg
+Secstruct:     ((..((,))..))
+Working_res:   A:2-7,B:10-15
+Input_res:     A:2-3,A:6-7,B:10-11,B:14-15
+Native:        1mis_RNA.pdb
+Extra_flags:   -
+
+Name:          tandem_ga_sheared_fixed
+Sequence:      gcgagc,gcgagc
+Secstruct:     ((..((,))..))
+Working_res:   A:2-7,B:10-15
+Input_res:     A:2-3,A:6-7,B:10-11,B:14-15
+Native:        1yfv_RNA.pdb
+Extra_flags:   -
+
+Name:          j44a_p4p6_fixed
+Sequence:      ggaaaggg,ccuaacc
+Secstruct:     ((...(((,)))..))
+Working_res:   A:111-118,A:203-209
+Input_res:     A:111-112,A:116-118,A:203-205,A:208-209
+Native:        1gid_RNAA.pdb
+Extra_flags:   -
+
+Name:          just_tr_P4P6_fixed
+Sequence:      ccuaaguc,gauaugg
+Secstruct:     ((...(((,)))..))
+Working_res:   R:222-229,R:245-251
+Input_res:     R:222-223,R:227-229,R:245-247,R:250-251
+Native:        2r8s_RNA.pdb
+Extra_flags:   -
+
+Name:          r2_4x4_fixed
+Sequence:      ugaagccc,ggaggaca
+Secstruct:     ((....((,))....))
+Working_res:   A:2-9,B:13-20
+Input_res:     A:2-3,A:8-9,B:13-14,B:19-20
+Native:        2l8f_RNA.pdb
+Extra_flags:   -
+
+Name:          loopE_fixed
+Sequence:      ccgaugguagu,gcgagaguagg
+Secstruct:     ((.......((,)).......))
+Working_res:   A:70-80,B:96-106
+Input_res:     A:70-71,A:79-80,B:96-97,B:105-106
+Native:        354d_RNA.pdb
+Extra_flags:   -
+
+Name:          hiv_rre_fixed
+Sequence:      cgggcg,cgguacg
+Secstruct:     ((..((,))...))
+Working_res:   A:45-50,B:69-75
+Input_res:     A:45-46,A:49-50,B:69-70,B:74-75
+Native:        1csl_RNA.pdb
+Extra_flags:   -
+
+Name:          hammerhead_tert_align
+Sequence:      guacua,cccaaauagg,uauc
+Secstruct:     (...((,((......)),)).)
+Working_res:   A:5-10,A:24-33,B:11-14
+Input_res:     -
+Align_res:     A:9-10,A:24-25,A:32-33,B:11-12
+Native:        2oeu_RNA.pdb
+Extra_flags:   -
+
+Name:          t_loop_fixed
+Sequence:      g,gguucgauucc
+Secstruct:     .,((.......))
+Working_res:   A:18,A:52-62
+Input_res:     A:18,A:52-53,A:61-62
+Native:        3l0u_RNA.pdb
+Extra_flags:   -
+
+Name:          t_loop_align
+Sequence:      g,gguucgauucc
+Secstruct:     .,((.......))
+Working_res:   A:18,A:52-62
+Input_res:     -
+Native:        3l0u_RNA.pdb
+Align_res:     A:18,A:52-53,A:61-62
+Extra_flags:   -
+
+Name:          gir1_p2.1p5_kiss_fixed
+Sequence:      ggcuaaucacc,gggacgaucc
+Secstruct:     ((....[[.)),((...]].))
+Working_res:   A:22-32,A:76-85
+Input_res:     A:22-23,A:31-32,A:76-77,A:84-85
+Native:        4P8Z.pdb
+Extra_flags:   -
+
+Name:          gir1_p2p9_gaaa_minor_fixed
+Sequence:      uggguu,ccgaaagg,aagaca
+Secstruct:     ((..((,((....)),))..))
+Working_res:   A:4-9,A:156-163,A:180-185
+Input_res:     A:8-9,A:156-157,A:162-163,A:180-181
+Native:        4P8Z.pdb
+Extra_flags:   -
+
+Name:          gagu_forcesyn_blockstackU
+Sequence:      acgagugu,acgagugu
+Secstruct:     ((....((,))....))
+Working_res:   A:2-9,B:13-20
+Input_res:     -
+Native:        2lx1_RNA.pdb
+Extra_flags:   -force_syn_chi_res_list A:4 A:6 B:15 B:17 -block_stack_above_res A:7 B:18  -block_stack_below_res A:7 B:18
+
+Name:          kink_turn_align
+Sequence:      guggagg,ccgaugaaac
+Secstruct:     ((...((,))......))
+Working_res:   A:16-22,A:30-39
+Input_res:     -
+Native:        2gis_RNA.pdb
+Align_res:     A:16-17,A:21-22,A:30-31,A:38-39
+Extra_flags:   -
+
+Name:          VS_rbzm_P2P3P6_fixed
+Sequence:      ggaacu,aggc,gcacaagcc
+Secstruct:     ((..((,))((,)).....))
+Working_res:   A:654-659,A:715-718,A:757-765
+Input_res:     A:654-655,A:658-659,A:715-718,A:757-758,A:764-765
+Native:        4r4v.pdb
+Extra_flags:   -
+
+Name:          VS_rbzm_P3P4P5_fixed
+Sequence:      ccucca,ugucgu,augugauugg
+Secstruct:     ((..((,))..((,))......))
+Working_res:   A:662-667,A:679-684,A:702-711
+Input_res:     A:662-663,A:666-667,A:679-680,A:683-684,A:702-703,A:710-711
+Native:        4r4v.pdb
+Extra_flags:   -
+
+Name:          VS_rbzm_P2P3P6_align
+Sequence:      ggaacu,aggc,gcacaagcc
+Secstruct:     ((..((,))((,)).....))
+Working_res:   A:654-659,A:715-718,A:757-765
+Input_res:     -
+Align_res:     A:654-655,A:658-659,A:715-718,A:757-758,A:764-765
+Native:        4r4v.pdb
+Extra_flags:   -
+
+Name:          VS_rbzm_P3P4P5_align
+Sequence:      ccucca,ugucgu,augugauugg
+Secstruct:     ((..((,))..((,))......))
+Working_res:   A:662-667,A:679-684,A:702-711
+Input_res:     -
+Align_res:     A:662-663,A:666-667,A:679-680,A:683-684,A:702-703,A:710-711
+Native:        4r4v.pdb
+Extra_flags:   -
+
+
+Name:          puzzle18_zika_PK
+Sequence:      ca,guuuggggaaagc,uguaacccc
+Secstruct:     ((,((..[[[[...)),))...]]]]
+Working_res:   A:5-6,A:27-39,A:49-57
+Input_res:     A:5-6,A:27-28,A:38-39,A:49-50
+Native:        5tpy.pdb
+Extra_flags:   -allow_complex_loop_graph
+
+
+Name:          cg_helix_Zform_fixnative
+Sequence:      cgcg,cgcg
+Secstruct:     (...,...)
+Working_res:   E:1-4,F:3-6
+Input_res:     -
+Native:        2gxb.pdb
+Extra_flags:   -sample_sugar_res E:1-4 F:3-6  -force_syn_chi_res_list E:2 E:4 F:4 F:6 -block_stack_off
+
+Name:          parallel_AA
+Sequence:      aaaa,aaaa
+Secstruct:     ....,....
+Working_res:   A:1-4,B:1-4
+Input_res:     A:1,B:1
+Native:        4jrd.pdb
+Extra_flags:   -
+
+Name:          bulged_tetraplex
+Sequence:      gug,gug,gug,gug
+Secstruct:     ...,...,...,...
+Working_res:   A:2-4,B:2-4,C:2-4,D:2-4
+Input_res:     A:2,B:2,C:2,D:2
+Native:        1p79_tetrad.pdb
+Extra_flags:   -block_stack_above_res A:2 B:2 C:2 D:2
+
+
