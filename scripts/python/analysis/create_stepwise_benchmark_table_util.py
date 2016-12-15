@@ -284,12 +284,15 @@ def get_score_data( filename, colnames=['score'], sort=None, filters=None, tags=
 
 	# UGH: We are going to have to do two separate read-throughs then join arrays
     # indexed by the same key into one.
+	# Wait, actually... let's assume the NEW ENERGIES are going to be good. May
+	# limit legal SHAs.
+	bps_silent_file = create_bps_silent_file( filename )
 	
 	if not isinstance(colnames, list):
 		colnames = [ colnames ]
 	data = []
 	colidx = None
-	with open( filename, 'r' ) as f:
+	with open( bps_silent_file, 'r' ) as f:
 		for line in f:
 			if not "SCORE:" in line:
 				continue
@@ -309,30 +312,6 @@ def get_score_data( filename, colnames=['score'], sort=None, filters=None, tags=
 				except:
 					data[-1].append( col )
 			data[-1] = tuple(data[-1])
-	# If one of the fields requested is a special basepairing field, go get it
-    # This is not ideal, but it will do for now.
-	if "N_WC" in colnames or "N_NWC" in colnames or "f_natWC" in colnames or "f_natNWC" in colnames:
-		bps_silent_file = create_bps_silent_file( filename )
-		with open( bpsfilename, 'r' ) as f:
-			for line in f:
-				if not "SCORE:" in line:
-					continue
-				cols = filter(None,[c.strip() for c in line.split()])
-				if not len(cols):
-					continue
-				if "description" in line:
-					colidx = map(cols.index, filter(cols.count, colnames))
-					continue
-				if tags and not any( t in line for t in tags ):
-					continue
-				data.append([])
-				for idx in colidx:
-					col = cols[idx]
-					try:
-						data[-1].append( float(col) )
-					except:
-						data[-1].append( col )
-				data[-1] = tuple(data[-1])
 	
 	if filters is not None:
 		if not isinstance(filters, list):
