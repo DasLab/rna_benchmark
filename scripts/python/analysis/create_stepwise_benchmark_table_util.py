@@ -277,6 +277,14 @@ def get_target_names():
 
 ################################################################################
 def get_score_data( filename, colnames=['score'], sort=None, filters=None, tags=None, keep=None ):
+	"""
+	Gets a bunch of data out of a silent file. If the data is not present in the silent file,
+	opens the base pair analysis version fo that silent file. If that doesn't exist, make it.
+	"""
+
+	# UGH: We are going to have to do two separate read-throughs then join arrays
+    # indexed by the same key into one.
+	
 	if not isinstance(colnames, list):
 		colnames = [ colnames ]
 	data = []
@@ -301,6 +309,31 @@ def get_score_data( filename, colnames=['score'], sort=None, filters=None, tags=
 				except:
 					data[-1].append( col )
 			data[-1] = tuple(data[-1])
+	# If one of the fields requested is a special basepairing field, go get it
+    # This is not ideal, but it will do for now.
+	if "N_WC" in colnames or "N_NWC" in colnames or "f_natWC" in colnames or "f_natNWC" in colnames:
+		bps_silent_file = create_bps_silent_file( filename )
+		with open( bpsfilename, 'r' ) as f:
+			for line in f:
+				if not "SCORE:" in line:
+					continue
+				cols = filter(None,[c.strip() for c in line.split()])
+				if not len(cols):
+					continue
+				if "description" in line:
+					colidx = map(cols.index, filter(cols.count, colnames))
+					continue
+				if tags and not any( t in line for t in tags ):
+					continue
+				data.append([])
+				for idx in colidx:
+					col = cols[idx]
+					try:
+						data[-1].append( float(col) )
+					except:
+						data[-1].append( col )
+				data[-1] = tuple(data[-1])
+	
 	if filters is not None:
 		if not isinstance(filters, list):
 			filters = [ filters ] 
@@ -499,6 +532,19 @@ def create_common_args_file( silent_file ):
 		common_args_file = None
 	return common_args_file
 
+def create_bps_silent_file( silent_file ):
+    # todo: don't run on FARFAR because it already has it.
+    analysis_exe = get_rosetta_exe( 'analyze_base_pairing' )
+	analysis_silent_file = silent_file.replace( '.out', '_base_pairing_added.out' )
+	if exists( analysis_silent_file ):
+		Command( "rm -f ", args=analysis_silent_file ).submit()
+	command = Command( analysis_exe )
+	command.add_argument( "-in:file:silent", value=silent_file ) 
+	command.add_argument( "-out:file:silent", value=analysis_silent_file ) 
+	command.save_logs()
+	success = command.submit()
+	return analysis_silent_file if success is True else None
+
 ################################################################################
 def create_cluster_silent_file( silent_file ):
 	common_args_file = create_common_args_file( silent_file )
@@ -552,7 +598,8 @@ def get_lowest_energy_cluster_centers( nclusters=5 ):
 		print "\n[WARNING] cluster_silent_file not found for target: %s" % get_working_target()
 		cluster_silent_file = silent_file
 	cluster_center_list = []
-	score_types = ['score', get_rmsd_type(cluster_silent_file)]
+    # AMW: plan is for get_score_data to know where to look.
+	score_types = ['score', get_rmsd_type(cluster_silent_file), 'N_WC', 'N_NWC', 'f_natWC', 'f_natNWC' ]
 	data = None
 	if 'swm' in silent_file:
 		# PROBLEM: we need to build/virtualize missing residues in SWM silent files before 
@@ -566,10 +613,11 @@ def get_lowest_energy_cluster_centers( nclusters=5 ):
 		data = get_score_data( cluster_silent_file, colnames=score_types, sort='score', keep=nclusters )
 	if data is None:
 		return cluster_center_list
-	for idx, (energy, rmsd) in enumerate(data, start=1):
+	for idx, (energy, rmsd, nwc, nnwc, fwc, fnwc ) in enumerate(data, start=1):
 		if idx > nclusters:
 			break
-		cluster_center_list.append( [idx, rmsd, energy] )
+		# Following order in subcolumns
+		cluster_center_list.append( [idx, rmsd, nwc, nnwc, fwc, fnwc, energy] )
 	return cluster_center_list
 
 
@@ -590,7 +638,7 @@ def get_target_properties():
 def get_best_of_lowest_energy_cluster_centers():
 	'''
 		column:	| Best of Five Lowest Energy Cluster Centers |
-		subcolumn: | Cluster Rank | RMSD | Rosetta Energy (RU)  |
+		subcolumn: | Cluster Rank | RMSD | N_WC | N_NWC | fWC | fNWC | Rosetta Energy (RU)  |
 
 	'''
 	cluster_centers = get_lowest_energy_cluster_centers()
@@ -606,29 +654,31 @@ def get_best_of_lowest_energy_cluster_centers():
 def get_lowest_rmsd_model():
 	'''
 		column:	| Lowest RMSD Model |
-		subcolumn: | RMSD			  |
+		subcolumn: | RMSD			  | N_WC | N_NWC | fWC | fNWC |
 
 	'''
 	silent_file = get_silent_file()
 	rmsd_type = get_rmsd_type( silent_file )
-	rmsd = get_score_data( silent_file, colnames=rmsd_type, sort=rmsd_type, keep=1 )
+	scoretypes = [ rmsd_type, "N_WC", "N_NWC", "f_natWC", "f_natNWC" ]
+	rmsd = get_score_data( silent_file, colnames=scoretypes, sort=rmsd_type, keep=1 )
 	return [ rmsd ]
 
 ################################################################################
 def get_lowest_energy_sampled( opt_exp_inpaths ):
 	'''
 		column:	| Lowest Energy Sampled						 |
-		subcolumn: | Rosetta Energy (RU) | E-Gap to Opt. Exp. (RU) |
+		subcolumn: | N_WC | N_NWC | fWC | fNWC | Rosetta Energy (RU) | E-Gap to Opt. Exp. (RU) |
 
 	'''
 	silent_file = get_silent_file()
-	energy = get_score_data( silent_file, sort='score', keep=1 )
+	scoretypes = [ "score", "N_WC", "N_NWC", "f_natWC", "f_natNWC" ]
+	energy, nwc, nnwc, fwc, fnwc = get_score_data( silent_file, colnames=scoretypes, sort='score', keep=1 )
 	if energy is None:
-		return [ None, None ]
+		return [ None, None, None, None, None, None ]
 	opt_exp_energy = get_opt_exp_score( opt_exp_inpaths )
 	if opt_exp_energy is None:
-		return [ energy, None ]
+		return [ energy, nwc, nnwc, fwc, fnwc, None ]
 	energy_gap = energy - opt_exp_energy
-	return [ energy, energy_gap ]
+	return [ energy, nwc, nnwc, fwc, fnwc, energy_gap ]
 
 
