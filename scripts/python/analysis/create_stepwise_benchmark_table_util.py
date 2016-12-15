@@ -513,7 +513,7 @@ def create_common_args_file( silent_file ):
 
 def create_bps_silent_file( silent_file ):
     # todo: don't run on FARFAR because it already has it.
-    analysis_exe = get_rosetta_exe( 'analyze_base_pairing' )
+    analysis_exe = get_rosetta_exe( 'analyze_base_pairing.linuxclangrelease' )
 	analysis_silent_file = silent_file.replace( '.out', '_base_pairing_added.out' )
 	if exists( analysis_silent_file ):
 		Command( "rm -f ", args=analysis_silent_file ).submit()
