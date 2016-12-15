@@ -28,7 +28,9 @@ def get_target_row(target, (args)):
     ############################################################################
     table_row = TableRow()
     table_row.add_columns( get_title( target ) )
+    print target
     table_row.add_columns( get_target_properties() )
+    print target
     table_row.add_columns( get_best_of_lowest_energy_cluster_centers() )
     table_row.add_columns( get_lowest_rmsd_model() )
     table_row.add_columns( get_lowest_energy_sampled( args.opt_exp_inpaths ) )

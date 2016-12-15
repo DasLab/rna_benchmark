@@ -19,4 +19,5 @@ titles = {
 }
 
 def get_title( target ):
-	return titles[target] if target in titles.keys() else target
+    print target, titles[target] if target in titles.keys() else target
+    return titles[target] if target in titles.keys() else target
