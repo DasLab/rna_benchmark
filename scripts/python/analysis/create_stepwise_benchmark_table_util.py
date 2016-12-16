@@ -362,13 +362,25 @@ def get_silent_file( filename=['region_FINAL.out','swm_rebuild.out'], dir=None )
 ################################################################################
 def get_native_pdb():
     target = get_working_target()
-    native_pdb = glob( target+'_????_RNA.pdb' )[0]
+    try:
+        native_pdb = glob( target+'_????_RNA.pdb' )[0]
+    except:
+        try:
+            native_pdb = glob( target+'_NATIVE_????_RNA.pdb' )[0]
+        except:
+            try:
+                native_pdb = glob( target+'_NATIVE_*.pdb' )[0]
+            except:
+                print target
     return native_pdb
 
 ################################################################################
 def get_start_pdb_list():
     target = get_working_target()
-    start_pdbs = glob( target+'_START*_????_RNA.pdb' )
+    try:
+        start_pdbs = glob( target+'_START*_????_RNA.pdb' )
+    except:
+        start_pdbs = glob( target+'_START*.pdb' )
     return start_pdbs
 
 ################################################################################
@@ -426,7 +438,7 @@ def get_flag( flag ):
 ################################################################################
 def virtualize_missing_residues( silent_file ):
     silent_file_out = silent_file.replace(".out","_full_model.out")
-    build_full_model_exe = get_rosetta_exe( "build_full_model.linuxgccrelease" )
+    build_full_model_exe = get_rosetta_exe( "build_full_model" )
     weights = None #get_flag( "-score:weights" ).split(' ')[-1]
     torsion_potential = None #get_flag( "-score:rna_torsion_potential" ).split(' ')[-1]
     command = Command( build_full_model_exe )
@@ -515,7 +527,7 @@ def create_common_args_file( silent_file ):
 
 def create_bps_silent_file( silent_file ):
     # todo: don't run on FARFAR because it already has it.
-    analysis_exe = get_rosetta_exe( 'analyze_base_pairing.linuxgccrelease' )
+    analysis_exe = get_rosetta_exe( 'analyze_base_pairing.macosclangrelease' )
     analysis_silent_file = silent_file.replace( '.out', '_base_pairing_added.out' )
     # THIS IS EXPENSIVE. Don't remake, especially not in these exploratory
     # investgations...
