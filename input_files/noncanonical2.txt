@@ -1,0 +1,24 @@
+Name:          h2u_loop_cys_trna
+Sequence:      ggX[H2U]X[H2U]au,X[5MU]X[PSU]cgacu
+Secstruct:     -
+Working_res:   R:18-23,R:54-60
+Input_res:     R:22-23,R:54-60
+Native:        1b23_RNA.pdb
+Extra_flags:   -
+
+Name:          anticodon_loop1_cys_trna
+Sequence:      gaX[PSU]u,caX[MIA]aX[PSU]c
+Secstruct:     -
+Working_res:   R:30-33,R:35-40
+Input_res:     R:30-33,R:35,R:40
+Native:        1b23_RNA.pdb
+Extra_flags:   -
+
+Name:          anticodon_loop2_cys_trna
+Sequence:      gg,ggX[5MU]X[PSU]cga,cc
+Secstruct:     -
+Working_res:   R:18-19,R:52-58,R:61-62
+Input_res:     R:18-19,R:52,R:58,R:61-62
+Native:        1b23_RNA.pdb
+Extra_flags:   -
+
