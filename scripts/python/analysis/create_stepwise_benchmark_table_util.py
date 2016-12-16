@@ -527,7 +527,7 @@ def create_common_args_file( silent_file ):
 
 def create_bps_silent_file( silent_file ):
     # todo: don't run on FARFAR because it already has it.
-    analysis_exe = get_rosetta_exe( 'analyze_base_pairing.macosclangrelease' )
+    analysis_exe = get_rosetta_exe( 'analyze_base_pairing' )
     analysis_silent_file = silent_file.replace( '.out', '_base_pairing_added.out' )
     # THIS IS EXPENSIVE. Don't remake, especially not in these exploratory
     # investgations...
