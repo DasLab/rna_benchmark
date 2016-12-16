@@ -11,7 +11,7 @@ import info_handlers
 ### CLASSES
 ###############################################################################
 class TargetDefinitionsFile(object):
-    
+
     def __init__(self):
         self.target_definitions = []
         self.extra_flags_benchmark = {}
@@ -27,10 +27,10 @@ class TargetDefinitionsFile(object):
         attrs, values = None, None
         if not isinstance(fid, file):
             fid = open(fid)
-        # get all lines and iterate through -- this way we can check for 
+        # get all lines and iterate through -- this way we can check for
         # alternate formats...
         lines = fid.readlines()
-        # 'old format' == charaterized by 'Name\t' first characters
+        # 'old format' == characterized by 'Name\t' first characters
         if lines[0].startswith("Name\t"):
             for line in lines:
                 # parse/check values
@@ -58,7 +58,7 @@ class TargetDefinitionsFile(object):
                 if len(lines[i]) <= 4:
                     i += 1
                     continue
-                elif lines[i].split()[0] == "Benchmark_flags:": 
+                elif lines[i].split()[0] == "Benchmark_flags:":
                     substrings = lines[i].split()[1:]
                     substrings = [s for s in substrings if s not in ['','-','#']]
                     flags = []
@@ -74,11 +74,11 @@ class TargetDefinitionsFile(object):
                         self.input_res_benchmark = extra_flags_benchmark.pop('-input_res')
                     if '-extra_min_res' in self.extra_flags_benchmark:
                         self.extra_min_res_benchmark = extra_flags_benchmark.pop('-extra_min_res')
-                    
+
                 if lines[i].split()[0] == "Name:":
-                    # new thing
+                    # new format
                     target_definition = info_handlers.TargetDefinition()
-                    while len(lines[i]) > 4: # forgive a little extra whitespace
+                    while i < len(lines) and len(lines[i]) > 4: # forgive a little extra whitespace
                         setattr(target_definition, lines[i].split()[0].split(':')[0].lower(), " ".join( lines[i].split()[1:] ) )
                         i += 1
                     target_definition.finalize()
@@ -90,9 +90,9 @@ class TargetDefinitionsFile(object):
         return True
 
     def _header(self):
-        attrs = ['Name', 'Sequence', 'Secstruct', 'Working_res', 'Native', 'Input_res', 'Extra_flags']
+        attrs = ['Name', 'Sequence', 'Secstruct', 'Working_res', 'Native', 'Input_res', 'Align_res', 'Extra_flags']
         return '\t'.join(attrs)
-        
+
     def save(self, fid):
         if not self.validate():
             return False

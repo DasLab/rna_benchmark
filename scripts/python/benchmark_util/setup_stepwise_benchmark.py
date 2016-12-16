@@ -54,7 +54,6 @@ replacements = { 'True' : 'true', 'False' : 'false' }
 if args.swa:
     replacements = { 'true' : 'True', 'false' : 'False' }
 
-
 # parse extra_flags_benchmark
 extra_flags_benchmark = {}
 input_res_benchmark = None
@@ -80,11 +79,11 @@ info_file = args.info_file
 assert( len( info_file ) > 0 )
 assert( '.txt' in info_file )
 if not exists( info_file ): info_file = dirname(argv[ 0 ]) + "/../../../input_files/" + info_file
-print info_file
 assert( exists( info_file ) )
 
 # define and check paths
 inpath = info_file.replace('.txt', '' ) + '/'
+if not exists( inpath ): print "You need to make ",inpath," and fill it with input files."
 assert( exists( inpath ) )
 
 def onelettersequence( sequence ):
@@ -391,12 +390,18 @@ for target in targets:
         fid.close()
 
     # get align_pdb
-    if '-align_pdb' in extra_flags_benchmark:
+    if '-align_pdb' in extra_flags_benchmark or target.align_res != None :
         prefix = '%s/%s_ALIGN_' % (inpath, target.name)
-        align_res = ','.join(input_res_blocks)
+        if target.align_res != None: align_res = target.align_res
+        else: align_res = ','.join(input_res_blocks)
         target.align_pdb = slice_out(inpath, prefix, target.native, align_res)
-        if '-align_pdb' in target.extra_flags:
-            target.extra_flags.pop('-align_pdb')
+        if '-align_pdb' in extra_flags_benchmark:
+            # if -align_pdb is a benchmark-wide setting, don't need it in the target.
+            if '-align_pdb' in target.extra_flags: target.extra_flags.pop('-align_pdb')
+        else:
+            if '-align_pdb' not in target.extra_flags: target.extra_flags[ '-align_pdb' ] = basename( target.align_pdb )
+            if '-rmsd_screen' not in target.extra_flags: target.extra_flags[ '-rmsd_screen' ] = '4.0'
+
     elif '-align_pdb' in target.extra_flags:
         target.align_pdb = inpath+'/'+target.extra_flags['-align_pdb']
         assert( exists(target.align_pdb) )
@@ -476,8 +481,7 @@ for target in targets:
     if target.VDW_rep_screen_pdb:
         infiles.append(target.VDW_rep_screen_pdb)
     if target.align_pdb:
-        if '-align_pdb' in extra_flags_benchmark:
-            extra_flags_benchmark['-align_pdb'] = basename(target.align_pdb)
+        if '-align_pdb' in extra_flags_benchmark: extra_flags_benchmark['-align_pdb'] = basename(target.align_pdb)
         infiles.append(target.align_pdb)
     if '-input_pdb' in target.extra_flags:
         input_pdb = inpath+'/'+target.extra_flags['-input_pdb']
