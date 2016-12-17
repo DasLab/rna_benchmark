@@ -1,3 +1,5 @@
+Benchmark_flags: -score:weights stepwise/rna/rna_res_level_energy4.wts
+
 Name:          anticodon_cys
 Sequence:      gaX[PSU]ugcaX[MIA]aX[PSU]c
 Secstruct:     -
