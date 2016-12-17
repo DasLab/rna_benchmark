@@ -6,7 +6,7 @@ Secstruct:     -
 Working_res:   R:30-40
 Input_res:     R:30-31,R:39-40
 Native:        1b23.pdb
-Extra_flags:   -
+Extra_flags:   -ignore_zero_occupancy false
 
 Name:          anticodon_phe
 Sequence:      X[M2G],gaX[OMC]uX[OMG]aaX[YYG]aX[PSU]X[5MC]
