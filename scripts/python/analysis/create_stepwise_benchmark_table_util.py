@@ -286,7 +286,8 @@ def get_score_data( filename, colnames=['score'], sort=None, filters=None, tags=
     # indexed by the same key into one.
     # Wait, actually... let's assume the NEW ENERGIES are going to be good. May
     # limit legal SHAs.
-    bps_silent_file = create_bps_silent_file( filename )
+    # AMW: I have shunted this off onto build_full_model. I am a hero.
+    bps_silent_file = filename #create_bps_silent_file( filename )
     
     if not isinstance(colnames, list):
         colnames = [ colnames ]
@@ -444,6 +445,7 @@ def virtualize_missing_residues( silent_file ):
     command = Command( build_full_model_exe )
     command.add_argument( "-in:file:silent", value=silent_file )
     command.add_argument( "-out:file:silent", value=silent_file_out )
+    command.add_argument( "-in:file:native", value=get_native_pdb() ) # for native base pairs
     command.add_argument( "-out:overwrite", value="true" )
     if weights is not None:
         command.add_argument( "-score:weights", value=weights )
