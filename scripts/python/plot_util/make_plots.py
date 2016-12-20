@@ -52,6 +52,9 @@ def make_plots(argv):
 
 	inpaths = [x for x in inpaths if x in data.keys()]
 	nplots = len(set([k for v in data.values() for k in v.keys()]))
+        if ( nplots == 0 ):
+                print "You need to specify -target_files"
+                exit
 
 	# get and print out runtimes, stored in the silent files
 	times_list = get_times( inpaths, data, targets, verbose=True )
@@ -249,7 +252,7 @@ def init_options_parser():
 		'-target_files',
 		nargs='+',
 		help='List of additional target files.',
-		default=['favorites.txt','favorites2.txt','challenges.txt','RNA_loop_motifs_PS2011.txt']
+		default=['favorites.txt','favorites2.txt','challenges.txt','RNA_loop_motifs_PS2011.txt','followups.txt']
 	)
 	parser.add_argument(
 		'-targets',
