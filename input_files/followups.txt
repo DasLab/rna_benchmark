@@ -1,4 +1,4 @@
-Benchmark_flags: -superimpose_over_all -submotif_frequency 0.0
+Benchmark_flags: -superimpose_over_all
 
 # Several of these challenges replace explicit "-align_pdb" flag with
 # "Align_res" -- keeps poses within 4 Angstrom rmsd_screen to native at those residues.
@@ -201,6 +201,6 @@ Secstruct:     ...,...,...,...
 Working_res:   A:2-4,B:2-4,C:2-4,D:2-4
 Input_res:     A:2,B:2,C:2,D:2
 Native:        1p79_tetrad.pdb
-Extra_flags:   -block_stack_above_res A:2 B:2 C:2 D:2
+Extra_flags:   -block_stack_above_res A:2 B:2 C:2 D:2 
 
 
