@@ -1,4 +1,4 @@
-Benchmark_flags: -score:weights stepwise/rna/rna_res_level_energy4.wts
+Benchmark_flags: -score:weights stepwise/rna/rna_res_level_energy4.wts -submotif_frequency 0.0
 
 Name:          anticodon_cys
 Sequence:      gaX[PSU]ugcaX[MIA]aX[PSU]c
