@@ -1,4 +1,4 @@
-Benchmark_flags: -superimpose_over_all -submotif_frequency 0.0
+Benchmark_flags: -superimpose_over_all
 
 # Several of these challenges replace explicit "-align_pdb" flag with
 # "Align_res" -- keeps poses within 4 Angstrom rmsd_screen to native at those residues.
@@ -108,7 +108,7 @@ Secstruct:     ((....[[.)),((...]].))
 Working_res:   A:22-32,A:76-85
 Input_res:     A:22-23,A:31-32,A:76-77,A:84-85
 Native:        4P8Z.pdb
-Extra_flags:   -
+Extra_flags:   -allow_complex_loop_graph
 
 Name:          gir1_p2p9_gaaa_minor_fixed
 Sequence:      uggguu,ccgaaagg,aagaca
@@ -201,6 +201,6 @@ Secstruct:     ...,...,...,...
 Working_res:   A:2-4,B:2-4,C:2-4,D:2-4
 Input_res:     A:2,B:2,C:2,D:2
 Native:        1p79_tetrad.pdb
-Extra_flags:   -block_stack_above_res A:2 B:2 C:2 D:2
+Extra_flags:   -block_stack_above_res A:2 B:2 C:2 D:2 
 
 
