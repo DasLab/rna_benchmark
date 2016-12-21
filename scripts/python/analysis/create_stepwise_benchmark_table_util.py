@@ -352,7 +352,7 @@ def get_working_target():
     return basename(os.getcwd())
 
 ################################################################################
-def get_silent_file( filename=['region_FINAL.out','swm_rebuild.out'], dir=None ):
+def get_silent_file( filename=['region_FINAL.out','swm_rebuild.out', 'farna_rebuild.out'], dir=None ):
     if not isinstance(filename, list):
         filename = [ filename ]
     if dir is not None:
@@ -515,10 +515,11 @@ def create_common_args_file( silent_file ):
     common_args.append( '-alignment_res ' + working_res ) 
     common_args.append( '-fixed_res ' + fixed_res )
     common_args.append( '-input_res ' + fixed_res )
-    common_args.append( '-input_res2 ' + sample_res )
-    common_args.append( '-global_sample_res_list ' + sample_res ) 
-    common_args.append( '-sample_res ' + sample_res ) 
-    common_args.append( '-rmsd_res ' + sample_res ) 
+    if sample_res is not None:
+        common_args.append( '-input_res2 ' + sample_res )
+        common_args.append( '-global_sample_res_list ' + sample_res ) 
+        common_args.append( '-sample_res ' + sample_res ) 
+        common_args.append( '-rmsd_res ' + sample_res ) 
     with open( common_args_file, 'w' ) as fid:
         fid.write(' ')
         fid.write(' '.join(filter(None, common_args)))
