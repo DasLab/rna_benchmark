@@ -452,6 +452,7 @@ def virtualize_missing_residues( silent_file ):
     if torsion_potential is not None:
         command.add_argument( "-score:rna_torsion_potential", value=torsion_potential )
     command.add_argument( "-virtualize_built", value="true" )
+    command.add_argument( "-rna:evaluate_base_pairs", value="true" )
     command.save_logs()
     success = command.submit()
     return silent_file_out if success is True else None
@@ -547,7 +548,11 @@ def create_bps_silent_file( silent_file ):
 def create_cluster_silent_file( silent_file ):
     common_args_file = create_common_args_file( silent_file )
     if 'swm' in silent_file:
-        silent_file_virt = virtualize_missing_residues( silent_file )
+        silent_file_virt = None
+        if exists( silent_file.replace('.out', '_full_model.out') ):
+            silent_file_virt = silent_file.replace('.out', '_full_model.out')
+        else:
+            silent_file_virt = virtualize_missing_residues( silent_file )
         if not silent_file_virt or not exists( silent_file_virt ):
             return silent_file
         silent_file = silent_file_virt
@@ -590,11 +595,12 @@ def create_cluster_silent_file( silent_file ):
 
 ################################################################################
 def get_lowest_energy_cluster_centers( nclusters=5 ):
-    silent_file = get_silent_file()    
+    silent_file = get_silent_file()
     cluster_silent_file = create_cluster_silent_file( silent_file )
+    # _full_model.out is created above.
     if cluster_silent_file is None or not exists( cluster_silent_file ):
         print "\n[WARNING] cluster_silent_file not found for target: %s" % get_working_target()
-        cluster_silent_file = silent_file
+        cluster_silent_file = silent_file.replace('.out', '_full_model.out')    
     cluster_center_list = []
     # AMW: plan is for get_score_data to know where to look.
     score_types = ['score', get_rmsd_type(cluster_silent_file), 'N_WC', 'N_NWC', 'f_natWC', 'f_natNWC' ]
@@ -606,7 +612,7 @@ def get_lowest_energy_cluster_centers( nclusters=5 ):
         # SOLUTION: use 'build_full_model -virtualize_built' output for clustering, but get
         # original scores of poses, using the tags found in clusterer output
         tags = get_score_data( cluster_silent_file, colnames='description' )
-        data = get_score_data( silent_file, colnames=score_types, sort='score', tags=tags, keep=nclusters )
+        data = get_score_data( silent_file.replace('.out', '_full_model.out'), colnames=score_types, sort='score', tags=tags, keep=nclusters )
     else:
         data = get_score_data( cluster_silent_file, colnames=score_types, sort='score', keep=nclusters )
     if data is None:
@@ -670,7 +676,7 @@ def get_lowest_energy_sampled( opt_exp_inpaths ):
     '''
     silent_file = get_silent_file()
     scoretypes = [ "score", "N_WC", "N_NWC", "f_natWC", "f_natNWC" ]
-    energy, nwc, nnwc, fwc, fnwc = get_score_data( silent_file, colnames=scoretypes, sort='score', keep=1 )
+    [energy, nwc, nnwc, fwc, fnwc ]= get_score_data( silent_file.replace('.out', '_full_model.out'), colnames=scoretypes, sort='score', keep=1 )
     if energy is None:
         return [ None, None, None, None, None, None ]
     opt_exp_energy = get_opt_exp_score( opt_exp_inpaths )
