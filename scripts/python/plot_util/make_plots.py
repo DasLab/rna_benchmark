@@ -213,11 +213,11 @@ def make_plots(argv):
 	pp.close()
 
 	# open pdf
-	out, err = subprocess.Popen(['uname'], stdout=subprocess.PIPE).communicate()
-	if 'Darwin' in out:
-		subprocess.call(['open',fullpdfname])
-	if 'Linux' in out:
-		subprocess.call(['xdg-open',fullpdfname])
+	#out, err = subprocess.Popen(['uname'], stdout=subprocess.PIPE).communicate()
+	#if 'Darwin' in out:
+	#	subprocess.call(['open',fullpdfname])
+	#if 'Linux' in out:
+	#	subprocess.call(['xdg-open',fullpdfname])
 
 	return True
 
