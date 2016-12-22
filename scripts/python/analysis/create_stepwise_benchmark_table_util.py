@@ -479,7 +479,7 @@ def make_res_list(tag):
             for x in xrange(int(subtag[0]),int(subtag[1])+1):
                 new_list.append(str(x))
         else:
-            new_list.append(subres)
+            new_list.append(subtag)
     return new_list
 
 ################################################################################
