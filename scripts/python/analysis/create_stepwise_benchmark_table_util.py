@@ -442,6 +442,8 @@ def virtualize_missing_residues( silent_file ):
     command.add_argument( "-in:file:silent", value=silent_file )
     command.add_argument( "-out:file:silent", value=silent_file_out )
     command.add_argument( "-in:file:native", value=get_native_pdb() ) # for native base pairs
+    # avoid any FROM_SCRATCH
+    command.add_argument( "-stepwise:monte_carlo:from_scratch_frequency", value='0.0' ) 
     command.add_argument( "-out:overwrite", value="true" )
     if weights is not None:
         command.add_argument( "-score:weights", value=weights )
