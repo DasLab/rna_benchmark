@@ -201,7 +201,8 @@ class Table(object):
                     col_accums.append( col )
                     col_counts.append( increment )
                 else:
-                    col_accums[idx] += col
+                    if col is not None:
+                        col_accums[idx] += col
                     col_counts[idx] += increment
                 idx += 1
         col_aves = []
@@ -501,8 +502,10 @@ def create_common_args_file( silent_file ):
         Command( "rm -f ", args=common_args_file ).submit()
     working_res = get_full_model_parameter(silent_file, 'WORKING')
     sample_res = get_full_model_parameter(silent_file, 'CALC_RMS')
+    print "sample res is ", sample_res
     if sample_res is None:
         sample_res = get_full_model_parameter(silent_file, 'SAMPLE')
+    print "sample res is ", sample_res
     fixed_res = make_res_tag(working_res, exclude=sample_res)
     common_args = []
     common_args.append( '-in:file:silent_struct_type binary_rna' )
@@ -512,7 +515,7 @@ def create_common_args_file( silent_file ):
     if get_flag('-VDW_rep_screen_info'):
         common_args.append( get_flag('-VDW_rep_screen_info') )
         common_args.append( '-VDW_rep_delete_matching_res false' )
-    common_args.append( '-jump_point_pairs ' + working_res )
+    common_args.append( '-jump_point_pairs NOT_ASSERT_IN_FIXED_RES' ) # + working_res )
     common_args.append( '-alignment_res ' + working_res ) 
     common_args.append( '-fixed_res ' + fixed_res )
     common_args.append( '-input_res ' + fixed_res )
