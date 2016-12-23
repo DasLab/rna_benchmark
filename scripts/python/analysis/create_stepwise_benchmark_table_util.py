@@ -283,11 +283,6 @@ def get_score_data( filename, colnames=['score'], sort=None, filters=None, tags=
     opens the base pair analysis version fo that silent file. If that doesn't exist, make it.
     """
 
-    # UGH: We are going to have to do two separate read-throughs then join arrays
-    # indexed by the same key into one.
-    # Wait, actually... let's assume the NEW ENERGIES are going to be good. May
-    # limit legal SHAs.
-    # AMW: I have shunted this off onto build_full_model. I am a hero.
     bps_silent_file = filename #create_bps_silent_file( filename )
     
     if not isinstance(colnames, list):
@@ -456,6 +451,22 @@ def virtualize_missing_residues( silent_file ):
     command.add_argument( "-rna:evaluate_base_pairs", value="true" )
     command.save_logs()
     success = command.submit()
+
+    # This is the worst thing ever. We have to read through the resulting
+    # full model silent file and remove all NONCANONICAL_CONNECTION lines.
+    # Some PDB readin code fails to recognize them. There might be an issue
+    # in how they're being generated for some topologies in the first place
+    # (for example, G tetraplex has 'connections' between the four strands?!)
+    # but it's faster just to nuke them in the silent file than to do some
+    # major archaeology.
+    tempout = open( silent_file_out.replace( '.out', '.temptemptemp' ), 'w' )
+    lines = open( silent_file_out ).readlines()
+    for line in lines:
+        if "NONCANONICAL_CONNECTION" in line: continue
+        tempout.write( line )
+    tempout.close()
+    
+    Command( "mv", args=( silent_file_out.replace( '.out', '.temptemptemp' ), silent_file_out ) ).submit()
     return silent_file_out if success is True else None
 
 ################################################################################
