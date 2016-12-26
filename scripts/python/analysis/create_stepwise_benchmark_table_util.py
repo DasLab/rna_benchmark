@@ -202,7 +202,10 @@ class Table(object):
                     col_counts.append( increment )
                 else:
                     if col is not None:
-                        col_accums[idx] += col
+                        if col_accums[idx] is None:
+                            col_accums[idx]  = col
+                        else:
+                            col_accums[idx] += col
                     col_counts[idx] += increment
                 idx += 1
         col_aves = []
@@ -294,21 +297,27 @@ def get_score_data( filename, colnames=['score'], sort=None, filters=None, tags=
             if not "SCORE:" in line:
                 continue
             cols = filter(None,[c.strip() for c in line.split()])
+            #print cols
             if not len(cols):
                 continue
             if "description" in line:
+                #print colnames
                 colidx = map(cols.index, filter(cols.count, colnames))
+                #print colidx
                 continue
             if tags and not any( t in line for t in tags ):
                 continue
             data.append([])
+            #print colidx
             for idx in colidx:
                 col = cols[idx]
                 try:
                     data[-1].append( float(col) )
                 except:
                     data[-1].append( col )
+            #print data[-1]
             data[-1] = tuple(data[-1])
+            #print data[-1]
     
     if filters is not None:
         if not isinstance(filters, list):
@@ -327,6 +336,7 @@ def get_score_data( filename, colnames=['score'], sort=None, filters=None, tags=
     if keep is not None:
         keep = min(keep, len(data))
         data = data[0] if keep == 1 else data[:keep]
+    #print "data to be returned", data
     return data
 
 ################################################################################
@@ -368,7 +378,10 @@ def get_native_pdb():
             try:
                 native_pdb = glob( target+'_NATIVE_*.pdb' )[0]
             except:
-                print target
+                try:
+                    native_pdb = glob( target+'_*_RNA.pdb' )[0]
+                except:
+                    print target
     return native_pdb
 
 ################################################################################
@@ -390,7 +403,7 @@ def get_motif_length():
 
 ################################################################################
 def get_pdb_id():
-    print get_native_pdb
+    print get_native_pdb()
     return get_native_pdb().split('_')[-2].upper()
 
 ################################################################################
@@ -436,7 +449,8 @@ def get_flag( flag ):
 def virtualize_missing_residues( silent_file ):
     silent_file_out = silent_file.replace(".out","_full_model.out")
     build_full_model_exe = get_rosetta_exe( "build_full_model" )
-    weights = None #get_flag( "-score:weights" ).split(' ')[-1]
+    # IT HAS TO BE RIGHT
+    weights = "stepwise/rna/rna_res_level_energy4.wts" #get_flag( "-score:weights" ).split(' ')[-1]
     torsion_potential = None #get_flag( "-score:rna_torsion_potential" ).split(' ')[-1]
     command = Command( build_full_model_exe )
     command.add_argument( "-in:file:silent", value=silent_file )
@@ -466,6 +480,9 @@ def virtualize_missing_residues( silent_file ):
     for line in lines:
         if "NONCANONICAL_CONNECTION" in line: continue
         if "OTHER_POSE" in line: continue
+        # Also may be necessary, or else "orphaned" score lines with missing 
+        # scoreterms will haunt us
+        if "description" in line and "N_WC" not in line: continue
         tempout.write( line )
     tempout.close()
     
@@ -501,10 +518,21 @@ def make_res_list(tag):
 def make_res_tag(res, exclude=None, delim=' ', dashes=True):
     exclude_list = make_res_list(exclude) if exclude else []
     res_list = [x for x in make_res_list(res) if x not in exclude_list]
-    if dashes:
+    print res, res_list
+    #if dashes:
+    # AMW:
+    # Dashes are cute but this algorithm breaks for ranges like
+    # 1, 11-14, 24
+    # which are ALL OVER hard challenges
+    # Rather than writing a new algorithm, let's just avoid them.
+    if False:
         for idx, res in enumerate(res_list):
-            while idx+2 != len(res_list) and int(res_list[idx+1]) + 1 == int(res_list[idx+2]):
+            # DEBUGGING
+            print idx, res
+            while idx+2 < len(res_list) and int(res_list[idx+1]) + 1 == int(res_list[idx+2]):
+                print "\t", idx+1, idx+2, len(res_list)
                 res_list.pop(idx+1)
+                print "\t", idx+1, idx+2, len(res_list)
             res_list[idx] = res_list[idx] + '-' + res_list.pop(idx+1)
     res_tag = delim.join(res_list)
     return res_tag
@@ -566,10 +594,10 @@ def create_cluster_silent_file( silent_file ):
     common_args_file = create_common_args_file( silent_file )
     if 'swm' in silent_file:
         silent_file_virt = None
-        #if exists( silent_file.replace('.out', '_full_model.out') ):
-         #   silent_file_virt = silent_file.replace('.out', '_full_model.out')
-        #else:
-        silent_file_virt = virtualize_missing_residues( silent_file )
+        if exists( silent_file.replace('.out', '_full_model.out') ):
+            silent_file_virt = silent_file.replace('.out', '_full_model.out')
+        else:
+            silent_file_virt = virtualize_missing_residues( silent_file )
         if not silent_file_virt or not exists( silent_file_virt ):
             return silent_file
         silent_file = silent_file_virt
@@ -679,10 +707,11 @@ def get_lowest_rmsd_model():
 
     '''
     silent_file = get_silent_file()
-    rmsd_type = get_rmsd_type( silent_file )
+    rmsd_type = get_rmsd_type( silent_file.replace('.out', '_full_model.out' ) )
     scoretypes = [ rmsd_type, "N_WC", "N_NWC", "f_natWC", "f_natNWC" ]
-    rmsd = get_score_data( silent_file, colnames=scoretypes, sort=rmsd_type, keep=1 )
-    return [ rmsd ]
+    rmsd_scores = get_score_data( silent_file.replace('.out', '_full_model.out' ), colnames=scoretypes, sort=rmsd_type, keep=1 )
+    #print rmsd_scores
+    return [ score for score in rmsd_scores ]
 
 ################################################################################
 def get_lowest_energy_sampled( opt_exp_inpaths ):
