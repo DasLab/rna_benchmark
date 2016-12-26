@@ -466,7 +466,8 @@ def virtualize_missing_residues( silent_file ):
         tempout.write( line )
     tempout.close()
     
-    Command( "mv", args=( silent_file_out.replace( '.out', '.temptemptemp' ), silent_file_out ) ).submit()
+    #Command( "mv", args=( silent_file_out.replace( '.out', '.temptemptemp' ), silent_file_out ) ).submit()
+    Command( "mv %s %s" % ( silent_file_out.replace( '.out', '.temptemptemp' ), silent_file_out ) ).submit()
     return silent_file_out if success is True else None
 
 ################################################################################
@@ -562,11 +563,11 @@ def create_bps_silent_file( silent_file ):
 def create_cluster_silent_file( silent_file ):
     common_args_file = create_common_args_file( silent_file )
     if 'swm' in silent_file:
-        silent_file_virt = None
-        if exists( silent_file.replace('.out', '_full_model.out') ):
-            silent_file_virt = silent_file.replace('.out', '_full_model.out')
-        else:
-            silent_file_virt = virtualize_missing_residues( silent_file )
+        #silent_file_virt = None
+        #if exists( silent_file.replace('.out', '_full_model.out') ):
+        #    silent_file_virt = silent_file.replace('.out', '_full_model.out')
+        #else:
+        silent_file_virt = virtualize_missing_residues( silent_file )
         if not silent_file_virt or not exists( silent_file_virt ):
             return silent_file
         silent_file = silent_file_virt
