@@ -1,0 +1,17 @@
+Benchmark_flags: -superimpose_over_all
+
+Name:          puzzle18_zika_3WJ
+Sequence:      gucaggccg,cgccaca,ugugcagccug
+Secstruct:     {.(((((((,)).((((,))))}.)))))
+Working_res:   A:3-11,A:20-26,A:40-50
+Input_res:     -
+Native:        5tpy.pdb
+Extra_flags:   -allow_complex_loop_graph
+
+Name:          puzzle18_zika_3WJ_extraminres
+Sequence:      gucaggccg,cgccaca,ugugcagccug
+Secstruct:     {.(((((((,)).((((,))))}.)))))
+Working_res:   A:3-11,A:20-26,A:40-50
+Input_res:     -
+Native:        5tpy.pdb
+Extra_flags:   -allow_complex_loop_graph -extra_min_res A:5-9 A:23-26 A:40-44 A:46-50
