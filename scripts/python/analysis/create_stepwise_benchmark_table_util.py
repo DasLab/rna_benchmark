@@ -353,6 +353,14 @@ def get_rmsd_type( silent_file ):
                 break
     return 'rms'
 
+def get_score_type( silent_file ):
+    with open( silent_file, 'r' ) as f:
+        for line in f:
+            if not 'SCORE:' in line: continue
+            if 'silent_score' in line: return 'silent_score'
+            else: return 'score'
+
+
 ################################################################################
 def get_working_target():
     return basename(os.getcwd())
@@ -384,6 +392,13 @@ def get_native_pdb():
                     print target
     return native_pdb
 
+def get_align_pdb():
+    target = get_working_target()
+    try:
+        return glob( target+'_*ALIGN*.pdb' )[0]
+    except:
+        return None
+
 ################################################################################
 def get_start_pdb_list():
     target = get_working_target()
@@ -398,12 +413,12 @@ def get_motif_length():
     length = len(''.join(get_sequences(get_native_pdb())[0]))
     for start_pdb in get_start_pdb_list():
         length -= len(''.join(get_sequences(start_pdb)[0]))
-    print length
+    #print length
     return length
 
 ################################################################################
 def get_pdb_id():
-    print get_native_pdb()
+    #print get_native_pdb()
     return get_native_pdb().split('_')[-2].upper()
 
 ################################################################################
@@ -454,17 +469,24 @@ def virtualize_missing_residues( silent_file ):
     torsion_potential = None #get_flag( "-score:rna_torsion_potential" ).split(' ')[-1]
     command = Command( build_full_model_exe )
     command.add_argument( "-in:file:silent", value=silent_file )
+    command.add_argument( "-in:file:fasta", value="*.fasta" )
     command.add_argument( "-out:file:silent", value=silent_file_out )
     command.add_argument( "-in:file:native", value=get_native_pdb() ) # for native base pairs
+    align_pdb = get_align_pdb()
+    if align_pdb is not None:
+        command.add_argument( "-align_pdb", value=align_pdb ) # for native base pairs
     # avoid any FROM_SCRATCH
     command.add_argument( "-stepwise:monte_carlo:from_scratch_frequency", value='0.0' ) 
     command.add_argument( "-out:overwrite", value="true" )
     if weights is not None:
+        #print "doing it, you turd"
         command.add_argument( "-score:weights", value=weights )
     if torsion_potential is not None:
         command.add_argument( "-score:rna_torsion_potential", value=torsion_potential )
-    command.add_argument( "-virtualize_built", value="true" )
+    command.add_argument( "-virtualize_built", value="true" )#false" )
+    command.add_argument( "-fragment_assembly_mode", value="false" ) #true" )
     command.add_argument( "-rna:evaluate_base_pairs", value="true" )
+    command.add_argument("-allow_complex_loop_graph", value="true" )
     command.save_logs()
     success = command.submit()
 
@@ -478,7 +500,7 @@ def virtualize_missing_residues( silent_file ):
     tempout = open( silent_file_out.replace( '.out', '.temptemptemp' ), 'w' )
     lines = open( silent_file_out ).readlines()
     for line in lines:
-        if "NONCANONICAL_CONNECTION" in line: continue
+        #if "NONCANONICAL_CONNECTION" in line: continue
         if "OTHER_POSE" in line: continue
         # Also may be necessary, or else "orphaned" score lines with missing 
         # scoreterms will haunt us
@@ -518,7 +540,7 @@ def make_res_list(tag):
 def make_res_tag(res, exclude=None, delim=' ', dashes=True):
     exclude_list = make_res_list(exclude) if exclude else []
     res_list = [x for x in make_res_list(res) if x not in exclude_list]
-    print res, res_list
+    #print res, res_list
     #if dashes:
     # AMW:
     # Dashes are cute but this algorithm breaks for ranges like
@@ -544,10 +566,10 @@ def create_common_args_file( silent_file ):
         Command( "rm -f ", args=common_args_file ).submit()
     working_res = get_full_model_parameter(silent_file, 'WORKING')
     sample_res = get_full_model_parameter(silent_file, 'CALC_RMS')
-    print "sample res is ", sample_res
+    #print "sample res is ", sample_res
     if sample_res is None:
         sample_res = get_full_model_parameter(silent_file, 'SAMPLE')
-    print "sample res is ", sample_res
+    #print "sample res is ", sample_res
     fixed_res = make_res_tag(working_res, exclude=sample_res)
     common_args = []
     common_args.append( '-in:file:silent_struct_type binary_rna' )
@@ -593,11 +615,11 @@ def create_bps_silent_file( silent_file ):
 def create_cluster_silent_file( silent_file ):
     common_args_file = create_common_args_file( silent_file )
     if 'swm' in silent_file:
-        silent_file_virt = None
-        if exists( silent_file.replace('.out', '_full_model.out') ):
-            silent_file_virt = silent_file.replace('.out', '_full_model.out')
-        else:
-            silent_file_virt = virtualize_missing_residues( silent_file )
+        #silent_file_virt = None
+        #if exists( silent_file.replace('.out', '_full_model.out') ):
+        #    silent_file_virt = silent_file.replace('.out', '_full_model.out')
+        #else:
+        silent_file_virt = virtualize_missing_residues( silent_file )
         if not silent_file_virt or not exists( silent_file_virt ):
             return silent_file
         silent_file = silent_file_virt
@@ -647,8 +669,9 @@ def get_lowest_energy_cluster_centers( nclusters=5 ):
         print "\n[WARNING] cluster_silent_file not found for target: %s" % get_working_target()
         cluster_silent_file = silent_file.replace('.out', '_full_model.out')    
     cluster_center_list = []
-    # AMW: plan is for get_score_data to know where to look.
-    score_types = ['score', get_rmsd_type(cluster_silent_file), 'N_WC', 'N_NWC', 'f_natWC', 'f_natNWC' ]
+    name_of_score_column = get_score_type(cluster_silent_file)
+    rmsd_type = get_rmsd_type(cluster_silent_file)
+    score_types = [name_of_score_column, rmsd_type, 'N_WC', 'N_NWC', 'f_natWC', 'f_natNWC' ]
     data = None
     if 'swm' in silent_file:
         # PROBLEM: we need to build/virtualize missing residues in SWM silent files before 
@@ -657,11 +680,13 @@ def get_lowest_energy_cluster_centers( nclusters=5 ):
         # SOLUTION: use 'build_full_model -virtualize_built' output for clustering, but get
         # original scores of poses, using the tags found in clusterer output
         tags = get_score_data( cluster_silent_file, colnames='description' )
-        data = get_score_data( silent_file.replace('.out', '_full_model.out'), colnames=score_types, sort='score', tags=tags, keep=nclusters )
+        data = get_score_data( silent_file.replace('.out', '_full_model.out'), colnames=score_types, sort=name_of_score_column, tags=tags, keep=nclusters )
     else:
-        data = get_score_data( cluster_silent_file, colnames=score_types, sort='score', keep=nclusters )
+        data = get_score_data( cluster_silent_file, colnames=score_types, sort=name_of_score_column, keep=nclusters )
     if data is None:
         return cluster_center_list
+    for datum in data:
+        print datum
     for idx, (energy, rmsd, nwc, nnwc, fwc, fnwc ) in enumerate(data, start=1):
         if idx > nclusters:
             break
@@ -707,9 +732,13 @@ def get_lowest_rmsd_model():
 
     '''
     silent_file = get_silent_file()
-    rmsd_type = get_rmsd_type( silent_file.replace('.out', '_full_model.out' ) )
+    # Use the original silent file if _full_model has not been created
+    # for example, FARFAR
+    if exists( silent_file.replace('.out', '_full_model.out' ) ):
+        silent_file = silent_file.replace('.out', '_full_model.out' )
+    rmsd_type = get_rmsd_type( silent_file )
     scoretypes = [ rmsd_type, "N_WC", "N_NWC", "f_natWC", "f_natNWC" ]
-    rmsd_scores = get_score_data( silent_file.replace('.out', '_full_model.out' ), colnames=scoretypes, sort=rmsd_type, keep=1 )
+    rmsd_scores = get_score_data( silent_file, colnames=scoretypes, sort=rmsd_type, keep=1 )
     #print rmsd_scores
     return [ score for score in rmsd_scores ]
 
@@ -721,14 +750,17 @@ def get_lowest_energy_sampled( opt_exp_inpaths ):
 
     '''
     silent_file = get_silent_file()
-    scoretypes = [ "score", "N_WC", "N_NWC", "f_natWC", "f_natNWC" ]
-    [energy, nwc, nnwc, fwc, fnwc ]= get_score_data( silent_file.replace('.out', '_full_model.out'), colnames=scoretypes, sort='score', keep=1 )
+    if exists( silent_file.replace('.out', '_full_model.out') ):
+        silent_file = silent_file.replace('.out', '_full_model.out')
+    name_of_score_column = get_score_type(silent_file)
+    scoretypes = [ name_of_score_column, "N_WC", "N_NWC", "f_natWC", "f_natNWC" ]
+    [energy, nwc, nnwc, fwc, fnwc ]= get_score_data( silent_file, colnames=scoretypes, sort=name_of_score_column, keep=1 )
     if energy is None:
         return [ None, None, None, None, None, None ]
     opt_exp_energy = get_opt_exp_score( opt_exp_inpaths )
     if opt_exp_energy is None:
         return [ energy, nwc, nnwc, fwc, fnwc, None ]
     energy_gap = energy - opt_exp_energy
-    return [ energy, nwc, nnwc, fwc, fnwc, energy_gap ]
+    return [ nwc, nnwc, fwc, fnwc, energy, energy_gap ]
 
 

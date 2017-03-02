@@ -38,10 +38,13 @@ def make_plots(argv):
 
 	# check options
 	inpaths = [abspath(x) for x in inpaths if exists(x) and isdir(x)]
+	print inpaths
 	if targets[0] != '*':
 		targets = targets
-	elif target_files is not None:
-		targets = get_target_names( target_files )
+	# This actually can't be used... its default value is not None, so
+	# it prevents inpath specification
+	#elif target_files is not None:
+	#	targets = get_target_names( target_files )
 	else:
 		targets = get_target_names( target_files, inpaths )
 	for target in targets:

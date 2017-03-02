@@ -146,10 +146,11 @@ def get_target_names( target_files, inpaths = None ):
         if inpaths:
                 return get_target_names_from_inpaths( inpaths )
 	target_names = []
+	print target_files
 	for file_name in target_files:
-		if '..' not in file_name:
-                        input_dir = get_path_to_dir(['stepwise_benchmark','benchmark']) + '/input_files/'
-                        file_name = input_dir + basename(file_name)
+		#if '..' not in file_name:
+                #        input_dir = get_path_to_dir(['stepwise_benchmark','benchmark']) + '/input_files/'
+                #        file_name = input_dir + basename(file_name)
 		target_names = get_target_names_from_file( file_name, target_names )
 	return target_names
 
@@ -159,7 +160,9 @@ def get_target_names_from_inpaths( inpaths ):
         target_names = []
         for inpath in inpaths:
                 target_names += glob.glob('/'.join([inpath, '*']))
+	print target_names
         target_names = list(set(map(basename, filter(isdir, target_names))))
+	print target_names
         return target_names
 
 ###########################################################
@@ -303,7 +306,10 @@ def setup_pdf_page( inpaths, targets, pdfname = None ):
 	if '/' in pdfname and exists(dirname(pdfname)):
 		fullpdfname = pdfname
 	else:
-		figure_dir = get_path_to_dir(['stepwise_benchmark','benchmark']) + '/Figures/'
+		start = get_path_to_dir(['stepwise_benchmark','benchmark'])
+		# If this fails dump to current location
+		if start is None: figure_dir = './'
+		else: figure_dir = start + '/Figures/'
 		fullpdfname = figure_dir + pdfname
 	try:
 		pp = PdfPages( fullpdfname )
@@ -333,7 +339,10 @@ def get_colorcode( size, options=None ):
 ###########################################################
 
 def get_title( target ):
-	names = get_path_to_dir(['stepwise_benchmark','benchmark']) + '/scripts/python/plot_util/titles.txt'
+	try:
+		names = get_path_to_dir(['stepwise_benchmark','benchmark']) + '/scripts/python/plot_util/titles.txt'
+	except:
+		names = '~/stepwise_benchmark/scripts/python/plot_util/titles.txt'
 	try:
 		lines = open( names, 'r' ).readlines()
 	except:

@@ -612,7 +612,7 @@ for target in targets:
         fid = open( '%s/flags' % target.name, 'w' )
         fid.write( '-fasta %s.fasta\n' % target.name )
         if len( target.native ) > 0:
-            fid.write( '-working_native %s\n' % basename( target.working_native ) );
+            fid.write( '-native %s\n' % basename( target.working_native ) );
         add_start_files_flag( fid, start_files )
         fid.write( '-working_res %s\n' % target.working_res.replace( ',',' ') )
         add_block_stack_flags( args, target, fid )
