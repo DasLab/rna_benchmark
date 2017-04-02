@@ -35,7 +35,6 @@ def make_plots(argv):
                 print " * importing seaborn as sns"
                 import seaborn as sns
 
-
 	# check options
 	inpaths = [abspath(x) for x in inpaths if exists(x) and isdir(x)]
 	if targets[0] != '*':
@@ -53,7 +52,7 @@ def make_plots(argv):
 	inpaths = [x for x in inpaths if x in data.keys()]
 	nplots = len(set([k for v in data.values() for k in v.keys()]))
         if ( nplots == 0 ):
-                print "You need to specify -target_files"
+                print "You need to specify -target_files, or your inpaths are nt valid."
                 exit
 
 	# get and print out runtimes, stored in the silent files

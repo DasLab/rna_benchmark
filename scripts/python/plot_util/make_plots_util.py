@@ -150,7 +150,7 @@ def get_target_names( target_files, inpaths = None ):
 		if '..' not in file_name:
                         input_dir = get_path_to_dir(['stepwise_benchmark','benchmark']) + '/input_files/'
                         file_name = input_dir + basename(file_name)
-		target_names = get_target_names_from_file( file_name, target_names )
+		target_names += get_target_names_from_file( file_name, target_names )
 	return target_names
 
 ###########################################################
@@ -278,7 +278,7 @@ def finalize_figure( fig, nplots, nrows, ncols, options=None ):
 		    get_date(),
 		    horizontalalignment='right',
 		    fontsize='small')
-	
+
                 # setup global legend based on inpaths
                 legend_size = 6
                 plot_idx = nplots - 1 if ncols > 1 else nplots
