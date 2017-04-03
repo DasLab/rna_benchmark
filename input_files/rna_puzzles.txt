@@ -1,7 +1,37 @@
+##############################
+# VS ribozyme.
+##############################
+# Checked against Fang-Chieh Chou's BioX3 directory
+# Crystallized as dimer
+# As test puzzle, model as 'pseudomonomer' *without* the basal 3-way junction.
+# Note that also have HRF data from this one, as well as a mutate-and-map tertiary-contact inference.
 Name:          rnapz7_vsribo_pseudomonomer
-Sequence:      gcgaagggcgucgucggcccaagc,guaagcagggaacucaccuccaaugaaaca,cauugucguagcaguugacuacuguuaugugauugguagaggcuaagugacgguauuggcguaagccaauaccgcagcacagcacaagcccgcuugc
-Secstruct:     ((...((((...[[[.))))..)),((((((.(((..((((((..(((((.....,))))).(((((((((.]]].))))))))).....))).)))((...(((.((((((((((....))))))))))...))).)).....)))))))))
-Working_res:   A:618-641,A:646-675,A:681-777
+Sequence:      gcgaagggcgucgucggcccaagcgguaguaagcagggaacucaccuccaaugaaaca,cauugucguagcaguugacuacuguuaugugauugguagaggcuaagugacgguauuggcguaagccaauaccgcagcacagcacaagcccgcuugc
+Secstruct:     ((...((((...[[[.))))..))....((((((.(((..((((((..(((((.....,))))).(((((((((.]]].))))))))).....))).)))((...(((.((((((((((....))))))))))...))).)).....)))))))))
+Working_res:   A:618-675,A:681-777
 Input_res:     -
 Native:        4r4v_pseudomonomer_full_model.pdb
 Extra_flags:   -
+
+##############################
+# SAM I-IV riboswitch aptamer
+##############################
+# Checked against Fang-Chieh Chou's BioX3 directory
+# We had an extra A-U pair in the PK
+# Note that we also have HRF data for this one.
+# Final crystallized construct had an extra G at position 91 -- excise it.
+# Final crystallized construct has A at the end instead of U. Thread it on here.
+# Should get SAM in here...
+# Would be good test case for auto-parsing into SWM.
+# Issues:
+#  -align_pdb is not working? want to keep 'core' fixed during assembly.
+#  should automatically disallow overlap of -input_pdb and HELIX with core, P4-loop, and P2-loop --> is causing problem.
+#  clear fold-tree issues (chains with no connections -- may have sprouted off input_pdb?)
+# 
+Name:          rnapz8_sam_I_IV
+Sequence:      ggaucacgagggggagaccccggcaaccugggacggacacccaaggugcucacaccggagacgguggauccggcccgagagggcaacgaaguccgu
+Secstruct:     (((((....((((....))))((((.((((((.[[[[[.))).)))))))..(((((....)))))))))).((((....))))......]]]]].
+Working_res:   A:1-96
+Input_res:     -
+Native:        exciseG91_4OQU_renumber_thread.pdb
+Extra_flags:   -input_pdb P4-loop.pdb P2-loop.pdb core.pdb -align_pdb core.pdb
