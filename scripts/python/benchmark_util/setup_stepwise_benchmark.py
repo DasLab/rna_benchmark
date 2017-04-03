@@ -488,9 +488,11 @@ for target in targets:
         if '-align_pdb' in extra_flags_benchmark: extra_flags_benchmark['-align_pdb'] = basename(target.align_pdb)
         infiles.append(target.align_pdb)
     if '-input_pdb' in target.extra_flags:
-        input_pdb = inpath+'/'+target.extra_flags['-input_pdb']
-        assert( exists(input_pdb) )
-        infiles.append(input_pdb)
+        for input_pdb_file in string.split( target.extra_flags['-input_pdb'] ):
+            input_pdb = inpath+'/'+input_pdb_file
+            assert( exists(input_pdb) )
+            infiles.append(input_pdb)
+            start_files.append( input_pdb )
     os.system( 'cp %s %s/ ' % (' '.join(infiles), dirname) )
 
     def add_block_stack_flags( args, target, fid ):
@@ -526,6 +528,7 @@ for target in targets:
         for flag in extra_flags.keys():#parse_flags( extra_flags ):
             extra_flags[ flag ] = extra_flags[ flag ].replace('True','true').replace('False','false')
             if flag == '-block_stack_off': continue
+            if flag == '-input_pdb': continue # handled by "-s" start_files
             if ( args.no_align_pdb and flag.find( '-align_pdb' ) > -1 ): continue
             fid.write( flag+" "+extra_flags[ flag ]+"\n" )
 
