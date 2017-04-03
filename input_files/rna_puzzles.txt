@@ -1,0 +1,7 @@
+Name:          rnapz7_vsribo_pseudomonomer
+Sequence:      gcgaagggcgucgucggcccaagc,guaagcagggaacucaccuccaaugaaaca,cauugucguagcaguugacuacuguuaugugauugguagaggcuaagugacgguauuggcguaagccaauaccgcagcacagcacaagcccgcuugc
+Secstruct:     ((...((((...[[[.))))..)),((((((.(((..((((((..(((((.....,))))).(((((((((.]]].))))))))).....))).)))((...(((.((((((((((....))))))))))...))).)).....)))))))))
+Working_res:   A:618-641,A:646-675,A:681-777
+Input_res:     -
+Native:        4r4v_pseudomonomer_full_model.pdb
+Extra_flags:   -

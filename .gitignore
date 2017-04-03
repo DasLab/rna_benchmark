@@ -5,5 +5,6 @@ INSTALL
 .DS*
 *~
 *#
+.#*
 test/tempdiff
 bin

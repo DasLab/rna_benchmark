@@ -142,9 +142,13 @@ for target in targets:
     assert( target.native != '-' ) # for now, require a native, since this is a benchmark.
     prefix = '%s/%s_NATIVE_' % ( inpath, target.name)
     target.working_native = slice_out( inpath, prefix, target.native, string.join( working_res_blocks ) )
-    # We need to sort the sequences first. That's absurd, of course, but otherwise we'd need a
-    # vastly more clever sequence determination algorithm. That's a TODO.
-    assert( sorted(string.join(sequences,'')) == sorted(string.join(get_sequences( target.working_native )[0],'')) )
+    sort_sequence = ''.join(sequences)
+    sort_sequence_native = ''.join(get_sequences( target.working_native )[0])
+    if( sort_sequence !=  sort_sequence_native ):
+        print sort_sequence
+        print sort_sequence_native
+        print "Error in target sequence compared to native"
+        exit( 0 )
 
     # create starting PDBs
     target.input_pdbs = []
