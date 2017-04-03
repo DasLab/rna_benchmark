@@ -649,7 +649,9 @@ for target in targets:
     else:
 
         fid = open( '%s/README_SWM' % target.name, 'w' )
-        fid.write( os.environ['ROSETTA_BIN'] + 'stepwise @flags -out:file:silent swm_rebuild.out\n' )
+        rosetta_bin_dir = os.environ['ROSETTA_BIN']
+        if ( len( args.rosetta ) > 0 ): rosetta_bin_dir = args.rosetta+'/main/source/bin/'
+        fid.write( rosetta_bin_dir + 'stepwise @flags -out:file:silent swm_rebuild.out\n' )
         fid.close()
 
         fid = open( '%s/flags' % target.name, 'w' )
