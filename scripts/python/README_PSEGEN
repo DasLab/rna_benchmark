@@ -1,0 +1,37 @@
+#!/bin/bash
+
+
+# loop over benchmark info files (i.e. chalenges.txt, etc.)
+
+# OK, because of the possibility of inconsistently formatted
+# input directories, I am gonna list SPECIFIC input files.
+# (For example, one of the 1gid directories doesn't list its
+# PDBs as NATIVE 
+
+# Old condition used to address this, doesn't work
+# There may not be any "NATIVE" pdbs (old naming style)
+# At the moment, don't handle them -- just continue
+#if [ "`echo *NATIVE*pdb`" == "*NATIVE*pdb" ] ; then
+#if not compgen -G "*NATIVE*pdb" ; then
+#    #cd ../../
+#    continue
+#fi
+
+for BENCHMARK_FILE in input_files/favorites.txt input_files/favorites2.txt ; do 
+    
+    cd ${BENCHMARK_FILE/.txt//}
+    # cd into benchmark dir
+    
+    rm README.md
+    # for each motif target dir with a NATIVE-*.pdb
+    for NATIVE_PDB in `ls *NATIVE*.pdb` ; do
+    
+	# run pymol on native pdb, run rfsi4 function (from pymol_daslab), save pngs
+	pymol -pc ${NATIVE_PDB} -d "rr() ; rfsi4() ; save ${NATIVE_PDB/.pdb/.pse} ; rsave('${NATIVE_PDB/.pdb/.png}') ; quit" ; 
+	
+	echo ${NATIVE_PDB/NATIVE*//} >> README.md
+        echo "![native structure of ${NATIVE_PDB/NATIVE*//}](${NATIVE_PDB/.pdb/.png})" >> README.md
+    done  
+    # cd out of benchmark dir 
+    cd ../..
+done
