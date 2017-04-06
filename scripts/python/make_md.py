@@ -35,6 +35,11 @@ with open("README.md", "w") as out:
 			out.write( data_str )
 		else:
 			out.write( "%s</tr>\n" % data_str )
+	# finish off the row if the glob has a remainder
+	if len(glob.glob("*NATIVE*.pdb")) % 3 = 1:
+		out.write("<td></td><td></td></tr>\n")
+	elif len(glob.glob("*NATIVE*.pdb")) % 3 = 2:
+		out.write("<td></td></tr>\n")
 	out.write("</table>\n")	
 
         #echo "![native structure of ${NATIVE_PDB/NATIVE*//}](${NATIVE_PDB/.pdb/.png})" >> README.md
