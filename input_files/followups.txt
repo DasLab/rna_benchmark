@@ -10,6 +10,7 @@ Working_res:   R:118-128,R:194-203
 Input_res:     -
 Native:        2r8s_RNA.pdb
 Align_res:     R:118-121,R:127-128,R:194-195,R:200-203
+Description:   J5/5a "hinge" from the P4-P6 domain	
 Extra_flags:   -
 
 Name:          gg_mismatch_fixed
@@ -18,6 +19,7 @@ Secstruct:     ((.((,)).))
 Working_res:   A:2-6,B:5-9
 Input_res:     A:2-3,A:5-6,B:5-6,B:8-9
 Native:        1f5g.pdb
+Description:   G(syn)-G(anti) conformation of non-canonical guanosine-guanosine base pair
 Extra_flags:   -
 
 Name:          tandem_ga_imino_fixed
@@ -26,6 +28,7 @@ Secstruct:     ((..((,))..))
 Working_res:   A:2-7,B:10-15
 Input_res:     A:2-3,A:6-7,B:10-11,B:14-15
 Native:        1mis_RNA.pdb
+Description:   Imino conformation of tandem G-A base pair steps
 Extra_flags:   -
 
 Name:          tandem_ga_sheared_fixed
@@ -34,6 +37,7 @@ Secstruct:     ((..((,))..))
 Working_res:   A:2-7,B:10-15
 Input_res:     A:2-3,A:6-7,B:10-11,B:14-15
 Native:        1yfv_RNA.pdb
+Description:   Sheared conformation of tandem G-A base pair steps
 Extra_flags:   -
 
 Name:          j44a_p4p6_fixed
@@ -42,6 +46,7 @@ Secstruct:     ((...(((,)))..))
 Working_res:   A:111-118,A:203-209
 Input_res:     A:111-112,A:116-118,A:203-205,A:208-209
 Native:        1gid_RNAA.pdb
+Description:   J4/4a from P4-P6 domain
 Extra_flags:   -
 
 Name:          just_tr_P4P6_fixed
@@ -50,6 +55,7 @@ Secstruct:     ((...(((,)))..))
 Working_res:   R:222-229,R:245-251
 Input_res:     R:222-223,R:227-229,R:245-247,R:250-251
 Native:        2r8s_RNA.pdb
+Description:   Receptor motif of canonical 11-nt tetraloop-receptor module in P4-P6 domain
 Extra_flags:   -
 
 Name:          r2_4x4_fixed
@@ -58,6 +64,7 @@ Secstruct:     ((....((,))....))
 Working_res:   A:2-9,B:13-20
 Input_res:     A:2-3,A:8-9,B:13-14,B:19-20
 Native:        2l8f_RNA.pdb
+Description:   4-by-4 nucleotide RNA internal loop from an R2 retrotransposon
 Extra_flags:   -
 
 Name:          loopE_fixed
@@ -66,6 +73,7 @@ Secstruct:     ((.......((,)).......))
 Working_res:   A:70-80,B:96-106
 Input_res:     A:70-71,A:79-80,B:96-97,B:105-106
 Native:        354d_RNA.pdb
+Description:   Loop E motif
 Extra_flags:   -
 
 Name:          hiv_rre_fixed
@@ -74,6 +82,7 @@ Secstruct:     ((..((,))...))
 Working_res:   A:45-50,B:69-75
 Input_res:     A:45-46,A:49-50,B:69-70,B:74-75
 Native:        1csl_RNA.pdb
+Description:   Rev response element high affinity site
 Extra_flags:   -
 
 Name:          hammerhead_tert_align
@@ -83,6 +92,7 @@ Working_res:   A:5-10,A:24-33,B:11-14
 Input_res:     -
 Align_res:     A:9-10,A:24-25,A:32-33,B:11-12
 Native:        2oeu_RNA.pdb
+Description:   Catalytic-like conformation, tertiary interaction in hammerhead ribozyme
 Extra_flags:   -
 
 Name:          t_loop_fixed
@@ -91,6 +101,7 @@ Secstruct:     .,((.......))
 Working_res:   A:18,A:52-62
 Input_res:     A:18,A:52-53,A:61-62
 Native:        3l0u_RNA.pdb
+Description:   T-loop from tRNA phe
 Extra_flags:   -
 
 Name:          t_loop_align
@@ -100,6 +111,7 @@ Working_res:   A:18,A:52-62
 Input_res:     -
 Native:        3l0u_RNA.pdb
 Align_res:     A:18,A:52-53,A:61-62
+Description:   T-loop from tRNA phe
 Extra_flags:   -
 
 Name:          gir1_p2.1p5_kiss_fixed
@@ -108,6 +120,7 @@ Secstruct:     ((....[[.)),((...]].))
 Working_res:   A:22-32,A:76-85
 Input_res:     A:22-23,A:31-32,A:76-77,A:84-85
 Native:        4P8Z.pdb
+Description:   P2.1/P5 "kissing" interaction from GIR1 lariat-capping ribozyme
 Extra_flags:   -allow_complex_loop_graph
 
 Name:          gir1_p2p9_gaaa_minor_fixed
@@ -116,6 +129,7 @@ Secstruct:     ((..((,((....)),))..))
 Working_res:   A:4-9,A:156-163,A:180-185
 Input_res:     A:8-9,A:156-157,A:162-163,A:180-181
 Native:        4P8Z.pdb
+Description:   P2/P9 GAAA docking interaction from GIR1 lariat-capping ribozyme
 Extra_flags:   -
 
 Name:          gagu_forcesyn_blockstackU
@@ -124,6 +138,7 @@ Secstruct:     ((....((,))....))
 Working_res:   A:2-9,B:13-20
 Input_res:     -
 Native:        2lx1_RNA.pdb
+Description:   Major conformation of internal loop from RNA structural switch, with stacking blocked on U
 Extra_flags:   -force_syn_chi_res_list A:4 A:6 B:15 B:17 -block_stack_above_res A:7 B:18  -block_stack_below_res A:7 B:18
 
 Name:          kink_turn_align
@@ -133,6 +148,7 @@ Working_res:   A:16-22,A:30-39
 Input_res:     -
 Native:        2gis_RNA.pdb
 Align_res:     A:16-17,A:21-22,A:30-31,A:38-39
+Description:   Kink-turn motif derived from SAM-I riboswitch
 Extra_flags:   -
 
 Name:          VS_rbzm_P2P3P6_fixed
@@ -141,6 +157,7 @@ Secstruct:     ((..((,))((,)).....))
 Working_res:   A:654-659,A:715-718,A:757-765
 Input_res:     A:654-655,A:658-659,A:715-718,A:757-758,A:764-765
 Native:        4r4v.pdb
+Description:   VS ribozyme three-way-junction between P2, P3, and P6
 Extra_flags:   -
 
 Name:          VS_rbzm_P3P4P5_fixed
@@ -149,6 +166,7 @@ Secstruct:     ((..((,))..((,))......))
 Working_res:   A:662-667,A:679-684,A:702-711
 Input_res:     A:662-663,A:666-667,A:679-680,A:683-684,A:702-703,A:710-711
 Native:        4r4v.pdb
+Description:   VS ribozyme three-way-junction between P3, P4, and P5
 Extra_flags:   -
 
 Name:          VS_rbzm_P2P3P6_align
@@ -158,6 +176,7 @@ Working_res:   A:654-659,A:715-718,A:757-765
 Input_res:     -
 Align_res:     A:654-655,A:658-659,A:715-718,A:757-758,A:764-765
 Native:        4r4v.pdb
+Description:   VS ribozyme three-way-junction between P2, P3, and P6
 Extra_flags:   -
 
 Name:          VS_rbzm_P3P4P5_align
@@ -167,6 +186,7 @@ Working_res:   A:662-667,A:679-684,A:702-711
 Input_res:     -
 Align_res:     A:662-663,A:666-667,A:679-680,A:683-684,A:702-703,A:710-711
 Native:        4r4v.pdb
+Description:   VS ribozyme three-way-junction between P3, P4, and P5
 Extra_flags:   -
 
 
@@ -176,6 +196,7 @@ Secstruct:     ((,((..[[[[...)),))...]]]]
 Working_res:   A:5-6,A:27-39,A:49-57
 Input_res:     A:5-6,A:27-28,A:38-39,A:49-50
 Native:        5tpy.pdb
+Description:   Zika xrRNA pseudoknot orientation puzzle
 Extra_flags:   -allow_complex_loop_graph
 
 
@@ -185,6 +206,7 @@ Secstruct:     (...,...)
 Working_res:   E:1-4,F:3-6
 Input_res:     -
 Native:        2gxb.pdb
+Description:   A Z-form cg helix, with a repaired native conformation
 Extra_flags:   -sample_sugar_res E:1-4 F:3-6  -force_syn_chi_res_list E:2 E:4 F:4 F:6 -block_stack_off
 
 Name:          parallel_AA
@@ -193,6 +215,7 @@ Secstruct:     ....,....
 Working_res:   A:1-4,B:1-4
 Input_res:     A:1,B:1
 Native:        4jrd.pdb
+Description:   A parallel helix of adenosine, some of which are protonated
 Extra_flags:   -
 
 Name:          bulged_tetraplex
@@ -201,6 +224,7 @@ Secstruct:     ...,...,...,...
 Working_res:   A:2-4,B:2-4,C:2-4,D:2-4
 Input_res:     A:2,B:2,C:2,D:2
 Native:        1p79_tetrad.pdb
+Description:   A tetraplex with a bulge
 Extra_flags:   -block_stack_above_res A:2 B:2 C:2 D:2 
 
 
