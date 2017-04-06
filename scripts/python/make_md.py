@@ -1,5 +1,25 @@
 #!/usr/bin/python
-import sys, re, glob
+import sys, re, glob, os
+
+# first, get descriptions
+pwd = os.getcwd()
+print pwd
+
+descriptions_for_puzzle = {}
+with open("%s.txt" % pwd) as input_file:
+	lines = input_file.readlines()
+	# Let's just assume description comes after name. 
+	# In fact, it should be penultimate.
+	remember_key = None
+	for i, line in enumerate(lines):
+		if line[0:4] == "Name": remember_key = line.split(": ")[1].strip()
+		if line[0:11] == "Description":
+			try:
+				descriptions_for_puzzle[remember_key] = line.split(": ")[1].strip()
+				remember_key = None
+			except:
+				continue
+
 
 n_cols=3
 i=1
@@ -7,7 +27,8 @@ with open("README.md", "w") as out:
 	out.write("<table>\n")
 	for i, native_pdb in enumerate(glob.glob("*NATIVE*.pdb")):
 		#native_pdb = re.sub("\_", "\\\_", native_pdb)
-		data_str = "<td align=\"center\">%s<br /><img src=%s /></td>" % (re.sub("_NATIVE.*", "", native_pdb), re.sub(".pdb", ".png", native_pdb))
+		puzzle_name = re.sub("_NATIVE.*", "", native_pdb)
+		data_str = "<td align=\"center\">%s<br /><img src=%s /><br />%s</td>" % (puzzle_name, re.sub(".pdb", ".png", native_pdb), descriptions_for_puzzle[puzzle_name])
 		if i % 3 == 0:
 			out.write( "<tr>%s" % data_str )
 		elif i % 3 == 1:
