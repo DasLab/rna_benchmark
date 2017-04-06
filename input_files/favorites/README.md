@@ -1,8 +1,6 @@
-gagua\_pentaloop\_||gcaa\_tetraloop\_||tandem\_ga\_imino\_
----------------------------------------------
-j44a\_p4p6\_||r2\_4x4\_||uucg\_tetraloop\_
----------------------------------------------
-srp\_domainIV\_||tandem\_ga\_sheared\_||srl\_fixed\_
----------------------------------------------
-srl\_free\_bulgedG\_||gg\_mismatch\_||srp\_domainIV\_fixed\_
----------------------------------------------
+<table>
+<tr><td>gagua\_pentaloop\_</td><td>gcaa\_tetraloop\_</td><td>tandem\_ga\_imino\_</td></tr>
+<tr><td>j44a\_p4p6\_</td><td>r2\_4x4\_</td><td>uucg\_tetraloop\_</td></tr>
+<tr><td>srp\_domainIV\_</td><td>tandem\_ga\_sheared\_</td><td>srl\_fixed\_</td></tr>
+<tr><td>srl\_free\_bulgedG\_</td><td>gg\_mismatch\_</td><td>srp\_domainIV\_fixed\_</td></tr>
+</table>
