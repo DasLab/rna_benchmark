@@ -28,18 +28,18 @@ with open("README.md", "w") as out:
 	for i, native_pdb in enumerate(glob.glob("*NATIVE*.pdb")):
 		#native_pdb = re.sub("\_", "\\\_", native_pdb)
 		puzzle_name = re.sub("_NATIVE.*", "", native_pdb)
-		data_str = "<td align=\"center\">%s<br /><img src=%s /><br />%s</td>" % (puzzle_name, re.sub(".pdb", ".png", native_pdb), descriptions_for_puzzle[puzzle_name])
+		data_str = "\t\t<td align=\"center\">%s<br /><img src=\"%s\" /><br />%s</td>\n" % (puzzle_name, re.sub(".pdb", ".png", native_pdb), descriptions_for_puzzle[puzzle_name])
 		if i % 3 == 0:
-			out.write( "<tr>%s" % data_str )
+			out.write( "\t<tr>\n%s" % data_str )
 		elif i % 3 == 1:
 			out.write( data_str )
 		else:
-			out.write( "%s</tr>\n" % data_str )
+			out.write( "%s\t</tr>\n" % data_str )
 	# finish off the row if the glob has a remainder
-	if len(glob.glob("*NATIVE*.pdb")) % 3 = 1:
-		out.write("<td></td><td></td></tr>\n")
-	elif len(glob.glob("*NATIVE*.pdb")) % 3 = 2:
-		out.write("<td></td></tr>\n")
+	if len(glob.glob("*NATIVE*.pdb")) % 3 == 1:
+		out.write("\t\t<td></td>\n\t\t<td></td>\n\t</tr>\n")
+	elif len(glob.glob("*NATIVE*.pdb")) % 3 == 2:
+		out.write("\t\t<td></td>\n\t</tr>\n")
 	out.write("</table>\n")	
 
         #echo "![native structure of ${NATIVE_PDB/NATIVE*//}](${NATIVE_PDB/.pdb/.png})" >> README.md
