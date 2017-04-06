@@ -25,13 +25,14 @@ for BENCHMARK_FILE in input_files/favorites.txt input_files/favorites2.txt ; do
     rm README.md
     # for each motif target dir with a NATIVE-*.pdb
     for NATIVE_PDB in `ls *NATIVE*.pdb` ; do
-    
+        echo ""
 	# run pymol on native pdb, run rfsi4 function (from pymol_daslab), save pngs
-	pymol -pc ${NATIVE_PDB} -d "rr() ; rfsi4() ; save ${NATIVE_PDB/.pdb/.pse} ; rsave('${NATIVE_PDB/.pdb/.png}') ; quit" ; 
+	#pymol -pc ${NATIVE_PDB} -d "rr() ; rfsi4() ; save ${NATIVE_PDB/.pdb/.pse} ; rsave('${NATIVE_PDB/.pdb/.png}') ; quit" ; 
 	
-	echo ${NATIVE_PDB/NATIVE*//} >> README.md
-        echo "![native structure of ${NATIVE_PDB/NATIVE*//}](${NATIVE_PDB/.pdb/.png})" >> README.md
     done  
+
+    python ../../scripts/python/make_md.py ./
+
     # cd out of benchmark dir 
     cd ../..
 done
