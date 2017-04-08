@@ -8,7 +8,7 @@
 ##########################################################
 
 from sys import exit
-from os import system, popen
+from os import system, popen, getcwd
 import subprocess
 from os.path import exists, dirname, basename, abspath, isdir
 import string
@@ -148,7 +148,7 @@ def get_target_names( target_files, inpaths = None ):
 	target_names = []
 	for file_name in target_files:
 		if '..' not in file_name:
-                        input_dir = get_path_to_dir(['stepwise_benchmark','benchmark']) + '/input_files/'
+                        input_dir = get_path_to_benchmark_dir() + '/input_files/'
                         file_name = input_dir + basename(file_name)
 		target_names += get_target_names_from_file( file_name, target_names )
 	return target_names
@@ -173,9 +173,9 @@ def get_target_names_from_file( filename, target_names ):
 
 ###########################################################
 
-def get_path_to_dir( dirnames ):
+def get_path_to_benchmark_dir( dirnames = ['stepwise_benchmark','benchmark'] ):
 	for dirname in dirnames:
-		pwd = popen( 'pwd' ).readline()[:-1].split( '/' )
+		pwd = getcwd().split( '/' )
 		for subdir_idx, subdir in enumerate(pwd):
                         if dirname not in subdir:
                                 continue
@@ -290,7 +290,8 @@ def finalize_figure( fig, nplots, nrows, ncols, options=None ):
 ###########################################################
 
 def setup_pdf_page( inpaths, targets, pdfname = None ):
-	inpaths = [basename(x) for x in inpaths]
+        benchmark_dir = abspath(get_path_to_benchmark_dir())
+	inpaths = [ x.replace( benchmark_dir+'/', '' ).replace('new/','').replace('ref/','').replace('/','_') for x in inpaths]
 	if not pdfname:
                 pdfname = ''
 	        #if len( targets ) > 0 and targets[0] != '*': pdfname += string.join(targets, '_') + '_'
@@ -300,10 +301,10 @@ def setup_pdf_page( inpaths, targets, pdfname = None ):
 		#pdfname += '_' + '_vs_'.join(inpaths)
 		#pdfname = pdfname if pdfname[0] != '_' else pdfname[1:]
 	pdfname += '.pdf' if '.pdf' not in pdfname else ''
-	if '/' in pdfname and exists(dirname(pdfname)):
+	if '/'  in pdfname and exists(dirname(pdfname)):
 		fullpdfname = pdfname
 	else:
-		figure_dir = get_path_to_dir(['stepwise_benchmark','benchmark']) + '/Figures/'
+		figure_dir = get_path_to_benchmark_dir() + '/Figures/'
 		fullpdfname = figure_dir + pdfname
 	try:
 		pp = PdfPages( fullpdfname )
@@ -333,7 +334,7 @@ def get_colorcode( size, options=None ):
 ###########################################################
 
 def get_title( target ):
-	names = get_path_to_dir(['stepwise_benchmark','benchmark']) + '/scripts/python/plot_util/titles.txt'
+	names = get_path_to_benchmark_dir() + '/scripts/python/plot_util/titles.txt'
 	try:
 		lines = open( names, 'r' ).readlines()
 	except:
