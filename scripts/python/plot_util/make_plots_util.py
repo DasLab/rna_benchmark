@@ -289,17 +289,15 @@ def finalize_figure( fig, nplots, nrows, ncols, options=None ):
 
 ###########################################################
 
-def setup_pdf_page( inpaths, targets, pdfname = None ):
+def get_inpath_label( inpath ):
         benchmark_dir = abspath(get_path_to_benchmark_dir())
-	inpaths = [ x.replace( benchmark_dir+'/', '' ).replace('new/','').replace('ref/','').replace('/','_') for x in inpaths]
+        return inpath.replace( benchmark_dir+'/', '' ).replace('new/','').replace('ref/','')
+
+def setup_pdf_page( inpaths, targets, pdfname = None ):
+	inpaths = [ get_inpath_label( inpath ).replace('/','_') for inpath in inpaths]
 	if not pdfname:
                 pdfname = ''
-	        #if len( targets ) > 0 and targets[0] != '*': pdfname += string.join(targets, '_') + '_'
 	        pdfname += string.join(inpaths, '_vs_') + '.pdf'
-                # following was from calebgeniesse -- includes all target names -- huge filename!
-		#pdfname = '_'.join(targets)
-		#pdfname += '_' + '_vs_'.join(inpaths)
-		#pdfname = pdfname if pdfname[0] != '_' else pdfname[1:]
 	pdfname += '.pdf' if '.pdf' not in pdfname else ''
 	if '/'  in pdfname and exists(dirname(pdfname)):
 		fullpdfname = pdfname

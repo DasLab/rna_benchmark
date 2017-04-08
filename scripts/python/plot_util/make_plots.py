@@ -64,7 +64,7 @@ def make_plots(argv):
 	( pp, fullpdfname ) = setup_pdf_page( inpaths, targets, pdfname=pdfname )
 	( fig, nplots, nrows, ncols ) = setup_figure( nplots )
 	colorcode = get_colorcode( len(inpaths), options=options )
-        markersize = 4
+        markersize = options.markersize
 
 	xlabels = []
 	ylabels = []
@@ -89,10 +89,10 @@ def make_plots(argv):
 				ax.plot( None,
 					 None,
 					 marker='.',
-					 markersize=4,
+					 markersize=markersize,
 					 color=colorcode[inpath_idx],
 					 linestyle=' ',
-					 label=basename(inpath) )
+					 label=get_inpath_label(inpath) )
 				continue
 
 			# get index of first xvar/yvar found in score_labels
@@ -139,7 +139,7 @@ def make_plots(argv):
 				xvar_data.append( float(score[xvar_idx]) )
 				yvar_data.append( float(score[yvar_idx]) )
 
-                        label = basename(inpath)
+                        label = get_inpath_label(inpath)
                       	if options.seaborn is True:
                                 sns.set_style("darkgrid")
                                 sns.set_context("poster")
@@ -159,7 +159,8 @@ def make_plots(argv):
 				 markersize=markersize,
 				 color=colorcode[inpath_idx],
 				 linestyle=' ',
-				 label=label )
+			         label=label,
+                                 markeredgewidth=options.markeredgewidth)
 			handles.append(h)
 
                         if options.seaborn is False:
@@ -179,6 +180,8 @@ def make_plots(argv):
                         for ticklabel in ax.yaxis.get_ticklabels()+ax.xaxis.get_ticklabels():
                                 ticklabel.set_fontsize(6)
 			ax.set_xlim(0, 16)
+                        ylim = ax.get_ylim()
+                        if (ylim[1]-ylim[0] > 100 ): ax.set_ylim( [ sorted(yvar_data)[0]-5 ,sorted(yvar_data)[0]+95 ] )
 
                         if options.seaborn is True:
                                 ax.set_title( get_title(target), fontsize=20, weight='bold' )
@@ -285,6 +288,18 @@ def init_options_parser():
 		help='Use seaborn plotting styles.',
 		action = "store_true"
 	)
+        parser.add_argument(
+                '--markersize',
+                help='marker size (set to 4 for thick)',
+                type=int,
+                default=2
+        )
+        parser.add_argument(
+                '--markeredgewidth',
+                help='markeredgewidth (set to 0.5 for thin edge)',
+                type=float,
+                default=0
+        )
 	return parser
 
 
