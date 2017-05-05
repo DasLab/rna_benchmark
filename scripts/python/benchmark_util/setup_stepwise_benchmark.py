@@ -539,7 +539,7 @@ for target in targets:
             if ( not motif_mode_OK and '-motif_mode' in key ): continue
             if ( '#' in key ): continue
             if '-single_stranded_loop_mode' in key: continue ### SWA Specific
-            if '-score:weights' in key:
+            if '-score:weights' in key or '-weights' in key:
                 weights_file = value
                 if not exists(weights_file):
                     weights_file = os.environ['ROSETTA_DB_WEIGHTS'] + weights_file
