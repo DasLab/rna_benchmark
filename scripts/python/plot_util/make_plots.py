@@ -206,7 +206,6 @@ def make_plots(argv):
 	# finalize (adjust spacing, print date)
 	finalize_figure( fig, nplots, nrows, ncols, options=options )
 
-
 	# save as pdf and close
 	pp.savefig()
 	pp.close()
