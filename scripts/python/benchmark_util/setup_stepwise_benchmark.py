@@ -539,7 +539,7 @@ for target in targets:
             if ( not motif_mode_OK and '-motif_mode' in key ): continue
             if ( '#' in key ): continue
             if '-single_stranded_loop_mode' in key: continue ### SWA Specific
-            if '-score:weights' in key:
+            if '-score:weights' in key or '-weights' in key:
                 weights_file = value
                 if not exists(weights_file):
                     weights_file = os.environ['ROSETTA_DB_WEIGHTS'] + weights_file
@@ -656,7 +656,9 @@ for target in targets:
     else:
 
         fid = open( '%s/README_SWM' % target.name, 'w' )
-        fid.write( os.environ['ROSETTA_BIN'] + 'stepwise @flags -out:file:silent swm_rebuild.out\n' )
+        rosetta_bin_dir = os.environ['ROSETTA_BIN']
+        if ( len( args.rosetta ) > 0 ): rosetta_bin_dir = args.rosetta+'/main/source/bin/'
+        fid.write( rosetta_bin_dir + 'stepwise @flags -out:file:silent swm_rebuild.out\n' )
         fid.close()
 
         fid = open( '%s/flags' % target.name, 'w' )
