@@ -308,8 +308,9 @@ def setup_pdf_page( inpaths, targets, pdfname = None ):
 		pp = PdfPages( fullpdfname )
 	except IOError as err:
 		if 'File name too long' in err.args:
-			datetime_str = datetime.now().strftime("%Y%m%d-%H%M%S")
-			fullpdfname = figure_dir + 'make_plots_' + datetime_str + '.pdf'
+			#datetime_str = datetime.now().strftime("%Y%m%d-%H%M%S")
+			#fullpdfname = figure_dir + 'make_plots_' + datetime_str + '.pdf'
+                        fullpdfname = figure_dir + "comparisons_to_"+inpaths[-1]+'.pdf'
 			pp = PdfPages( fullpdfname )
 		else:
 			print "\nIOError", err
@@ -321,9 +322,10 @@ def setup_pdf_page( inpaths, targets, pdfname = None ):
 
 def get_colorcode( size, options=None ):
         if options and options.seaborn is True:
-                return ["#ff0000","#0000ff", "#696969"]
-	if size <= 2:
-		return [(0.0, 0.0, 0.0, 1.0), (1.0, 0.0, 0.0, 1.0)]
+                return ["#ff0000","#0000ff", "#228B22"]
+	if size <= 5:
+                favorite_colors = [(0.0, 0.0, 0.0, 1.0), (1.0, 0.0, 0.0, 1.0), (0.0, 0.5, 0.0 ), (0.0, 0.0, 1.0, 1.0), (1.0, 0.0, 1.0, 1.0 )]
+		return favorite_colors[0:size]
 	cmap = plt.get_cmap( 'hot' )
 	cnorm = colors.Normalize( vmin=0, vmax=size )
 	scalar_map = cmx.ScalarMappable( norm=cnorm, cmap=cmap )
