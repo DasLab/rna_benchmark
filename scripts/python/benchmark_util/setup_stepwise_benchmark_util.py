@@ -20,7 +20,7 @@ def safe_submit( command, allow_retry=False, max_retry=3 ):
     if isinstance(command, str):
         command = string.split(command)
     assert( isinstance(command, list) )
-    if not allow_retry: 
+    if not allow_retry:
         max_retry = 1
     for attempt in xrange(max_retry):
         stdout, stderr = Popen(command, stdout=PIPE, stderr=PIPE).communicate()
@@ -105,7 +105,7 @@ def parse_flags(substrings, replacements = {}):
     substrings = [s for s in substrings if s not in ['','-','#']]
     flags = []
     for idx, substring in enumerate(substrings):
-        if substring.startswith('-'):
+        if substring.startswith('-') and not substring[1].isdigit():
             flags.append([substring])
             continue
         if not len(flags):
@@ -115,12 +115,12 @@ def parse_flags(substrings, replacements = {}):
     return flags
 
 ###############################################################################
-def merge_pdbs(pdbs_in, pdb_out):                                       
-    if not isinstance(pdbs_in, list):                                   
-        pdbs_in = [ pdbs_in ]           
+def merge_pdbs(pdbs_in, pdb_out):
+    if not isinstance(pdbs_in, list):
+        pdbs_in = [ pdbs_in ]
     pdbs_in = ' '.join(pdbs_in)
-    system('cat %s > %s' % (pdbs_in, pdb_out))              
-    return pdb_out             
+    system('cat %s > %s' % (pdbs_in, pdb_out))
+    return pdb_out
 
 ###############################################################################
 def init_submit_files():
@@ -141,18 +141,18 @@ def init_submit_files():
 ### CLASSES
 ###############################################################################
 class FullModelInfo(object):
-    
+
     def __init__(self, name = None):
         self.name = name
         self.resnums = None
         self.chains = None
-             
+
     def set_resnums(self, resnums):
         self.resnums = resnums
-        
+
     def set_chains(self, chains):
         self.chains = chains
-        
+
     def extract_resnum_chains(self, resnum_chain_tag):
         resnums, chains = [], []
         if not isinstance(resnum_chain_tag, list):
@@ -164,7 +164,7 @@ class FullModelInfo(object):
     def conventional_tag_to_full(self, resnum_chain_tag):
         resnums, chains = self.extract_resnum_chains(resnum_chain_tag)
         return self.conventional_to_full(zip(resnums, chains))
-        
+
     def conventional_to_full(self, resnum_chain):
         '''
         Input: (res, chain) or [(res, chain), (res, chain)]
