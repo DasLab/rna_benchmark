@@ -144,6 +144,10 @@ for target in targets:
     target.working_native = slice_out( inpath, prefix, target.native, string.join( working_res_blocks ) )
     # We need to sort the sequences first. That's absurd, of course, but otherwise we'd need a
     # vastly more clever sequence determination algorithm. That's a TODO.
+    #print target.name, target.sequence, sorted(''.join(string.join(sequences,'')))
+    #print sorted(''.join(string.join(get_sequences( target.working_native )[0],''))) 
+    #print sequences
+    #print get_sequences( target.working_native )[0]
     assert( sorted(string.join(sequences,'')) == sorted(string.join(get_sequences( target.working_native )[0],'')) )
 
     # create starting PDBs
