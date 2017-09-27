@@ -267,7 +267,7 @@ Native:        5nom.pdb
 Extra_flags:   -
 
 Name:          G_riboswitch
-Sequence:      ggaucauauaaucgcguggauauggcacgcaaguuucuaccgggcaccguaaauguccgacuaugguc,X
+Sequence:      ggaucauauaaucgcguggauauggcacgcaaguuucuaccgggcaccguaaauguccgacuaugguc,g
 Secstruct:     .((((((((..(.(((((.....[[))))).)[.....)]((((((]].....))))))..))))))),.
 Working_res:   X:14-81,X:90
 Input_res:     -
@@ -276,7 +276,7 @@ Extra_flags:   -
 Align_res:     X:15-22,X:27-31,X:36-37,X:38-42,X:53-58,X:59-60,X:66-71,X:74-80 
 
 Name:          G_riboswitch_fixed
-Sequence:      ggaucauauaaucgcguggauauggcacgcaaguuucuaccgggcaccguaaauguccgacuaugguc,X
+Sequence:      ggaucauauaaucgcguggauauggcacgcaaguuucuaccgggcaccguaaauguccgacuaugguc,g
 Secstruct:     .((((((((..(.(((((.....[[))))).)[.....)]((((((]].....))))))..))))))),.
 Working_res:   X:14-81,X:90
 Input_res:     X:15-22,X:27-31,X:36-37,X:38-42,X:53-58,X:59-60,X:66-71,X:74-80 
@@ -284,10 +284,18 @@ Native:        1y27.pdb
 Extra_flags:   -
 
 Name:          G_riboswitch_justdock
-Sequence:      ggaucauauaaucgcguggauauggcacgcaaguuucuaccgggcaccguaaauguccgacuaugguc,X
+Sequence:      ggaucauauaaucgcguggauauggcacgcaaguuucuaccgggcaccguaaauguccgacuaugguc,g
 Secstruct:     .((((((((..(.(((((.....[[))))).)[.....)]((((((]].....))))))..))))))),.
 Working_res:   X:14-81,X:90
 Input_res:     X:14-81
 Native:        1y27.pdb
+Extra_flags:   -
+
+Name:          2primedeoxyguanosine_riboswitch
+Sequence:      ggccuuauacaggguagcauaaugggcuacugaccccgccuucaaaccuauuuggagacuauaagguc,X
+Secstruct:     ((((((((((..((((((.....[[))))))[.....)](((((((]]..)))))))..))))))))),.
+Working_res:   A:22-89,A:120
+Input_res:     -
+Native:        3ski.pdb
 Extra_flags:   -
 
