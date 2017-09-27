@@ -225,7 +225,6 @@ class Table(object):
 			self.add_row( row )
 		return
 
-
 ################################################################################
 ### HELPER FUNCTIONS
 ################################################################################
@@ -265,48 +264,61 @@ def get_target_names():
 
 ################################################################################
 def get_score_data( filename, colnames=['score'], sort=None, filters=None, tags=None, keep=None ):
-	if not isinstance(colnames, list):
-		colnames = [ colnames ]
-	data = []
-	colidx = None
-	with open( filename, 'r' ) as f:
-		for line in f:
-			if not "SCORE:" in line:
-				continue
-			cols = filter(None,[c.strip() for c in line.split()])
-			if not len(cols):
-				continue
-			if "description" in line:
-				colidx = map(cols.index, filter(cols.count, colnames))
-				continue
-			if tags and not any( t in line for t in tags ):
-				continue
-			data.append([])
-			for idx in colidx:
-				col = cols[idx]
-				try:
-					data[-1].append( float(col) )
-				except:
-					data[-1].append( col )
-			data[-1] = tuple(data[-1])
-	if filters is not None:
-		if not isinstance(filters, list):
-			filters = [ filters ] 
-		for idx, value in enumerate(filters):
-			if value is None:
-				continue
-			data = [d for d in data if d[idx] <= value]
-	if not len(data):
-		return None
-	if sort is not None:
-		sort = colnames.index(sort) if isinstance(sort, str) else sort-1
-		data = sorted(data, key=operator.itemgetter(sort))
-	if len(colidx) == 1:
-		data = [d[0] for d in data] 
-	if keep is not None:
-		keep = min(keep, len(data))
-		data = data[0] if keep == 1 else data[:keep]
-	return data
+    """
+    Gets a bunch of data out of a silent file. If the data is not present in the silent file,
+    opens the base pair analysis version fo that silent file. If that doesn't exist, make it.
+    """
+
+    if not isinstance(colnames, list):
+        colnames = [ colnames ]
+    data = []
+    colidx = None
+    with open( filename, 'r' ) as f:
+        for line in f:
+            if not "SCORE:" in line:
+                continue
+            cols = filter(None,[c.strip() for c in line.split()])
+            #print cols
+            if not len(cols):
+                continue
+            if "description" in line:
+                #print colnames
+                colidx = map(cols.index, filter(cols.count, colnames))
+                #print colidx
+                continue
+            if tags and not any( t in line for t in tags ):
+                continue
+            data.append([])
+            #print colidx
+            for idx in colidx:
+                col = cols[idx]
+                try:
+                    data[-1].append( float(col) )
+                except:
+                    data[-1].append( col )
+            #print data[-1]
+            data[-1] = tuple(data[-1])
+            #print data[-1]
+    
+    if filters is not None:
+        if not isinstance(filters, list):
+            filters = [ filters ] 
+        for idx, value in enumerate(filters):
+            if value is None:
+                continue
+            data = [d for d in data if d[idx] <= value]
+    if not len(data):
+        return None
+    if sort is not None:
+        sort = colnames.index(sort) if isinstance(sort, str) else sort-1
+        data = sorted(data, key=operator.itemgetter(sort))
+    if len(colidx) == 1:
+        data = [d[0] for d in data] 
+    if keep is not None:
+        keep = min(keep, len(data))
+        data = data[0] if keep == 1 else data[:keep]
+    #print "data to be returned", data
+    return data
 
 ################################################################################
 def get_rmsd_type( silent_file ):
@@ -399,22 +411,60 @@ def get_flag( flag ):
 
 ################################################################################
 def virtualize_missing_residues( silent_file ):
-	silent_file_out = silent_file.replace(".out","_full_model.out")
-	build_full_model_exe = get_rosetta_exe( "build_full_model" )
-	weights = None #get_flag( "-score:weights" ).split(' ')[-1]
-	torsion_potential = None #get_flag( "-score:rna_torsion_potential" ).split(' ')[-1]
-	command = Command( build_full_model_exe )
-	command.add_argument( "-in:file:silent", value=silent_file )
-	command.add_argument( "-out:file:silent", value=silent_file_out )
-	command.add_argument( "-out:overwrite", value="true" )
-	if weights is not None:
-		command.add_argument( "-score:weights", value=weights )
-	if torsion_potential is not None:
-		command.add_argument( "-score:rna_torsion_potential", value=torsion_potential )
-	command.add_argument( "-virtualize_built", value="true" )
-	command.save_logs()
-	success = command.submit()
-	return silent_file_out if success is True else None
+    silent_file_out = silent_file.replace(".out","_full_model.out")
+
+    #return silent_file_out # this has been done and takes so long... debugging.
+
+    #build_full_model_exe = get_rosetta_exe( "build_full_model" )
+    build_full_model_exe = "~/Rosetta/main/source/bin/build_full_model.default.linuxclangrelease" #get_rosetta_exe( "build_full_model" )
+    # IT HAS TO BE RIGHT
+    weights = "stepwise/rna/rna_res_level_energy4.wts" #get_flag( "-score:weights" ).split(' ')[-1]
+    torsion_potential = None #get_flag( "-score:rna_torsion_potential" ).split(' ')[-1]
+    command = Command( build_full_model_exe )
+    command.add_argument( "-in:file:silent", value=silent_file )
+    command.add_argument( "-in:file:fasta", value="*.fasta" )
+    command.add_argument( "-out:file:silent", value=silent_file_out )
+    command.add_argument( "-in:file:native", value=get_native_pdb() ) # for native base pairs
+    align_pdb = get_align_pdb()
+    if align_pdb is not None:
+        command.add_argument( "-align_pdb", value=align_pdb ) # for native base pairs
+    # avoid any FROM_SCRATCH
+    command.add_argument( "-stepwise:monte_carlo:from_scratch_frequency", value='0.0' ) 
+    command.add_argument( "-out:overwrite", value="true" )
+    if weights is not None:
+        #print "doing it, you turd"
+        command.add_argument( "-score:weights", value=weights )
+    if torsion_potential is not None:
+        command.add_argument( "-score:rna_torsion_potential", value=torsion_potential )
+    command.add_argument( "-virtualize_built", value="false" )
+    command.add_argument( "-fragment_assembly_mode", value="true" )
+    command.add_argument( "-caleb_legacy", value="false" )
+    command.add_argument( "-rna:evaluate_base_pairs", value="true" )
+    command.add_argument( "-superimpose_over_all", value="false" )
+    command.add_argument("-allow_complex_loop_graph", value="true" )
+    command.save_logs()
+    success = command.submit()
+
+    # This is the worst thing ever. We have to read through the resulting
+    # full model silent file and remove all NONCANONICAL_CONNECTION lines.
+    # Some PDB readin code fails to recognize them. There might be an issue
+    # in how they're being generated for some topologies in the first place
+    # (for example, G tetraplex has 'connections' between the four strands?!)
+    # but it's faster just to nuke them in the silent file than to do some
+    # major archaeology.
+    tempout = open( silent_file_out.replace( '.out', '.temptemptemp' ), 'w' )
+    lines = open( silent_file_out ).readlines()
+    for line in lines:
+        #if "NONCANONICAL_CONNECTION" in line: continue
+        if "OTHER_POSE" in line: continue
+        # Also may be necessary, or else "orphaned" score lines with missing 
+        # scoreterms will haunt us
+        if "description" in line and "N_WC" not in line: continue
+        tempout.write( line )
+    tempout.close()
+    
+    Command( "mv %s %s" % ( silent_file_out.replace( '.out', '.temptemptemp' ), silent_file_out ) ).submit()
+    return silent_file_out if success is True else None
 
 ################################################################################
 def get_full_model_parameter(silent_file, parameter):
@@ -618,5 +668,4 @@ def get_lowest_energy_sampled( opt_exp_inpaths ):
 		return [ energy, None ]
 	energy_gap = energy - opt_exp_energy
 	return [ energy, energy_gap ]
-
 
