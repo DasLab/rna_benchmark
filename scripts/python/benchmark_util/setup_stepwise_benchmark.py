@@ -236,61 +236,6 @@ for target in targets:
         print command
         os.system( command )
 
-
-    # following is now 'hard-coded' into Rosetta option '-motif_mode'
-    # deprecate this python block in early 2017 after testing -- rd2014
-    # AMW: recall that the length of the sequence is probably a lie.
-    #L = len( sequence_joined )
-    L = len( fasta_entities )
-    target.terminal_res = []
-    target.extra_min_res = []
-    target.block_stack_above_res = []
-    target.block_stack_below_res = []
-    def get_domain( m ):
-        for i, block in enumerate( input_resnum_fullmodel_by_block ):
-            if m in block: return i+1
-        return 0
-
-    for m in range( 1, L+1 ):
-        if ( m not in input_resnum_fullmodel ): continue
-        right_before_chainbreak = ( m == L or m in chainbreak_pos )
-        right_after_chainbreak  = ( m == 1 or m - 1 in chainbreak_pos )
-        prev_moving = ( m - 1 not in input_resnum_fullmodel or \
-            ( get_domain( m-1 )!=0 and get_domain( m )!=0 and get_domain( m-1 )!=get_domain(m) ) ) and \
-            ( m != 1 ) and not right_after_chainbreak
-        next_moving = ( m + 1 not in input_resnum_fullmodel or \
-            ( get_domain( m )!=0 and get_domain( m+1 )!=0 and get_domain( m )!=get_domain(m+1)  ) ) and \
-            ( m != L ) and not right_before_chainbreak
-
-        if right_after_chainbreak:
-            if not next_moving and not right_before_chainbreak:
-                target.block_stack_below_res.append( m )
-                target.terminal_res.append( m )
-            else:
-                # special case -- singlet base pairs cannot be called 'terminal' but can enforce block_stack at 5' nts.
-                   for stem in stems:
-                    if m == stem[0][0] or m == stem[-1][1]:
-                        target.block_stack_below_res.append( m )
-                        break
-
-        if right_before_chainbreak:
-            if not prev_moving and not right_after_chainbreak:
-                target.block_stack_above_res.append( m )
-                if ( m not in target.terminal_res ): target.terminal_res.append( m )
-            else:
-                # special case -- singlet base pairs cannot be called 'terminal' but can enforce block_stack at 3' nts.
-                for stem in stems:
-                    if m == stem[0][1] or m == stem[-1][0]:
-                        target.block_stack_above_res.append( m )
-                        break
-
-        if ( ( prev_moving and not next_moving and not right_before_chainbreak ) or \
-             ( next_moving and not prev_moving and not right_after_chainbreak ) ):
-            target.extra_min_res.append( m )
-
-    if not '-motif_mode' in extra_flags_benchmark.keys() and not motif_mode_off:
-        extra_flags_benchmark[ '-motif_mode' ] = ''
-
     # needed for stepwise_lores to work with base pair steps that include flanking helices:
     if args.stepwise_lores:
         target.jump_res = []
