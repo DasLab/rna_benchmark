@@ -331,6 +331,8 @@ for target in targets:
         target.fasta = target.fasta.replace('.fasta', '_SWA.fasta')
     if not exists( target.fasta ):
         fid = open( target.fasta, 'w' )
+        print sequences
+        print working_res_blocks
         assert( len( sequences ) == len( working_res_blocks ) )
         if args.swa:
             fid.write( '>%s %s\n%s\n' % ( target.name,string.join(working_res_blocks,' '),string.join(sequences,'') ) )
@@ -444,11 +446,11 @@ for target in targets:
 
     def add_block_stack_flags( args, target, fid ):
         # used in FARNA & SWM
-        if not args.block_stack_off and '-block_stack_off' not in target.extra_flags:
-            if len( target.block_stack_above_res ) > 0:
-                fid.write( '-block_stack_above_res %s  \n' % make_tag_with_conventional_numbering( target.block_stack_above_res, target.resnums, target.chains ) )
-            if len( target.block_stack_below_res ) > 0:
-                fid.write( '-block_stack_below_res %s  \n' % make_tag_with_conventional_numbering( target.block_stack_below_res, target.resnums, target.chains ) )
+        #if not args.block_stack_off and '-block_stack_off' not in target.extra_flags:
+        #    if len( target.block_stack_above_res ) > 0:
+        #        fid.write( '-block_stack_above_res %s  \n' % make_tag_with_conventional_numbering( target.block_stack_above_res, target.resnums, target.chains ) )
+        #    if len( target.block_stack_below_res ) > 0:
+        #        fid.write( '-block_stack_below_res %s  \n' % make_tag_with_conventional_numbering( target.block_stack_below_res, target.resnums, target.chains ) )
         return
 
     def add_start_files_flag( fid, start_files ):
@@ -610,9 +612,9 @@ for target in targets:
         if len( target.native ) > 0:
             fid.write( '-native %s\n' % basename( target.working_native ) )
 
-        if len( target.terminal_res ) > 0:
-            # note that this is redundant with -motif mode -- deprecate in early 2017
-            fid.write( '-terminal_res %s  \n' % make_tag_with_conventional_numbering( target.terminal_res, target.resnums, target.chains ) )
+        #if len( target.terminal_res ) > 0:
+        #    # note that this is redundant with -motif mode -- deprecate in early 2017
+        #    fid.write( '-terminal_res %s  \n' % make_tag_with_conventional_numbering( target.terminal_res, target.resnums, target.chains ) )
 
         add_block_stack_flags( args, target, fid )
 
@@ -622,9 +624,9 @@ for target in targets:
             if ( len( target.cutpoint_closed ) > 0 ):
                 fid.write( '-cutpoint_closed %s \n' % make_tag_with_conventional_numbering( target.cutpoint_closed, target.resnums, target.chains ) )
             fid.write( '-include_neighbor_base_stacks\n' ) # Need to match FARNA.
-        if len( target.extra_min_res ) > 0 and not args.extra_min_res_off: ### Turn extra_min_res off for SWM when comparing to SWA
-            # note that this is redundant with -motif mode -- deprecate in early 2017
-            fid.write( '-extra_min_res %s \n' % make_tag_with_conventional_numbering( target.extra_min_res, target.resnums, target.chains ) )
+        #if len( target.extra_min_res ) > 0 and not args.extra_min_res_off: ### Turn extra_min_res off for SWM when comparing to SWA
+        #    # note that this is redundant with -motif mode -- deprecate in early 2017
+        #    fid.write( '-extra_min_res %s \n' % make_tag_with_conventional_numbering( target.extra_min_res, target.resnums, target.chains ) )
         fid.write( '-fasta %s\n' % basename( target.fasta) )
         if '-move' not in extra_flags_benchmark:
             if '-cycles' not in extra_flags_benchmark:  fid.write( '-cycles 200\n' )

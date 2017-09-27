@@ -1,5 +1,5 @@
 Name:          gln_riboswitch
-Sequence:      cguugacccaggaaacugggcggaaguaagguccauugcacuccgggccugaagcaacgcgQ
+Sequence:      cguugacccaggaaacugggcggaaguaagguccauugcacuccgggccugaagcaacgcg,Q
 Secstruct:     (((((.(((((....)))))........((((((..........))))))....)))))...
 Working_res:   A:1-61,A:101
 #Input_res:     A:1-5,A:7-11,A:16-20,A:29-34,A:45-50,A:55-59
@@ -9,7 +9,7 @@ Extra_flags:   -
 Align_res:     A:1-5,A:7-11,A:16-20,A:29-34,A:45-50,A:55-59
 
 Name:          gln_riboswitch_fixed
-Sequence:      cguugacccaggaaacugggcggaaguaagguccauugcacuccgggccugaagcaacgcgQ
+Sequence:      cguugacccaggaaacugggcggaaguaagguccauugcacuccgggccugaagcaacgcg,Q
 Secstruct:     (((((.(((((....)))))........((((((..........))))))....)))))...
 Working_res:   A:1-61,A:101
 Input_res:     A:1-5,A:7-11,A:16-20,A:29-34,A:45-50,A:55-59
@@ -17,7 +17,7 @@ Native:        5ddp.pdb
 Extra_flags:   -
 
 Name:          gln_riboswitch_justdock
-Sequence:      cguugacccaggaaacugggcggaaguaagguccauugcacuccgggccugaagcaacgcgQ
+Sequence:      cguugacccaggaaacugggcggaaguaagguccauugcacuccgggccugaagcaacgcg,Q
 Secstruct:     (((((.(((((....)))))........((((((..........))))))....)))))...
 Working_res:   A:1-61,A:101
 Input_res:     A:1-61
@@ -25,7 +25,7 @@ Native:        5ddp.pdb
 Extra_flags:   -
 
 Name:          streptomycin_riboswitch
-Sequence:      ggaucgcauuuggacuucugcccggcaccacggucggaucX
+Sequence:      ggaucgcauuuggacuucugcccggcaccacggucggauc,X
 Secstruct:     .((((.(.....(((..(((((.))))....)))))))))
 Working_res:   A:1-22,B:101-118,A:26
 #Input_res:     A:1-5,A:7-11,A:16-20,A:29-34,A:45-50,A:55-59
@@ -35,7 +35,7 @@ Extra_flags:   -
 Align_res:     A:2-5,A:7,A:13-15,A:18-22,B:102-105,B:110-118
 
 Name:          streptomycin_riboswitch_fixed
-Sequence:      ggaucgcauuuggacuucugcccggcaccacggucggaucX
+Sequence:      ggaucgcauuuggacuucugcc,cggcaccacggucggauc,X
 Secstruct:     .((((.(.....(((..(((((.))))....)))))))))
 Working_res:   A:1-22,B:101-118,A:26
 Input_res:     A:2-5,A:7,A:13-15,A:18-22,B:102-105,B:110-118
@@ -43,7 +43,7 @@ Native:        1nta.pdb
 Extra_flags:   -
 
 Name:          streptomycin_riboswitch_justdock
-Sequence:      ggaucgcauuuggacuucugcccggcaccacggucggaucX
+Sequence:      ggaucgcauuuggacuucugcc,cggcaccacggucggauc,X
 Secstruct:     .((((.(.....(((..(((((.))))....)))))))))
 Working_res:   A:1-22,B:101-118,A:26
 Input_res:     A:1-22,B:101-118
