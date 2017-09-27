@@ -39,6 +39,8 @@ parser.add_argument('-queue', default='', help='Queue for cluster submission.')
 parser.add_argument('--block_stack_off', action='store_true', help='Additional flag for turning off -block_stack_above_res & -block_stack_below_res.')
 parser.add_argument('-stepwise_lores',action='store_true', help='used to setup stepwise_lores mode (FARNA optimization)')
 parser.add_argument('--design', help="design all working residues not in input structures", action="store_true")
+parser.add_argument('--new_align_pdb', help="new align_pdb setting", action="store_true")
+
 args = parser.parse_args()
 
 #####################################################################################################################
@@ -403,7 +405,9 @@ for target in targets:
             # if -align_pdb is a benchmark-wide setting, don't need it in the target.
             if '-align_pdb' in target.extra_flags: target.extra_flags.pop('-align_pdb')
         else:
-            if '-align_pdb' not in target.extra_flags: target.extra_flags[ '-align_pdb' ] = basename( target.align_pdb )
+            if args.new_align_pdb and '-new_align_pdb' not in target.extra_flags:
+                target.extra_flags[ '-new_align_pdb' ] = basename( target.align_pdb )
+            if not args.new_align_pdb and '-align_pdb' not in target.extra_flags: target.extra_flags[ '-align_pdb' ] = basename( target.align_pdb )
             if '-rmsd_screen' not in target.extra_flags: target.extra_flags[ '-rmsd_screen' ] = '4.0'
 
     elif '-align_pdb' in target.extra_flags:
