@@ -38,15 +38,17 @@ def slice_out( inpath_dir, prefix, pdb, res_string, excise=False ):
     if not exists( slice_pdb ):
         if excise:  command = 'pdbslice.py %s -excise %s %s ' % ( starting_native, res_string, prefix )
         else:       command = 'pdbslice.py %s -subset %s %s ' % ( starting_native, res_string, prefix )
+        print command
         system( command )
+    print slice_pdb
     assert( exists( slice_pdb ) )
 
     return slice_pdb
 
 ###############################################################################
-def get_fullmodel_number( reschain, resnums, chains):
+def get_fullmodel_number( reschain, resnums, chains, segids):
     for m in range( len( resnums ) ):
-        if ( resnums[m] == reschain[0] ) and ( reschain[1] == '' or chains[m] == reschain[1] ): return m+1
+        if ( resnums[m] == reschain[0] ) and ( reschain[1] == '' or chains[m] == reschain[1] ) and ( reschain[2] == '' or segids[m] == reschain[2]): return m+1
     return 0
 
 ###############################################################################
@@ -146,29 +148,33 @@ class FullModelInfo(object):
         self.name = name
         self.resnums = None
         self.chains = None
+        self.segids = None
              
     def set_resnums(self, resnums):
         self.resnums = resnums
         
     def set_chains(self, chains):
         self.chains = chains
+    
+    def set_segids(self, segids):
+        self.segids = segids
         
     def extract_resnum_chains(self, resnum_chain_tag):
-        resnums, chains = [], []
+        resnums, chains, segids = [], [], []
         if not isinstance(resnum_chain_tag, list):
             resnum_chain_tag = resnum_chain_tag.replace(';',',').split(',')
         for tag in resnum_chain_tag:
-            get_resnum_chain(tag, resnums, chains)
-        return resnums, chains
+            get_resnum_chain(tag, resnums, chains, segids)
+        return resnums, chains, segids
 
     def conventional_tag_to_full(self, resnum_chain_tag):
-        resnums, chains = self.extract_resnum_chains(resnum_chain_tag)
-        return self.conventional_to_full(zip(resnums, chains))
+        resnums, chains, segids = self.extract_resnum_chains(resnum_chain_tag)
+        return self.conventional_to_full(zip(resnums, chains, segids))
         
-    def conventional_to_full(self, resnum_chain):
+    def conventional_to_full(self, resnum_chain_segid):
         '''
         Input: (res, chain) or [(res, chain), (res, chain)]
         '''
-        if isinstance(resnum_chain, list):
-            return map(self.conventional_to_full, resnum_chain)
-        return get_fullmodel_number(resnum_chain, self.resnums, self.chains)
+        if isinstance(resnum_chain_segid, list):
+            return map(self.conventional_to_full, resnum_chain_segid)
+        return get_fullmodel_number(resnum_chain_segid, self.resnums, self.chains, self.segids)

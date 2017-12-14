@@ -132,12 +132,17 @@ for target in targets:
     # store information on 'conventional' residue numbers and chains.
     resnums = []
     chains = []
+    segids = []
     for working_res_block in working_res_blocks:
-        get_resnum_chain( working_res_block, resnums, chains )
+        get_resnum_chain( working_res_block, resnums, chains, segids )
+    print "laterseg", segids
     full_model_info[ target.name ].set_resnums( resnums )
     full_model_info[ target.name ].set_chains( chains )
+    full_model_info[ target.name ].set_segids( segids )
     target.chains = chains
     target.resnums = resnums
+    target.segids = segids 
+    print "later", target.segids
 
     # working_native
     # including the _NATIVE_ tag makes it easier to find the file for Pymol viewing after runs.
@@ -146,10 +151,10 @@ for target in targets:
     target.working_native = slice_out( inpath, prefix, target.native, string.join( working_res_blocks ) )
     # We need to sort the sequences first. That's absurd, of course, but otherwise we'd need a
     # vastly more clever sequence determination algorithm. That's a TODO.
-    #print target.name, target.sequence, sorted(''.join(string.join(sequences,'')))
+    print target.name, target.sequence, sorted(''.join(string.join(sequences,'')))
     #print sorted(''.join(string.join(get_sequences( target.working_native )[0],''))) 
-    #print sequences
-    #print get_sequences( target.working_native )[0]
+    print sequences
+    print get_sequences( target.working_native )[0]
     assert( sorted(string.join(sequences,'')) == sorted(string.join(get_sequences( target.working_native )[0],'')) )
 
     # create starting PDBs
@@ -157,6 +162,7 @@ for target in targets:
     input_res_blocks = []
     input_resnums_by_block = []
     input_chains_by_block = []
+    input_segids_by_block = []
     input_resnum_fullmodel_by_block = []
     if target.input_res != '-':
         input_res_blocks += target.input_res.split(';')
@@ -168,8 +174,9 @@ for target in targets:
         target.input_pdbs.append( input_pdb )
         input_resnums_by_block.append( [] )
         input_chains_by_block.append(  [] )
-        get_resnum_chain( input_res_blocks[m], input_resnums_by_block[m], input_chains_by_block[m] )
-        input_resnum_fullmodel_by_block.append( map( lambda x: get_fullmodel_number(x,target.resnums,target.chains), zip( input_resnums_by_block[m], input_chains_by_block[m] ) ) )
+        input_segids_by_block.append(  [] )
+        get_resnum_chain( input_res_blocks[m], input_resnums_by_block[m], input_chains_by_block[m], input_segids_by_block[m] )
+        input_resnum_fullmodel_by_block.append( map( lambda x: get_fullmodel_number(x,target.resnums,target.chains,target.segids), zip( input_resnums_by_block[m], input_chains_by_block[m], input_segids_by_block[m] ) ) )
     input_resnum_fullmodel = full_model_info[ target.name ].conventional_tag_to_full(
         input_res_blocks
     )
@@ -233,8 +240,9 @@ for target in targets:
         input_resnum_fullmodel_by_block.append( helix_resnum )
 
         if exists( helix_file ): continue
+        print resnums, chains, segids
         command = 'rna_helix.py -seq %s  -o %s -resnum %s' % ( helix_seq, helix_file, \
-            make_tag_with_conventional_numbering( helix_resnum, resnums, chains) )
+            make_tag_with_conventional_numbering( helix_resnum, resnums, chains, segids) )
         print command
         os.system( command )
 
@@ -276,7 +284,7 @@ for target in targets:
     if args.farna or args.farfar:
         strand_num = 1
         strand = {}
-        for m in range( 1, L+1 ):
+        for m in range( 1, len(fasta_entities)+1 ):
             strand[m] = strand_num
             if ( m in chainbreak_pos ): strand_num += 1
         # which strands are connected up?
@@ -371,25 +379,39 @@ for target in targets:
             print "WARNING: target.input_res == '-' "
         continue
 
-    ( workres , workchains  ) = parse_tag( target.working_res, alpha_sort=True )
-    ( inputres , inputchains  ) = parse_tag( target.input_res, alpha_sort=True )
+    print target.input_res
+    ( workres , workchains , worksegs ) = parse_tag( target.working_res, alpha_sort=True )
+    ( inputres , inputchains , inputsegs ) = parse_tag( target.input_res, alpha_sort=True )
+    print inputres, inputchains, inputsegs
 
     loopres_tag = []
     for ii in xrange( len( workres ) ):
         working_tag = workchains[ ii ] + ':' + str(workres[ ii ])
+        if worksegs[ ii ] != '    ' and len(worksegs[ii]) > 0:
+            working_tag = workchains[ ii ] + ':' + worksegs[ ii ].strip() + ':' + str(workres[ ii ])
+
         is_input_tag = False
         for jj in xrange( len( inputres ) ):
             input_tag = inputchains[ jj ] + ':' + str(inputres[ jj ])
+            if inputsegs[ jj ] != '    ' and len(inputsegs[jj]) > 0:
+                input_tag = inputchains[ jj ] + ':' + inputsegs[ jj ].strip() + ':' + str(inputres[ jj ])
             if input_tag == working_tag:
                 is_input_tag = True
         if is_input_tag: continue
         loopres_tag.append( working_tag )
+    print loopres_tag
     loopres_tag = string.join( loopres_tag, ',' )
 
-    ( loopres , loopchains  ) = parse_tag( loopres_tag, alpha_sort=True )
-    ( workres , workchains  ) = parse_tag( target.working_res, alpha_sort=True )
+    print loopres_tag
+    ( loopres , loopchains , loopsegs ) = parse_tag( loopres_tag, alpha_sort=True )
+    ( workres , workchains , worksegs ) = parse_tag( target.working_res, alpha_sort=True )
 
-    loopres_conventional = [ str(workchains[idx])+':'+str(workres[idx]) for idx in xrange( len( workres ) ) if (workres[idx] in loopres and workchains[idx] == loopchains[loopres.index(workres[idx])]) ]
+    def maketag(ch, seg, res):
+        if len(seg) > 0 and seg != '    ':
+            return ch + ':' + seg.strip() + ':' + str(res)
+        else:
+            return ch + ':' + str(res)
+    loopres_conventional = [ maketag(workchains[idx], worksegs[idx], workres[idx]) for idx in xrange( len( workres ) ) if (workres[idx] in loopres and workchains[idx] == loopchains[loopres.index(workres[idx])]) ]
     loopres_conventional = string.join( [ str(x) for x in loopres_conventional ] ,' ')
     target.loop_res[ 'conventional' ] = loopres_conventional
 
@@ -571,7 +593,7 @@ for target in targets:
         add_start_files_flag( fid, start_files )
         fid.write( '-working_res %s\n' % target.working_res.replace( ',',' ') )
         add_block_stack_flags( args, target, fid )
-        if len( target.extra_min_res ) > 0 and not args.extra_min_res_off:
+        if target.extra_min_res is not None and len( target.extra_min_res ) > 0 and not args.extra_min_res_off:
             fid.write( '-extra_minimize_res %s\n' % make_tag_with_conventional_numbering( target.extra_min_res, target.resnums, target.chains ) )
         if args.farfar: fid.write( '-minimize_rna true\n' )
         else: fid.write( '-minimize_rna false\n' )

@@ -250,6 +250,31 @@ Input_res:     A:1-96
 Native:        4l81.pdb
 Extra_flags:   -
 
+Name:          SAM_riboswitch_conf2
+Sequence:      gcgcggcgauuuaaccguauugcagucgcgugauaaauguagcuaaaaagga,X
+Secstruct:     .((((((.......[[...[[[[.))))))...........]].]]...]].
+Working_res:   A:1-52,A:100
+Input_res:     -
+Native:        2qwy.pdb
+Extra_flags:   -
+Align_res:     A:2-7,A:15-16,A:20-21,A:22-23,A:25-30,A:42-43,A:45-46,A:50-51
+
+Name:          SAM_riboswitch_conf2_fixed
+Sequence:      gcgcggcgauuuaaccguauugcagucgcgugauaaauguagcuaaaaagga,X
+Secstruct:     .((((((.......[[...[[[[.))))))...........]].]]...]].
+Working_res:   A:1-52,A:100
+Input_res:     A:2-7,A:15-16,A:20-21,A:22-23,A:25-30,A:42-43,A:45-46,A:50-51
+Native:        2qwy.pdb
+Extra_flags:   -
+
+Name:          SAM_riboswitch_conf2_justdock
+Sequence:      gcgcggcgauuuaaccguauugcagucgcgugauaaauguagcuaaaaagga,X
+Secstruct:     .((((((.......[[...[[[[.))))))...........]].]]...]].
+Working_res:   A:1-52,A:100
+Input_res:     A:1-52
+Native:        2qwy.pdb
+Extra_flags:   -
+
 Name:          GAI_riboswitch_II
 Sequence:      gguggggacgaccccacc,X
 Secstruct:     (((((((....)))))))
@@ -273,13 +298,13 @@ Working_res:   X:14-81,X:90
 Input_res:     -
 Native:        1y27.pdb
 Extra_flags:   -
-Align_res:     X:15-22,X:27-31,X:36-37,X:38-42,X:53-58,X:59-60,X:66-71,X:74-80 
+Align_res:     X:15-21,X:27-31,X:37-38,X:39-43,X:54-59,X:60-61,X:67-72,X:75-81 
 
 Name:          G_riboswitch_fixed
 Sequence:      ggaucauauaaucgcguggauauggcacgcaaguuucuaccgggcaccguaaauguccgacuaugguc,g
 Secstruct:     .((((((((..(.(((((.....[[))))).)[.....)]((((((]].....))))))..))))))),.
 Working_res:   X:14-81,X:90
-Input_res:     X:15-22,X:27-31,X:36-37,X:38-42,X:53-58,X:59-60,X:66-71,X:74-80 
+Input_res:     X:15-21,X:27-31,X:37-38,X:39-43,X:54-59,X:60-61,X:67-72,X:75-81 
 Native:        1y27.pdb
 Extra_flags:   -
 
@@ -298,4 +323,30 @@ Working_res:   A:22-89,A:120
 Input_res:     -
 Native:        3ski.pdb
 Extra_flags:   -
+Align_res:     A:22-30,A:34-39,A:45-46,A:47-52,A:68-69,A:72-78,A:81-89
+
+Name:          2primedeoxyguanosine_riboswitch_fixed
+Sequence:      ggccuuauacaggguagcauaaugggcuacugaccccgccuucaaaccuauuuggagacuauaagguc,X
+Secstruct:     ((((((((((..((((((.....[[))))))[.....)](((((((]]..)))))))..))))))))),.
+Working_res:   A:22-89,A:120
+Input_res:     A:22-30,A:34-39,A:45-46,A:47-52,A:68-69,A:72-78,A:81-89
+Native:        3ski.pdb
+Extra_flags:   -
+
+Name:          2primedeoxyguanosine_riboswitch_justdock
+Sequence:      ggccuuauacaggguagcauaaugggcuacugaccccgccuucaaaccuauuuggagacuauaagguc,X
+Secstruct:     ((((((((((..((((((.....[[))))))[.....)](((((((]]..)))))))..))))))))),.
+Working_res:   A:22-89,A:120
+Input_res:     A:22-89
+Native:        3ski.pdb
+Extra_flags:   -
+
+Name:          glmS_riboswitch
+Sequence:      gcgccuggacuuaaagccau,ggcuuuaaguugacgagggcaggguuuaucgagacaucggcgggugcccugcggucuuccugcgaccguuagaggacugguaaaaccacaggcgacuguggcauagagcaguccgggcaggaa,X
+Secstruct:     .[[[.[[(((((((((((.. )))))))))))..[[[...((((((.&.]]]......]]]]]...))))))[[[[[.((((((]]]]].....((((((.&....((((((....)))))).......))))))..)))))).
+Working_res:   A:1-20,B:23-145,A:201
+Input_res:     -
+Native:        3ski.pdb
+Extra_flags:   -
+Align_res:     A:22-30,A:34-39,A:45-46,A:47-52,A:68-69,A:72-78,A:81-89
 

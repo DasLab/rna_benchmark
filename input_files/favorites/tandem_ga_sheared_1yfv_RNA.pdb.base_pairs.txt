@@ -1,0 +1,6 @@
+A:2 B:15 W W C 
+A:7 B:10 W W C 
+A:6 B:11 W W C 
+A:3 B:14 W W C 
+A:4 B:13 S H T 
+A:5 B:12 H S T 
