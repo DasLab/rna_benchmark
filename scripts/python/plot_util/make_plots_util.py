@@ -13,7 +13,7 @@ import subprocess
 from os.path import exists, dirname, basename, abspath, isdir
 import string
 import glob
-from matplotlib.backends.backend_pdf import PdfPages
+#from matplotlib.backends.backend_pdf import PdfPages
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 import matplotlib.cm as cmx
@@ -148,7 +148,8 @@ def get_target_names( target_files, inpaths = None ):
 	target_names = []
 	for file_name in target_files:
 		if '..' not in file_name:
-                        input_dir = get_path_to_dir(['stepwise_benchmark','benchmark']) + '/input_files/'
+                        #input_dir = get_path_to_dir(['stepwise_benchmark','benchmark']) + '/input_files/'
+                        input_dir = '/home/amw579/stepwise_benchmark/input_files/'
                         file_name = input_dir + basename(file_name)
 		target_names = get_target_names_from_file( file_name, target_names )
 	return target_names
@@ -231,17 +232,20 @@ def get_times( inpaths, data, target_names, verbose=False ):
 
 def get_figure_dimensions( nplots ):
 	assert( nplots )
-	if nplots <= 5:
-		nrows = nplots
-	elif nplots <= 9:
-		nrows = 3
-	elif nplots <= 12:
-		nrows = 4
-	elif nplots <= 20:
-		nrows = 5
-	else:
-		nrows = 6
-	ncols = np.ceil( nplots / float( nrows ) )
+	ncols = 3
+	nrows = np.ceil( nplots / float( ncols ) )
+
+	#if nplots <= 5:
+	#	nrows = nplots
+	#elif nplots <= 9:
+	#	nrows = 3
+	#elif nplots <= 12:
+	#	nrows = 4
+	#elif nplots <= 20:
+	#	nrows = 5
+	#else:
+	#	nrows = 6
+	#ncols = np.ceil( nplots / float( nrows ) )
 	return ( nplots, nrows, ncols )
 
 ###########################################################
@@ -249,10 +253,12 @@ def get_figure_dimensions( nplots ):
 def setup_figure( nplots, landscape = False ):
 	( nplots, nrows, ncols ) = get_figure_dimensions( nplots )
 	fig = plt.figure()
-	if ( landscape is True ): # landscape
-		fig.set_size_inches(11, 8.5)
-	else:
-		fig.set_size_inches(8.5, 11)
+	#if ( landscape is True ): # landscape
+	#	fig.set_size_inches(11, 8.5)
+	#else:
+	# One inch margins, as long as needed.
+	# 9 * nrows / 3
+	fig.set_size_inches(6.5, 3 * nrows )
 	return ( fig, nplots, nrows, ncols )
 
 ###########################################################
@@ -271,7 +277,7 @@ def finalize_figure( fig, nplots, nrows, ncols, options=None ):
 	# get date printed to figure
 	if options and options.seaborn is True:
                 # add legend
-                plt.legend(numpoints=1, loc=4, prop={'size':16})
+                pass #plt.legend(numpoints=1, loc=4, prop={'size':16})
         else:
                 # display date in bottom right corner
                 plt.figtext(0.95,0.02,
@@ -299,14 +305,16 @@ def setup_pdf_page( inpaths, targets, pdfname = None ):
 		#pdfname = '_'.join(targets)
 		#pdfname += '_' + '_vs_'.join(inpaths)
 		#pdfname = pdfname if pdfname[0] != '_' else pdfname[1:]
-	pdfname += '.pdf' if '.pdf' not in pdfname else ''
+	#pdfname += '.pdf' if '.pdf' not in pdfname else ''
+	pdfname += '.svg' if '.svg' not in pdfname else ''
 	if '/' in pdfname and exists(dirname(pdfname)):
 		fullpdfname = pdfname
 	else:
-		figure_dir = get_path_to_dir(['stepwise_benchmark','benchmark']) + '/Figures/'
+		#figure_dir = get_path_to_dir(['stepwise_benchmark','benchmark']) + '/Figures/'
+		figure_dir = '/home/amw579/stepwise_benchmark/Figures/'
 		fullpdfname = figure_dir + pdfname
 	try:
-		pp = PdfPages( fullpdfname )
+		pp = fullpdfname# PdfPages( fullpdfname )
 	except IOError as err:
 		if 'File name too long' in err.args:
 			datetime_str = datetime.now().strftime("%Y%m%d-%H%M%S")
@@ -333,7 +341,8 @@ def get_colorcode( size, options=None ):
 ###########################################################
 
 def get_title( target ):
-	names = get_path_to_dir(['stepwise_benchmark','benchmark']) + '/scripts/python/plot_util/titles.txt'
+	#names = get_path_to_dir(['stepwise_benchmark','benchmark']) + '/scripts/python/plot_util/titles.txt'
+	names = '/home/amw579/stepwise_benchmark/scripts/python/plot_util/titles.txt'
 	try:
 		lines = open( names, 'r' ).readlines()
 	except:

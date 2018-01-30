@@ -7,6 +7,7 @@ import sys
 import os
 from os.path import exists, dirname, basename, abspath, isdir
 import matplotlib.pyplot as plt
+plt.rcParams['svg.fonttype'] = 'none'
 import numpy as np
 from make_plots_util import *
 import subprocess
@@ -40,8 +41,8 @@ def make_plots(argv):
 	inpaths = [abspath(x) for x in inpaths if exists(x) and isdir(x)]
 	if targets[0] != '*':
 		targets = targets
-	elif target_files is not None:
-		targets = get_target_names( target_files )
+	#elif target_files is not None:
+	#	targets = get_target_names( target_files )
 	else:
 		targets = get_target_names( target_files, inpaths )
 	for target in targets:
@@ -71,6 +72,110 @@ def make_plots(argv):
 	ylabels = []
 	plot_idx = 0
 	handles = []
+
+	# This is awful... but I am just going to re-hard-code the target order.
+	targets = ["5P_j12_leadzyme",
+		"5P_p1_m_box_riboswitch",
+		"3P_j55a_group_I_intron",
+		"5P_j55a_group_I_intron",
+		"hepatitis_C_virus_ires_IIa",
+		"j24_tpp_riboswitch",
+		"j31_glycine_riboswitch",
+		"j23_group_II_intron",
+		"l1_sam_II_riboswitch",
+		"l2_viral_rna_pseudoknot",
+		"23s_rrna_44_49",
+		"23s_rrna_531_536",
+		"23s_rrna_2534_2540",
+		"23s_rrna_1976_1985",
+		"23s_rrna_2003_2012",
+		
+		"gcaa_tetraloop",
+		"uucg_tetraloop",
+		"gagua_pentaloop",
+		"anticodon",
+		"anticodon_cys",
+		"anticodon_phe",
+		
+		"puzzle1_alt_fixed",
+		"srp_domainIV_fixed",
+		"srl_fixed",
+		"kink_turn_fixed",
+		"j55a_P4P6_fixed",
+		"P5b_connect",
+		"gg_mismatch_fixed",
+		"tandem_ga_imino_fixed",
+		"tandem_ga_sheared_fixed",
+		"hiv_rre_fixed",
+		"j44a_p4p6_fixed",
+		"just_tr_P4P6_fixed",
+		"r2_4x4_fixed",
+		"loopE_fixed",
+
+		"hammerhead_3WJ_cat_fixed",
+		"hammerhead_3WJ_precat_fixed",
+		"VS_rbzm_P2P3P6_fixed",
+		"VS_rbzm_P3P4P5_fixed",
+		"hammerhead_3WJ_cat_OMC_fixed",
+
+		"tl_tr_P4P6",
+		"hammerhead_tert_fixed",
+		"kiss_add_fixed",
+		"kiss_add_L2_fixed",
+		"kiss_add_L3_fixed",
+		"puzzle18_zika_PK",
+		"gir1_p2.1p5_kiss_fixed",
+		"gir1_p2p9_gaaa_minor_fixed",
+		"t_loop_fixed",
+		"t_loop_modified_fixed",
+
+		"gg_mismatch",
+		"tandem_ga_imino",
+		"tandem_ga_sheared",
+		"hiv_rre",
+		"j44a_p4p6",
+		"just_tr_P4P6",
+		"cg_helix",
+		"puzzle1",
+		"srp_domainIV",
+		"r2_4x4",
+		"gagu",
+		"gagu_forcesyn",
+		"gagu_forcesyn_blockstackU",
+		"srl_free_bulgedG",
+		"kink_turn_free",
+		"j55a_P4P6_align",
+		"kink_turn_align",
+		"loopE",
+
+		"hammerhead_3WJ_cat",
+		"hammerhead_3WJ_precat",
+		"VS_rbzm_P2P3P6_align",
+		"VS_rbzm_P3P4P5_align",
+		"hammerhead_3WJ_cat_OMC_align",
+		"puzzle18_zika_3WJ",
+
+		"gaaa_minor_dock",
+		"gir1_p2.1p5_kiss",
+		"gir1_p2p9_gaaa_minor",
+		"tl_tr_P4P6_dock",
+		#"tl_tr_P4P6_inclGA",
+		#"tl_tr_R1_inclGA",
+		"kiss_add_PK_dock",
+		"t_loop_align",
+		"hammerhead_tert_align",
+		"t_loop",
+		"t_loop_modified_align",
+
+		"cg_helix_Zform",
+		"g_quadruplex_fixed",
+		"g_quadruplex_inosine_fixed",
+		"bru_gag_tetraplex",
+		"cg_helix_Zform_fixnative",
+		"parallel_AA",
+		"bulged_tetraplex"]	
+
+
 	# iterate over targets
 	for target_idx, target in enumerate(targets, start=1):
 
@@ -144,7 +249,7 @@ def make_plots(argv):
                       	if options.seaborn is True:
                                 sns.set_style("darkgrid")
                                 sns.set_context("poster")
-                                markersize = 10
+                                markersize = 5
 
                                 label = 'StepWise Assembly'# (SWA)'
                                 if 'swm' in basename(inpath):
@@ -178,15 +283,16 @@ def make_plots(argv):
                         ax.set_ylabel(string.join(ylabels, ', '), fontsize=6 )
                         ax.set_xlabel(string.join(xlabels, ', '), fontsize=6 )
                         for ticklabel in ax.yaxis.get_ticklabels()+ax.xaxis.get_ticklabels():
-                                ticklabel.set_fontsize(6)
+                                ticklabel.set_fontsize(8)
 			ax.set_xlim(0, 16)
+			ax.set_xticks(np.arange(0, 16, 2.0))
 
                         if options.seaborn is True:
-                                ax.set_title( get_title(target), fontsize=20, weight='bold' )
-                                ax.set_ylabel('Rosetta Energy', fontsize=20, weight='bold')
-                                ax.set_xlabel(r'RMSD ($\AA$)', fontsize=20, weight='bold')
+                                ax.set_title( get_title(target), fontsize=10, weight='bold' )
+                                ax.set_ylabel('Rosetta Energy', fontsize=10, weight='bold')
+                                ax.set_xlabel(r'RMSD ($\AA$)', fontsize=10, weight='bold')
                                 for ticklabel in ax.yaxis.get_ticklabels()+ax.xaxis.get_ticklabels():
-                                        ticklabel.set_fontsize(14)
+                                        ticklabel.set_fontsize(8)
 
 
 			# print times in plots (if available)
@@ -209,8 +315,9 @@ def make_plots(argv):
 
 
 	# save as pdf and close
-	pp.savefig()
-	pp.close()
+	fig.savefig(pp)
+	#pp.savefig()
+	#pp.close()
 
 	# open pdf
 	out, err = subprocess.Popen(['uname'], stdout=subprocess.PIPE).communicate()
