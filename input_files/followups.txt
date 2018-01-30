@@ -176,7 +176,7 @@ Secstruct:     ((,((..[[[[...)),))...]]]]
 Working_res:   A:5-6,A:27-39,A:49-57
 Input_res:     A:5-6,A:27-28,A:38-39,A:49-50
 Native:        5tpy.pdb
-Extra_flags:   -allow_complex_loop_graph
+Extra_flags:   -allow_complex_loop_graph -block_stack_above_res A:6 A:39 A:57 -block_stack_below_res A:31 A:27 A:49
 
 
 Name:          cg_helix_Zform_fixnative
