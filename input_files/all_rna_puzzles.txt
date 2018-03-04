@@ -1,0 +1,451 @@
+Benchmark_flags: -superimpose_over_all
+
+Name:          rna_puzzle_1
+Sequence:      ccgccgcgccaugccuguggcggccgccgcgccaugccuguggcgg
+Secstruct:     ((((((((.((((...((((((()))))))..)))).).)))))))
+Working_res:   A:1-46
+Input_res:     -
+Native:        1_solution_0_rpr.pdb
+Extra_flags:   -
+
+Name:          rna_puzzle_2
+Sequence:      ccggaggaacuacugccggcagccuccggaggaacuacugccggcagccuccggaggaacuacugccggcagccuccggaggaacuacugccggcagccu
+Secstruct:     {{{{(((.....(((aaaa))))))<<<<(((.....(((}}}}))))))[[[[(((.....(((>>>>))))))aaaa(((.....(((]]]]))))))
+Working_res:   A:1-15,B:1-10,C:1-15,D:1-10,E:1-15,F:1-10,G:1-15,H:1-10
+Input_res:     B:1-10,D:1-10,F:1-10,H:1-10
+Native:        hacked_on.pdb
+Extra_flags:   -
+
+Name:          rna_puzzle_3
+Sequence:      cucuggagagaaccguuuaaucggucgccgaaggagcaagcucugcgcauaugcagagugaaacucucaggcaaaaggacagag
+Secstruct:     (((((....(.((((......)))))(((...((((...((((((((....))))))))....))).).))).......)))))
+Working_res:   A:1-84
+Input_res:     -
+Native:        3_solution_0_rpr.pdb
+Extra_flags:   -
+
+Name:          rna_puzzle_4
+Sequence:      ggcuuaucaagagagguggagggacuggcccgaugaaacccggcaaccacuagucuagcgucagcuucggcugacgcuaggcuaguggugccaauuccugcagcggaaacguugaaagaugagcca
+Secstruct:     ((((((((....(.(((...(((.[.[[)))......)))).((..(((((((.(((((((((((....))))))))))).))))))).))....(]].]((.((....)).))..))))))))).
+Working_res:   A:1-126
+Input_res:     -
+Native:        4_0_solution_3V7E_rpr.pdb
+Extra_flags:   -ignore_zero_occupancy false
+
+# all_rna_puzzles/3iqp_chunk.pdb takes care of A:1-47 A:88-126
+# For some reason I need to juice this with the secstruct because it won't take another helix input. 
+Name:          rna_puzzle_4_with_3IQP
+Sequence:      ggcuuaucaagagagguggagggacuggcccgaugaaacccggcaaccacuagucuagcgucagcuucggcugacgcuaggcuaguggugccaauuccugcagcggaaacguugaaagaugagcca
+Secstruct:     ................................................(((((.(((((((((((....))))))))))).)))))........................................
+Working_res:   A:1-126
+Input_res:     A:1-47,A:88-126
+Native:        4_0_solution_3V7E_rpr.pdb
+Extra_flags:   -ignore_zero_occupancy false
+
+Name:          rna_puzzle_4_align_to_3iqp
+Sequence:      ggcuuaucaagagagguggagggacuggcccgaugaaacccggcaaccacuagucuagcgucagcuucggcugacgcuaggcuaguggugccaauuccugcagcggaaacguugaaagaugagcca
+Secstruct:     ((((((((....(.(((...(((.[.[[)))......)))).((..(((((((.(((((((((((....))))))))))).))))))).))....(]].]((.((....)).))..))))))))).
+Working_res:   A:1-126
+Input_res:     -
+Native:        4_0_solution_3V7E_rpr.pdb
+Extra_flags:   -align_pdb 3iqp_chunk.pdb -rmsd_screen 4.0 -ignore_zero_occupancy false
+
+Name:          rna_puzzle_5
+Sequence:      gguuggguugggaaguaucauggcuaaucaccaugaugcaaucggguugaacacuuaauuggguuaaaacggugggggacgaucccguaacauccguccuaacggcgacagacugcacggcccugccucuuagguguguccaaugaacagucguuccgaaaggaagcauccgguaucccaagacaauc
+Secstruct:     (((((..(((((..(((((((((...[[[.)))))))))..((((.(((.((((......(((((...((((..(((...]]]))).......))))((....)).....[[[[[...))))).(((.....))))))).)))....]]]]].((((....))))....))))...)))))..)))))
+Working_res:   A:1-188
+Input_res:     -
+Native:        5_0_solution_4p8z_rpr.pdb
+Extra_flags:   -
+
+# The original run used a useful but hard to automate 'assembly' process
+#Name:          rna_puzzle_5_orig
+#Sequence:      gguuggguugggaaguaucauggcuaaucaccaugaugcaaucggguugaacacuuaauuggguuaaaacggugggggacgaucccguaacauccguccuaacggcgacagacugcacggcccugccucuuagguguguccaaugaacagucguuccgaaaggaagcauccgguaucccaagacaauc
+#Secstruct:     (((((..(((((..(((((((((...[[[.)))))))))..((((.(((.((((......(((((...((((..(((...]]]))).......))))((....)).....[[[[[...))))).(((.....))))))).)))....]]]]].((((....))))....))))...)))))..)))))
+#Working_res:   A:1-188
+#Input_res:     -
+#Native:        5_0_solution_4p8z_rpr.pdb
+#Extra_flags:   -
+
+#Very hard to do all at once
+Name:          rna_puzzle_5_p15_p3_p8_with_dock
+#Marked position is a U=>C mutant relative to original run         |
+# We think this was a mistake in the original run?
+# Or maybe to be able to make them base paired. So we should take out of SS and use an obligate pair or
+# SS_general?
+Sequence:      guugaacacuuaauuggguua,acagacugca,ggcccugccu,agguguguccaaugaacagucguucc,ggaag
+Secstruct:     ((((.((((......(((((.,...[[[[[..,))))).((((,)))))))).))))...]]]]].((((,)))).
+#Secstruct:     ((((.((((......(((((.,..........,))))).((((,)))))))).)))).........((((,)))).
+Working_res:   A:46-66,A:108-117,A:119-128,A:132-157,A:162-166
+Input_res:     -
+Native:        5_0_solution_4p8z_rpr.pdb
+Extra_flags:   -
+
+Name:          rna_puzzle_5_p15_p3_p8
+Sequence:      guugaacacuuaauuggguu,ggcccugccu,agguguguccaau
+Secstruct:     ((((.((((......(((((,))))).((((,)))))))).))))
+Working_res:   A:46-65,A:119-128,A:132-144
+Input_res:     -
+Native:        5_0_solution_4p8z_rpr.pdb
+Extra_flags:   -
+
+Name:          rna_puzzle_5_p4p6_micro
+Sequence:      ac,gucc,ggcg
+#               12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678
+#Sequence:      gguuggguugggaaguaucauggcuaaucaccaugaugcaaucggguugaacacuuaauuggguuaaaacggugggggacgaucccguaacauccguccuaacggcgacagacugcacggcccugccucuuagguguguccaaugaacagucguuccgaaaggaagcauccgguaucccaagacaauc
+#                                                                   ac                                         gucc    ggcg
+#Secstruct:     (((((..(((((..(((((((((...[[[.)))))))))..((((.(((.((((......(((((...((((..(((...]]]))).......))))((....)).....[[[[[...))))).(((.....))))))).)))....]]]]].((((....))))....))))...)))))..)))))
+Secstruct:     .(,).((,))..
+Working_res:   A:69-70,A:96-99,A:104-107
+Input_res:     rna_puzzle_5_p4p6_micro_START1.pdb
+Native:        5_0_solution_4p8z_rpr.pdb
+Extra_flags:   -
+
+Name:          rna_puzzle_5_p4p6_mini
+Sequence:      aaaac,gucc,ggcg,a
+#               12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678
+#Sequence:      gguuggguugggaaguaucauggcuaaucaccaugaugcaaucggguugaacacuuaauuggguuaaaacggugggggacgaucccguaacauccguccuaacggcgacagacugcacggcccugccucuuagguguguccaaugaacagucguuccgaaaggaagcauccgguaucccaagacaauc
+#                                                                   ac                                         gucc    ggcg         a
+#Secstruct:     (((((..(((((..(((((((((...[[[.)))))))))..((((.(((.((((......(((((...((((..(((...]]]))).......))))((....)).....[[[[[...))))).(((.....))))))).)))....]]]]].((((....))))....))))...)))))..)))))
+Secstruct:     ....(,).((,))..,.
+Working_res:   A:66-70,A:96-99,A:104-107
+#Input_res:     rna_puzzle_5_p4p6_mini_START1.pdb
+Native:        5_0_solution_4p8z_rpr.pdb
+Extra_flags:   -
+
+Name:          rna_puzzle_5_p4p6_most
+Sequence:      uuaaaac,guccuaacgg,cg,a,gg
+#               12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678
+#Sequence:      gguuggguugggaaguaucauggcuaaucaccaugaugcaaucggguugaacacuuaauuggguuaaaacggugggggacgaucccguaacauccguccuaacggcgacagacugcacggcccugccucuuagguguguccaaugaacagucguuccgaaaggaagcauccgguaucccaagacaauc
+#                                                                              uuaaaac                         gucc    ggcg           gg
+#Secstruct:     (((((..(((((..(((((((((...[[[.)))))))))..((((.(((.((((......(((((...((((..(((...]]]))).......))))((....)).....[[[[[...))))).(((.....))))))).)))....]]]]].((((....))))....))))...)))))..)))))
+Secstruct:     ((....(,).((....))..,.,))
+Working_res:   A:64-70,A:96-107,A:117,A:129-130
+#Input_res:     rna_puzzle_5_p4p6_most_START1.pdb
+Native:        5_0_solution_4p8z_rpr.pdb
+Extra_flags:   -
+
+
+
+#                                             guugaacacuuaauuggguua                                         acagacugca ggcccugccu   agguguguucaaugaacagucguucc    ggaag
+#12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678
+#gguuggguugggaaguaucauggcuaaucaccaugaugcaaucggguugaacacuuaauuggguuaaaacggugggggacgaucccguaacauccguccuaacggcgacagacugcacggcccugccucuuagguguguccaaugaacagucguuccgaaaggaagcauccgguaucccaagacaauc
+#         gggaagua                   ugcaauc                                                                                                                                gguauccc
+#(((..((( ))).((( )))..)))
+
+Name:          rna_puzzle_5_p2_p2.1_p10
+Sequence:      gggaagua,ugcaauc,gguauccc
+Secstruct:     (((..(((,))).(((,)))..)))
+Working_res:   A:10-17,A:37-43,A:172-179
+Input_res:     -
+Native:        5_0_solution_4p8z_rpr.pdb
+Extra_flags:   -
+
+Name:          rna_puzzle_6
+Sequence:      cggcaggugcucccgac,gucgggaguuaaaagggaagccggugcaaguccggcacggucccgccacugugacggggagucgccccucgggaugugccacuggcc,ggccgggaaggcggaggggcggcgaggauccggagucaggaaaccugccugccg 
+Secstruct:     ((((((((.(((.(((.,.)).)))).....((....(((((.......)))))[[((.....)).(((...(((...(((((((.((.......(((.((((((,))))))...))).)).)))))))......)))..]]))).....))))))))))
+Working_res:   A:1-17,A:24-110,A:115-168
+Input_res:     -
+Native:        6_0_solution_4GXY_rpr.pdb
+Extra_flags:   -
+
+Name:          rna_puzzle_7
+Sequence:      gcgcugugucgcaaucugcgaagggcgucgucggcccaagcgguaguaagcagggaacucaccuccaaugaaacacauugucguagcaguugacuacuguuaugugauugguagaggcuaagugacgguauuggcguaagccaauaccgcagcacagcacaagcccgcuugcgagauuacagcgc
+Secstruct:     ((((((((((.....((((...((((.......))))..))))..((((((.(((..((((((..(((((.....)))))..(((((((.......)))))))......))).)))(((..(((.((((((((((....))))))))))...)))))).....)))))))))..))).)))))))
+Working_res:   A:1-185
+Input_res:     -
+Native:        7_0_solution_4r4v_rpr.pdb
+Extra_flags:   -
+
+# Did we do this with any homology? Almost certainly a renumbering of the binding site is appropriate.
+Name:          rna_puzzle_8
+Sequence:      ggaucacgagggggagaccccggcaaccugggacggacacccaaggugcucacaccggagacgguggauccggcccgagagggcaacgaaguccgu
+Secstruct:     (((((....((((....))))(((..((((((.[[[[..))).))).)))..(((((....)))))))))).((((....)))).......]]]].
+Working_res:   A:1-96
+Input_res:     -
+Native:        8_0_solution_4L81_rpr.pdb
+Extra_flags:   -
+
+##Name:          rna_puzzle_9
+##Sequence:      ggauugaaaaucc
+##Secstruct:     (((.......)))
+##Working_res:   -
+##Input_res:     -
+##Native:        3l0u_RNA.pdb
+##Extra_flags:   -
+
+Name:          rna_puzzle_10
+Sequence:      ugcgaugagaagaagaguauuaaggauuuacuaugauuagcgacucuaggauagugaaagcuagaggauaguaaccuuaagaaggcacuucgagca,aguaguucagugguagaacaccaccuugccaaggugggggucgcggguucgaaucccgucu
+Secstruct:     (((.....((((.......((((((..(((((((......[..((((((..........])))))).)))))))))))))...[[[.))))..))),((..((((....{..)))).(((((..]]]..))))).....(((((..}....)))))))
+Working_res:   A:1-96,B:6-66
+Input_res:     -
+Native:        10_0_solution_4LCK_rpr.pdb
+Extra_flags:   -
+
+##Name:          rna_puzzle_11
+##Sequence:      ggauugaaaaucc
+##Secstruct:     (((.......)))
+##Working_res:   -
+##Input_res:     -
+##Native:        3l0u_RNA.pdb
+##Extra_flags:   -
+
+Name:          rna_puzzle_12
+Sequence:      gaucgcugaacccga,aggggcgggggacccag,ggggcgaaucucuuccgaaaggaagaguaggguuacuccuucgacccgagcccgucagcuaaccucgcaagcguccgaaggagaa
+Secstruct:     ...((((...(((..,.)))((((((....(..,(((((....(((((((....)))))))..(((((.[[[[[[[)))))..))))..).)....)))))).))))...]]]]]]]..
+Working_res:   A:2-16,A:18-34,A:39-123
+Input_res:     -
+Native:        12_4qln_solution_rpr.pdb
+Extra_flags:   -
+
+Name:          rna_puzzle_13
+Sequence:      gggucgugacuggcgaacaggugggaaaccaccggggagcgaccc,gccgcccgccugggc
+Secstruct:     (((((((..(([[[[....(((((....))))).))..))))))),(((...]]]]..)))
+Working_res:   A:1-45,A:57-71
+Input_res:     -
+Native:        13_0_solution_4XW7_rpr.pdb
+Extra_flags:   -
+
+Name:          rna_puzzle_14_free
+Sequence:      cguuggcccaggaaacugggu,aguaaggcccauugcacuccgggccugaagcaacgcu
+Secstruct:     (((((((((((....)))))),....((((((..........))))))....)))))..
+Working_res:   A:1-21,A:25-61
+Input_res:     -
+Native:        14_5ddo_free_solution_rpr.pdb
+Extra_flags:   -
+
+Name:          rna_puzzle_14_bound
+Sequence:      cguugacccaggaaacugggcggaaguaaggcccauugcacuccgggccugaagcaacgcg
+Secstruct:     (((((.(((((....)))))..[.....((((((..........))))))....)))))].
+Working_res:   A:1-61
+Input_res:     -
+Native:        14_5ddp_bound_solution_rpr.pdb
+Extra_flags:   -
+
+Name:          rna_puzzle_15
+Sequence:      ggguacuuaagcccacugaugagucgcugggaugcgacgaaacgccca,gggcgucugggcaguaccca
+Secstruct:     ..........((((((....).(((((......)))))...((((((.,)))))).)))))........
+Working_res:   A:1-48,B:1-20
+Input_res:     -
+Native:        15_solution_0_rpr.pdb
+Extra_flags:   -
+
+##Name:          rna_puzzle_16
+##Sequence:      ggauugaaaaucc
+##Secstruct:     (((.......)))
+##Working_res:   -
+##Input_res:     -
+##Native:        3l0u_RNA.pdb
+##Extra_flags:   -
+
+Name:          rna_puzzle_17
+Sequence:      cgugguuagggccacguuaaauaguugcuuaagcccuaagcguugau,aucaggugcaa
+Secstruct:     ((((([[[[[[)))))........((((....(]]]]]].)..(((.,.)))...))))
+Working_res:   A:1-47,A:52-62
+Input_res:     -
+Native:        17_5k7c_solution_rpr.pdb
+Extra_flags:   -
+
+Name:          rna_puzzle_18
+Sequence:      gggucaggccggcgaaagucgccacaguuuggggaaagcugugcagccuguaacccccccacgaaaguggg
+Secstruct:     ....(((((((((....)))).((((((..[[[[...))))))..)))))...]]]](((((....)))))
+Working_res:   A:1-71
+Input_res:     -
+Native:        18_0_solution_5TPY_rpr.pdb
+Extra_flags:   -
+
+Name:          rna_puzzle_18_with_4PQV
+Sequence:      gggucaggccggcgaaagucgccacaguuuggggaaagcugugcagccuguaacccccccacgaaaguggg
+Secstruct:     ....(((((((((....)))).((((((..[[[[...))))))..)))))...]]]](((((....)))))
+Working_res:   A:1-71
+Input_res:     A:1-26,A:40-50
+Native:        18_0_solution_5TPY_rpr.pdb
+Extra_flags:   -
+
+Name:          rna_puzzle_19
+Sequence:      gcagggcaaggcccagucccgugcaagccgggaccgcccc,ggggcgcggcgcucauuccugc
+Secstruct:     (((((...(((((..((((((.......))))))((((((,)))))).))).))....)))))
+Working_res:   A:1-40,B:1-22
+Input_res:     -
+Native:        19_5t5a_solution_0_rpr.pdb
+Extra_flags:   -
+
+##Name:          rna_puzzle_20
+##Sequence:      ggauugaaaaucc
+##Secstruct:     (((.......)))
+##Working_res:   -
+##Input_res:     -
+##Native:        3l0u_RNA.pdb
+##Extra_flags:   -
+
+# Incidentally, the secstruct of the native is truly [[[[.......(((((((.(]]]]....).....)))))))
+# but one of those pairs is not really predictable, so we don't juice ourselves by including it here.
+# sadly... we aren't including the GAI?
+Name:          rna_puzzle_21
+Sequence:      ccggacgaggugcgccguacccggucaggacaagacggcgc
+Secstruct:     [[[[.......(((((((..]]]]..........)))))))
+Working_res:   A:1-41
+Input_res:     -
+Native:        21_5nwq_solution_0_rpr.pdb
+Extra_flags:   -
+
+##Name:          rna_puzzle_UR1
+##Sequence:      ggauugaaaaucc
+##Secstruct:     (((.......)))
+##Working_res:   -
+##Input_res:     -
+##Native:        3l0u_RNA.pdb
+##Extra_flags:   -
+
+##Name:          rna_puzzle_UR2
+##Sequence:      ggauugaaaaucc
+##Secstruct:     (((.......)))
+##Working_res:   -
+##Input_res:     -
+##Native:        3l0u_RNA.pdb
+##Extra_flags:   -
+
+##Name:          rna_puzzle_UR3
+##Sequence:      ggauugaaaaucc
+##Secstruct:     (((.......)))
+##Working_res:   -
+##Input_res:     -
+##Native:        3l0u_RNA.pdb
+##Extra_flags:   -
+
+##Name:          rna_puzzle_UR4
+##Sequence:      ggauugaaaaucc
+##Secstruct:     (((.......)))
+##Working_res:   -
+##Input_res:     -
+##Native:        3l0u_RNA.pdb
+##Extra_flags:   -
+
+##Name:          rna_puzzle_UR5
+##Sequence:      ggauugaaaaucc
+##Secstruct:     (((.......)))
+##Working_res:   -
+##Input_res:     -
+##Native:        3l0u_RNA.pdb
+##Extra_flags:   -
+
+##Name:          rna_puzzle_UR6
+##Sequence:      ggauugaaaaucc
+##Secstruct:     (((.......)))
+##Working_res:   -
+##Input_res:     -
+##Native:        3l0u_RNA.pdb
+##Extra_flags:   -
+
+##Name:          rna_puzzle_UR7
+##Sequence:      ggauugaaaaucc
+##Secstruct:     (((.......)))
+##Working_res:   -
+##Input_res:     -
+##Native:        3l0u_RNA.pdb
+##Extra_flags:   -
+
+##Name:          rna_puzzle_UR8
+##Sequence:      ggauugaaaaucc
+##Secstruct:     (((.......)))
+##Working_res:   -
+##Input_res:     -
+##Native:        3l0u_RNA.pdb
+##Extra_flags:   -
+
+##Name:          rna_puzzle_UR9
+##Sequence:      ggauugaaaaucc
+##Secstruct:     (((.......)))
+##Working_res:   -
+##Input_res:     -
+##Native:        3l0u_RNA.pdb
+##Extra_flags:   -
+
+##Name:          rna_puzzle_UR10
+##Sequence:      ggauugaaaaucc
+##Secstruct:     (((.......)))
+##Working_res:   -
+##Input_res:     -
+##Native:        3l0u_RNA.pdb
+##Extra_flags:   -
+
+##Name:          rna_puzzle_UR11
+##Sequence:      ggauugaaaaucc
+##Secstruct:     (((.......)))
+##Working_res:   -
+##Input_res:     -
+##Native:        3l0u_RNA.pdb
+##Extra_flags:   -
+
+##Name:          rna_puzzle_UR12
+##Sequence:      ggauugaaaaucc
+##Secstruct:     (((.......)))
+##Working_res:   -
+##Input_res:     -
+##Native:        3l0u_RNA.pdb
+##Extra_flags:   -
+
+##Name:          rna_puzzle_UR13
+##Sequence:      ggauugaaaaucc
+##Secstruct:     (((.......)))
+##Working_res:   -
+##Input_res:     -
+##Native:        3l0u_RNA.pdb
+##Extra_flags:   -
+
+##Name:          rna_puzzle_UR14
+##Sequence:      ggauugaaaaucc
+##Secstruct:     (((.......)))
+##Working_res:   -
+##Input_res:     -
+##Native:        3l0u_RNA.pdb
+##Extra_flags:   -
+
+##Name:          rna_puzzle_UR15
+##Sequence:      ggauugaaaaucc
+##Secstruct:     (((.......)))
+##Working_res:   -
+##Input_res:     -
+##Native:        3l0u_RNA.pdb
+##Extra_flags:   -
+
+##Name:          rna_puzzle_UR16
+##Sequence:      ggauugaaaaucc
+##Secstruct:     (((.......)))
+##Working_res:   -
+##Input_res:     -
+##Native:        3l0u_RNA.pdb
+##Extra_flags:   -
+
+##Name:          rna_puzzle_UR17
+##Sequence:      ggauugaaaaucc
+##Secstruct:     (((.......)))
+##Working_res:   -
+##Input_res:     -
+##Native:        3l0u_RNA.pdb
+##Extra_flags:   -
+
+##Name:          rna_puzzle_UR18
+##Sequence:      ggauugaaaaucc
+##Secstruct:     (((.......)))
+##Working_res:   -
+##Input_res:     -
+##Native:        3l0u_RNA.pdb
+##Extra_flags:   -
+
+##Name:          rna_puzzle_UR19
+##Sequence:      ggauugaaaaucc
+##Working_res:   -
+##Secstruct:     (((.......)))
+##Input_res:     -
+##Native:        3l0u_RNA.pdb
+##Extra_flags:   -
+
+##Name:          rna_puzzle_UR20
+##Sequence:      ggauugaaaaucc
+##Secstruct:     (((.......)))
+##Working_res:   -
+##Input_res:     -
+##Native:        3l0u_RNA.pdb
+##Extra_flags:   -
+

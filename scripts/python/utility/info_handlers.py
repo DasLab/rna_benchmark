@@ -63,6 +63,7 @@ class Target(TargetDefinition):
         self.fasta = None
         self.resnums = None
         self.chains = None
+        self.segids = None
         self.helix_files = None
         self.working_native = None
         self.input_pdbs = None
