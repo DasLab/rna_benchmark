@@ -115,7 +115,15 @@ Native:        1xjr.pdb
 Extra_flags:   -
 
 # Skipping 1zih because that's just gcaa_tetraloop
-# Skipping 255d because that's just uucg_tetraloop
+
+Name:          255d_orig
+Sequence:      ggacuucggucc,ggacuucggucc
+Secstruct:     ............,............
+Working_res:   A:1-12,B:1-12
+Input_res:     A:12,B:1
+Native:        255d.pdb
+Extra_flags:   -
+
 
 Name:          283d_orig
 Sequence:      ggccgaaaggcc
@@ -260,7 +268,14 @@ Native:        1xjr.pdb
 Extra_flags:   -secstruct "..(((((((...((((.((((.....))..))..))).).)))))))"
 
 # Skipping 1zih because that's just gcaa_tetraloop
-# Skipping 255d because that's just uucg_tetraloop
+
+Name:          255d_chunks
+Sequence:      ggacuucggucc,ggacuucggucc
+Secstruct:     (((((..(((((,)))))..)))))
+Working_res:   A:1-12,B:1-12
+Input_res:     -
+Native:        255d.pdb
+Extra_flags:   -secstruct "(((((..(((((,)))))..)))))"
 
 Name:          283d_chunks
 Sequence:      ggccgaaaggcc
