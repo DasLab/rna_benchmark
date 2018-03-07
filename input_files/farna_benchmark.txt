@@ -1,7 +1,9 @@
 Benchmark_flags: -superimpose_over_all
 
 # Each case is instantiated two different ways: first, with NO CONSTRAINTS AT ALL save for
-# in some cases a single input BP ._orig., and second, with INPUT HELICAL CHUNKS ._chunks.
+# in some cases a single input BP (_orig), and second, with INPUT HELICAL CHUNKS (_chunks)
+# The 'chunks' cases do not need the -input_res that the 'orig' cases need. In fact, they
+# will break them!
 
 Name:          157d_orig
 Sequence:      cgcgaauuagcg,cgcgaauuagcg
@@ -152,7 +154,7 @@ Name:          157d_chunks
 Sequence:      cgcgaauuagcg,cgcgaauuagcg
 Secstruct:     (((.((((.(((,))).)))).)))
 Working_res:   A:1-12,B:13-24
-Input_res:     A:7,B:18
+Input_res:     -
 Native:        157d.pdb
 Extra_flags:   -secstruct "(((.((((.(((,))).)))).)))"
 
@@ -168,7 +170,7 @@ Name:          1csl_chunks
 Sequence:      aacgggcgcagaa,ucugacgguacguuu
 Secstruct:     .(((..((((((.,)))).))...)))..
 Working_res:   A:43-55,B:64-78
-Input_res:     A:54,B:64
+Input_res:     -
 Native:        1csl.pdb
 Extra_flags:   -secstruct ".(((..((((((.,)))).))...))).."
 
@@ -176,7 +178,7 @@ Name:          1dqf_chunks
 Sequence:      gccacccug,cagggucggc
 Secstruct:     (((((((((,)))))).)))
 Working_res:   A:1-9,B:10-19
-Input_res:     A:9,B:10
+Input_res:     -
 Native:        1dqf.pdb
 Extra_flags:   -secstruct "(((((((((,)))))).)))"
 
@@ -192,7 +194,7 @@ Name:          1i9x_chunks
 Sequence:      uacuaacguagua,uacuaacguagua
 Secstruct:     (((((.(((((((,))))).)))))))
 Working_res:   A:1-13,B:1-13
-Input_res:     A:13,B:1
+Input_res:     -
 Native:        1i9x.pdb
 Extra_flags:   -secstruct "(((((.(((((((,))))).)))))))"
 
@@ -202,7 +204,7 @@ Name:          1kd5_chunks
 Sequence:      ggucacagccc,ggucacagccc
 Secstruct:     (((....(((.,)))....))).
 Working_res:   A:1-11,B:1-11
-Input_res:     A:11,B:1
+Input_res:     -
 Native:        1kd5.pdb
 Extra_flags:   -secstruct "(((....(((.,)))....)))."
 
@@ -229,7 +231,7 @@ Name:          1mhk_chunks
 Sequence:      ccaugcgaaccg,cgauccuagugugg
 Secstruct:     ((((((......,........))))))
 Working_res:   S:1-12,L:1-14
-Input_res:     S:1,L:14
+Input_res:     -
 Native:        1mhk.pdb
 Extra_flags:   -secstruct "((((((......,........))))))"
 
