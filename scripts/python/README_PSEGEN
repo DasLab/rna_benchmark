@@ -17,22 +17,26 @@
 #    continue
 #fi
 
-for BENCHMARK_FILE in input_files/favorites.txt input_files/favorites2.txt ; do 
+#for BENCHMARK_FILE in input_files/favorites.txt input_files/favorites2.txt input_files/challenges.txt input_files/noncanonicals.txt input_files/followups.txt input_files/followups2.txt input_files/RNA_loop_motifs_PS2011.txt ; do 
+
+cd input_files
+
+for BENCHMARK_FILE in followups.txt ; do
     
-    cd ${BENCHMARK_FILE/.txt//}
-    # cd into benchmark dir
-    
-    rm README.md
+    rm ${BENCHMARK_FILE/.txt/}/README.md
     # for each motif target dir with a NATIVE-*.pdb
-    for NATIVE_PDB in `ls *NATIVE*.pdb` ; do
+    for NATIVE_PDB in `ls ${BENCHMARK_FILE/.txt/}/*NATIVE*.pdb` ; do
         echo ""
 	# run pymol on native pdb, run rfsi4 function (from pymol_daslab), save pngs
-	#pymol -pc ${NATIVE_PDB} -d "rr() ; rfsi4() ; save ${NATIVE_PDB/.pdb/.pse} ; rsave('${NATIVE_PDB/.pdb/.png}') ; quit" ; 
+	pymol -pc ${NATIVE_PDB} -d "rr() ; rfsi4() ; save ${NATIVE_PDB/.pdb/.pse} ; rsave('${NATIVE_PDB/.pdb/.png}') ; quit" ; 
 	
     done  
 
+    #python ../../scripts/python/make_md.py ./
+    cd ${BENCHMARK_FILE/.txt/}
     python ../../scripts/python/make_md.py ./
 
     # cd out of benchmark dir 
-    cd ../..
+    cd ..
 done
+cd ..
