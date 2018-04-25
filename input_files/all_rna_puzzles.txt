@@ -97,7 +97,8 @@ Sequence:      ac,gucc,ggcg
 #Secstruct:     (((((..(((((..(((((((((...[[[.)))))))))..((((.(((.((((......(((((...((((..(((...]]]))).......))))((....)).....[[[[[...))))).(((.....))))))).)))....]]]]].((((....))))....))))...)))))..)))))
 Secstruct:     .(,).((,))..
 Working_res:   A:69-70,A:96-99,A:104-107
-Input_res:     rna_puzzle_5_p4p6_micro_START1.pdb
+Input_res:     -
+#Input_res:     rna_puzzle_5_p4p6_micro_START1.pdb
 Native:        5_0_solution_4p8z_rpr.pdb
 Extra_flags:   -
 
@@ -108,19 +109,21 @@ Sequence:      aaaac,gucc,ggcg,a
 #                                                                   ac                                         gucc    ggcg         a
 #Secstruct:     (((((..(((((..(((((((((...[[[.)))))))))..((((.(((.((((......(((((...((((..(((...]]]))).......))))((....)).....[[[[[...))))).(((.....))))))).)))....]]]]].((((....))))....))))...)))))..)))))
 Secstruct:     ....(,).((,))..,.
-Working_res:   A:66-70,A:96-99,A:104-107
+Working_res:   A:66-70,A:96-99,A:104-107,A:117
+Input_res:     -
 #Input_res:     rna_puzzle_5_p4p6_mini_START1.pdb
 Native:        5_0_solution_4p8z_rpr.pdb
 Extra_flags:   -
 
 Name:          rna_puzzle_5_p4p6_most
-Sequence:      uuaaaac,guccuaacgg,cg,a,gg
+Sequence:      uuaaaac,guccuaacggcg,a,gg
 #               12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678
 #Sequence:      gguuggguugggaaguaucauggcuaaucaccaugaugcaaucggguugaacacuuaauuggguuaaaacggugggggacgaucccguaacauccguccuaacggcgacagacugcacggcccugccucuuagguguguccaaugaacagucguuccgaaaggaagcauccgguaucccaagacaauc
-#                                                                              uuaaaac                         gucc    ggcg           gg
+#                                                                              uuaaaac                         gucc    ggcg         a gg
 #Secstruct:     (((((..(((((..(((((((((...[[[.)))))))))..((((.(((.((((......(((((...((((..(((...]]]))).......))))((....)).....[[[[[...))))).(((.....))))))).)))....]]]]].((((....))))....))))...)))))..)))))
 Secstruct:     ((....(,).((....))..,.,))
-Working_res:   A:64-70,A:96-107,A:117,A:129-130
+Working_res:   A:64-70,A:96-107,A:117,A:119-120
+Input_res:     -
 #Input_res:     rna_puzzle_5_p4p6_most_START1.pdb
 Native:        5_0_solution_4p8z_rpr.pdb
 Extra_flags:   -
