@@ -23,7 +23,8 @@ cd input_files
 
 for BENCHMARK_FILE in followups.txt favorites2.txt favorites.txt noncanonicals.txt followups2.txt challenges.txt input_files/RNA_loop_motifs_PS2011.txt ; do
     
-    rm ${BENCHMARK_FILE/.txt/}/README.md
+    # test for regeneration's sake
+	#rm ${BENCHMARK_FILE/.txt/}/README.md
 
 	echo ${BENCHMARK_FILE/.txt/}/README.md
 	echo ${BENCHMARK_FILE/.txt/}/*NATIVE*.pdb
@@ -36,11 +37,15 @@ for BENCHMARK_FILE in followups.txt favorites2.txt favorites.txt noncanonicals.t
 		echo ${NATIVE_PDB/.pdb/.pse}
 		echo ${NATIVE_PDB/.pdb/.png}
 
-		# If the .pse exists, reuse it
-		if [[ -e ${NATIVE_PDB/.pdb/.pse} ]] ; then
-			pymol -pc ${NATIVE_PDB/.pdb/.pse} -d "rsave('${NATIVE_PDB/.pdb/.png}') ; quit" ; 
+		# if the .png exists, skip
+		if [[ -e ${NATIVE_PDB/.pdb/.png} ]] ; then
 		else
-			pymol -pc ${NATIVE_PDB} -d "rr() ; rfsi4() ; save ${NATIVE_PDB/.pdb/.pse} ; rsave('${NATIVE_PDB/.pdb/.png}') ; quit" ; 
+			# If the .pse exists, reuse it
+			if [[ -e ${NATIVE_PDB/.pdb/.pse} ]] ; then
+				pymol -pc ${NATIVE_PDB/.pdb/.pse} -d "rsave('${NATIVE_PDB/.pdb/.png}') ; quit" ; 
+			else
+				pymol -pc ${NATIVE_PDB} -d "rr() ; rfsi4() ; save ${NATIVE_PDB/.pdb/.pse} ; rsave('${NATIVE_PDB/.pdb/.png}') ; quit" ; 
+			fi
 		fi
     done  
 
