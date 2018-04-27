@@ -506,6 +506,7 @@ Secstruct:     ..........................
 Working_res:   A:3-28
 Input_res:     -
 Native:        2a43.pdb
+Description:   2a43, with A-form helical chunks
 Extra_flags:   -secstruct "((((..[[[.)))).........]]]"
 
 Name:          2f88_bpc
