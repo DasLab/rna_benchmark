@@ -654,7 +654,7 @@ for target in targets:
         fid = open( '%s/flags' % target.name, 'w' )
         fid.write( '-fasta %s.fasta\n' % target.name )
         if len( target.native ) > 0:
-            fid.write( '-working_native %s\n' % basename( target.working_native ) );
+            fid.write( '-native %s\n' % basename( target.working_native ) );
         add_start_files_flag( fid, start_files )
         fid.write( '-working_res %s\n' % target.working_res.replace( ',',' ') )
         add_block_stack_flags( args, target, fid )
@@ -701,19 +701,19 @@ for target in targets:
 
         if len( target.terminal_res ) > 0:
             # note that this is redundant with -motif mode -- deprecate in early 2017
-            fid.write( '-terminal_res %s  \n' % make_tag_with_conventional_numbering( target.terminal_res, target.resnums, target.chains ) )
+            fid.write( '-terminal_res %s  \n' % make_tag_with_conventional_numbering( target.terminal_res, target.resnums, target.chains, target.segids ) )
 
         add_block_stack_flags( args, target, fid )
 
         if args.stepwise_lores:
             if ( len( target.jump_res ) > 0 ):
-                fid.write( '-jump_res %s \n' % make_tag_with_conventional_numbering( target.jump_res, target.resnums, target.chains ) )
+                fid.write( '-jump_res %s \n' % make_tag_with_conventional_numbering( target.jump_res, target.resnums, target.chains, target.segids ) )
             if ( len( target.cutpoint_closed ) > 0 ):
-                fid.write( '-cutpoint_closed %s \n' % make_tag_with_conventional_numbering( target.cutpoint_closed, target.resnums, target.chains ) )
+                fid.write( '-cutpoint_closed %s \n' % make_tag_with_conventional_numbering( target.cutpoint_closed, target.resnums, target.chains, target.segids ) )
             fid.write( '-include_neighbor_base_stacks\n' ) # Need to match FARNA.
         if len( target.extra_min_res ) > 0 and not args.extra_min_res_off: ### Turn extra_min_res off for SWM when comparing to SWA
             # note that this is redundant with -motif mode -- deprecate in early 2017
-            fid.write( '-extra_min_res %s \n' % make_tag_with_conventional_numbering( target.extra_min_res, target.resnums, target.chains ) )
+            fid.write( '-extra_min_res %s \n' % make_tag_with_conventional_numbering( target.extra_min_res, target.resnums, target.chains, target.segids ) )
         fid.write( '-fasta %s\n' % basename( target.fasta) )
         if '-move' not in extra_flags_benchmark:
             if '-cycles' not in extra_flags_benchmark:  fid.write( '-cycles 200\n' )

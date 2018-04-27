@@ -231,8 +231,22 @@ class Table(object):
 ################################################################################
 def find( file, start='./' ):
 	start += '/'
+	print start, file
+	if exists(file): return file
 	if exists(start+file):
 		return start+file
+	trial = start+file
+	trial = trial.replace('//','/')
+	print trial
+	# Extension substitution for Rosetta exes
+	if exists(trial+".linuxgccrelease"):
+		return trial+".linuxgccrelease"
+	if exists(trial+".linuxclangrelease"):
+		return trial+".linuxclangrelease"
+	if exists(trial+".macosgccrelease"):
+		return trial+".macosgccrelease"
+	if exists(trial+".macosclangrelease"):
+		return trial+".macosclangrelease"
 	for dir in filter(isdir, glob(start+'*')):
 		return find(file, start=dir)
 	return None
@@ -240,6 +254,7 @@ def find( file, start='./' ):
 ################################################################################
 def get_rosetta_exe( exe, tools=False ):
 	rosetta = expandvars('$ROSETTA')
+	print rosetta 
 	if '$' in rosetta:
 		rosetta = '~/src/rosetta/'
 	if tools:
@@ -310,16 +325,19 @@ def get_score_data( filename, colnames=['score'], sort=None, filters=None, tags=
 
 ################################################################################
 def get_rmsd_type( silent_file ):
-	with open( silent_file, 'r' ) as f:
-		for line in f:
-			if not 'SCORE:' in line:
-				continue
-			if 'rms_fill' in line:
-				return 'rms_fill'
-			elif 'NAT_rmsd' in line:
-				return 'NAT_rmsd'
-			else:
-				break
+	try:
+		with open( silent_file, 'r' ) as f:
+			for line in f:
+				if not 'SCORE:' in line:
+					continue
+				if 'rms_fill' in line:
+					return 'rms_fill'
+				elif 'NAT_rmsd' in line:
+					return 'NAT_rmsd'
+				else:
+					break
+	except:
+		pass
 	return 'rms'
 
 ################################################################################
@@ -327,7 +345,7 @@ def get_working_target():
 	return basename(os.getcwd())
 
 ################################################################################
-def get_silent_file( filename=['region_FINAL.out','swm_rebuild.out'], dir=None ):
+def get_silent_file( filename=['region_FINAL.out','swm_rebuild.out','farna_rebuild.out'], dir=None ):
 	if not isinstance(filename, list):
 		filename = [ filename ]
 	if dir is not None:
@@ -338,7 +356,7 @@ def get_silent_file( filename=['region_FINAL.out','swm_rebuild.out'], dir=None )
 ################################################################################
 def get_native_pdb():
 	target = get_working_target()
-	native_pdb = glob( target+'_????_RNA.pdb' )[0]
+	native_pdb = glob( target+'_*NATIVE*pdb' )[0]#????_RNA.pdb' )[0]
 	return native_pdb
 
 ################################################################################
@@ -489,7 +507,7 @@ def create_common_args_file( silent_file ):
 
 ################################################################################
 def create_cluster_silent_file( silent_file ):
-	common_args_file = create_common_args_file( silent_file )
+	#common_args_file = create_common_args_file( silent_file )
 	if 'swm' in silent_file:
 		silent_file_virt = virtualize_missing_residues( silent_file )
 		if not silent_file_virt or not exists( silent_file_virt ):
@@ -501,8 +519,9 @@ def create_cluster_silent_file( silent_file ):
 	no_graphic = False
 	ignore_unmatched_virtual_res = False
 	native_pdb = get_native_pdb()
-	cluster_exe = "SWA_RNA_python/SWA_dagman_python/misc/SWA_cluster.py"
-	cluster_exe = get_rosetta_exe( cluster_exe, tools=True )
+	#cluster_exe = "rna_cluster" #SWA_RNA_python/SWA_dagman_python/misc/SWA_cluster.py"
+	cluster_exe = "/scratch/users/amw579/Rosetta/main/source/bin/rna_cluster.linuxgccrelease"#get_rosetta_exe( cluster_exe, tools=False)#True )
+	cluster_exe = get_rosetta_exe( cluster_exe, tools=False)#True )
 	top_energy_clusters_folder = "TOP_ENERGY_CLUSTERS/"
 	cluster_silent_file = "%s/top_energy_clusters.out" % top_energy_clusters_folder
 	if exists( cluster_silent_file ):
@@ -510,31 +529,34 @@ def create_cluster_silent_file( silent_file ):
 	elif not exists( top_energy_clusters_folder ):
 		Command( "mkdir -p", args=top_energy_clusters_folder ).submit()
 	command = Command( cluster_exe )
-	command.add_argument( "-num_pose_kept", value=100 )
-	command.add_argument( "-distinguish_pucker", value="false" )
-	command.add_argument( "-extract_pdb ", value="False" ) 
-	command.add_argument( "-cluster_rmsd", value=cluster_rmsd )
-	command.add_argument( "-suite_cluster_rmsd", value=suite_cluster_rmsd )
-	command.add_argument( "-silent_file", value=silent_file )
-	command.add_argument( "-native_pdb", value=native_pdb )
-	command.add_argument( "-output_filename", value=cluster_silent_file )	
-	command.add_argument( "-full_length_loop_rmsd_clustering", value="True" )
-	if not rename_tags:
-		command.add_argument( "-clusterer_rename_tags", value="false" )
-		command.add_argument( "-add_lead_zero_to_tag", value="false" )
-	if not no_graphic:
-		command.add_argument( "-no_graphic", value="False" )
-	if ignore_unmatched_virtual_res:
-		command.add_argument( "-ignore_unmatched_virtual_res", value="True" )
-	if common_args_file:
-		command.add_argument( "-common_args", value=common_args_file )
+	#command.add_argument( "-num_pose_kept", value=100 )
+	#command.add_argument( "-distinguish_pucker", value="false" )
+	#command.add_argument( "-extract_pdb ", value="False" ) 
+	command.add_argument( "-cluster:radius", value=cluster_rmsd )
+	#command.add_argument( "-suite_cluster_rmsd", value=suite_cluster_rmsd )
+	#command.add_argument( "-silent_file", value=silent_file )
+	command.add_argument( "-in:file:silent", value=silent_file )
+	command.add_argument( "-native", value=native_pdb )
+	command.add_argument( "-out:file:silent", value=cluster_silent_file )	
+	#command.add_argument( "-full_length_loop_rmsd_clustering", value="True" )
+	#if not rename_tags:
+	#	command.add_argument( "-clusterer_rename_tags", value="false" )
+	#	command.add_argument( "-add_lead_zero_to_tag", value="false" )
+	#if not no_graphic:
+	#	command.add_argument( "-no_graphic", value="False" )
+	#if ignore_unmatched_virtual_res:
+	#	command.add_argument( "-ignore_unmatched_virtual_res", value="True" )
+	#if common_args_file:
+	#	command.add_argument( "-common_args", value=common_args_file )
 	command.save_logs()
+	print "About to cluster for", silent_file
 	success = command.submit()
 	return cluster_silent_file if success is True else None
 
 ################################################################################
 def get_lowest_energy_cluster_centers( nclusters=5 ):
 	silent_file = get_silent_file()	
+	if silent_file is None: return
 	cluster_silent_file = create_cluster_silent_file( silent_file )
 	if cluster_silent_file is None or not exists( cluster_silent_file ):
 		print "\n[WARNING] cluster_silent_file not found for target: %s" % get_working_target()
@@ -582,6 +604,7 @@ def get_best_of_lowest_energy_cluster_centers():
 
 	'''
 	cluster_centers = get_lowest_energy_cluster_centers()
+	if cluster_centers is None: return "  |  |  "
 	for idx, cluster_center in enumerate(cluster_centers):
 		rmsd = cluster_center[1]
 		if idx and rmsd >= best_rmsd:
