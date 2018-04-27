@@ -4,7 +4,6 @@ import sys, re, glob, os
 
 # first, get descriptions
 pwd = os.getcwd()
-print(pwd)
 
 descriptions_for_puzzle = {}
 with open("%s.txt" % pwd) as input_file:
