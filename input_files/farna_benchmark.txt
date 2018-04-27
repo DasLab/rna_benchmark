@@ -11,6 +11,7 @@ Secstruct:     ............,............
 Working_res:   A:1-12,B:13-24
 Input_res:     A:7,B:18
 Native:        157d.pdb
+Description:   157d, with original no-constraints
 Extra_flags:   -
 
 Name:          1a4d_orig
@@ -19,6 +20,7 @@ Secstruct:     .........................................
 Working_res:   A:68-108
 Input_res:     -
 Native:        1a4d.pdb
+Description:   1a4d, with original no-constraints
 Extra_flags:   -
 
 Name:          1csl_orig
@@ -27,6 +29,7 @@ Secstruct:     .............,...............
 Working_res:   A:43-55,B:64-78
 Input_res:     A:54,B:64
 Native:        1csl.pdb
+Description:   1csl, with original no-constraints
 Extra_flags:   -
 
 Name:          1dqf_orig
@@ -35,6 +38,7 @@ Secstruct:     .........,..........
 Working_res:   A:1-9,B:10-19
 Input_res:     A:9,B:10
 Native:        1dqf.pdb
+Description:   1dqf, with original no-constraints
 Extra_flags:   -
 
 Name:          1esy_orig
@@ -43,6 +47,7 @@ Secstruct:     ...................
 Working_res:   A:1-19
 Input_res:     -
 Native:        1esy.pdb
+Description:   1esy, with original no-constraints
 Extra_flags:   -
 
 Name:          1i9x_orig
@@ -51,6 +56,7 @@ Secstruct:     .............,.............
 Working_res:   A:1-13,B:1-13
 Input_res:     A:13,B:1
 Native:        1i9x.pdb
+Description:   1i9x, with original no-constraints
 Extra_flags:   -
 
 # Skipping 1j6s; it's the bru_gag_tetraplex
@@ -61,6 +67,7 @@ Secstruct:     ...........,...........
 Working_res:   A:1-11,B:1-11
 Input_res:     A:11,B:1
 Native:        1kd5.pdb
+Description:   1kd5, with original no-constraints
 Extra_flags:   -
 
 Name:          1kka_orig
@@ -69,6 +76,7 @@ Secstruct:     .................
 Working_res:   A:1-17
 Input_res:     -
 Native:        1kka.pdb
+Description:   1kka, with original no-constraints
 Extra_flags:   -
 
 Name:          1l2x_orig
@@ -77,6 +85,7 @@ Secstruct:     ............................
 Working_res:   A:1-28
 Input_res:     -
 Native:        1l2x.pdb
+Description:   1l2x, with original no-constraints
 Extra_flags:   -
 
 # Original would have set up immutable
@@ -88,6 +97,7 @@ Secstruct:     ............,..............
 Working_res:   S:1-12,L:1-14
 Input_res:     S:1,L:14
 Native:        1mhk.pdb
+Description:   1mhk, with original no-constraints
 Extra_flags:   -
 
 Name:          1q9a_orig
@@ -96,6 +106,7 @@ Secstruct:     ...........................
 Working_res:   A:2647-2673
 Input_res:     -
 Native:        1q9a.pdb
+Description:   1q9a, with original no-constraints
 Extra_flags:   -
 
 Name:          1qwa_orig
@@ -104,6 +115,7 @@ Secstruct:     .....................
 Working_res:   A:1-21
 Input_res:     -
 Native:        1qwa.pdb
+Description:   1qwa, with original no-constraints
 Extra_flags:   -
 
 Name:          1xjr_orig
@@ -112,6 +124,7 @@ Secstruct:     ...............................................
 Working_res:   A:1-47
 Input_res:     -
 Native:        1xjr.pdb
+Description:   1xjr, with original no-constraints
 Extra_flags:   -
 
 # Skipping 1zih because that's just gcaa_tetraloop
@@ -122,6 +135,7 @@ Secstruct:     ............,............
 Working_res:   A:1-12,B:1-12
 Input_res:     A:12,B:1
 Native:        255d.pdb
+Description:   255d, with original no-constraints
 Extra_flags:   -
 
 
@@ -131,6 +145,7 @@ Secstruct:     ............
 Working_res:   A:1-12
 Input_res:     -
 Native:        283d.pdb
+Description:   283d, with original no-constraints
 Extra_flags:   -
 
 Name:          28sp_orig
@@ -139,6 +154,7 @@ Secstruct:     ............................
 Working_res:   A:1-28
 Input_res:     -
 Native:        28sp.pdb
+Description:   28sp, with original no-constraints
 Extra_flags:   -
 
 Name:          2a43_orig
@@ -147,6 +163,7 @@ Secstruct:     ..........................
 Working_res:   A:3-28
 Input_res:     -
 Native:        2a43.pdb
+Description:   2a43, with original no-constraints
 Extra_flags:   -
 
 Name:          2f88_orig
@@ -155,6 +172,7 @@ Secstruct:     ..................................
 Working_res:   A:1-34
 Input_res:     -
 Native:        2f88.pdb
+Description:   2f88, with original no-constraints
 Extra_flags:   -
 
 
@@ -164,6 +182,7 @@ Secstruct:     (((.((((.(((,))).)))).)))
 Working_res:   A:1-12,B:13-24
 Input_res:     -
 Native:        157d.pdb
+Description:   157d, with A-form helical chunks
 Extra_flags:   -secstruct "(((.((((.(((,))).)))).)))"
 
 Name:          1a4d_chunks
@@ -172,6 +191,7 @@ Secstruct:     ((((...........(((.....)))...........))))
 Working_res:   A:68-108
 Input_res:     -
 Native:        1a4d.pdb
+Description:   1a4d, with A-form helical chunks
 Extra_flags:   -secstruct "((((...........(((.....)))...........))))"
 
 Name:          1csl_chunks
@@ -180,6 +200,7 @@ Secstruct:     .(((..((((((.,)))).))...)))..
 Working_res:   A:43-55,B:64-78
 Input_res:     -
 Native:        1csl.pdb
+Description:   1csl, with A-form helical chunks
 Extra_flags:   -secstruct ".(((..((((((.,)))).))...))).."
 
 Name:          1dqf_chunks
@@ -188,6 +209,7 @@ Secstruct:     (((((((((,)))))).)))
 Working_res:   A:1-9,B:10-19
 Input_res:     -
 Native:        1dqf.pdb
+Description:   1dqf, with A-form helical chunks
 Extra_flags:   -secstruct "(((((((((,)))))).)))"
 
 Name:          1esy_chunks
@@ -196,6 +218,7 @@ Secstruct:     ((((.((....))..))))
 Working_res:   A:1-19
 Input_res:     -
 Native:        1esy.pdb
+Description:   1esy, with A-form helical chunks
 Extra_flags:   -secstruct "((((.((....))..))))"
 
 Name:          1i9x_chunks
@@ -204,6 +227,7 @@ Secstruct:     (((((.(((((((,))))).)))))))
 Working_res:   A:1-13,B:1-13
 Input_res:     -
 Native:        1i9x.pdb
+Description:   1i9x, with A-form helical chunks
 Extra_flags:   -secstruct "(((((.(((((((,))))).)))))))"
 
 # Skipping 1j6s; it's the bru_gag_tetraplex
@@ -214,6 +238,7 @@ Secstruct:     (((....(((.,)))....))).
 Working_res:   A:1-11,B:1-11
 Input_res:     -
 Native:        1kd5.pdb
+Description:   1kd5, with A-form helical chunks
 Extra_flags:   -secstruct "(((....(((.,)))....)))."
 
 Name:          1kka_chunks
@@ -222,6 +247,7 @@ Secstruct:     ((((((.....))))))
 Working_res:   A:1-17
 Input_res:     -
 Native:        1kka.pdb
+Description:   1kka, with A-form helical chunks
 Extra_flags:   -secstruct "((((((.....))))))"
 
 Name:          1l2x_chunks
@@ -230,6 +256,7 @@ Secstruct:     ..(((((..[[[.))))).......]]]
 Working_res:   A:1-28
 Input_res:     -
 Native:        1l2x.pdb
+Description:   1l2x, with A-form helical chunks
 Extra_flags:   -secstruct "..(((((..[[[.))))).......]]]"
 
 # Original would have set up immutable
@@ -241,6 +268,7 @@ Secstruct:     ((((((......,........))))))
 Working_res:   S:1-12,L:1-14
 Input_res:     -
 Native:        1mhk.pdb
+Description:   1mhk, with A-form helical chunks
 Extra_flags:   -secstruct "((((((......,........))))))"
 
 Name:          1q9a_chunks
@@ -249,6 +277,7 @@ Secstruct:     .(((((.....(....)....))))).
 Working_res:   A:2647-2673
 Input_res:     -
 Native:        1q9a.pdb
+Description:   1q9a, with A-form helical chunks
 Extra_flags:   -secstruct ".(((((.....(....)....)))))."
 
 Name:          1qwa_chunks
@@ -257,6 +286,7 @@ Secstruct:     ((((((((....)).))))))
 Working_res:   A:1-21
 Input_res:     -
 Native:        1qwa.pdb
+Description:   1qwa, with A-form helical chunks
 Extra_flags:   -secstruct "((((((((....)).))))))"
 
 Name:          1xjr_chunks
@@ -265,6 +295,7 @@ Secstruct:     ..(((((((...((((.((((.....))..))..))).).)))))))
 Working_res:   A:1-47
 Input_res:     -
 Native:        1xjr.pdb
+Description:   1xjr, with A-form helical chunks
 Extra_flags:   -secstruct "..(((((((...((((.((((.....))..))..))).).)))))))"
 
 # Skipping 1zih because that's just gcaa_tetraloop
@@ -275,6 +306,7 @@ Secstruct:     (((((..(((((,)))))..)))))
 Working_res:   A:1-12,B:1-12
 Input_res:     -
 Native:        255d.pdb
+Description:   255d, with A-form helical chunks
 Extra_flags:   -secstruct "(((((..(((((,)))))..)))))"
 
 Name:          283d_chunks
@@ -283,6 +315,7 @@ Secstruct:     ((((....))))
 Working_res:   A:1-12
 Input_res:     -
 Native:        283d.pdb
+Description:   283d, with A-form helical chunks
 Extra_flags:   -secstruct "((((....))))"
 
 Name:          28sp_chunks
@@ -291,6 +324,7 @@ Secstruct:     (((((....(((....)))....)))))
 Working_res:   A:1-28
 Input_res:     -
 Native:        28sp.pdb
+Description:   28sp, with A-form helical chunks
 Extra_flags:   -
 
 Name:          2a43_chunks
@@ -299,6 +333,7 @@ Secstruct:     ((((..[[[.)))).........]]]
 Working_res:   A:3-28
 Input_res:     -
 Native:        2a43.pdb
+Description:   2a43, with A-form helical chunks
 Extra_flags:   -secstruct "((((..[[[.)))).........]]]"
 
 Name:          2f88_chunks
@@ -307,6 +342,7 @@ Secstruct:     ((((((((.(((((....)))))...))))))))
 Working_res:   A:1-34
 Input_res:     -
 Native:        2f88.pdb
+Description:   2f88, with A-form helical chunks
 Extra_flags:   -secstruct "((((((((.(((((....)))))...))))))))"
 
 
@@ -319,6 +355,7 @@ Secstruct:     ............,............
 Working_res:   A:1-12,B:13-24
 Input_res:     -
 Native:        157d.pdb
+Description:   157d, with base pair constraints
 Extra_flags:   -secstruct "(((.((((.(((,))).)))).)))"
 
 Name:          1a4d_bpc
@@ -327,6 +364,7 @@ Secstruct:     .........................................
 Working_res:   A:68-108
 Input_res:     -
 Native:        1a4d.pdb
+Description:   1a4d, with base pair constraints
 Extra_flags:   -secstruct "((((...........(((.....)))...........))))"
 
 Name:          1csl_bpc
@@ -335,6 +373,7 @@ Secstruct:     .............,...............
 Working_res:   A:43-55,B:64-78
 Input_res:     -
 Native:        1csl.pdb
+Description:   1csl, with A-form helical chunks
 Extra_flags:   -secstruct ".(((..((((((.,)))).))...))).."
 
 Name:          1dqf_bpc
@@ -343,6 +382,7 @@ Secstruct:     .........,..........
 Working_res:   A:1-9,B:10-19
 Input_res:     -
 Native:        1dqf.pdb
+Description:   1dqf, with A-form helical chunks
 Extra_flags:   -secstruct "(((((((((,)))))).)))"
 
 Name:          1esy_bpc
@@ -351,6 +391,7 @@ Secstruct:     ...................
 Working_res:   A:1-19
 Input_res:     -
 Native:        1esy.pdb
+Description:   1esy, with A-form helical chunks
 Extra_flags:   -secstruct "((((.((....))..))))"
 
 Name:          1i9x_bpc
@@ -359,6 +400,7 @@ Secstruct:     .............,.............
 Working_res:   A:1-13,B:1-13
 Input_res:     -
 Native:        1i9x.pdb
+Description:   1i9x, with A-form helical chunks
 Extra_flags:   -secstruct "(((((.(((((((,))))).)))))))"
 
 # Skipping 1j6s; it's the bru_gag_tetraplex
@@ -369,6 +411,7 @@ Secstruct:     ...........,...........
 Working_res:   A:1-11,B:1-11
 Input_res:     -
 Native:        1kd5.pdb
+Description:   1kd5, with A-form helical chunks
 Extra_flags:   -secstruct "(((....(((.,)))....)))."
 
 Name:          1kka_bpc
@@ -377,6 +420,7 @@ Secstruct:     .................
 Working_res:   A:1-17
 Input_res:     -
 Native:        1kka.pdb
+Description:   1kka, with A-form helical chunks
 Extra_flags:   -secstruct "((((((.....))))))"
 
 Name:          1l2x_bpc
@@ -385,6 +429,7 @@ Secstruct:     ............................
 Working_res:   A:1-28
 Input_res:     -
 Native:        1l2x.pdb
+Description:   1a4d, with A-form helical chunks
 Extra_flags:   -secstruct "..(((((..[[[.))))).......]]]"
 
 # Original would have set up immutable
@@ -396,6 +441,7 @@ Secstruct:     ............,..............
 Working_res:   S:1-12,L:1-14
 Input_res:     -
 Native:        1mhk.pdb
+Description:   1mhk, with A-form helical chunks
 Extra_flags:   -secstruct "((((((......,........))))))"
 
 Name:          1q9a_bpc
@@ -404,6 +450,7 @@ Secstruct:     ...........................
 Working_res:   A:2647-2673
 Input_res:     -
 Native:        1q9a.pdb
+Description:   1q9a, with A-form helical chunks
 Extra_flags:   -secstruct ".(((((.....(....)....)))))."
 
 Name:          1qwa_bpc
@@ -412,6 +459,7 @@ Secstruct:     .....................
 Working_res:   A:1-21
 Input_res:     -
 Native:        1qwa.pdb
+Description:   1qwa, with A-form helical chunks
 Extra_flags:   -secstruct "((((((((....)).))))))"
 
 Name:          1xjr_bpc
@@ -420,6 +468,7 @@ Secstruct:     ...............................................
 Working_res:   A:1-47
 Input_res:     -
 Native:        1xjr.pdb
+Description:   1xjr, with A-form helical chunks
 Extra_flags:   -secstruct "..(((((((...((((.((((.....))..))..))).).)))))))"
 
 # Skipping 1zih because that's just gcaa_tetraloop
@@ -430,6 +479,7 @@ Secstruct:     ............,............
 Working_res:   A:1-12,B:1-12
 Input_res:     -
 Native:        255d.pdb
+Description:   255d, with A-form helical chunks
 Extra_flags:   -secstruct "(((((..(((((,)))))..)))))"
 
 Name:          283d_bpc
@@ -438,6 +488,7 @@ Secstruct:     ............
 Working_res:   A:1-12
 Input_res:     -
 Native:        283d.pdb
+Description:   283d, with A-form helical chunks
 Extra_flags:   -secstruct "((((....))))"
 
 Name:          28sp_bpc
@@ -446,6 +497,7 @@ Secstruct:     ............................
 Working_res:   A:1-28
 Input_res:     -
 Native:        28sp.pdb
+Description:   28sp, with A-form helical chunks
 Extra_flags:   -secstruct "(((((....(((....)))....)))))"
 
 Name:          2a43_bpc
@@ -462,6 +514,7 @@ Secstruct:     ..................................
 Working_res:   A:1-34
 Input_res:     -
 Native:        2f88.pdb
+Description:   2f88, with A-form helical chunks
 Extra_flags:   -secstruct "((((((((.(((((....)))))...))))))))"
 
 
