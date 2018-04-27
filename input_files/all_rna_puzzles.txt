@@ -6,6 +6,7 @@ Secstruct:     ((((((((.((((...((((((()))))))..)))).).)))))))
 Working_res:   A:1-46
 Input_res:     -
 Native:        1_solution_0_rpr.pdb
+Description:   RNA-puzzle 1
 Extra_flags:   -
 
 Name:          rna_puzzle_2
@@ -13,6 +14,7 @@ Sequence:      ccggaggaacuacugccggcagccuccggaggaacuacugccggcagccuccggaggaacuacug
 Secstruct:     {{{{(((.....(((aaaa))))))<<<<(((.....(((}}}}))))))[[[[(((.....(((>>>>))))))aaaa(((.....(((]]]]))))))
 Working_res:   A:1-15,B:1-10,C:1-15,D:1-10,E:1-15,F:1-10,G:1-15,H:1-10
 Input_res:     B:1-10,D:1-10,F:1-10,H:1-10
+Description:   RNA-puzzle 2
 Native:        hacked_on.pdb
 Extra_flags:   -
 
@@ -22,6 +24,7 @@ Secstruct:     (((((....(.((((......)))))(((...((((...((((((((....))))))))....))
 Working_res:   A:1-84
 Input_res:     -
 Native:        3_solution_0_rpr.pdb
+Description:   RNA-puzzle 3
 Extra_flags:   -
 
 Name:          rna_puzzle_4
@@ -30,6 +33,7 @@ Secstruct:     ((((((((....(.(((...(((.[.[[)))......)))).((..(((((((.(((((((((((
 Working_res:   A:1-126
 Input_res:     -
 Native:        4_0_solution_3V7E_rpr.pdb
+Description:   RNA-puzzle 4
 Extra_flags:   -ignore_zero_occupancy false
 
 # all_rna_puzzles/3iqp_chunk.pdb takes care of A:1-47 A:88-126
@@ -40,6 +44,7 @@ Secstruct:     ................................................(((((.(((((((((((
 Working_res:   A:1-126
 Input_res:     A:1-47,A:88-126
 Native:        4_0_solution_3V7E_rpr.pdb
+Description:   RNA-puzzle 4, using a large chunk of a homologous structure known at the time
 Extra_flags:   -ignore_zero_occupancy false
 
 Name:          rna_puzzle_4_align_to_3iqp
@@ -47,6 +52,7 @@ Sequence:      ggcuuaucaagagagguggagggacuggcccgaugaaacccggcaaccacuagucuagcgucagc
 Secstruct:     ((((((((....(.(((...(((.[.[[)))......)))).((..(((((((.(((((((((((....))))))))))).))))))).))....(]].]((.((....)).))..))))))))).
 Working_res:   A:1-126
 Input_res:     -
+Description:   RNA-puzzle 4, merely aligning to the starting structure
 Native:        4_0_solution_3V7E_rpr.pdb
 Extra_flags:   -align_pdb 3iqp_chunk.pdb -rmsd_screen 4.0 -ignore_zero_occupancy false
 
@@ -56,6 +62,7 @@ Secstruct:     (((((..(((((..(((((((((...[[[.)))))))))..((((.(((.((((......(((((
 Working_res:   A:1-188
 Input_res:     -
 Native:        5_0_solution_4p8z_rpr.pdb
+Description:   RNA-puzzle 5
 Extra_flags:   -
 
 # The original run used a useful but hard to automate 'assembly' process
@@ -79,6 +86,7 @@ Secstruct:     ((((.((((......(((((.,...[[[[[..,))))).((((,)))))))).))))...]]]]]
 Working_res:   A:46-66,A:108-117,A:119-128,A:132-157,A:162-166
 Input_res:     -
 Native:        5_0_solution_4p8z_rpr.pdb
+Description:   RNA-puzzle 5 docking subproblem
 Extra_flags:   -
 
 Name:          rna_puzzle_5_p15_p3_p8
@@ -87,6 +95,7 @@ Secstruct:     ((((.((((......(((((,))))).((((,)))))))).))))
 Working_res:   A:46-65,A:119-128,A:132-144
 Input_res:     -
 Native:        5_0_solution_4p8z_rpr.pdb
+Description:   RNA-puzzle 5 three-way junction
 Extra_flags:   -
 
 Name:          rna_puzzle_5_p4p6_micro
@@ -100,6 +109,7 @@ Working_res:   A:69-70,A:96-99,A:104-107
 Input_res:     -
 #Input_res:     rna_puzzle_5_p4p6_micro_START1.pdb
 Native:        5_0_solution_4p8z_rpr.pdb
+Description:   RNA-puzzle 5 p4p6 'micro' subproblem
 Extra_flags:   -
 
 Name:          rna_puzzle_5_p4p6_mini
@@ -113,6 +123,7 @@ Working_res:   A:66-70,A:96-99,A:104-107,A:117
 Input_res:     -
 #Input_res:     rna_puzzle_5_p4p6_mini_START1.pdb
 Native:        5_0_solution_4p8z_rpr.pdb
+Description:   RNA-puzzle 5 p4p6 'mini' subproblem
 Extra_flags:   -
 
 Name:          rna_puzzle_5_p4p6_most
@@ -126,6 +137,7 @@ Working_res:   A:64-70,A:96-107,A:117,A:119-120
 Input_res:     -
 #Input_res:     rna_puzzle_5_p4p6_most_START1.pdb
 Native:        5_0_solution_4p8z_rpr.pdb
+Description:   RNA-puzzle 5 p4p6 aggressive subproblem
 Extra_flags:   -
 
 
@@ -142,6 +154,7 @@ Secstruct:     (((..(((,))).(((,)))..)))
 Working_res:   A:10-17,A:37-43,A:172-179
 Input_res:     -
 Native:        5_0_solution_4p8z_rpr.pdb
+Description:   RNA-puzzle 5 p2, p2.1, p10 three-way junction
 Extra_flags:   -
 
 Name:          rna_puzzle_6
@@ -150,6 +163,7 @@ Secstruct:     ((((((((.(((.(((.,.)).)))).....((....(((((.......)))))[[((.....))
 Working_res:   A:1-17,A:24-110,A:115-168
 Input_res:     -
 Native:        6_0_solution_4GXY_rpr.pdb
+Description:   RNA-puzzle 6
 Extra_flags:   -
 
 Name:          rna_puzzle_7
@@ -158,6 +172,7 @@ Secstruct:     ((((((((((.....((((...((((.......))))..))))..((((((.(((..((((((..
 Working_res:   A:1-185
 Input_res:     -
 Native:        7_0_solution_4r4v_rpr.pdb
+Description:   RNA-puzzle 7
 Extra_flags:   -
 
 # Did we do this with any homology? Almost certainly a renumbering of the binding site is appropriate.
@@ -167,6 +182,7 @@ Secstruct:     (((((....((((....))))(((..((((((.[[[[..))).))).)))..(((((....))))
 Working_res:   A:1-96
 Input_res:     -
 Native:        8_0_solution_4L81_rpr.pdb
+Description:   RNA-puzzle 8
 Extra_flags:   -
 
 ##Name:          rna_puzzle_9
@@ -183,6 +199,7 @@ Secstruct:     (((.....((((.......((((((..(((((((......[..((((((..........])))))
 Working_res:   A:1-96,B:6-66
 Input_res:     -
 Native:        10_0_solution_4LCK_rpr.pdb
+Description:   RNA-puzzle 10
 Extra_flags:   -
 
 ##Name:          rna_puzzle_11
@@ -199,6 +216,7 @@ Secstruct:     ...((((...(((..,.)))((((((....(..,(((((....(((((((....)))))))..((
 Working_res:   A:2-16,A:18-34,A:39-123
 Input_res:     -
 Native:        12_4qln_solution_rpr.pdb
+Description:   RNA-puzzle 12
 Extra_flags:   -
 
 Name:          rna_puzzle_13
@@ -207,6 +225,7 @@ Secstruct:     (((((((..(([[[[....(((((....))))).))..))))))),(((...]]]]..)))
 Working_res:   A:1-45,A:57-71
 Input_res:     -
 Native:        13_0_solution_4XW7_rpr.pdb
+Description:   RNA-puzzle 13
 Extra_flags:   -
 
 Name:          rna_puzzle_14_free
@@ -215,6 +234,7 @@ Secstruct:     (((((((((((....)))))),....((((((..........))))))....)))))..
 Working_res:   A:1-21,A:25-61
 Input_res:     -
 Native:        14_5ddo_free_solution_rpr.pdb
+Description:   RNA-puzzle 14, ligand-free
 Extra_flags:   -
 
 Name:          rna_puzzle_14_bound
@@ -223,6 +243,7 @@ Secstruct:     (((((.(((((....)))))..[.....((((((..........))))))....)))))].
 Working_res:   A:1-61
 Input_res:     -
 Native:        14_5ddp_bound_solution_rpr.pdb
+Description:   RNA-puzzle 14, ligand-bound
 Extra_flags:   -
 
 Name:          rna_puzzle_15
@@ -231,6 +252,7 @@ Secstruct:     ..........((((((....).(((((......)))))...((((((.,)))))).)))))....
 Working_res:   A:1-48,B:1-20
 Input_res:     -
 Native:        15_solution_0_rpr.pdb
+Description:   RNA-puzzle 15
 Extra_flags:   -
 
 ##Name:          rna_puzzle_16
@@ -247,6 +269,7 @@ Secstruct:     ((((([[[[[[)))))........((((....(]]]]]].)..(((.,.)))...))))
 Working_res:   A:1-47,A:52-62
 Input_res:     -
 Native:        17_5k7c_solution_rpr.pdb
+Description:   RNA-puzzle 17
 Extra_flags:   -
 
 Name:          rna_puzzle_18
@@ -255,6 +278,7 @@ Secstruct:     ....(((((((((....)))).((((((..[[[[...))))))..)))))...]]]](((((...
 Working_res:   A:1-71
 Input_res:     -
 Native:        18_0_solution_5TPY_rpr.pdb
+Description:   RNA-puzzle 18
 Extra_flags:   -
 
 Name:          rna_puzzle_18_with_4PQV
@@ -263,6 +287,7 @@ Secstruct:     ....(((((((((....)))).((((((..[[[[...))))))..)))))...]]]](((((...
 Working_res:   A:1-71
 Input_res:     A:1-26,A:40-50
 Native:        18_0_solution_5TPY_rpr.pdb
+Description:   RNA-puzzle 18, with original homology
 Extra_flags:   -
 
 Name:          rna_puzzle_19
@@ -271,6 +296,7 @@ Secstruct:     (((((...(((((..((((((.......))))))((((((,)))))).))).))....)))))
 Working_res:   A:1-40,B:1-22
 Input_res:     -
 Native:        19_5t5a_solution_0_rpr.pdb
+Description:   RNA-puzzle 19
 Extra_flags:   -
 
 ##Name:          rna_puzzle_20
@@ -290,6 +316,7 @@ Secstruct:     [[[[.......(((((((..]]]]..........)))))))
 Working_res:   A:1-41
 Input_res:     -
 Native:        21_5nwq_solution_0_rpr.pdb
+Description:   RNA-puzzle 21
 Extra_flags:   -
 
 ##Name:          rna_puzzle_UR1
