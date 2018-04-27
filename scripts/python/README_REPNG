@@ -1,0 +1,29 @@
+#!/bin/bash
+
+
+# loop over benchmark info files (i.e. chalenges.txt, etc.)
+for BENCHMARK_FILE in */*.txt ; do 
+    
+    # cd into benchmark dir
+    BENCHMARK_DIR=$(dirname $BENCHMARK_FILE) 
+    cd $BENCHMARK_DIR 
+
+    # for each motif target dir with a NATIVE-*.pdb
+    for NATIVE_PDB in */NATIVE-*.pdb ; do
+    
+	# parse target dir, native file 
+    	TARGET_DIR=$(dirname $NATIVE_PDB) 
+	NATIVE_PDB=$(basename $NATIVE_PDB) 
+	
+	# cd into target dir
+	cd $TARGET_DIR 
+	
+	# run pymol on native pdb, run rfsi4 function (from pymol_daslab), save pngs
+	pymol -pc ${NATIVE_PDB/.pdb/.pse} -d "rsave('rerendered_${NATIVE_PDB/.pdb/.png}') ; quit" ; 
+	
+	# cd out of motif target dir	
+	cd .. 
+    done  
+    # cd out of benchmark dir 
+    cd ..  
+done

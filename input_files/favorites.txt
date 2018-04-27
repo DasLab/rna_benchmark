@@ -6,6 +6,7 @@ Secstruct:     ((....))
 Working_res:   A:3-10
 Input_res:     -
 Native:        1zih_RNA.pdb
+Description:   GCAA tetraloop
 Extra_flags:   -
 
 Name:          uucg_tetraloop
@@ -14,6 +15,7 @@ Secstruct:     ((....))
 Working_res:   A:4-11
 Input_res:     -
 Native:        2koc_RNA.pdb
+Description:   UUCG tetraloop
 Extra_flags:   -
 
 Name:          gagua_pentaloop
@@ -22,6 +24,7 @@ Secstruct:     ((.....))
 Working_res:   A:20-28
 Input_res:     -
 Native:        1xjr_RNA.pdb
+Description:   GAGUA pentaloop from conserved SARS region
 Extra_flags:   -
 
 Name:          tandem_ga_imino
@@ -30,6 +33,7 @@ Secstruct:     ((..((,))..))
 Working_res:   A:2-7,B:10-15
 Input_res:     -
 Native:        1mis_RNA.pdb
+Description:   Imino conformation of tandem G-A base pair steps
 Extra_flags:   -
 
 Name:          tandem_ga_sheared
@@ -38,6 +42,7 @@ Secstruct:     ((..((,))..))
 Working_res:   A:2-7,B:10-15
 Input_res:     -
 Native:        1yfv_RNA.pdb
+Description:   Sheared conformation of tandem G-A base pair steps 
 Extra_flags:   -
 
 Name:          gg_mismatch
@@ -46,6 +51,7 @@ Secstruct:     ((.((,)).))
 Working_res:   A:2-6,B:5-9
 Input_res:     -
 Native:        1f5g.pdb
+Description:   G(syn)-G(anti) conformation of non-canonical guanosine-guanosine base pair
 Extra_flags:   -
 
 Name:          srp_domainIV
@@ -54,6 +60,7 @@ Secstruct:     ((....((,))....))
 Working_res:   A:3-10,B:15-22
 Input_res:     -
 Native:        native_1lnt_RNA.pdb
+Description:   Conserved domain of human signal-recognition particle
 Extra_flags:   -
 
 Name:          srp_domainIV_fixed
@@ -62,6 +69,7 @@ Secstruct:     ((....((,))....))
 Working_res:   A:3-10,B:15-22
 Input_res:     A:3-4,A:9-10,B:15-16,B:21-22
 Native:        native_1lnt_RNA.pdb
+Description:   Conserved domain of human signal-recognition particle, modeled with fixed helix orientation
 Extra_flags:   -
 
 Name:          r2_4x4
@@ -70,6 +78,7 @@ Secstruct:     ((....((,))....))
 Working_res:   A:2-9,B:13-20
 Input_res:     -
 Native:        2l8f_RNA.pdb
+Description:   4-by-4 nucleotide RNA internal loop from an R2 retrotransposon
 Extra_flags:   -
 
 Name:          j44a_p4p6
@@ -78,6 +87,7 @@ Secstruct:     ((...(((,)))..))
 Working_res:   A:111-118,A:203-209
 Input_res:     -
 Native:        1gid_RNAA.pdb
+Description:   J4/4a from P4-P6 domain
 Extra_flags:   -
 
 Name:          srl_fixed
@@ -87,6 +97,7 @@ Secstruct_gen: ((.....((..))....))
 Working_res:   A:651-669
 Input_res:     A:651-652,A:658-663,A:668-669
 Native:        1q9a_RNA.pdb
+Description:   Bulged G motif from sarcin/ricin loop
 Extra_flags:   -
 
 #Name:          srl_free
@@ -95,6 +106,7 @@ Extra_flags:   -
 #Working_res:   A:651-669
 #Input_res:     -
 #Native:        1q9a_RNA.pdb
+#Description:   
 #Extra_flags:   -
 
 Name:          srl_free_bulgedG
@@ -103,5 +115,6 @@ Secstruct:     ((.....(,)....))
 Working_res:   A:651-658,A:663-669
 Input_res:     -
 Native:        1q9a_RNA.pdb
+Description:   Bulged G motif from sarcin/ricin loop
 Extra_flags:   -
 

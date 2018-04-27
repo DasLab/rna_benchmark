@@ -6,6 +6,7 @@ Secstruct:     {.(((((((,)).((((,))))}.)))))
 Working_res:   A:3-11,A:20-26,A:40-50
 Input_res:     -
 Native:        5tpy.pdb
+Description:   A three-way-junction from the Zika xrRNA
 Extra_flags:   -allow_complex_loop_graph
 
 Name:          puzzle18_zika_3WJ_extraminres
@@ -14,4 +15,5 @@ Secstruct:     {.(((((((,)).((((,))))}.)))))
 Working_res:   A:3-11,A:20-26,A:40-50
 Input_res:     -
 Native:        5tpy.pdb
+Description:   A three-way-junction from the Zika xrRNA
 Extra_flags:   -allow_complex_loop_graph -extra_min_res A:5-9 A:23-26 A:40-44 A:46-50
