@@ -217,8 +217,11 @@ for target in targets:
             fasta_entities.append(entity)
         i += 1
 
-    print stems
+    #print stems
     for i in range( len( stems ) ):
+        # If -bps_moves is in extra_flags_benchmark, then remove any HELIX containing -s files
+        if '-bps_moves' in extra_flags_benchmark and (args.farna or args.farfar): continue
+
         helix_file =  '%s/%s_HELIX%d.pdb' % (inpath,target.name,(i+1))
 
         stem = stems[i]
@@ -355,7 +358,7 @@ for target in targets:
         for domain in input_resnum_fullmodel_by_block:
             for m in domain:
                 for n in domain:
-                    print "strand[%d] and strand[%d] are connected" % (m,n)
+                    #print "strand[%d] and strand[%d] are connected" % (m,n)
                     strand_connected[ strand[m] ][ strand[n] ] = True
         # are there any separated clusters?
         already_in_cluster = {}
@@ -369,7 +372,7 @@ for target in targets:
                     strand_cluster.add( n )
                     already_in_cluster[ n ] = True
             clusters.append( strand_cluster )
-        print clusters
+        #print clusters
         assert( len( clusters ) > 0 )
         while len(clusters) > 2:
             # look for every key in each cluster. if there is a common key in another, merge?
@@ -507,6 +510,13 @@ for target in targets:
                 print 'loopres_list for '+target.name+' = '+string.join(loopres_list)
                 print 'periph_res for '+target.name+' = '+periph_res_tag
 
+    # If -bps_moves is in extra_flags_benchmark, or really if no HELIX in -s (also base pair
+    # constraint condition, basically) then add a command line specification of secstruct.
+    # Unless, of course, secstruct is just dots... actually, sure, add it anyway. That's fine 
+    # because it hurts nothing and is just more explicit
+    #if (args.farna or args.farfar) and len(filter(target.input_pdbs, lambda(s): "HELIX" in s)) == 0:
+    if (args.farna or args.farfar) and len(filter(lambda(s): "HELIX" in s, target.input_pdbs)) == 0:
+        target.extra_flags['secstruct'] = "\"{}\"".format(target.secstruct)
 
 
 # write qsubMINIs, READMEs and SUBMITs
