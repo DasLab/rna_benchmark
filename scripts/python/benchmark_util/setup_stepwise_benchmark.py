@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from __future__ import print_function
 
 import string
 import argparse
@@ -67,7 +68,7 @@ if exists(args.extra_flags):
     if '-extra_min_res' in extra_flags_benchmark:
         extra_min_res_benchmark = extra_flags_benchmark.pop('-extra_min_res')
 else:
-    print args.extra_flags,"doesn't exist, not using extra flags for benchmark"
+    print(args.extra_flags,"doesn't exist, not using extra flags for benchmark")
 
 
 # initialize directories
@@ -83,7 +84,7 @@ assert( exists( info_file ) )
 
 # define and check paths
 inpath = info_file.replace('.txt', '' ) + '/'
-if not exists( inpath ): print "You need to make ",inpath," and fill it with input files."
+if not exists( inpath ): print("You need to make ",inpath," and fill it with input files.")
 assert( exists( inpath ) )
 
 def onelettersequence( sequence ):
@@ -139,8 +140,8 @@ for target in targets:
     target.chains = chains
     target.resnums = resnums
     target.segids = segids
-    print target.name
-    print "line 141", resnums, chains, segids
+    print(target.name)
+    print("line 141", resnums, chains, segids)
 
     # working_native
     # including the _NATIVE_ tag makes it easier to find the file for Pymol viewing after runs.
@@ -149,8 +150,8 @@ for target in targets:
     target.working_native = slice_out( inpath, prefix, target.native, string.join( working_res_blocks ) )
     # We need to sort the sequences first. That's absurd, of course, but otherwise we'd need a
     # vastly more clever sequence determination algorithm. That's a TODO.
-    print string.join(sequences,'')
-    print string.join(get_sequences( target.working_native )[0],'')
+    print(string.join(sequences,''))
+    print(string.join(get_sequences( target.working_native )[0],''))
     assert( sorted(string.join(sequences,'')) == sorted(string.join(get_sequences( target.working_native )[0],'')) )
 
     # create starting PDBs
@@ -161,7 +162,7 @@ for target in targets:
     input_segids_by_block = []
     input_resnum_fullmodel_by_block = []
     if " " in target.input_res:
-        print "input_res contains a space, meaning it will be mis-parsed"
+        print("input_res contains a space, meaning it will be mis-parsed")
         exit()
 
     if target.input_res != '-':
@@ -177,11 +178,11 @@ for target in targets:
         input_segids_by_block.append(  [] )
         get_resnum_chain( input_res_blocks[m], input_resnums_by_block[m], input_chains_by_block[m], input_segids_by_block[m] )
         input_resnum_fullmodel_by_block.append( map( lambda x: get_fullmodel_number(x,target.resnums,target.chains, target.segids), zip( input_resnums_by_block[m], input_chains_by_block[m], input_segids_by_block[m] ) ) )
-        print input_resnum_fullmodel_by_block
+        print(input_resnum_fullmodel_by_block)
     
     input_resnum_fullmodel = full_model_info[ target.name ].conventional_tag_to_full(input_res_blocks)
     input_resnum_fullmodel.sort()
-    print input_resnum_fullmodel
+    print(input_resnum_fullmodel)
 
     #input_resnum_fullmodel = map( lambda x: get_fullmodel_number(x,resnums[name],chains[name]), zip( input_resnums, input_chains ) )
 
@@ -217,7 +218,7 @@ for target in targets:
             fasta_entities.append(entity)
         i += 1
 
-    #print stems
+    #print(stems)
     for i in range( len( stems ) ):
         # If -bps_moves is in extra_flags_benchmark, then remove any HELIX containing -s files
         if '-bps_moves' in extra_flags_benchmark and (args.farna or args.farfar): continue
@@ -225,7 +226,7 @@ for target in targets:
         helix_file =  '%s/%s_HELIX%d.pdb' % (inpath,target.name,(i+1))
 
         stem = stems[i]
-        print "stem", i, stem
+        print("stem", i, stem)
         helix_seq = ''; helix_resnum = [];
         for bp in stem:
             helix_seq    += fasta_entities[ bp[0] - 1 ] #sequence_joined[ bp[0] - 1 ]
@@ -238,7 +239,7 @@ for target in targets:
         already_in_input_res = False
         for m in helix_resnum:
             if m in input_resnum_fullmodel: 
-                print "found overlap:", m, "in ", input_resnum_fullmodel
+                print("found overlap:", m, "in ", input_resnum_fullmodel)
                 already_in_input_res = True
         if already_in_input_res: continue
 
@@ -248,10 +249,10 @@ for target in targets:
         input_resnum_fullmodel_by_block.append( helix_resnum )
 
         if exists( helix_file ): continue
-        print resnums, chains, segids
+        print(resnums, chains, segids)
         command = 'rna_helix.py -seq %s  -o %s -resnum %s' % ( helix_seq, helix_file, \
             make_tag_with_conventional_numbering( helix_resnum, resnums, chains, segids ) )
-        print command
+        print(command)
         os.system( command )
 
 
@@ -358,7 +359,7 @@ for target in targets:
         for domain in input_resnum_fullmodel_by_block:
             for m in domain:
                 for n in domain:
-                    #print "strand[%d] and strand[%d] are connected" % (m,n)
+                    #print("strand[%d] and strand[%d] are connected" % (m,n))
                     strand_connected[ strand[m] ][ strand[n] ] = True
         # are there any separated clusters?
         already_in_cluster = {}
@@ -372,7 +373,7 @@ for target in targets:
                     strand_cluster.add( n )
                     already_in_cluster[ n ] = True
             clusters.append( strand_cluster )
-        #print clusters
+        #print(clusters)
         assert( len( clusters ) > 0 )
         while len(clusters) > 2:
             # look for every key in each cluster. if there is a common key in another, merge?
@@ -417,14 +418,14 @@ for target in targets:
             design_sequences[-1] += res
         sequences = design_sequences
         target.sequence = ','.join(design_sequences)
-        print input_resnum_fullmodel
-        print sequences
+        print(input_resnum_fullmodel)
+        print(sequences)
     if args.swa:
         target.fasta = target.fasta.replace('.fasta', '_SWA.fasta')
     if not exists( target.fasta ):
         fid = open( target.fasta, 'w' )
-        print sequences
-        print working_res_blocks
+        print(sequences)
+        print(working_res_blocks)
         assert( len( sequences ) == len( working_res_blocks ) )
         if args.swa:
             fid.write( '>%s %s\n%s\n' % ( target.name,string.join(working_res_blocks,' '),string.join(sequences,'') ) )
@@ -458,7 +459,7 @@ for target in targets:
 
     if target.input_res == '-':
         if args.swa:
-            print "WARNING: target.input_res == '-' "
+            print("WARNING: target.input_res == '-' ")
         continue
 
     ( workres , workchains , worksegids ) = parse_tag( target.working_res, alpha_sort=True )
@@ -507,8 +508,8 @@ for target in targets:
             slice_out( inpath, prefix, target.native, periph_res_tag )
 
             if args.verbose:
-                print 'loopres_list for '+target.name+' = '+string.join(loopres_list)
-                print 'periph_res for '+target.name+' = '+periph_res_tag
+                print('loopres_list for '+target.name+' = '+string.join(loopres_list))
+                print('periph_res for '+target.name+' = '+periph_res_tag)
 
     # If -bps_moves is in extra_flags_benchmark, or really if no HELIX in -s (also base pair
     # constraint condition, basically) then add a command line specification of secstruct.
@@ -641,7 +642,7 @@ for target in targets:
 
         fid.close()
 
-        print '\nSetting up submission files for: ', target.name
+        print('\nSetting up submission files for: ', target.name)
         CWD = os.getcwd()
         fid_submit = open( dirname+'/SUBMIT_SWA', 'w' )
         fid_submit.write( os.environ['SWA_DAGMAN_TOOLS']+'/dagman/submit_DAG_job.py' )
@@ -682,7 +683,7 @@ for target in targets:
         add_extra_flags_benchmark(fid, extra_flags_benchmark, motif_mode_OK = False )
         fid.close()
 
-        print '\nSetting up submission files for: ', target.name
+        print('\nSetting up submission files for: ', target.name)
         CWD = os.getcwd()
         os.chdir( target.name )
 
@@ -735,7 +736,7 @@ for target in targets:
 
         fid.close()
 
-        print '\nSetting up submission files for: ', target.name
+        print('\nSetting up submission files for: ', target.name)
         CWD = os.getcwd()
         os.chdir( target.name )
 
