@@ -5,7 +5,9 @@
 ###############################################################################
 import sys
 import os
-import info_handlers
+#import .info_handlers
+from . import info_handlers
+from io import IOBase
 
 ###############################################################################
 ### CLASSES
@@ -25,8 +27,13 @@ class TargetDefinitionsFile(object):
 
     def load(self, fid):
         attrs, values = None, None
-        if not isinstance(fid, file):
-            fid = open(fid)
+        if sys.version_info[:3] > (3,0):
+            if not isinstance(fid, IOBase):
+                fid = open(fid)
+        else:
+            if not isinstance(fid, file):
+                fid = open(fid)
+
         # get all lines and iterate through -- this way we can check for
         # alternate formats...
         lines = fid.readlines()
@@ -49,7 +56,7 @@ class TargetDefinitionsFile(object):
                     #    value = value.lower()
                     setattr(target_definition, attr, value)
                 target_definition.finalize()
-                print "Loading TargetDefinition for:", target_definition.name
+                print("Loading TargetDefinition for:", target_definition.name)
                 self.add_target_definition( target_definition )
         else:
             i = 0
@@ -82,7 +89,7 @@ class TargetDefinitionsFile(object):
                         setattr(target_definition, lines[i].split()[0].split(':')[0].lower(), " ".join( lines[i].split()[1:] ) )
                         i += 1
                     target_definition.finalize()
-                    print "Loading TargetDefinition for:", target_definition.name
+                    print("Loading TargetDefinition for:", target_definition.name)
                     self.add_target_definition( target_definition )
 
                 i += 1
@@ -105,7 +112,7 @@ class TargetDefinitionsFile(object):
 
     def validate(self, verbose = False):
         if verbose is True:
-            print '\n\n'.join([td._to_str(sep='\n') for td in self.target_definitions])
+            print('\n\n'.join([td._to_str(sep='\n') for td in self.target_definitions]))
         for td in self.target_definitions:
             if td.name is False:
                 return False

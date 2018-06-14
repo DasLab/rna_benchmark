@@ -61,7 +61,7 @@ input_res_benchmark = None
 extra_min_res_benchmark = None
 if exists(args.extra_flags):
     with open(args.extra_flags, 'r') as fid:
-        lines = filter(None, [l.split('#')[0].strip() for l in fid])
+        lines = list(filter(None, [l.split('#')[0].strip() for l in fid]))
     extra_flags_benchmark = parse_flags(lines, replacements)
     if '-input_res' in extra_flags_benchmark:
         input_res_benchmark = extra_flags_benchmark.pop('-input_res')
@@ -125,8 +125,8 @@ for target in targets:
 
     full_model_info[ target.name ] = FullModelInfo( target.name )
 
-    sequences          = string.split( target.sequence, ',' )
-    working_res_blocks = string.split( target.working_res, ',' )
+    sequences          = target.sequence.split(',')
+    working_res_blocks = target.working_res.split(',')
 
     # store information on 'conventional' residue numbers and chains.
     resnums = []
@@ -147,12 +147,12 @@ for target in targets:
     # including the _NATIVE_ tag makes it easier to find the file for Pymol viewing after runs.
     assert( target.native != '-' ) # for now, require a native, since this is a benchmark.
     prefix = '%s/%s_NATIVE_' % ( inpath, target.name)
-    target.working_native = slice_out( inpath, prefix, target.native, string.join( working_res_blocks ) )
+    target.working_native = slice_out( inpath, prefix, target.native, ' '.join( working_res_blocks ) )
     # We need to sort the sequences first. That's absurd, of course, but otherwise we'd need a
     # vastly more clever sequence determination algorithm. That's a TODO.
-    print(string.join(sequences,''))
-    print(string.join(get_sequences( target.working_native )[0],''))
-    assert( sorted(string.join(sequences,'')) == sorted(string.join(get_sequences( target.working_native )[0],'')) )
+    print(''.join(sequences))
+    print(''.join(get_sequences( target.working_native )[0]))
+    assert( sorted(''.join(sequences))== sorted(''.join(get_sequences( target.working_native )[0])) )
 
     # create starting PDBs
     target.input_pdbs = []
@@ -189,7 +189,7 @@ for target in targets:
 
     # create secstruct if not defined
     if target.secstruct == '-':
-        target.secstruct = string.join( [ '.' * len( seq ) for seq in sequences ], ',' )
+        target.secstruct = ','.join( [ '.' * len( seq ) for seq in sequences ])
 
 
     # create any helices.
@@ -428,7 +428,7 @@ for target in targets:
         print(working_res_blocks)
         assert( len( sequences ) == len( working_res_blocks ) )
         if args.swa:
-            fid.write( '>%s %s\n%s\n' % ( target.name,string.join(working_res_blocks,' '),string.join(sequences,'') ) )
+            fid.write( '>%s %s\n%s\n' % ( target.name, ' '.join(working_res_blocks),''.join(sequences) ) )
         else:
             ### splitting up sequence in fasta may cause errors in SWA runs
             for n in range( len( sequences ) ): fid.write( '>%s %s\n%s\n' % (target.name,working_res_blocks[n],sequences[n]) )
@@ -466,27 +466,27 @@ for target in targets:
     ( inputres , inputchains , worksegids ) = parse_tag( target.input_res, alpha_sort=True )
 
     loopres_tag = []
-    for ii in xrange( len( workres ) ):
+    for ii in range( len( workres ) ):
         working_tag = workchains[ ii ] + ':' + str(workres[ ii ])
         is_input_tag = False
-        for jj in xrange( len( inputres ) ):
+        for jj in range( len( inputres ) ):
             input_tag = inputchains[ jj ] + ':' + str(inputres[ jj ])
             if input_tag == working_tag:
                 is_input_tag = True
         if is_input_tag: continue
         loopres_tag.append( working_tag )
-    loopres_tag = string.join( loopres_tag, ',' )
+    loopres_tag = ','.join( loopres_tag)
 
     ( loopres , loopchains , loopsegids ) = parse_tag( loopres_tag, alpha_sort=True )
     ( workres , workchains , loopsegids ) = parse_tag( target.working_res, alpha_sort=True )
 
-    loopres_conventional = [ str(workchains[idx])+':'+str(workres[idx]) for idx in xrange( len( workres ) ) if (workres[idx] in loopres and workchains[idx] == loopchains[loopres.index(workres[idx])]) ]
-    loopres_conventional = string.join( [ str(x) for x in loopres_conventional ] ,' ')
+    loopres_conventional = [ str(workchains[idx])+':'+str(workres[idx]) for idx in range( len( workres ) ) if (workres[idx] in loopres and workchains[idx] == loopchains[loopres.index(workres[idx])]) ]
+    loopres_conventional = ' '.join( [ str(x) for x in loopres_conventional ])
     target.loop_res[ 'conventional' ] = loopres_conventional
 
     if args.swa:
-        loopres_swa = [ idx+1 for idx in xrange( len( workres ) ) if (workres[idx] in loopres and workchains[idx] == loopchains[loopres.index(workres[idx])]) ]
-        loopres_swa = string.join( [ str(x) for x in loopres_swa ] ,' ')
+        loopres_swa = [ idx+1 for idx in range( len( workres ) ) if (workres[idx] in loopres and workchains[idx] == loopchains[loopres.index(workres[idx])]) ]
+        loopres_swa = ' '.join( [ str(x) for x in loopres_swa ])
         target.loop_res[ 'swa' ]  = loopres_swa
 
     # get VDW_rep_screen_info, it will only be used if -VDW_rep_screen_info flag is set in extra_flags_benchmark
@@ -502,13 +502,13 @@ for target in targets:
 
         if not exists( target.VDW_rep_screen_pdb ):
 
-            loopres_list=string.split( target.loop_res[ 'conventional' ], ' ' )
+            loopres_list = target.loop_res[ 'conventional' ].split()
             periph_res_tag = get_surrounding_res_tag( inpath+target.native, sample_res_list=loopres_list, radius=periph_res_radius, verbose=args.verbose )
             assert( len( periph_res_tag ) )
             slice_out( inpath, prefix, target.native, periph_res_tag )
 
             if args.verbose:
-                print('loopres_list for '+target.name+' = '+string.join(loopres_list))
+                print('loopres_list for '+target.name+' = '+' '.join(loopres_list))
                 print('periph_res for '+target.name+' = '+periph_res_tag)
 
     # If -bps_moves is in extra_flags_benchmark, or really if no HELIX in -s (also base pair
@@ -516,7 +516,7 @@ for target in targets:
     # Unless, of course, secstruct is just dots... actually, sure, add it anyway. That's fine 
     # because it hurts nothing and is just more explicit
     #if (args.farna or args.farfar) and len(filter(target.input_pdbs, lambda(s): "HELIX" in s)) == 0:
-    if (args.farna or args.farfar) and len(filter(lambda s: "HELIX" in s, target.input_pdbs)) == 0:
+    if (args.farna or args.farfar) and len(list(filter(lambda s: "HELIX" in s, target.input_pdbs))) == 0:
         target.extra_flags['secstruct'] = "\"{}\"".format(target.secstruct)
 
 
@@ -581,7 +581,7 @@ for target in targets:
     def add_extra_flags_benchmark( fid, extra_flags_benchmark, motif_mode_OK = True ):
         # extra flags for whole benchmark
         weights_file = ''
-        for key, value in extra_flags_benchmark.iteritems():
+        for key, value in extra_flags_benchmark.items():
             if ( not motif_mode_OK and '-motif_mode' in key ): continue
             if ( '#' in key ): continue
             if '-single_stranded_loop_mode' in key: continue ### SWA Specific

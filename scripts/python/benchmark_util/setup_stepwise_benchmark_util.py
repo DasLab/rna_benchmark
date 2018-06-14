@@ -26,8 +26,8 @@ def safe_submit( command, allow_retry=False, max_retry=3 ):
         stdout, stderr = Popen(command, stdout=PIPE, stderr=PIPE).communicate()
         if not stderr or not len(stderr):
             return stdout
-        print "STDOUT:", stdout
-        print "STDERR:", stderr
+        print("STDOUT:", stdout)
+        print("STDERR:", stderr)
     return -1
 
 ###############################################################################
@@ -92,7 +92,7 @@ def make_rna_rosetta_ready( pdb_file, sequence, reassign_chainids=True, allowed_
 def make_replacements(s, replacements = {}):
     if isinstance(s, list):
         return [make_replacements(ss, replacements) for ss in s]
-    for old, new in replacements.iteritems():
+    for old, new in replacements.items():
         s = s.replace(old, new)
     return s
 
@@ -164,12 +164,12 @@ class FullModelInfo(object):
 
     def conventional_tag_to_full(self, resnum_chain_tag):
         resnums, chains, segids = self.extract_resnum_chains(resnum_chain_tag)
-        return self.conventional_to_full(zip(resnums, chains, segids))
+        return self.conventional_to_full(list(zip(resnums, chains, segids)))
         
     def conventional_to_full(self, resnum_chain):
         '''
         Input: (res, chain) or [(res, chain), (res, chain)]
         '''
         if isinstance(resnum_chain, list):
-            return map(self.conventional_to_full, resnum_chain)
+            return list(map(self.conventional_to_full, resnum_chain))
         return get_fullmodel_number(resnum_chain, self.resnums, self.chains, self.segids)
