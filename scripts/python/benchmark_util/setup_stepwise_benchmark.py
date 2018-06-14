@@ -516,7 +516,7 @@ for target in targets:
     # Unless, of course, secstruct is just dots... actually, sure, add it anyway. That's fine 
     # because it hurts nothing and is just more explicit
     #if (args.farna or args.farfar) and len(filter(target.input_pdbs, lambda(s): "HELIX" in s)) == 0:
-    if (args.farna or args.farfar) and len(filter(lambda(s): "HELIX" in s, target.input_pdbs)) == 0:
+    if (args.farna or args.farfar) and len(filter(lambda s: "HELIX" in s, target.input_pdbs)) == 0:
         target.extra_flags['secstruct'] = "\"{}\"".format(target.secstruct)
 
 
