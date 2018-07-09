@@ -221,7 +221,7 @@ for target in targets:
     #print(stems)
     for i in range( len( stems ) ):
         # If -bps_moves is in extra_flags_benchmark, then remove any HELIX containing -s files
-        if '-bps_moves' in extra_flags_benchmark and (args.farna or args.farfar): continue
+        if ('-bps_moves' in extra_flags_benchmark or '-bps_moves' in target.extra_flags) and (args.farna or args.farfar): continue
 
         helix_file =  '%s/%s_HELIX%d.pdb' % (inpath,target.name,(i+1))
 
@@ -517,7 +517,7 @@ for target in targets:
     # because it hurts nothing and is just more explicit
     #if (args.farna or args.farfar) and len(filter(target.input_pdbs, lambda(s): "HELIX" in s)) == 0:
     if (args.farna or args.farfar) and len(list(filter(lambda s: "HELIX" in s, target.input_pdbs))) == 0:
-        target.extra_flags['secstruct'] = "\"{}\"".format(target.secstruct)
+        target.extra_flags['-secstruct'] = "\"{}\"".format(target.secstruct)
 
 
 # write qsubMINIs, READMEs and SUBMITs
