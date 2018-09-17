@@ -1,5 +1,5 @@
 #!/usr/bin/python
-
+from __future__ import print_function
 ###############################################################################
 ### import modules
 ###############################################################################
@@ -14,10 +14,10 @@ def init_environ( options ):
     if 'rosetta' in dir(options) and os.path.exists(options.rosetta):
         os.environ['ROSETTA'] = options.rosetta
     if not 'ROSETTA' in os.environ or not os.path.exists(os.environ['ROSETTA']):
-        print 'WARNING:', os.environ['ROSETTA'], 'is not a working Rosetta repository!!!'
-        print 'The path to Rosetta must be defined in $ROSETTA, or specified via --rosetta'
-        print 'To set this variable, add the following to your .bashrc or .zshrc:'
-        print 'export ROSETTA=/path/to/rosetta/\n'
+        print('WARNING:', os.environ['ROSETTA'], 'is not a working Rosetta repository!!!')
+        print('The path to Rosetta must be defined in $ROSETTA, or specified via --rosetta')
+        print('To set this variable, add the following to your .bashrc or .zshrc:')
+        print('export ROSETTA=/path/to/rosetta/\n')
     assert('ROSETTA' in os.environ)
     assert(os.path.exists(os.environ['ROSETTA']))
     os.environ['ROSETTA_BIN'] = os.environ['ROSETTA'] + '/main/source/bin/'
@@ -41,15 +41,15 @@ def safe_submit( command, allow_retry=False, max_retry=3 ):
         ).communicate()
         if not stderr or not len(stderr):
             return stdout
-        print "STDOUT:", stdout
-        print "STDERR:", stderr
+        print("STDOUT:", stdout)
+        print("STDERR:", stderr)
     return -1
 
 ###############################################################################
 def parse_flags(string_in, replacements = {}):
     if isinstance(string_in, list):
         string_in = ' '.join(string_in)
-    for old, new in replacements.iteritems():
+    for old, new in replacements.items():
         string_in = string_in.replace(old, new)
     substrings = [s for s in string_in.split(' ') if s not in ['','-','#']]
     flags = []

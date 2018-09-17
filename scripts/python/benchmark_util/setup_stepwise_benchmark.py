@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from __future__ import print_function
 
 import string
 import argparse
@@ -60,14 +61,14 @@ input_res_benchmark = None
 extra_min_res_benchmark = None
 if exists(args.extra_flags):
     with open(args.extra_flags, 'r') as fid:
-        lines = filter(None, [l.split('#')[0].strip() for l in fid])
+        lines = list(filter(None, [l.split('#')[0].strip() for l in fid]))
     extra_flags_benchmark = parse_flags(lines, replacements)
     if '-input_res' in extra_flags_benchmark:
         input_res_benchmark = extra_flags_benchmark.pop('-input_res')
     if '-extra_min_res' in extra_flags_benchmark:
         extra_min_res_benchmark = extra_flags_benchmark.pop('-extra_min_res')
 else:
-    print args.extra_flags,"doesn't exist, not using extra flags for benchmark"
+    print(args.extra_flags,"doesn't exist, not using extra flags for benchmark")
 
 
 # initialize directories
@@ -83,7 +84,7 @@ assert( exists( info_file ) )
 
 # define and check paths
 inpath = info_file.replace('.txt', '' ) + '/'
-if not exists( inpath ): print "You need to make ",inpath," and fill it with input files."
+if not exists( inpath ): print("You need to make ",inpath," and fill it with input files.")
 assert( exists( inpath ) )
 
 def onelettersequence( sequence ):
@@ -124,34 +125,46 @@ for target in targets:
 
     full_model_info[ target.name ] = FullModelInfo( target.name )
 
-    sequences          = string.split( target.sequence, ',' )
-    working_res_blocks = string.split( target.working_res, ',' )
+    sequences          = target.sequence.split(',')
+    working_res_blocks = target.working_res.split(',')
 
     # store information on 'conventional' residue numbers and chains.
     resnums = []
     chains = []
+    segids = []
     for working_res_block in working_res_blocks:
-        get_resnum_chain( working_res_block, resnums, chains )
+        get_resnum_chain( working_res_block, resnums, chains, segids )
     full_model_info[ target.name ].set_resnums( resnums )
     full_model_info[ target.name ].set_chains( chains )
+    full_model_info[ target.name ].set_chains( segids )
     target.chains = chains
     target.resnums = resnums
+    target.segids = segids
+    print(target.name)
+    print("line 141", resnums, chains, segids)
 
     # working_native
     # including the _NATIVE_ tag makes it easier to find the file for Pymol viewing after runs.
     assert( target.native != '-' ) # for now, require a native, since this is a benchmark.
     prefix = '%s/%s_NATIVE_' % ( inpath, target.name)
-    target.working_native = slice_out( inpath, prefix, target.native, string.join( working_res_blocks ) )
+    target.working_native = slice_out( inpath, prefix, target.native, ' '.join( working_res_blocks ) )
     # We need to sort the sequences first. That's absurd, of course, but otherwise we'd need a
     # vastly more clever sequence determination algorithm. That's a TODO.
-    assert( sorted(string.join(sequences,'')) == sorted(string.join(get_sequences( target.working_native )[0],'')) )
+    print(''.join(sequences))
+    print(''.join(get_sequences( target.working_native )[0]))
+    assert( sorted(''.join(sequences))== sorted(''.join(get_sequences( target.working_native )[0])) )
 
     # create starting PDBs
     target.input_pdbs = []
     input_res_blocks = []
     input_resnums_by_block = []
     input_chains_by_block = []
+    input_segids_by_block = []
     input_resnum_fullmodel_by_block = []
+    if " " in target.input_res:
+        print("input_res contains a space, meaning it will be mis-parsed")
+        exit()
+
     if target.input_res != '-':
         input_res_blocks += target.input_res.split(';')
     if input_res_benchmark:
@@ -162,19 +175,21 @@ for target in targets:
         target.input_pdbs.append( input_pdb )
         input_resnums_by_block.append( [] )
         input_chains_by_block.append(  [] )
-        get_resnum_chain( input_res_blocks[m], input_resnums_by_block[m], input_chains_by_block[m] )
-        input_resnum_fullmodel_by_block.append( map( lambda x: get_fullmodel_number(x,target.resnums,target.chains), zip( input_resnums_by_block[m], input_chains_by_block[m] ) ) )
-    input_resnum_fullmodel = full_model_info[ target.name ].conventional_tag_to_full(
-        input_res_blocks
-    )
+        input_segids_by_block.append(  [] )
+        get_resnum_chain( input_res_blocks[m], input_resnums_by_block[m], input_chains_by_block[m], input_segids_by_block[m] )
+        input_resnum_fullmodel_by_block.append( map( lambda x: get_fullmodel_number(x,target.resnums,target.chains, target.segids), zip( input_resnums_by_block[m], input_chains_by_block[m], input_segids_by_block[m] ) ) )
+        print(input_resnum_fullmodel_by_block)
+    
+    input_resnum_fullmodel = full_model_info[ target.name ].conventional_tag_to_full(input_res_blocks)
     input_resnum_fullmodel.sort()
+    print(input_resnum_fullmodel)
 
     #input_resnum_fullmodel = map( lambda x: get_fullmodel_number(x,resnums[name],chains[name]), zip( input_resnums, input_chains ) )
 
 
     # create secstruct if not defined
     if target.secstruct == '-':
-        target.secstruct = string.join( [ '.' * len( seq ) for seq in sequences ], ',' )
+        target.secstruct = ','.join( [ '.' * len( seq ) for seq in sequences ])
 
 
     # create any helices.
@@ -203,10 +218,15 @@ for target in targets:
             fasta_entities.append(entity)
         i += 1
 
+    #print(stems)
     for i in range( len( stems ) ):
+        # If -bps_moves is in extra_flags_benchmark, then remove any HELIX containing -s files
+        if ('-bps_moves' in extra_flags_benchmark or '-bps_moves' in target.extra_flags) and (args.farna or args.farfar): continue
+
         helix_file =  '%s/%s_HELIX%d.pdb' % (inpath,target.name,(i+1))
 
         stem = stems[i]
+        print("stem", i, stem)
         helix_seq = ''; helix_resnum = [];
         for bp in stem:
             helix_seq    += fasta_entities[ bp[0] - 1 ] #sequence_joined[ bp[0] - 1 ]
@@ -218,7 +238,9 @@ for target in targets:
 
         already_in_input_res = False
         for m in helix_resnum:
-            if m in input_resnum_fullmodel: already_in_input_res = True
+            if m in input_resnum_fullmodel: 
+                print("found overlap:", m, "in ", input_resnum_fullmodel)
+                already_in_input_res = True
         if already_in_input_res: continue
 
         target.helix_files.append( helix_file )
@@ -227,9 +249,10 @@ for target in targets:
         input_resnum_fullmodel_by_block.append( helix_resnum )
 
         if exists( helix_file ): continue
+        print(resnums, chains, segids)
         command = 'rna_helix.py -seq %s  -o %s -resnum %s' % ( helix_seq, helix_file, \
-            make_tag_with_conventional_numbering( helix_resnum, resnums, chains) )
-        print command
+            make_tag_with_conventional_numbering( helix_resnum, resnums, chains, segids ) )
+        print(command)
         os.system( command )
 
 
@@ -336,6 +359,7 @@ for target in targets:
         for domain in input_resnum_fullmodel_by_block:
             for m in domain:
                 for n in domain:
+                    #print("strand[%d] and strand[%d] are connected" % (m,n))
                     strand_connected[ strand[m] ][ strand[n] ] = True
         # are there any separated clusters?
         already_in_cluster = {}
@@ -349,7 +373,27 @@ for target in targets:
                     strand_cluster.add( n )
                     already_in_cluster[ n ] = True
             clusters.append( strand_cluster )
+        #print(clusters)
         assert( len( clusters ) > 0 )
+        while len(clusters) > 2:
+            # look for every key in each cluster. if there is a common key in another, merge?
+            new_clusters = {}
+            for i, cluster in enumerate(clusters):
+                #for key in cluster:
+                done = False
+                for j, cluster2 in enumerate(clusters):
+                    for key2 in cluster2:
+                        if key2 in cluster:
+                            # we should merge
+                            newcluster = set([key for key in cluster])
+                            newcluster.update(cluster2)
+                            done = True
+                            break
+                    if done: break
+                if done: break
+            clusters = new_clusters
+
+
         if len( clusters ) > 1:
             assert( len( clusters ) == 2 )
             target.dock_partners = [ [], [] ]
@@ -374,15 +418,17 @@ for target in targets:
             design_sequences[-1] += res
         sequences = design_sequences
         target.sequence = ','.join(design_sequences)
-        print input_resnum_fullmodel
-        print sequences
+        print(input_resnum_fullmodel)
+        print(sequences)
     if args.swa:
         target.fasta = target.fasta.replace('.fasta', '_SWA.fasta')
     if not exists( target.fasta ):
         fid = open( target.fasta, 'w' )
+        print(sequences)
+        print(working_res_blocks)
         assert( len( sequences ) == len( working_res_blocks ) )
         if args.swa:
-            fid.write( '>%s %s\n%s\n' % ( target.name,string.join(working_res_blocks,' '),string.join(sequences,'') ) )
+            fid.write( '>%s %s\n%s\n' % ( target.name, ' '.join(working_res_blocks),''.join(sequences) ) )
         else:
             ### splitting up sequence in fasta may cause errors in SWA runs
             for n in range( len( sequences ) ): fid.write( '>%s %s\n%s\n' % (target.name,working_res_blocks[n],sequences[n]) )
@@ -413,34 +459,34 @@ for target in targets:
 
     if target.input_res == '-':
         if args.swa:
-            print "WARNING: target.input_res == '-' "
+            print("WARNING: target.input_res == '-' ")
         continue
 
-    ( workres , workchains  ) = parse_tag( target.working_res, alpha_sort=True )
-    ( inputres , inputchains  ) = parse_tag( target.input_res, alpha_sort=True )
+    ( workres , workchains , worksegids ) = parse_tag( target.working_res, alpha_sort=True )
+    ( inputres , inputchains , worksegids ) = parse_tag( target.input_res, alpha_sort=True )
 
     loopres_tag = []
-    for ii in xrange( len( workres ) ):
+    for ii in range( len( workres ) ):
         working_tag = workchains[ ii ] + ':' + str(workres[ ii ])
         is_input_tag = False
-        for jj in xrange( len( inputres ) ):
+        for jj in range( len( inputres ) ):
             input_tag = inputchains[ jj ] + ':' + str(inputres[ jj ])
             if input_tag == working_tag:
                 is_input_tag = True
         if is_input_tag: continue
         loopres_tag.append( working_tag )
-    loopres_tag = string.join( loopres_tag, ',' )
+    loopres_tag = ','.join( loopres_tag)
 
-    ( loopres , loopchains  ) = parse_tag( loopres_tag, alpha_sort=True )
-    ( workres , workchains  ) = parse_tag( target.working_res, alpha_sort=True )
+    ( loopres , loopchains , loopsegids ) = parse_tag( loopres_tag, alpha_sort=True )
+    ( workres , workchains , loopsegids ) = parse_tag( target.working_res, alpha_sort=True )
 
-    loopres_conventional = [ str(workchains[idx])+':'+str(workres[idx]) for idx in xrange( len( workres ) ) if (workres[idx] in loopres and workchains[idx] == loopchains[loopres.index(workres[idx])]) ]
-    loopres_conventional = string.join( [ str(x) for x in loopres_conventional ] ,' ')
+    loopres_conventional = [ str(workchains[idx])+':'+str(workres[idx]) for idx in range( len( workres ) ) if (workres[idx] in loopres and workchains[idx] == loopchains[loopres.index(workres[idx])]) ]
+    loopres_conventional = ' '.join( [ str(x) for x in loopres_conventional ])
     target.loop_res[ 'conventional' ] = loopres_conventional
 
     if args.swa:
-        loopres_swa = [ idx+1 for idx in xrange( len( workres ) ) if (workres[idx] in loopres and workchains[idx] == loopchains[loopres.index(workres[idx])]) ]
-        loopres_swa = string.join( [ str(x) for x in loopres_swa ] ,' ')
+        loopres_swa = [ idx+1 for idx in range( len( workres ) ) if (workres[idx] in loopres and workchains[idx] == loopchains[loopres.index(workres[idx])]) ]
+        loopres_swa = ' '.join( [ str(x) for x in loopres_swa ])
         target.loop_res[ 'swa' ]  = loopres_swa
 
     # get VDW_rep_screen_info, it will only be used if -VDW_rep_screen_info flag is set in extra_flags_benchmark
@@ -456,15 +502,22 @@ for target in targets:
 
         if not exists( target.VDW_rep_screen_pdb ):
 
-            loopres_list=string.split( target.loop_res[ 'conventional' ], ' ' )
+            loopres_list = target.loop_res[ 'conventional' ].split()
             periph_res_tag = get_surrounding_res_tag( inpath+target.native, sample_res_list=loopres_list, radius=periph_res_radius, verbose=args.verbose )
             assert( len( periph_res_tag ) )
             slice_out( inpath, prefix, target.native, periph_res_tag )
 
             if args.verbose:
-                print 'loopres_list for '+target.name+' = '+string.join(loopres_list)
-                print 'periph_res for '+target.name+' = '+periph_res_tag
+                print('loopres_list for '+target.name+' = '+' '.join(loopres_list))
+                print('periph_res for '+target.name+' = '+periph_res_tag)
 
+    # If -bps_moves is in extra_flags_benchmark, or really if no HELIX in -s (also base pair
+    # constraint condition, basically) then add a command line specification of secstruct.
+    # Unless, of course, secstruct is just dots... actually, sure, add it anyway. That's fine 
+    # because it hurts nothing and is just more explicit
+    #if (args.farna or args.farfar) and len(filter(target.input_pdbs, lambda(s): "HELIX" in s)) == 0:
+    if (args.farna or args.farfar) and len(list(filter(lambda s: "HELIX" in s, target.input_pdbs))) == 0:
+        target.extra_flags['-secstruct'] = "\"{}\"".format(target.secstruct)
 
 
 # write qsubMINIs, READMEs and SUBMITs
@@ -493,9 +546,9 @@ for target in targets:
         # used in FARNA & SWM
         if not args.block_stack_off and '-block_stack_off' not in target.extra_flags:
             if len( target.block_stack_above_res ) > 0:
-                fid.write( '-block_stack_above_res %s  \n' % make_tag_with_conventional_numbering( target.block_stack_above_res, target.resnums, target.chains ) )
+                fid.write( '-block_stack_above_res %s  \n' % make_tag_with_conventional_numbering( target.block_stack_above_res, target.resnums, target.chains, target.segids ) )
             if len( target.block_stack_below_res ) > 0:
-                fid.write( '-block_stack_below_res %s  \n' % make_tag_with_conventional_numbering( target.block_stack_below_res, target.resnums, target.chains ) )
+                fid.write( '-block_stack_below_res %s  \n' % make_tag_with_conventional_numbering( target.block_stack_below_res, target.resnums, target.chains, target.segids ) )
         return
 
     def add_start_files_flag( fid, start_files ):
@@ -528,7 +581,7 @@ for target in targets:
     def add_extra_flags_benchmark( fid, extra_flags_benchmark, motif_mode_OK = True ):
         # extra flags for whole benchmark
         weights_file = ''
-        for key, value in extra_flags_benchmark.iteritems():
+        for key, value in extra_flags_benchmark.items():
             if ( not motif_mode_OK and '-motif_mode' in key ): continue
             if ( '#' in key ): continue
             if '-single_stranded_loop_mode' in key: continue ### SWA Specific
@@ -589,7 +642,7 @@ for target in targets:
 
         fid.close()
 
-        print '\nSetting up submission files for: ', target.name
+        print('\nSetting up submission files for: ', target.name)
         CWD = os.getcwd()
         fid_submit = open( dirname+'/SUBMIT_SWA', 'w' )
         fid_submit.write( os.environ['SWA_DAGMAN_TOOLS']+'/dagman/submit_DAG_job.py' )
@@ -612,25 +665,25 @@ for target in targets:
         fid = open( '%s/flags' % target.name, 'w' )
         fid.write( '-fasta %s.fasta\n' % target.name )
         if len( target.native ) > 0:
-            fid.write( '-working_native %s\n' % basename( target.working_native ) );
+            fid.write( '-native %s\n' % basename( target.working_native ) );
         add_start_files_flag( fid, start_files )
         fid.write( '-working_res %s\n' % target.working_res.replace( ',',' ') )
         add_block_stack_flags( args, target, fid )
         if len( target.extra_min_res ) > 0 and not args.extra_min_res_off:
-            fid.write( '-extra_minimize_res %s\n' % make_tag_with_conventional_numbering( target.extra_min_res, target.resnums, target.chains ) )
+            fid.write( '-extra_minimize_res %s\n' % make_tag_with_conventional_numbering( target.extra_min_res, target.resnums, target.chains, target.segids ) )
         if args.farfar: fid.write( '-minimize_rna true\n' )
         else: fid.write( '-minimize_rna false\n' )
         if '-cycles' not in extra_flags_benchmark: fid.write( '-cycles 20000\n' )
         if '-nstruct' not in extra_flags_benchmark: fid.write( '-nstruct 20\n' )
         if not args.save_times_off: fid.write( '-save_times\n' )
         if len( target.dock_partners ) > 0:
-            fid.write( '-chain_connection SET1 %s SET2 %s\n' % ( make_tag_with_conventional_numbering( target.dock_partners[ 0 ], target.resnums, target.chains ), \
-                                                                 make_tag_with_conventional_numbering( target.dock_partners[ 1 ], target.resnums, target.chains ) ) )
+            fid.write( '-chain_connection SET1 %s SET2 %s\n' % ( make_tag_with_conventional_numbering( target.dock_partners[ 0 ], target.resnums, target.chains, target.segids ), \
+                                                                 make_tag_with_conventional_numbering( target.dock_partners[ 1 ], target.resnums, target.chains, target.segids ) ) )
         add_extra_flags_for_name(fid, target.extra_flags, target.name)
         add_extra_flags_benchmark(fid, extra_flags_benchmark, motif_mode_OK = False )
         fid.close()
 
-        print '\nSetting up submission files for: ', target.name
+        print('\nSetting up submission files for: ', target.name)
         CWD = os.getcwd()
         os.chdir( target.name )
 
@@ -659,19 +712,19 @@ for target in targets:
 
         if len( target.terminal_res ) > 0:
             # note that this is redundant with -motif mode -- deprecate in early 2017
-            fid.write( '-terminal_res %s  \n' % make_tag_with_conventional_numbering( target.terminal_res, target.resnums, target.chains ) )
+            fid.write( '-terminal_res %s  \n' % make_tag_with_conventional_numbering( target.terminal_res, target.resnums, target.chains, target.segids ) )
 
         add_block_stack_flags( args, target, fid )
 
         if args.stepwise_lores:
             if ( len( target.jump_res ) > 0 ):
-                fid.write( '-jump_res %s \n' % make_tag_with_conventional_numbering( target.jump_res, target.resnums, target.chains ) )
+                fid.write( '-jump_res %s \n' % make_tag_with_conventional_numbering( target.jump_res, target.resnums, target.chains, target.segids ) )
             if ( len( target.cutpoint_closed ) > 0 ):
-                fid.write( '-cutpoint_closed %s \n' % make_tag_with_conventional_numbering( target.cutpoint_closed, target.resnums, target.chains ) )
+                fid.write( '-cutpoint_closed %s \n' % make_tag_with_conventional_numbering( target.cutpoint_closed, target.resnums, target.chains, target.segids ) )
             fid.write( '-include_neighbor_base_stacks\n' ) # Need to match FARNA.
         if len( target.extra_min_res ) > 0 and not args.extra_min_res_off: ### Turn extra_min_res off for SWM when comparing to SWA
             # note that this is redundant with -motif mode -- deprecate in early 2017
-            fid.write( '-extra_min_res %s \n' % make_tag_with_conventional_numbering( target.extra_min_res, target.resnums, target.chains ) )
+            fid.write( '-extra_min_res %s \n' % make_tag_with_conventional_numbering( target.extra_min_res, target.resnums, target.chains, target.segids ) )
         fid.write( '-fasta %s\n' % basename( target.fasta) )
         if '-move' not in extra_flags_benchmark:
             if '-cycles' not in extra_flags_benchmark:  fid.write( '-cycles 200\n' )
@@ -683,7 +736,7 @@ for target in targets:
 
         fid.close()
 
-        print '\nSetting up submission files for: ', target.name
+        print('\nSetting up submission files for: ', target.name)
         CWD = os.getcwd()
         os.chdir( target.name )
 

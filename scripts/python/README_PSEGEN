@@ -21,8 +21,10 @@
 
 cd input_files
 
-for BENCHMARK_FILE in followups.txt favorites2.txt favorites.txt noncanonicals.txt followups2.txt challenges.txt input_files/RNA_loop_motifs_PS2011.txt ; do
-    
+#for BENCHMARK_FILE in followups.txt favorites2.txt favorites.txt noncanonicals.txt followups2.txt challenges.txt input_files/RNA_loop_motifs_PS2011.txt ; do
+#for BENCHMARK_FILE in farna_benchmark.txt all_rna_puzzles.txt ; do
+ 
+BENCHMARK_FILE=farna_benchmark.txt   
     # test for regeneration's sake
 	#rm ${BENCHMARK_FILE/.txt/}/README.md
 
@@ -55,5 +57,5 @@ for BENCHMARK_FILE in followups.txt favorites2.txt favorites.txt noncanonicals.t
 
     # cd out of benchmark dir 
     cd ..
-done
+#done
 cd ..

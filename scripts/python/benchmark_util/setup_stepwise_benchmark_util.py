@@ -26,8 +26,8 @@ def safe_submit( command, allow_retry=False, max_retry=3 ):
         stdout, stderr = Popen(command, stdout=PIPE, stderr=PIPE).communicate()
         if not stderr or not len(stderr):
             return stdout
-        print "STDOUT:", stdout
-        print "STDERR:", stderr
+        print("STDOUT:", stdout)
+        print("STDERR:", stderr)
     return -1
 
 ###############################################################################
@@ -44,9 +44,9 @@ def slice_out( inpath_dir, prefix, pdb, res_string, excise=False ):
     return slice_pdb
 
 ###############################################################################
-def get_fullmodel_number( reschain, resnums, chains):
+def get_fullmodel_number( reschain, resnums, chains, segids):
     for m in range( len( resnums ) ):
-        if ( resnums[m] == reschain[0] ) and ( reschain[1] == '' or chains[m] == reschain[1] ): return m+1
+        if ( resnums[m] == reschain[0] ) and ( reschain[1] == '' or chains[m] == reschain[1] ) and ( reschain[2] == '    ' or segids[m] == reschain[2] ): return m+1
     return 0
 
 ###############################################################################
@@ -92,7 +92,7 @@ def make_rna_rosetta_ready( pdb_file, sequence, reassign_chainids=True, allowed_
 def make_replacements(s, replacements = {}):
     if isinstance(s, list):
         return [make_replacements(ss, replacements) for ss in s]
-    for old, new in replacements.iteritems():
+    for old, new in replacements.items():
         s = s.replace(old, new)
     return s
 
@@ -146,6 +146,7 @@ class FullModelInfo(object):
         self.name = name
         self.resnums = None
         self.chains = None
+        self.segids = None
              
     def set_resnums(self, resnums):
         self.resnums = resnums
@@ -154,21 +155,21 @@ class FullModelInfo(object):
         self.chains = chains
         
     def extract_resnum_chains(self, resnum_chain_tag):
-        resnums, chains = [], []
+        resnums, chains, segids = [], [], []
         if not isinstance(resnum_chain_tag, list):
             resnum_chain_tag = resnum_chain_tag.replace(';',',').split(',')
         for tag in resnum_chain_tag:
-            get_resnum_chain(tag, resnums, chains)
-        return resnums, chains
+            get_resnum_chain(tag, resnums, chains, segids)
+        return resnums, chains, segids
 
     def conventional_tag_to_full(self, resnum_chain_tag):
-        resnums, chains = self.extract_resnum_chains(resnum_chain_tag)
-        return self.conventional_to_full(zip(resnums, chains))
+        resnums, chains, segids = self.extract_resnum_chains(resnum_chain_tag)
+        return self.conventional_to_full(list(zip(resnums, chains, segids)))
         
     def conventional_to_full(self, resnum_chain):
         '''
         Input: (res, chain) or [(res, chain), (res, chain)]
         '''
         if isinstance(resnum_chain, list):
-            return map(self.conventional_to_full, resnum_chain)
-        return get_fullmodel_number(resnum_chain, self.resnums, self.chains)
+            return list(map(self.conventional_to_full, resnum_chain))
+        return get_fullmodel_number(resnum_chain, self.resnums, self.chains, self.segids)
