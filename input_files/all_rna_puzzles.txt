@@ -193,6 +193,14 @@ Input_res:     -
 Native:        5kpy.pdb
 Extra_flags:   -secstruct "((((((......(.(((((.....[[))))))..(.......(((((]].....)))))...)..))))))"
 
+Name:          rna_puzzle_9_2xnw
+Sequence:      ggacacugaugaucgcguggauauggcacgcauugaauuguuggacaccguaaauguccuaacacgugucc
+Secstruct:     ((((((......(.(((((.....[[))))))..(.......(((((]].....)))))...)..))))))
+Working_res:   A:13-83
+Input_res:     A:30-40,A:58-68
+Native:        5kpy.pdb
+Extra_flags:   -secstruct "((((((......(.(((((.....[[))))))..(.......(((((]].....)))))...)..))))))"
+
 Name:          rna_puzzle_10
 Sequence:      ugcgaugagaagaagaguauuaaggauuuacuaugauuagcgacucuaggauagugaaagcuagaggauaguaaccuuaagaaggcacuucgagca,aguaguucagugguagaacaccaccuugccaaggugggggucgcggguucgaaucccgucu
 Secstruct:     (((.....((((.......((((((..(((((((......[..((((((..........])))))).)))))))))))))...[[[.))))..))),((..((((....{..)))).(((((..]]]..))))).....(((((..}....)))))))
