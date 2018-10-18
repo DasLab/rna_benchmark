@@ -185,13 +185,13 @@ Native:        8_0_solution_4L81_rpr.pdb
 Description:   RNA-puzzle 8
 Extra_flags:   -
 
-##Name:          rna_puzzle_9
-##Sequence:      ggauugaaaaucc
-##Secstruct:     (((.......)))
-##Working_res:   -
-##Input_res:     -
-##Native:        3l0u_RNA.pdb
-##Extra_flags:   -
+Name:          rna_puzzle_9
+Sequence:      ggacacugaugaucgcguggauauggcacgcauugaauuguuggacaccguaaauguccuaacacgugucc
+Secstruct:     ((((((......(.(((((.....[[))))))..(.......(((((]].....)))))...)..))))))
+Working_res:   A:1-71
+Input_res:     -
+Native:        5kpy.pdb
+Extra_flags:   -secstruct "((((((......(.(((((.....[[))))))..(.......(((((]].....)))))...)..))))))"
 
 Name:          rna_puzzle_10
 Sequence:      ugcgaugagaagaagaguauuaaggauuuacuaugauuagcgacucuaggauagugaaagcuagaggauaguaaccuuaagaaggcacuucgagca,aguaguucagugguagaacaccaccuugccaaggugggggucgcggguucgaaucccgucu
@@ -299,13 +299,15 @@ Native:        19_5t5a_solution_0_rpr.pdb
 Description:   RNA-puzzle 19
 Extra_flags:   -
 
-##Name:          rna_puzzle_20
-##Sequence:      ggauugaaaaucc
-##Secstruct:     (((.......)))
-##Working_res:   -
-##Input_res:     -
-##Native:        3l0u_RNA.pdb
-##Extra_flags:   -
+
+Name:          rna_puzzle_20
+Sequence:      acccgcaaggccgacggc,gccgccgcuggugcaaguccagccacgcuucggcgugggcgcucaugggu
+Secstruct:     ((((...((((((.((((,)))).)(((((.......)))))(((((....)))))))).))...))))
+Working_res:   A:1-18,B:1-50
+Input_res:     -
+Native:        5y87_RNA.pdb
+Description:   RNA-puzzle 20, another TS ribozyme
+Extra_flags:   -
 
 # Incidentally, the secstruct of the native is truly [[[[.......(((((((.(]]]]....).....)))))))
 # but one of those pairs is not really predictable, so we don't juice ourselves by including it here.
