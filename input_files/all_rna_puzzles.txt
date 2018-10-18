@@ -188,7 +188,7 @@ Extra_flags:   -
 Name:          rna_puzzle_9
 Sequence:      ggacacugaugaucgcguggauauggcacgcauugaauuguuggacaccguaaauguccuaacacgugucc
 Secstruct:     ((((((......(.(((((.....[[))))))..(.......(((((]].....)))))...)..))))))
-Working_res:   A:1-71
+Working_res:   A:13-83
 Input_res:     -
 Native:        5kpy.pdb
 Extra_flags:   -secstruct "((((((......(.(((((.....[[))))))..(.......(((((]].....)))))...)..))))))"
