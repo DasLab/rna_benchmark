@@ -175,6 +175,15 @@ Native:        7_0_solution_4r4v_rpr.pdb
 Description:   RNA-puzzle 7
 Extra_flags:   -
 
+Name:          rna_puzzle_7_dimer
+Sequence:      gcgcugugucgcaaucugcgaagggcgucgucggcccaagcgguaguaagcagggaacucaccuccaaugaaacacauugucguagcaguugacuacuguuaugugauugguagaggcuaagugacgguauuggcguaagccaauaccgcagcacagcacaagcccgcuugcgagauuacagcgc,gcgcugugucgcaaucugcgaagggcgucgucggcccaagcgguaguaagcagggaacucaccuccaaugaaacacauugucguagcaguugacuacuguuaugugauugguagaggcuaagugacgguauuggcguaagccaauaccgcagcacagcacaagcccgcuugcgagauuacagcgc
+Secstruct:     ((((((((((.....((((...((((.......))))..))))..((((((.(((..((((((..(((((.....)))))..(((((((.......)))))))......))).)))(((..(((.((((((((((....))))))))))...)))))).....)))))))))..))).))))))),((((((((((.....((((...((((.......))))..))))..((((((.(((..((((((..(((((.....)))))..(((((((.......)))))))......))).)))(((..(((.((((((((((....))))))))))...)))))).....)))))))))..))).)))))))
+Working_res:   A:1-185,B:1-185
+Input_res:     -
+Native:        rna_puzzle_7_dimer_NATIVE.pdb
+Description:   RNA-puzzle 7 dimer state
+Extra_flags:   -secstruct "((((((((((.....((((...((((.......))))..))))..((((((.(((..((((((..(((((.....)))))..(((((((.......)))))))......))).)))(((..(((.((((((((((....))))))))))...)))))).....)))))))))..))).))))))),((((((((((.....((((...((((.......))))..))))..((((((.(((..((((((..(((((.....)))))..(((((((.......)))))))......))).)))(((..(((.((((((((((....))))))))))...)))))).....)))))))))..))).)))))))"
+
 # Did we do this with any homology? Almost certainly a renumbering of the binding site is appropriate.
 Name:          rna_puzzle_8
 Sequence:      ggaucacgagggggagaccccggcaaccugggacggacacccaaggugcucacaccggagacgguggauccggcccgagagggcaacgaaguccgu
