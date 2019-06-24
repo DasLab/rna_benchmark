@@ -352,12 +352,29 @@ Native:        19_5t5a_solution_0_rpr.pdb
 Description:   RNA-puzzle 19
 Extra_flags:   -
 
+Name:          rna_puzzle_19_t_loop
+Sequence:      gcagggcaaggcccagucccgugcaagccgggaccgcccc,ggggcgcggcgcucauuccugc
+Secstruct:     (((((...(((((..((((((.......))))))((((((,)))))).))).))....)))))
+Working_res:   A:1-40,B:1-22
+Input_res:     A:8,A:22-26
+Native:        19_5t5a_solution_0_rpr.pdb
+Description:   RNA-puzzle 19
+Extra_flags:   -
 
 Name:          rna_puzzle_20
 Sequence:      acccgcaaggccgacggc,gccgccgcuggugcaaguccagccacgcuucggcgugggcgcucaugggu
 Secstruct:     ((((...((((((.((((,)))).)(((((.......)))))(((((....)))))))).))...))))
 Working_res:   A:1-18,B:1-50
 Input_res:     -
+Native:        5y87_RNA.pdb
+Description:   RNA-puzzle 20, another TS ribozyme
+Extra_flags:   -
+
+Name:          rna_puzzle_20_t_loop
+Sequence:      acccgcaaggccgacggc,gccgccgcuggugcaaguccagccacgcuucggcgugggcgcucaugggu
+Secstruct:     ((((...((((((.((((,)))).)(((((.......)))))(((((....)))))))).))...))))
+Working_res:   A:1-18,B:1-50
+Input_res:     A:7,B:12-16
 Native:        5y87_RNA.pdb
 Description:   RNA-puzzle 20, another TS ribozyme
 Extra_flags:   -
