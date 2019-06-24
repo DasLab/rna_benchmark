@@ -246,6 +246,15 @@ Native:        10_0_solution_4LCK_rpr.pdb
 Description:   RNA-puzzle 10
 Extra_flags:   -
 
+Name:          rna_puzzle_10_homology
+Sequence:      ugcgaugagaagaagaguauuaaggauuuacuaugauuagcgacucuaggauagugaaagcuagaggauaguaaccuuaagaaggcacuucgagca,aguaguucagugguagaacaccaccuugccaaggugggggucgcggguucgaaucccgucu
+Secstruct:     (((.....((((.......((((((..(((((((......[..((((((..........])))))).)))))))))))))...[[[.))))..))),((..((((....{..)))).(((((..]]]..))))).....(((((..}....)))))))
+Working_res:   A:1-96,B:6-66
+Input_res:     A:37-43,A:53-60;A:1-10,A:90-96;A:16-20,A:80-83;B:6-18,B:20-30,B:38-66
+Native:        10_0_solution_4LCK_rpr.pdb
+Description:   RNA-puzzle 10
+Extra_flags:   -
+
 Name:          rna_puzzle_11
 Sequence:      gggaucugucaccccauugaucgccuucgggcugaucuggcuggcuaggcggguccc
 Secstruct:     ((((((((((.(((((..(((((((....))).)))))))..))...))))))))))
