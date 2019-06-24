@@ -65,6 +65,15 @@ Native:        5_0_solution_4p8z_rpr.pdb
 Description:   RNA-puzzle 5
 Extra_flags:   -
 
+Name:          rna_puzzle_5_homology
+Sequence:      gguuggguugggaaguaucauggcuaaucaccaugaugcaaucggguugaacacuuaauuggguuaaaacggugggggacgaucccguaacauccguccuaacggcgacagacugcacggcccugccucuuagguguguccaaugaacagucguuccgaaaggaagcauccgguaucccaagacaauc
+Secstruct:     (((((..(((((..(((((((((...[[[.)))))))))..((((.(((.((((......(((((...((((..(((...]]]))).......))))((....)).....[[[[[...))))).(((.....))))))).)))....]]]]].((((....))))....))))...)))))..)))))
+Working_res:   A:1-188
+Input_res:     A:62-70,A:96-122,A:148-153;A:55-60,A:124-129,A:132-135
+Native:        5_0_solution_4p8z_rpr.pdb
+Description:   RNA-puzzle 5
+Extra_flags:   -
+
 # The original run used a useful but hard to automate 'assembly' process
 #Name:          rna_puzzle_5_orig
 #Sequence:      gguuggguugggaaguaucauggcuaaucaccaugaugcaaucggguugaacacuuaauuggguuaaaacggugggggacgaucccguaacauccguccuaacggcgacagacugcacggcccugccucuuagguguguccaaugaacagucguuccgaaaggaagcauccgguaucccaagacaauc
