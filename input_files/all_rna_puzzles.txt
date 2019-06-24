@@ -175,6 +175,15 @@ Native:        6_0_solution_4GXY_rpr.pdb
 Description:   RNA-puzzle 6
 Extra_flags:   -
 
+Name:          rna_puzzle_6_homology
+Sequence:      cggcaggugcucccgac,gucgggaguuaaaagggaagccggugcaaguccggcacggucccgccacugugacggggagucgccccucgggaugugccacuggcc,ggccgggaaggcggaggggcggcgaggauccggagucaggaaaccugccugccg 
+Secstruct:     ((((((((.(((.(((.,.)).)))).....((....(((((.......)))))[[((.....)).(((...(((...(((((((.((.......(((.((((((,))))))...))).)).)))))))......)))..]]))).....))))))))))
+Working_res:   A:1-17,A:24-110,A:115-168
+Input_res:     A:41-61,A:67-75,A:147-149;A:81-83,A:138-143;A:5-8,A:32-35,A:37-39,A:158-164
+Native:        6_0_solution_4GXY_rpr.pdb
+Description:   RNA-puzzle 6
+Extra_flags:   -
+
 Name:          rna_puzzle_7
 Sequence:      gcgcugugucgcaaucugcgaagggcgucgucggcccaagcgguaguaagcagggaacucaccuccaaugaaacacauugucguagcaguugacuacuguuaugugauugguagaggcuaagugacgguauuggcguaagccaauaccgcagcacagcacaagcccgcuugcgagauuacagcgc
 Secstruct:     ((((((((((.....((((...((((.......))))..))))..((((((.(((..((((((..(((((.....)))))..(((((((.......)))))))......))).)))(((..(((.((((((((((....))))))))))...)))))).....)))))))))..))).)))))))
@@ -199,6 +208,15 @@ Sequence:      ggaucacgagggggagaccccggcaaccugggacggacacccaaggugcucacaccggagacggu
 Secstruct:     (((((....((((....))))(((..((((((.[[[[..))).))).)))..(((((....)))))))))).((((....)))).......]]]].
 Working_res:   A:1-96
 Input_res:     -
+Native:        8_0_solution_4L81_rpr.pdb
+Description:   RNA-puzzle 8
+Extra_flags:   -
+
+Name:          rna_puzzle_8_homology
+Sequence:      ggaucacgagggggagaccccggcaaccugggacggacacccaaggugcucacaccggagacgguggauccggcccgagagggcaacgaaguccgu
+Secstruct:     (((((....((((....))))(((..((((((.[[[[..))).))).)))..(((((....)))))))))).((((....)))).......]]]].
+Working_res:   A:1-96
+Input_res:     A:1-9,A:22-27,A:46-50,A:67-71
 Native:        8_0_solution_4L81_rpr.pdb
 Description:   RNA-puzzle 8
 Extra_flags:   -
