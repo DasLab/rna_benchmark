@@ -454,6 +454,10 @@ for target in targets:
     else:
         target.align_pdb = None
 
+    # align_pdb is native and must ALSO appear if FARFAR and -rmsd_screen
+    if ( '-rmsd_screen' in target.extra_flags or '-rmsd_screen' in extra_flags_benchmark ) and args.farfar:
+        target.extra_flags[ '-align_pdb' ] = basename( target.native )
+
     # get sample loop res
     target.loop_res = {}
 
