@@ -219,13 +219,13 @@ Native:        10_0_solution_4LCK_rpr.pdb
 Description:   RNA-puzzle 10
 Extra_flags:   -
 
-##Name:          rna_puzzle_11
-##Sequence:      ggauugaaaaucc
-##Secstruct:     (((.......)))
-##Working_res:   -
-##Input_res:     -
-##Native:        3l0u_RNA.pdb
-##Extra_flags:   -
+Name:          rna_puzzle_11
+Sequence:      gggaucugucaccccauugaucgccuucgggcugaucuggcuggcuaggcggguccc
+Secstruct:     ((((((((((.(((((..(((((((....))).)))))))..))...))))))))))
+Working_res:   A:1-57
+Input_res:     -
+Native:        native_5LYV.pdb
+Extra_flags:   -
 
 Name:          rna_puzzle_12
 Sequence:      gaucgcugaacccga,aggggcgggggacccag,ggggcgaaucucuuccgaaaggaagaguaggguuacuccuucgacccgagcccgucagcuaaccucgcaagcguccgaaggagaa
