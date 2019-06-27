@@ -141,7 +141,6 @@ for target in targets:
     target.resnums = resnums
     target.segids = segids
     print(target.name)
-    print("line 141", resnums, chains, segids)
 
     # working_native
     # including the _NATIVE_ tag makes it easier to find the file for Pymol viewing after runs.

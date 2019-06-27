@@ -202,6 +202,16 @@ Native:        rna_puzzle_7_dimer_NATIVE.pdb
 Description:   RNA-puzzle 7 dimer state
 Extra_flags:   -secstruct "((((((((((.....((((...((((.......))))..))))..((((((.(((..((((((..(((((.....)))))..(((((((.......)))))))......))).)))(((..(((.((((((((((....))))))))))...)))))).....)))))))))..))).))))))),((((((((((.....((((...((((.......))))..))))..((((((.(((..((((((..(((((.....)))))..(((((((.......)))))))......))).)))(((..(((.((((((((((....))))))))))...)))))).....)))))))))..))).)))))))"
 
+Name:          rna_puzzle_7_pseudomonomer
+Sequence:      gcgcugugucgcaaucugcgaagggcgucgucggcccaagcgguaguaagcagggaacucaccuccaaugaaaca,cauugucguagcaguugacuacuguuaugugauugguagaggcuaagugacgguauuggcguaagccaauaccgcagcacagcacaagcccgcuugcgagauuacagcgc
+Secstruct:     ((((((((((.....((((...((((...[[[.))))..))))..((((((.(((..((((((..(((((.....,)))))..(((((((..]]]..)))))))......))).)))(((..(((.((((((((((....))))))))))...)))))).....)))))))))..)).))))))))
+Working_res:   A:601-675,A:681-790
+Input_res:     -
+Native:        4r4v_pseudomonomer_full_model.pdb
+Description:   RNA-puzzle 7, 'pseudonative' recovering corrupted dimer fold
+Extra_flags:   -
+
+Name:          rna_puzzle_7_dimer
 # Did we do this with any homology? Almost certainly a renumbering of the binding site is appropriate.
 Name:          rna_puzzle_8
 Sequence:      ggaucacgagggggagaccccggcaaccugggacggacacccaaggugcucacaccggagacgguggauccggcccgagagggcaacgaaguccgu
@@ -234,6 +244,14 @@ Sequence:      ggacacugaugaucgcguggauauggcacgcauugaauuguuggacaccguaaauguccuaacac
 Secstruct:     ((((((......(.(((((.....[[))))))..(.......(((((]].....)))))...)..))))))
 Working_res:   A:13-83
 Input_res:     A:30-40,A:58-68
+Native:        5kpy.pdb
+Extra_flags:   -secstruct "((((((......(.(((((.....[[))))))..(.......(((((]].....)))))...)..))))))"
+
+Name:          rna_puzzle_9_2xnw_tloop
+Sequence:      ggacacugaugaucgcguggauauggcacgcauugaauuguuggacaccguaaauguccuaacacgugucc
+Secstruct:     ((((((......(.(((((.....[[))))))..(.......(((((]].....)))))...)..))))))
+Working_res:   A:13-83
+Input_res:     A:30-40,A:58-68;A:33-37
 Native:        5kpy.pdb
 Extra_flags:   -secstruct "((((((......(.(((((.....[[))))))..(.......(((((]].....)))))...)..))))))"
 
