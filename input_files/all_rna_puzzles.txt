@@ -211,7 +211,6 @@ Native:        4r4v_pseudomonomer_full_model.pdb
 Description:   RNA-puzzle 7, 'pseudonative' recovering corrupted dimer fold
 Extra_flags:   -
 
-Name:          rna_puzzle_7_dimer
 # Did we do this with any homology? Almost certainly a renumbering of the binding site is appropriate.
 Name:          rna_puzzle_8
 Sequence:      ggaucacgagggggagaccccggcaaccugggacggacacccaaggugcucacaccggagacgguggauccggcccgagagggcaacgaaguccgu
