@@ -99,7 +99,6 @@ Input_res:     A:1,B:14,B:2,C:2
 Native:        1mhk.pdb
 Description:   1mhk, with original no-constraints
 Extra_flags:   -
-((((((......&.[[[[...))))))&.]]]].
 
 Name:          1q9a_orig
 Sequence:      ugcuccuaguacgagaggaccggagug
@@ -224,12 +223,12 @@ Extra_flags:   -secstruct "((((.((....))..))))"
 
 Name:          1i9x_chunks
 Sequence:      uacuaacguagua,uacuaacguagua
-Secstruct:     (((((.(((((((,))))).)))))))
+Secstruct:     ((((.((((((((,)))).))))))))
 Working_res:   A:1-13,B:1-13
 Input_res:     -
 Native:        1i9x.pdb
 Description:   1i9x, with A-form helical chunks
-Extra_flags:   -secstruct "(((((.(((((((,))))).)))))))"
+Extra_flags:   -secstruct "((((.((((((((,)))).))))))))"
 
 # Skipping 1j6s; it's the bru_gag_tetraplex
 
@@ -404,7 +403,7 @@ Working_res:   A:1-13,B:1-13
 Input_res:     -
 Native:        1i9x.pdb
 Description:   1i9x, with base pair constraints
-Extra_flags:   -secstruct "(((((.(((((((,))))).)))))))"
+Extra_flags:   -secstruct "((((.((((((((,)))).))))))))"
 
 # Skipping 1j6s; it's the bru_gag_tetraplex
 
@@ -575,7 +574,7 @@ Working_res:   A:1-13,B:1-13
 Input_res:     -
 Native:        1i9x.pdb
 Description:   1i9x, with base pair steps
-Extra_flags:   -bps_moves true -secstruct "(((((.(((((((,))))).)))))))"
+Extra_flags:   -bps_moves true -secstruct "((((.((((((((,)))).))))))))"
 
 # Skipping 1j6s; it's the bru_gag_tetraplex
 
