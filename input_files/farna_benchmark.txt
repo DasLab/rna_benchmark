@@ -92,10 +92,10 @@ Extra_flags:   -
 # base pairs b/n S:12 and L:1 for no reason
 # since they're not BPed in native.
 Name:          1mhk_orig
-Sequence:      ccaugcgaaccg,cgauccuagugugg
-Secstruct:     ............,..............
-Working_res:   S:1-12,L:1-14
-Input_res:     S:1,L:14
+Sequence:      ccaugcgaaccg,cgauccuagugugg,cgaucc
+Secstruct:     ............,..............,......
+Working_res:   A:1-12,B:1-14,C:1-6
+Input_res:     A:1,B:14,B:2,C:2
 Native:        1mhk.pdb
 Description:   1mhk, with original no-constraints
 Extra_flags:   -
@@ -140,9 +140,9 @@ Extra_flags:   -
 
 
 Name:          283d_orig
-Sequence:      ggccgaaaggcc
-Secstruct:     ............
-Working_res:   A:1-12
+Sequence:      ggccgaaaggcc,ggccgaaaggcc
+Secstruct:     ............,............
+Working_res:   A:1-12,A:1-12
 Input_res:     -
 Native:        283d.pdb
 Description:   283d, with original no-constraints
@@ -223,12 +223,12 @@ Extra_flags:   -secstruct "((((.((....))..))))"
 
 Name:          1i9x_chunks
 Sequence:      uacuaacguagua,uacuaacguagua
-Secstruct:     (((((.(((((((,))))).)))))))
+Secstruct:     ((((.((((((((,)))).))))))))
 Working_res:   A:1-13,B:1-13
 Input_res:     -
 Native:        1i9x.pdb
 Description:   1i9x, with A-form helical chunks
-Extra_flags:   -secstruct "(((((.(((((((,))))).)))))))"
+Extra_flags:   -secstruct "((((.((((((((,)))).))))))))"
 
 # Skipping 1j6s; it's the bru_gag_tetraplex
 
@@ -263,13 +263,15 @@ Extra_flags:   -secstruct "..(((((..[[[.))))).......]]]"
 # base pairs b/n S:12 and L:1 for no reason
 # since they're not BPed in native.
 Name:          1mhk_chunks
-Sequence:      ccaugcgaaccg,cgauccuagugugg
-Secstruct:     ((((((......,........))))))
-Working_res:   S:1-12,L:1-14
+Sequence:      ccaugcgaaccg,cgauccuagugugg,cgaucc
+Secstruct:     ((((((......,.[[[[...)))))),.]]]].
+............,..............,......
+Working_res:   A:1-12,B:1-14,C:1-6
 Input_res:     -
 Native:        1mhk.pdb
-Description:   1mhk, with A-form helical chunks
-Extra_flags:   -secstruct "((((((......,........))))))"
+Description:   1mhk,with original no-constraints
+Extra_flags:   -
+
 
 Name:          1q9a_chunks
 Sequence:      ugcuccuaguacgagaggaccggagug
@@ -310,13 +312,13 @@ Description:   255d, with A-form helical chunks
 Extra_flags:   -secstruct "(((((..(((((,)))))..)))))"
 
 Name:          283d_chunks
-Sequence:      ggccgaaaggcc
-Secstruct:     ((((....))))
-Working_res:   A:1-12
+Sequence:      ggccgaaaggcc,ggccgaaaggcc
+Secstruct:     ((((....((((,))))....))))
+Working_res:   A:1-12,B:1-12
 Input_res:     -
 Native:        283d.pdb
 Description:   283d, with A-form helical chunks
-Extra_flags:   -secstruct "((((....))))"
+Extra_flags:   -secstruct "((((....(((())))....))))"
 
 Name:          28sp_chunks
 Sequence:      ggcgucagguccggaaggaagcagcgcc
@@ -373,7 +375,7 @@ Secstruct:     .............,...............
 Working_res:   A:43-55,B:64-78
 Input_res:     -
 Native:        1csl.pdb
-Description:   1csl, with A-form helical chunks
+Description:   1csl, with base pair constraints
 Extra_flags:   -secstruct ".(((..((((((.,)))).))...))).."
 
 Name:          1dqf_bpc
@@ -382,7 +384,7 @@ Secstruct:     .........,..........
 Working_res:   A:1-9,B:10-19
 Input_res:     -
 Native:        1dqf.pdb
-Description:   1dqf, with A-form helical chunks
+Description:   1dqf, with base pair constraints
 Extra_flags:   -secstruct "(((((((((,)))))).)))"
 
 Name:          1esy_bpc
@@ -391,7 +393,7 @@ Secstruct:     ...................
 Working_res:   A:1-19
 Input_res:     -
 Native:        1esy.pdb
-Description:   1esy, with A-form helical chunks
+Description:   1esy, with base pair constraints
 Extra_flags:   -secstruct "((((.((....))..))))"
 
 Name:          1i9x_bpc
@@ -400,8 +402,8 @@ Secstruct:     .............,.............
 Working_res:   A:1-13,B:1-13
 Input_res:     -
 Native:        1i9x.pdb
-Description:   1i9x, with A-form helical chunks
-Extra_flags:   -secstruct "(((((.(((((((,))))).)))))))"
+Description:   1i9x, with base pair constraints
+Extra_flags:   -secstruct "((((.((((((((,)))).))))))))"
 
 # Skipping 1j6s; it's the bru_gag_tetraplex
 
@@ -411,7 +413,7 @@ Secstruct:     ...........,...........
 Working_res:   A:1-11,B:1-11
 Input_res:     -
 Native:        1kd5.pdb
-Description:   1kd5, with A-form helical chunks
+Description:   1kd5, with base pair constraints
 Extra_flags:   -secstruct "(((....(((.,)))....)))."
 
 Name:          1kka_bpc
@@ -420,7 +422,7 @@ Secstruct:     .................
 Working_res:   A:1-17
 Input_res:     -
 Native:        1kka.pdb
-Description:   1kka, with A-form helical chunks
+Description:   1kka, with base pair constraints
 Extra_flags:   -secstruct "((((((.....))))))"
 
 Name:          1l2x_bpc
@@ -429,20 +431,21 @@ Secstruct:     ............................
 Working_res:   A:1-28
 Input_res:     -
 Native:        1l2x.pdb
-Description:   1a4d, with A-form helical chunks
+Description:   1a4d, with base pair constraints
 Extra_flags:   -secstruct "..(((((..[[[.))))).......]]]"
 
 # Original would have set up immutable
 # base pairs b/n S:12 and L:1 for no reason
 # since they're not BPed in native.
 Name:          1mhk_bpc
-Sequence:      ccaugcgaaccg,cgauccuagugugg
-Secstruct:     ............,..............
-Working_res:   S:1-12,L:1-14
+Sequence:      ccaugcgaaccg,cgauccuagugugg,cgaucc
+Secstruct:     ((((((......,.[[[[...)))))),.]]]].
+Working_res:   A:1-12,B:1-14,C:1-6
 Input_res:     -
 Native:        1mhk.pdb
-Description:   1mhk, with A-form helical chunks
-Extra_flags:   -secstruct "((((((......,........))))))"
+Description:   1mhk, with base pair constraints
+Extra_flags:   -secstruct "((((((......,.[[[[...)))))),.]]]]."
+
 
 Name:          1q9a_bpc
 Sequence:      ugcuccuaguacgagaggaccggagug
@@ -450,7 +453,7 @@ Secstruct:     ...........................
 Working_res:   A:2647-2673
 Input_res:     -
 Native:        1q9a.pdb
-Description:   1q9a, with A-form helical chunks
+Description:   1q9a, with base pair constraints
 Extra_flags:   -secstruct ".(((((.....(....)....)))))."
 
 Name:          1qwa_bpc
@@ -459,7 +462,7 @@ Secstruct:     .....................
 Working_res:   A:1-21
 Input_res:     -
 Native:        1qwa.pdb
-Description:   1qwa, with A-form helical chunks
+Description:   1qwa, with base pair constraints
 Extra_flags:   -secstruct "((((((((....)).))))))"
 
 Name:          1xjr_bpc
@@ -468,7 +471,7 @@ Secstruct:     ...............................................
 Working_res:   A:1-47
 Input_res:     -
 Native:        1xjr.pdb
-Description:   1xjr, with A-form helical chunks
+Description:   1xjr, with base pair constraints
 Extra_flags:   -secstruct "..(((((((...((((.((((.....))..))..))).).)))))))"
 
 # Skipping 1zih because that's just gcaa_tetraloop
@@ -479,17 +482,17 @@ Secstruct:     ............,............
 Working_res:   A:1-12,B:1-12
 Input_res:     -
 Native:        255d.pdb
-Description:   255d, with A-form helical chunks
+Description:   255d, with base pair constraints
 Extra_flags:   -secstruct "(((((..(((((,)))))..)))))"
 
 Name:          283d_bpc
-Sequence:      ggccgaaaggcc
-Secstruct:     ............
-Working_res:   A:1-12
+Sequence:      ggccgaaaggcc,ggccgaaaggcc
+Secstruct:     ............,............
+Working_res:   A:1-12,B:1-12
 Input_res:     -
 Native:        283d.pdb
-Description:   283d, with A-form helical chunks
-Extra_flags:   -secstruct "((((....))))"
+Description:   283d, with base pair constraints
+Extra_flags:   -secstruct "((((....(((())))....))))"
 
 Name:          28sp_bpc
 Sequence:      ggcgucagguccggaaggaagcagcgcc
@@ -497,7 +500,7 @@ Secstruct:     ............................
 Working_res:   A:1-28
 Input_res:     -
 Native:        28sp.pdb
-Description:   28sp, with A-form helical chunks
+Description:   28sp, with base pair constraints
 Extra_flags:   -secstruct "(((((....(((....)))....)))))"
 
 Name:          2a43_bpc
@@ -506,7 +509,7 @@ Secstruct:     ..........................
 Working_res:   A:3-28
 Input_res:     -
 Native:        2a43.pdb
-Description:   2a43, with A-form helical chunks
+Description:   2a43, with base pair constraints
 Extra_flags:   -secstruct "((((..[[[.)))).........]]]"
 
 Name:          2f88_bpc
@@ -515,7 +518,177 @@ Secstruct:     ..................................
 Working_res:   A:1-34
 Input_res:     -
 Native:        2f88.pdb
-Description:   2f88, with A-form helical chunks
+Description:   2f88, with base pair constraints
 Extra_flags:   -secstruct "((((((((.(((((....)))))...))))))))"
+
+
+Name:          157d_bps
+Sequence:      cgcgaauuagcg,cgcgaauuagcg
+Secstruct:     ............,............
+Working_res:   A:1-12,B:13-24
+Input_res:     -
+Native:        157d.pdb
+Description:   157d, with base pair steps
+Extra_flags:   -bps_moves true -secstruct "(((.((((.(((,))).)))).)))"
+
+Name:          1a4d_bps
+Sequence:      ggccgaugguaguguggggucuccccaugcgagaguaggcc
+Secstruct:     .........................................
+Working_res:   A:68-108
+Input_res:     -
+Native:        1a4d.pdb
+Description:   1a4d, with base pair steps
+Extra_flags:   -bps_moves true -secstruct "((((...........(((.....)))...........))))"
+
+Name:          1csl_bps
+Sequence:      aacgggcgcagaa,ucugacgguacguuu
+Secstruct:     .............,...............
+Working_res:   A:43-55,B:64-78
+Input_res:     -
+Native:        1csl.pdb
+Description:   1csl, with base pair steps
+Extra_flags:   -bps_moves true -secstruct ".(((..((((((.,)))).))...))).."
+
+Name:          1dqf_bps
+Sequence:      gccacccug,cagggucggc
+Secstruct:     .........,..........
+Working_res:   A:1-9,B:10-19
+Input_res:     -
+Native:        1dqf.pdb
+Description:   1dqf, with base pair steps
+Extra_flags:   -bps_moves true -secstruct "(((((((((,)))))).)))"
+
+Name:          1esy_bps
+Sequence:      ggcgacuggugaguacgcc
+Secstruct:     ...................
+Working_res:   A:1-19
+Input_res:     -
+Native:        1esy.pdb
+Description:   1esy, with base pair steps
+Extra_flags:   -bps_moves true -secstruct "((((.((....))..))))"
+
+Name:          1i9x_bps
+Sequence:      uacuaacguagua,uacuaacguagua
+Secstruct:     .............,.............
+Working_res:   A:1-13,B:1-13
+Input_res:     -
+Native:        1i9x.pdb
+Description:   1i9x, with base pair steps
+Extra_flags:   -bps_moves true -secstruct "((((.((((((((,)))).))))))))"
+
+# Skipping 1j6s; it's the bru_gag_tetraplex
+
+Name:          1kd5_bps
+Sequence:      ggucacagccc,ggucacagccc
+Secstruct:     ...........,...........
+Working_res:   A:1-11,B:1-11
+Input_res:     -
+Native:        1kd5.pdb
+Description:   1kd5, with base pair steps
+Extra_flags:   -bps_moves true -secstruct "(((....(((.,)))....)))."
+
+Name:          1kka_bps
+Sequence:      ggggauugaaaaucccc
+Secstruct:     .................
+Working_res:   A:1-17
+Input_res:     -
+Native:        1kka.pdb
+Description:   1kka, with base pair steps
+Extra_flags:   -bps_moves true -secstruct "((((((.....))))))"
+
+Name:          1l2x_bps
+Sequence:      ggcgcggcaccguccgcggaacaaacgg
+Secstruct:     ............................
+Working_res:   A:1-28
+Input_res:     -
+Native:        1l2x.pdb
+Description:   1a4d, with base pair steps
+Extra_flags:   -bps_moves true -secstruct "..(((((..[[[.))))).......]]]"
+
+# Original would have set up immutable
+# base pairs b/n S:12 and L:1 for no reason
+# since they're not BPed in native.
+Name:          1mhk_bps
+Sequence:      ccaugcgaaccg,cgauccuagugugg,cgaucc
+Secstruct:     ((((((......,.[[[[...)))))),.]]]].
+Working_res:   A:1-12,B:1-14,C:1-6
+Input_res:     -
+Native:        1mhk.pdb
+Description:   1mhk, with base pair steps
+Extra_flags:   -bps_moves true -secstruct "((((((......,.[[[[...)))))),.]]]]."
+
+Name:          1q9a_bps
+Sequence:      ugcuccuaguacgagaggaccggagug
+Secstruct:     ...........................
+Working_res:   A:2647-2673
+Input_res:     -
+Native:        1q9a.pdb
+Description:   1q9a, with base pair steps
+Extra_flags:   -bps_moves true -secstruct ".(((((.....(....)....)))))."
+
+Name:          1qwa_bps
+Sequence:      ggaugccucccgagugcaucc
+Secstruct:     .....................
+Working_res:   A:1-21
+Input_res:     -
+Native:        1qwa.pdb
+Description:   1qwa, with base pair steps
+Extra_flags:   -bps_moves true -secstruct "((((((((....)).))))))"
+
+Name:          1xjr_bps
+Sequence:      ggaguucaccgaggccacgcggaguacgaucgaggguacagugaauu
+Secstruct:     ...............................................
+Working_res:   A:1-47
+Input_res:     -
+Native:        1xjr.pdb
+Description:   1xjr, with base pair steps
+Extra_flags:   -bps_moves true -secstruct "..(((((((...((((.((((.....))..))..))).).)))))))"
+
+# Skipping 1zih because that's just gcaa_tetraloop
+
+Name:          255d_bps
+Sequence:      ggacuucggucc,ggacuucggucc
+Secstruct:     ............,............
+Working_res:   A:1-12,B:1-12
+Input_res:     -
+Native:        255d.pdb
+Description:   255d, with base pair steps
+Extra_flags:   -bps_moves true -secstruct "(((((..(((((,)))))..)))))"
+
+Name:          283d_bps
+Sequence:      ggccgaaaggcc,ggccgaaaggcc
+Secstruct:     ............,............
+Working_res:   A:1-12,B:1-12
+Input_res:     -
+Native:        283d.pdb
+Description:   283d, with base pair steps
+Extra_flags:   -bps_moves true -secstruct "((((....(((())))....))))"
+
+Name:          28sp_bps
+Sequence:      ggcgucagguccggaaggaagcagcgcc
+Secstruct:     ............................
+Working_res:   A:1-28
+Input_res:     -
+Native:        28sp.pdb
+Description:   28sp, with base pair steps
+Extra_flags:   -bps_moves true -secstruct "(((((....(((....)))....)))))"
+
+Name:          2a43_bps
+Sequence:      gcggcaccguccgcucaaacaaacgg
+Secstruct:     ..........................
+Working_res:   A:3-28
+Input_res:     -
+Native:        2a43.pdb
+Description:   2a43, with base pair steps
+Extra_flags:   -bps_moves true -secstruct "((((..[[[.)))).........]]]"
+
+Name:          2f88_bps
+Sequence:      gagccgugugcgaugaaagucgcaagcacgguuc
+Secstruct:     ..................................
+Working_res:   A:1-34
+Input_res:     -
+Native:        2f88.pdb
+Description:   2f88, with base pair steps
+Extra_flags:   -bps_moves true -secstruct "((((((((.(((((....)))))...))))))))"
 
 

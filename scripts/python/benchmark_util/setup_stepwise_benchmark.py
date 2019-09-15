@@ -141,7 +141,6 @@ for target in targets:
     target.resnums = resnums
     target.segids = segids
     print(target.name)
-    print("line 141", resnums, chains, segids)
 
     # working_native
     # including the _NATIVE_ tag makes it easier to find the file for Pymol viewing after runs.
@@ -453,6 +452,10 @@ for target in targets:
         assert( exists(target.align_pdb) )
     else:
         target.align_pdb = None
+
+    # align_pdb is native and must ALSO appear if FARFAR and -rmsd_screen
+    if ( '-rmsd_screen' in target.extra_flags or '-rmsd_screen' in extra_flags_benchmark ) and args.farfar:
+        target.extra_flags[ '-align_pdb' ] = basename( target.native )
 
     # get sample loop res
     target.loop_res = {}
