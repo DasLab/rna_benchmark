@@ -92,10 +92,10 @@ Extra_flags:   -
 # base pairs b/n S:12 and L:1 for no reason
 # since they're not BPed in native.
 Name:          1mhk_orig
-Sequence:      ccaugcgaaccg,cgauccuagugugg
-Secstruct:     ............,..............
-Working_res:   S:1-12,L:1-14
-Input_res:     S:1,L:14
+Sequence:      ccaugcgaaccg,cgauccuagugugg,cgaucc
+Secstruct:     ............,..............,......
+Working_res:   A:1-12,B:1-14,C:1-6
+Input_res:     A:1,B:14,B:2,C:2
 Native:        1mhk.pdb
 Description:   1mhk, with original no-constraints
 Extra_flags:   -
@@ -140,9 +140,9 @@ Extra_flags:   -
 
 
 Name:          283d_orig
-Sequence:      ggccgaaaggcc
-Secstruct:     ............
-Working_res:   A:1-12
+Sequence:      ggccgaaaggcc,ggccgaaaggcc
+Secstruct:     ............,............
+Working_res:   A:1-12,A:1-12
 Input_res:     -
 Native:        283d.pdb
 Description:   283d, with original no-constraints
@@ -223,12 +223,12 @@ Extra_flags:   -secstruct "((((.((....))..))))"
 
 Name:          1i9x_chunks
 Sequence:      uacuaacguagua,uacuaacguagua
-Secstruct:     (((((.(((((((,))))).)))))))
+Secstruct:     ((((.((((((((,)))).))))))))
 Working_res:   A:1-13,B:1-13
 Input_res:     -
 Native:        1i9x.pdb
 Description:   1i9x, with A-form helical chunks
-Extra_flags:   -secstruct "(((((.(((((((,))))).)))))))"
+Extra_flags:   -secstruct "((((.((((((((,)))).))))))))"
 
 # Skipping 1j6s; it's the bru_gag_tetraplex
 
@@ -263,13 +263,15 @@ Extra_flags:   -secstruct "..(((((..[[[.))))).......]]]"
 # base pairs b/n S:12 and L:1 for no reason
 # since they're not BPed in native.
 Name:          1mhk_chunks
-Sequence:      ccaugcgaaccg,cgauccuagugugg
-Secstruct:     ((((((......,........))))))
-Working_res:   S:1-12,L:1-14
+Sequence:      ccaugcgaaccg,cgauccuagugugg,cgaucc
+Secstruct:     ((((((......,.[[[[...)))))),.]]]].
+............,..............,......
+Working_res:   A:1-12,B:1-14,C:1-6
 Input_res:     -
 Native:        1mhk.pdb
-Description:   1mhk, with A-form helical chunks
-Extra_flags:   -secstruct "((((((......,........))))))"
+Description:   1mhk,with original no-constraints
+Extra_flags:   -
+
 
 Name:          1q9a_chunks
 Sequence:      ugcuccuaguacgagaggaccggagug
@@ -310,13 +312,13 @@ Description:   255d, with A-form helical chunks
 Extra_flags:   -secstruct "(((((..(((((,)))))..)))))"
 
 Name:          283d_chunks
-Sequence:      ggccgaaaggcc
-Secstruct:     ((((....))))
-Working_res:   A:1-12
+Sequence:      ggccgaaaggcc,ggccgaaaggcc
+Secstruct:     ((((....((((,))))....))))
+Working_res:   A:1-12,B:1-12
 Input_res:     -
 Native:        283d.pdb
 Description:   283d, with A-form helical chunks
-Extra_flags:   -secstruct "((((....))))"
+Extra_flags:   -secstruct "((((....(((())))....))))"
 
 Name:          28sp_chunks
 Sequence:      ggcgucagguccggaaggaagcagcgcc
@@ -401,7 +403,7 @@ Working_res:   A:1-13,B:1-13
 Input_res:     -
 Native:        1i9x.pdb
 Description:   1i9x, with base pair constraints
-Extra_flags:   -secstruct "(((((.(((((((,))))).)))))))"
+Extra_flags:   -secstruct "((((.((((((((,)))).))))))))"
 
 # Skipping 1j6s; it's the bru_gag_tetraplex
 
@@ -436,13 +438,14 @@ Extra_flags:   -secstruct "..(((((..[[[.))))).......]]]"
 # base pairs b/n S:12 and L:1 for no reason
 # since they're not BPed in native.
 Name:          1mhk_bpc
-Sequence:      ccaugcgaaccg,cgauccuagugugg
-Secstruct:     ............,..............
-Working_res:   S:1-12,L:1-14
+Sequence:      ccaugcgaaccg,cgauccuagugugg,cgaucc
+Secstruct:     ((((((......,.[[[[...)))))),.]]]].
+Working_res:   A:1-12,B:1-14,C:1-6
 Input_res:     -
 Native:        1mhk.pdb
 Description:   1mhk, with base pair constraints
-Extra_flags:   -secstruct "((((((......,........))))))"
+Extra_flags:   -secstruct "((((((......,.[[[[...)))))),.]]]]."
+
 
 Name:          1q9a_bpc
 Sequence:      ugcuccuaguacgagaggaccggagug
@@ -483,13 +486,13 @@ Description:   255d, with base pair constraints
 Extra_flags:   -secstruct "(((((..(((((,)))))..)))))"
 
 Name:          283d_bpc
-Sequence:      ggccgaaaggcc
-Secstruct:     ............
-Working_res:   A:1-12
+Sequence:      ggccgaaaggcc,ggccgaaaggcc
+Secstruct:     ............,............
+Working_res:   A:1-12,B:1-12
 Input_res:     -
 Native:        283d.pdb
 Description:   283d, with base pair constraints
-Extra_flags:   -secstruct "((((....))))"
+Extra_flags:   -secstruct "((((....(((())))....))))"
 
 Name:          28sp_bpc
 Sequence:      ggcgucagguccggaaggaagcagcgcc
@@ -571,7 +574,7 @@ Working_res:   A:1-13,B:1-13
 Input_res:     -
 Native:        1i9x.pdb
 Description:   1i9x, with base pair steps
-Extra_flags:   -bps_moves true -secstruct "(((((.(((((((,))))).)))))))"
+Extra_flags:   -bps_moves true -secstruct "((((.((((((((,)))).))))))))"
 
 # Skipping 1j6s; it's the bru_gag_tetraplex
 
@@ -606,13 +609,13 @@ Extra_flags:   -bps_moves true -secstruct "..(((((..[[[.))))).......]]]"
 # base pairs b/n S:12 and L:1 for no reason
 # since they're not BPed in native.
 Name:          1mhk_bps
-Sequence:      ccaugcgaaccg,cgauccuagugugg
-Secstruct:     ............,..............
-Working_res:   S:1-12,L:1-14
+Sequence:      ccaugcgaaccg,cgauccuagugugg,cgaucc
+Secstruct:     ((((((......,.[[[[...)))))),.]]]].
+Working_res:   A:1-12,B:1-14,C:1-6
 Input_res:     -
 Native:        1mhk.pdb
 Description:   1mhk, with base pair steps
-Extra_flags:   -bps_moves true -secstruct "((((((......,........))))))"
+Extra_flags:   -bps_moves true -secstruct "((((((......,.[[[[...)))))),.]]]]."
 
 Name:          1q9a_bps
 Sequence:      ugcuccuaguacgagaggaccggagug
@@ -653,13 +656,13 @@ Description:   255d, with base pair steps
 Extra_flags:   -bps_moves true -secstruct "(((((..(((((,)))))..)))))"
 
 Name:          283d_bps
-Sequence:      ggccgaaaggcc
-Secstruct:     ............
-Working_res:   A:1-12
+Sequence:      ggccgaaaggcc,ggccgaaaggcc
+Secstruct:     ............,............
+Working_res:   A:1-12,B:1-12
 Input_res:     -
 Native:        283d.pdb
 Description:   283d, with base pair steps
-Extra_flags:   -bps_moves true -secstruct "((((....))))"
+Extra_flags:   -bps_moves true -secstruct "((((....(((())))....))))"
 
 Name:          28sp_bps
 Sequence:      ggcgucagguccggaaggaagcagcgcc
