@@ -318,7 +318,7 @@ Extra_flags:   -
 
 Name:          rna_puzzle_15
 Sequence:      ggguacuuaagcccacugaugagucgcugggaugcgacgaaacgccca,gggcgucugggcaguaccca
-Secstruct:     ..........((((((....).(((((......)))))...((((((.,)))))).)))))........
+Secstruct:     ((((((....((((((....).(((((......)))))...((((((.,)))))).))))).)))))).
 Working_res:   A:1-48,B:1-20
 Input_res:     -
 Native:        15_solution_0_rpr.pdb
@@ -402,11 +402,12 @@ Extra_flags:   -
 Name:          rna_puzzle_21
 Sequence:      ccggacgaggugcgccguacccggucaggacaagacggcgc
 Secstruct:     [[[[.......(((((((..]]]]..........)))))))
+#              12345678901234567890123456789012345678901
 Working_res:   A:1-41
 Input_res:     -
 Native:        21_5nwq_solution_0_rpr.pdb
 Description:   RNA-puzzle 21
-Extra_flags:   -
+Extra_flags:   -block_stack_below_res A:1 A:12 -block_stack_above_res A:24 A:41
 
 ##Name:          rna_puzzle_UR1
 ##Sequence:      ggauugaaaaucc

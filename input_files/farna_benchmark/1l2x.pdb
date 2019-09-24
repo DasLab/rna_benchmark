@@ -248,7 +248,7 @@ REMARK 620
 REMARK 620 COORDINATION ANGLES FOR:  M RES CSSEQI METAL                         
 REMARK 620                              MG A  29  MG                            
 REMARK 620 N RES CSSEQI ATOM                                                    
-REMARK 620 1 GTP A   1   O1B                                                    
+REMARK 620 1   G A   1   O1B                                                    
 REMARK 620 2   G A   2   OP1  91.5                                              
 REMARK 620 3 HOH A  31   O    91.5  89.3                                        
 REMARK 620 4 HOH A  32   O   178.0  89.3  86.7                                  
@@ -259,11 +259,11 @@ REMARK 620
 REMARK 620 COORDINATION ANGLES FOR:  M RES CSSEQI METAL                         
 REMARK 620                              MG A  59  MG                            
 REMARK 620 N RES CSSEQI ATOM                                                    
-REMARK 620 1 GTP A   1   O2B                                                    
-REMARK 620 2 GTP A   1   O3G  96.0                                              
+REMARK 620 1   G A   1   O2B                                                    
+REMARK 620 2   G A   1   O3G  96.0                                              
 REMARK 620 3 HOH A  35   O    85.9  89.0                                        
 REMARK 620 4 HOH A  60   O    98.4  95.0 173.8                                  
-REMARK 620 5 GTP A   1   O6   78.7 172.2  85.0  91.5                            
+REMARK 620 5   G A   1   O6   78.7 172.2  85.0  91.5                            
 REMARK 620 6  MG A  34  MG   120.3 124.6  57.1 116.7  55.3                      
 REMARK 620 7 HOH A  36   O   152.1 111.0  87.8  86.3  73.6  37.2                
 REMARK 620 8 HOH A  35   O    87.6 111.1  22.5 152.5  63.3  40.7  76.7          
@@ -277,13 +277,13 @@ REMARK 620 2 HOH A  35   O    92.1
 REMARK 620 3 HOH A  36   O    88.6  90.6                                        
 REMARK 620 4 HOH A  37   O    86.8 175.6  93.7                                  
 REMARK 620 5 HOH A  37   O    89.0  85.6 175.5  90.0                            
-REMARK 620 6 GTP A   1   O6  142.5  70.1  60.0 113.2 120.7                      
-REMARK 620 7 GTP A   1   O6  177.5  87.3  93.8  93.6  88.5  39.3                
+REMARK 620 6   G A   1   O6  142.5  70.1  60.0 113.2 120.7                      
+REMARK 620 7   G A   1   O6  177.5  87.3  93.8  93.6  88.5  39.3                
 REMARK 620 8  MG A  59  MG    97.5  63.1  28.8 121.4 148.1  45.1  84.3          
 REMARK 620 9 HOH A  35   O    81.9  27.8  64.8 155.7 111.1  66.9  98.6  40.2    
 REMARK 620 10 HOH A  37   O   119.3 148.6  90.7  32.7  93.8  83.6  61.3         
 REMARK 620  109.6 148.2                                                         
-REMARK 620 11 GTP A   1   O6  134.5  74.3 133.6 103.4  47.5  73.6  43.1         
+REMARK 620 11   G A   1   O6  134.5  74.3 133.6 103.4  47.5  73.6  43.1         
 REMARK 620  113.0  99.8  82.2                                                   
 REMARK 620 12 HOH A  37   O    66.9 102.5 152.3  73.1  27.6 147.5 110.9         
 REMARK 620  159.3 120.9  90.4  73.9                                             
@@ -338,8 +338,8 @@ REMARK 620 N RES CSSEQI ATOM
 REMARK 620 1   G A   2   N7                                                     
 REMARK 620 2 HOH A 102   O    63.0                                              
 REMARK 620 3   G A   2   OP2  94.8 147.9                                        
-REMARK 620 4 GTP A   1   O2'  80.3  69.0  85.3                                  
-REMARK 620 5 GTP A   1   O3'  74.5 105.6  43.3  45.0                            
+REMARK 620 4   G A   1   O2'  80.3  69.0  85.3                                  
+REMARK 620 5   G A   1   O3'  74.5 105.6  43.3  45.0                            
 REMARK 620 6 HOH A  56   O    87.7 114.7  85.2 164.0 121.5                      
 REMARK 620 7 HOH A 102   O   125.8 114.6  97.1 153.2 139.7  41.4                
 REMARK 620 8 HOH A 162   O   149.9 146.9  59.6 110.5  93.1  75.4  51.0          
@@ -402,11 +402,11 @@ REMARK 900 RESOLUTION
 REMARK 900 RELATED ID: 1L3D   RELATED DB: PDB                                   
 REMARK 900 LOW RESOLUTION CRYSTAL STRUCTURE OF A VIRAL RNA PSEUDOKNOT           
 DBREF  1L2X A    1    28  PDB    1L2X     1L2X             1     28             
-SEQRES   1 A   28  GTP   G   C   G   C   G   G   C   A   C   C   G   U          
+SEQRES   1 A   28    G   G   C   G   C   G   G   C   A   C   C   G   U          
 SEQRES   2 A   28    C   C   G   C   G   G   A   A   C   A   A   A   C          
 SEQRES   3 A   28    G   G                                                      
-MODRES 1L2X GTP A    1    G  GUANOSINE-5'-TRIPHOSPHATE                          
-HET    GTP  A   1      52                                                       
+MODRES 1L2X   G A    1    G  GUANOSINE-5'-TRIPHOSPHATE                          
+HET      G  A   1      52                                                       
 HET     MG  A  29       1                                                       
 HET     MG  A  34       1                                                       
 HET     MG  A  38       1                                                       
@@ -417,19 +417,19 @@ HET     NA  A  61       1
 HET     NA  A  62       1                                                       
 HET     NA  A  63       1                                                       
 HET      K  A  64       1                                                       
-HETNAM     GTP GUANOSINE-5'-TRIPHOSPHATE                                        
+HETNAM       G GUANOSINE-5'-TRIPHOSPHATE                                        
 HETNAM      MG MAGNESIUM ION                                                    
 HETNAM      NA SODIUM ION                                                       
 HETNAM       K POTASSIUM ION                                                    
-FORMUL   1  GTP    C10 H16 N5 O14 P3                                            
+FORMUL   1    G    C10 H16 N5 O14 P3                                            
 FORMUL   2   MG    6(MG 2+)                                                     
 FORMUL   8   NA    3(NA 1+)                                                     
 FORMUL  11    K    K 1+                                                         
 FORMUL  12  HOH   *180(H2 O)                                                    
-LINK         O1B GTP A   1                MG    MG A  29     1555   1555  2.00  
-LINK         O2B GTP A   1                MG    MG A  59     1555   1555  1.75  
-LINK         O3'AGTP A   1                 P     G A   2     1555   1555  1.61  
-LINK         O3'BGTP A   1                 P     G A   2     1555   1555  1.60  
+LINK         O1B   G A   1                MG    MG A  29     1555   1555  2.00  
+LINK         O2B   G A   1                MG    MG A  59     1555   1555  1.75  
+LINK         O3'A  G A   1                 P     G A   2     1555   1555  1.61  
+LINK         O3'B  G A   1                 P     G A   2     1555   1555  1.60  
 LINK        MG    MG A  29                 OP1   G A   2     1555   1555  1.96  
 LINK        MG    MG A  29                 O   HOH A  31     1555   1555  2.14  
 LINK        MG    MG A  29                 O   HOH A  32     1555   1555  2.13  
@@ -460,24 +460,24 @@ LINK        MG    MG A  52                 O   HOH A  57     1555   1555  2.19
 LINK        MG    MG A  52                 O   HOH A  58     1555   1555  2.07  
 LINK        MG    MG A  52                 O   HOH A  55     1555   1555  2.25  
 LINK        MG    MG A  52                 O   HOH A  54     1555   1555  2.21  
-LINK        MG    MG A  59                 O3G GTP A   1     1555   1555  2.29  
+LINK        MG    MG A  59                 O3G   G A   1     1555   1555  2.29  
 LINK        MG    MG A  59                 O  BHOH A  35     1555   1555  2.01  
 LINK        MG    MG A  59                 O   HOH A  60     1555   1555  1.95  
 LINK        NA    NA A  63                 O2'   C A   5     1555   1555  2.59  
 LINK         K  A  K A  64                 N7    G A   2     1555   1555  3.09  
 LINK         K  A  K A  64                 O   HOH A 102     1555   1555  3.09  
 LINK         K  A  K A  64                 OP2   G A   2     1555   1555  2.71  
-LINK         K  A  K A  64                 O2'AGTP A   1     1555   1555  2.50  
-LINK         K  A  K A  64                 O3'AGTP A   1     1555   1555  3.69  
+LINK         K  A  K A  64                 O2'A  G A   1     1555   1555  2.50  
+LINK         K  A  K A  64                 O3'A  G A   1     1555   1555  3.69  
 LINK         K  A  K A  64                 O  AHOH A  56     1555   1555  3.68  
-LINK        MG    MG A  34                 O6 AGTP A   1     1555   1455  2.58  
-LINK        MG    MG A  34                 O6 BGTP A   1     1555   1455  2.09  
+LINK        MG    MG A  34                 O6 A  G A   1     1555   1455  2.58  
+LINK        MG    MG A  34                 O6 B  G A   1     1555   1455  2.09  
 LINK        MG    MG A  34                MG    MG A  59     1555   5575  3.08  
 LINK        MG    MG A  34                 O  BHOH A  35     1555   5575  2.61  
 LINK        MG    MG A  34                 O  BHOH A  37     1555   5675  1.73  
-LINK        MG    MG A  34                 O6 BGTP A   1     1555   5575  2.63  
+LINK        MG    MG A  34                 O6 B  G A   1     1555   5575  2.63  
 LINK        MG    MG A  34                 O  AHOH A  37     1555   5675  2.39  
-LINK        MG    MG A  59                 O6 AGTP A   1     1555   5675  2.22  
+LINK        MG    MG A  59                 O6 A  G A   1     1555   5675  2.22  
 LINK        MG    MG A  59                MG    MG A  34     1555   5775  3.08  
 LINK        MG    MG A  59                 O   HOH A  36     1555   5775  1.63  
 LINK        MG    MG A  59                 O  AHOH A  35     1555   5775  2.83  
@@ -492,9 +492,9 @@ LINK         OP2   A A  21                NA    NA A  61     1555   1555  2.69
 LINK        NA    NA A  61                 O   HOH A  92     1555   1555  2.67  
 LINK        NA    NA A  62                 O   HOH A 101     1555   1555  2.77  
 LINK         K  A  K A  64                 O   HOH A  66     1555   1555  2.80  
-SITE     1 AC1  6 GTP A   1    G A   2  HOH A  30  HOH A  31                    
+SITE     1 AC1  6   G A   1    G A   2  HOH A  30  HOH A  31                    
 SITE     2 AC1  6 HOH A  32  HOH A  33                                          
-SITE     1 AC2  6 GTP A   1    G A  19  HOH A  35  HOH A  36                    
+SITE     1 AC2  6   G A   1    G A  19  HOH A  35  HOH A  36                    
 SITE     2 AC2  6 HOH A  37   MG A  59                                          
 SITE     1 AC3  6 HOH A  39  HOH A  40  HOH A  41  HOH A  42                    
 SITE     2 AC3  6 HOH A  43  HOH A  44                                          
@@ -502,12 +502,12 @@ SITE     1 AC4  6 HOH A  46  HOH A  47  HOH A  48  HOH A  49
 SITE     2 AC4  6 HOH A  50  HOH A  51                                          
 SITE     1 AC5  6 HOH A  53  HOH A  54  HOH A  55  HOH A  56                    
 SITE     2 AC5  6 HOH A  57  HOH A  58                                          
-SITE     1 AC6  6 GTP A   1    G A  19   MG A  34  HOH A  35                    
+SITE     1 AC6  6   G A   1    G A  19   MG A  34  HOH A  35                    
 SITE     2 AC6  6 HOH A  36  HOH A  60                                          
 SITE     1 AC7  3   G A  16    A A  21  HOH A  92                               
 SITE     1 AC8  4   C A   3    G A   4    G A  18  HOH A 101                    
 SITE     1 AC9  4   C A   5    G A   6    A A  21  HOH A  79                    
-SITE     1 BC1  4 GTP A   1    G A   2  HOH A  66  HOH A 102                    
+SITE     1 BC1  4   G A   1    G A   2  HOH A  66  HOH A 102                    
 CRYST1   30.160   30.160  140.278  90.00  90.00 120.00 P 32 2 1      6          
 ORIGX1      1.000000  0.000000  0.000000        0.00000                         
 ORIGX2      0.000000  1.000000  0.000000        0.00000                         
@@ -515,106 +515,106 @@ ORIGX3      0.000000  0.000000  1.000000        0.00000
 SCALE1      0.033156  0.019143  0.000000        0.00000                         
 SCALE2      0.000000  0.038286  0.000000        0.00000                         
 SCALE3      0.000000  0.000000  0.007129        0.00000                         
-HETATM    1  PG  GTP A   1      24.181  32.064  27.670  0.10 24.73           P  
-HETATM    2  O1G GTP A   1      24.342  33.433  27.064  0.10 37.56           O  
-HETATM    3  O2G GTP A   1      24.519  32.013  29.136  0.10 32.46           O  
-HETATM    4  O3G GTP A   1      25.048  31.062  26.907  1.00 47.91           O  
-HETATM    5  O3B GTP A   1      22.644  31.665  27.526  1.00 33.11           O  
-ANISOU    5  O3B GTP A   1     1768   6703   4110   -927   -793    986       O  
-HETATM    6  PB  GTP A   1      21.944  30.914  26.290  1.00 30.44           P  
-ANISOU    6  PB  GTP A   1     1846   4847   4872  -1456  -1208   1806       P  
-HETATM    7  O1B GTP A   1      20.481  30.888  26.504  1.00 30.75           O  
-ANISOU    7  O1B GTP A   1     1687   5226   4771  -1786   -517   1160       O  
-HETATM    8  O2B GTP A   1      22.544  29.597  26.037  1.00 31.25           O  
-ANISOU    8  O2B GTP A   1     1522   4653   5697  -1100  -1318   2736       O  
-HETATM    9  O3A GTP A   1      22.230  31.881  25.061  1.00 27.41           O  
-ANISOU    9  O3A GTP A   1     1253   4156   5004   -742   -677   1526       O  
-HETATM   10  PA  GTP A   1      21.357  32.886  24.136  1.00 28.14           P  
-ANISOU   10  PA  GTP A   1     1645   3573   5474   -752   -631   1140       P  
-HETATM   11  O1A GTP A   1      22.257  33.379  23.051  1.00 29.88           O  
-ANISOU   11  O1A GTP A   1     1860   3708   5786   -793   -172   1961       O  
-HETATM   12  O2A GTP A   1      20.694  33.906  24.985  1.00 28.72           O  
-ANISOU   12  O2A GTP A   1     2408   2857   5647  -1180   -248   1483       O  
-HETATM   13  O5'AGTP A   1      20.284  31.879  23.543  0.50 23.11           O  
-ANISOU   13  O5'AGTP A   1     1167   3488   4127   -570     86   1088       O  
-HETATM   14  O5'BGTP A   1      20.244  31.934  23.525  0.50 23.80           O  
-ANISOU   14  O5'BGTP A   1     1348   3530   4166   -646   -144   1152       O  
-HETATM   15  C5'AGTP A   1      19.131  32.316  22.825  0.50 21.95           C  
-ANISOU   15  C5'AGTP A   1     1574   2998   3770   -631    -65    776       C  
-HETATM   16  C5'BGTP A   1      19.049  32.533  22.993  0.50 20.46           C  
-ANISOU   16  C5'BGTP A   1     1187   3030   3557   -508    360    642       C  
-HETATM   17  C4'AGTP A   1      18.305  31.114  22.431  0.50 18.93           C  
-ANISOU   17  C4'AGTP A   1     1487   2533   3174   -179    174    587       C  
-HETATM   18  C4'BGTP A   1      18.162  31.423  22.482  0.50 19.32           C  
-ANISOU   18  C4'BGTP A   1     1444   2559   3338   -164    100    647       C  
-HETATM   19  O4'AGTP A   1      19.032  30.287  21.495  0.50 16.95           O  
-ANISOU   19  O4'AGTP A   1      749   2658   3035    254    113    710       O  
-HETATM   20  O4'BGTP A   1      18.804  30.735  21.386  0.50 17.14           O  
-ANISOU   20  O4'BGTP A   1     1066   2537   2910    172   -317    958       O  
-HETATM   21  C3'AGTP A   1      17.949  30.186  23.587  0.50 16.54           C  
-ANISOU   21  C3'AGTP A   1      867   2702   2715      0   -361    678       C  
-HETATM   22  C3'BGTP A   1      17.857  30.361  23.529  0.50 18.33           C  
-ANISOU   22  C3'BGTP A   1     1294   2805   2866   -280   -108    559       C  
-HETATM   23  O3'AGTP A   1      16.747  30.614  24.223  0.50 17.14           O  
-ANISOU   23  O3'AGTP A   1      937   2826   2750   -258   -138    307       O  
-HETATM   24  O3'BGTP A   1      16.664  30.669  24.225  0.50 18.17           O  
-ANISOU   24  O3'BGTP A   1     1481   2715   2708   -408     14    261       O  
-HETATM   25  C2'AGTP A   1      17.816  28.834  22.929  0.50 16.16           C  
-ANISOU   25  C2'AGTP A   1      800   2715   2624    -15    112    704       C  
-HETATM   26  C2'BGTP A   1      17.726  29.094  22.716  0.50 16.55           C  
-ANISOU   26  C2'BGTP A   1      917   2763   2609    -69     30    638       C  
-HETATM   27  O2'AGTP A   1      16.465  28.675  22.491  0.50 17.33           O  
-ANISOU   27  O2'AGTP A   1     1542   2637   2407   -605   -197    551       O  
-HETATM   28  O2'BGTP A   1      16.444  29.089  22.088  0.50 15.34           O  
-ANISOU   28  O2'BGTP A   1      982   3158   1687    199    160    477       O  
-HETATM   29  C1'AGTP A   1      18.666  28.915  21.677  0.50 16.51           C  
-ANISOU   29  C1'AGTP A   1     1046   2577   2651    342    110    819       C  
-HETATM   30  C1'BGTP A   1      18.744  29.328  21.616  0.50 17.01           C  
-ANISOU   30  C1'BGTP A   1     1265   2585   2614    127    404    903       C  
-HETATM   31  N9 AGTP A   1      19.931  28.176  21.706  0.50 16.18           N  
-ANISOU   31  N9 AGTP A   1      860   2566   2720    182    401    215       N  
-HETATM   32  N9 BGTP A   1      20.108  28.909  21.927  0.50 17.39           N  
-ANISOU   32  N9 BGTP A   1     1363   2522   2724    146    176    527       N  
-HETATM   33  C8 AGTP A   1      21.156  28.696  22.055  0.50 14.29           C  
-ANISOU   33  C8 AGTP A   1      846   2228   2354    385     23    204       C  
-HETATM   34  C8 BGTP A   1      21.205  29.623  22.323  0.50 17.34           C  
-ANISOU   34  C8 BGTP A   1     1333   2390   2866    141    481    416       C  
-HETATM   35  N7 AGTP A   1      22.126  27.830  21.990  0.50 13.32           N  
-ANISOU   35  N7 AGTP A   1     1034   2206   1820    273     91    -43       N  
-HETATM   36  N7 BGTP A   1      22.271  28.881  22.498  0.50 16.43           N  
-ANISOU   36  N7 BGTP A   1     1352   2153   2736    337    811    -80       N  
-HETATM   37  C5 AGTP A   1      21.513  26.659  21.566  0.50 12.49           C  
-ANISOU   37  C5 AGTP A   1     1116   2271   1359    367    219    163       C  
-HETATM   38  C5 BGTP A   1      21.852  27.595  22.193  0.50 13.82           C  
-ANISOU   38  C5 BGTP A   1     1229   2301   1721    253    158     96       C  
-HETATM   39  C6 AGTP A   1      22.065  25.382  21.305  0.50 11.46           C  
-ANISOU   39  C6 AGTP A   1      732   2203   1420    431      4    334       C  
-HETATM   40  C6 BGTP A   1      22.537  26.352  22.193  0.50 12.69           C  
-ANISOU   40  C6 BGTP A   1      949   2226   1648    475    192      0       C  
-HETATM   41  O6 AGTP A   1      23.234  24.994  21.408  0.50 13.95           O  
-ANISOU   41  O6 AGTP A   1      984   2213   2104    560     37    201       O  
-HETATM   42  O6 BGTP A   1      23.724  26.129  22.476  0.50 15.49           O  
-ANISOU   42  O6 BGTP A   1      900   2304   2681    441    660   -414       O  
-HETATM   43  N1 AGTP A   1      21.092  24.477  20.891  0.50 14.16           N  
-ANISOU   43  N1 AGTP A   1     1234   2434   1710    291   -180    214       N  
-HETATM   44  N1 BGTP A   1      21.700  25.309  21.807  0.50 15.46           N  
-ANISOU   44  N1 BGTP A   1     1508   2561   1807    176   -190    158       N  
-HETATM   45  C2 AGTP A   1      19.759  24.784  20.739  0.50 12.48           C  
-ANISOU   45  C2 AGTP A   1      675   2373   1693    258    -41    371       C  
-HETATM   46  C2 BGTP A   1      20.374  25.434  21.474  0.50 14.75           C  
-ANISOU   46  C2 BGTP A   1     1469   2519   1615    153      7    434       C  
-HETATM   47  N2 AGTP A   1      18.987  23.770  20.325  0.50 16.61           N  
-ANISOU   47  N2 AGTP A   1     1282   2504   2527   -288   -398    504       N  
-HETATM   48  N2 BGTP A   1      19.694  24.334  21.129  0.50 14.15           N  
-ANISOU   48  N2 BGTP A   1     1171   2238   1968    621   -403   -146       N  
-HETATM   49  N3 AGTP A   1      19.232  25.972  20.970  0.50 16.26           N  
-ANISOU   49  N3 AGTP A   1     1428   2395   2355   -141    156    423       N  
-HETATM   50  N3 BGTP A   1      19.724  26.583  21.477  0.50 16.44           N  
-ANISOU   50  N3 BGTP A   1     1201   2504   2541    255    337    319       N  
-HETATM   51  C4 AGTP A   1      20.162  26.863  21.385  0.50 14.30           C  
-ANISOU   51  C4 AGTP A   1      809   2394   2232    252   -543    454       C  
-HETATM   52  C4 BGTP A   1      20.523  27.599  21.841  0.50 13.71           C  
-ANISOU   52  C4 BGTP A   1     1036   2453   1721    423    477    203       C  
+HETATM    1  PG    G A   1      24.181  32.064  27.670  0.10 24.73           P  
+HETATM    2  O1G   G A   1      24.342  33.433  27.064  0.10 37.56           O  
+HETATM    3  O2G   G A   1      24.519  32.013  29.136  0.10 32.46           O  
+HETATM    4  O3G   G A   1      25.048  31.062  26.907  1.00 47.91           O  
+HETATM    5  O3B   G A   1      22.644  31.665  27.526  1.00 33.11           O  
+ANISOU    5  O3B   G A   1     1768   6703   4110   -927   -793    986       O  
+HETATM    6  PB    G A   1      21.944  30.914  26.290  1.00 30.44           P  
+ANISOU    6  PB    G A   1     1846   4847   4872  -1456  -1208   1806       P  
+HETATM    7  O1B   G A   1      20.481  30.888  26.504  1.00 30.75           O  
+ANISOU    7  O1B   G A   1     1687   5226   4771  -1786   -517   1160       O  
+HETATM    8  O2B   G A   1      22.544  29.597  26.037  1.00 31.25           O  
+ANISOU    8  O2B   G A   1     1522   4653   5697  -1100  -1318   2736       O  
+HETATM    9  O3A   G A   1      22.230  31.881  25.061  1.00 27.41           O  
+ANISOU    9  O3A   G A   1     1253   4156   5004   -742   -677   1526       O  
+HETATM   10  PA    G A   1      21.357  32.886  24.136  1.00 28.14           P  
+ANISOU   10  PA    G A   1     1645   3573   5474   -752   -631   1140       P  
+HETATM   11  O1A   G A   1      22.257  33.379  23.051  1.00 29.88           O  
+ANISOU   11  O1A   G A   1     1860   3708   5786   -793   -172   1961       O  
+HETATM   12  O2A   G A   1      20.694  33.906  24.985  1.00 28.72           O  
+ANISOU   12  O2A   G A   1     2408   2857   5647  -1180   -248   1483       O  
+HETATM   13  O5'A  G A   1      20.284  31.879  23.543  0.50 23.11           O  
+ANISOU   13  O5'A  G A   1     1167   3488   4127   -570     86   1088       O  
+HETATM   14  O5'B  G A   1      20.244  31.934  23.525  0.50 23.80           O  
+ANISOU   14  O5'B  G A   1     1348   3530   4166   -646   -144   1152       O  
+HETATM   15  C5'A  G A   1      19.131  32.316  22.825  0.50 21.95           C  
+ANISOU   15  C5'A  G A   1     1574   2998   3770   -631    -65    776       C  
+HETATM   16  C5'B  G A   1      19.049  32.533  22.993  0.50 20.46           C  
+ANISOU   16  C5'B  G A   1     1187   3030   3557   -508    360    642       C  
+HETATM   17  C4'A  G A   1      18.305  31.114  22.431  0.50 18.93           C  
+ANISOU   17  C4'A  G A   1     1487   2533   3174   -179    174    587       C  
+HETATM   18  C4'B  G A   1      18.162  31.423  22.482  0.50 19.32           C  
+ANISOU   18  C4'B  G A   1     1444   2559   3338   -164    100    647       C  
+HETATM   19  O4'A  G A   1      19.032  30.287  21.495  0.50 16.95           O  
+ANISOU   19  O4'A  G A   1      749   2658   3035    254    113    710       O  
+HETATM   20  O4'B  G A   1      18.804  30.735  21.386  0.50 17.14           O  
+ANISOU   20  O4'B  G A   1     1066   2537   2910    172   -317    958       O  
+HETATM   21  C3'A  G A   1      17.949  30.186  23.587  0.50 16.54           C  
+ANISOU   21  C3'A  G A   1      867   2702   2715      0   -361    678       C  
+HETATM   22  C3'B  G A   1      17.857  30.361  23.529  0.50 18.33           C  
+ANISOU   22  C3'B  G A   1     1294   2805   2866   -280   -108    559       C  
+HETATM   23  O3'A  G A   1      16.747  30.614  24.223  0.50 17.14           O  
+ANISOU   23  O3'A  G A   1      937   2826   2750   -258   -138    307       O  
+HETATM   24  O3'B  G A   1      16.664  30.669  24.225  0.50 18.17           O  
+ANISOU   24  O3'B  G A   1     1481   2715   2708   -408     14    261       O  
+HETATM   25  C2'A  G A   1      17.816  28.834  22.929  0.50 16.16           C  
+ANISOU   25  C2'A  G A   1      800   2715   2624    -15    112    704       C  
+HETATM   26  C2'B  G A   1      17.726  29.094  22.716  0.50 16.55           C  
+ANISOU   26  C2'B  G A   1      917   2763   2609    -69     30    638       C  
+HETATM   27  O2'A  G A   1      16.465  28.675  22.491  0.50 17.33           O  
+ANISOU   27  O2'A  G A   1     1542   2637   2407   -605   -197    551       O  
+HETATM   28  O2'B  G A   1      16.444  29.089  22.088  0.50 15.34           O  
+ANISOU   28  O2'B  G A   1      982   3158   1687    199    160    477       O  
+HETATM   29  C1'A  G A   1      18.666  28.915  21.677  0.50 16.51           C  
+ANISOU   29  C1'A  G A   1     1046   2577   2651    342    110    819       C  
+HETATM   30  C1'B  G A   1      18.744  29.328  21.616  0.50 17.01           C  
+ANISOU   30  C1'B  G A   1     1265   2585   2614    127    404    903       C  
+HETATM   31  N9 A  G A   1      19.931  28.176  21.706  0.50 16.18           N  
+ANISOU   31  N9 A  G A   1      860   2566   2720    182    401    215       N  
+HETATM   32  N9 B  G A   1      20.108  28.909  21.927  0.50 17.39           N  
+ANISOU   32  N9 B  G A   1     1363   2522   2724    146    176    527       N  
+HETATM   33  C8 A  G A   1      21.156  28.696  22.055  0.50 14.29           C  
+ANISOU   33  C8 A  G A   1      846   2228   2354    385     23    204       C  
+HETATM   34  C8 B  G A   1      21.205  29.623  22.323  0.50 17.34           C  
+ANISOU   34  C8 B  G A   1     1333   2390   2866    141    481    416       C  
+HETATM   35  N7 A  G A   1      22.126  27.830  21.990  0.50 13.32           N  
+ANISOU   35  N7 A  G A   1     1034   2206   1820    273     91    -43       N  
+HETATM   36  N7 B  G A   1      22.271  28.881  22.498  0.50 16.43           N  
+ANISOU   36  N7 B  G A   1     1352   2153   2736    337    811    -80       N  
+HETATM   37  C5 A  G A   1      21.513  26.659  21.566  0.50 12.49           C  
+ANISOU   37  C5 A  G A   1     1116   2271   1359    367    219    163       C  
+HETATM   38  C5 B  G A   1      21.852  27.595  22.193  0.50 13.82           C  
+ANISOU   38  C5 B  G A   1     1229   2301   1721    253    158     96       C  
+HETATM   39  C6 A  G A   1      22.065  25.382  21.305  0.50 11.46           C  
+ANISOU   39  C6 A  G A   1      732   2203   1420    431      4    334       C  
+HETATM   40  C6 B  G A   1      22.537  26.352  22.193  0.50 12.69           C  
+ANISOU   40  C6 B  G A   1      949   2226   1648    475    192      0       C  
+HETATM   41  O6 A  G A   1      23.234  24.994  21.408  0.50 13.95           O  
+ANISOU   41  O6 A  G A   1      984   2213   2104    560     37    201       O  
+HETATM   42  O6 B  G A   1      23.724  26.129  22.476  0.50 15.49           O  
+ANISOU   42  O6 B  G A   1      900   2304   2681    441    660   -414       O  
+HETATM   43  N1 A  G A   1      21.092  24.477  20.891  0.50 14.16           N  
+ANISOU   43  N1 A  G A   1     1234   2434   1710    291   -180    214       N  
+HETATM   44  N1 B  G A   1      21.700  25.309  21.807  0.50 15.46           N  
+ANISOU   44  N1 B  G A   1     1508   2561   1807    176   -190    158       N  
+HETATM   45  C2 A  G A   1      19.759  24.784  20.739  0.50 12.48           C  
+ANISOU   45  C2 A  G A   1      675   2373   1693    258    -41    371       C  
+HETATM   46  C2 B  G A   1      20.374  25.434  21.474  0.50 14.75           C  
+ANISOU   46  C2 B  G A   1     1469   2519   1615    153      7    434       C  
+HETATM   47  N2 A  G A   1      18.987  23.770  20.325  0.50 16.61           N  
+ANISOU   47  N2 A  G A   1     1282   2504   2527   -288   -398    504       N  
+HETATM   48  N2 B  G A   1      19.694  24.334  21.129  0.50 14.15           N  
+ANISOU   48  N2 B  G A   1     1171   2238   1968    621   -403   -146       N  
+HETATM   49  N3 A  G A   1      19.232  25.972  20.970  0.50 16.26           N  
+ANISOU   49  N3 A  G A   1     1428   2395   2355   -141    156    423       N  
+HETATM   50  N3 B  G A   1      19.724  26.583  21.477  0.50 16.44           N  
+ANISOU   50  N3 B  G A   1     1201   2504   2541    255    337    319       N  
+HETATM   51  C4 A  G A   1      20.162  26.863  21.385  0.50 14.30           C  
+ANISOU   51  C4 A  G A   1      809   2394   2232    252   -543    454       C  
+HETATM   52  C4 B  G A   1      20.523  27.599  21.841  0.50 13.71           C  
+ANISOU   52  C4 B  G A   1     1036   2453   1721    423    477    203       C  
 ATOM     53  P     G A   2      16.459  30.360  25.783  1.00 19.86           P  
 ANISOU   53  P     G A   2     1405   3167   2973   -809   -240    753       P  
 ATOM     54  OP1   G A   2      17.652  30.718  26.588  1.00 22.51           O  
