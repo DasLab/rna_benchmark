@@ -318,7 +318,7 @@ Extra_flags:   -
 
 Name:          rna_puzzle_15
 Sequence:      ggguacuuaagcccacugaugagucgcugggaugcgacgaaacgccca,gggcgucugggcaguaccca
-Secstruct:     ..........((((((....).(((((......)))))...((((((.,)))))).)))))........
+Secstruct:     ((((((....((((((....).(((((......)))))...((((((.,)))))).))))).)))))).
 Working_res:   A:1-48,B:1-20
 Input_res:     -
 Native:        15_solution_0_rpr.pdb
