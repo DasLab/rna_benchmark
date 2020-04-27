@@ -28,6 +28,7 @@ parser.add_argument('-j','--njobs', default='10', type=int, help='Number of core
 parser.add_argument('--swa', action='store_true', help='Additional flag for setting up SWA runs.')
 parser.add_argument('--farna', action='store_true', help='Additional flag for setting up FARNA runs (no minimize).')
 parser.add_argument('--farfar', action='store_true', help='Additional flag for setting up FARFAR runs (FARNA+minimize).')
+parser.add_argument('--near_native', action='store_true', help='Additional flag for setting up near-native runs (FARNA+minimize).')
 parser.add_argument('--extra_min_res_off', action='store_true', help='Additional flag for turning extra_min_res off.')
 parser.add_argument('--save_times_off', action='store_true', help='Additional flag for turning save_times flag off.')
 parser.add_argument('-motif_mode_off', help="temporary hack for turning off hardcoded '-motif_mode' flag", action="store_true")
@@ -454,7 +455,7 @@ for target in targets:
         target.align_pdb = None
 
     # align_pdb is native and must ALSO appear if FARFAR and -rmsd_screen
-    if ( '-rmsd_screen' in target.extra_flags or '-rmsd_screen' in extra_flags_benchmark ) and args.farfar:
+    if args.near_native or ( '-rmsd_screen' in target.extra_flags or '-rmsd_screen' in extra_flags_benchmark ) and args.farfar:
         target.extra_flags[ '-align_pdb' ] = basename( target.native )
 
     # get sample loop res
@@ -662,7 +663,10 @@ for target in targets:
     elif args.farna or args.farfar: # SETUP for Fragment Assembly of RNA
 
         fid = open( '%s/README_FARFAR' % target.name, 'w' )
-        fid.write( 'rna_denovo @flags -out:file:silent farna_rebuild.out\n' )
+        if args.near_native:
+            fid.write( 'rna_denovo @flags -out:file:silent farna_rebuild.out\n' )
+        else:
+            fid.write( 'rna_denovo @flags -out:file:silent farna_rebuild.out && rna_minimize @flags_min -in:file:silent farna_rebuild.out -out:file:silent farna_rebuild.minimized.out \n' )
         fid.close()
 
         fid = open( '%s/flags' % target.name, 'w' )
@@ -685,6 +689,8 @@ for target in targets:
         add_extra_flags_for_name(fid, target.extra_flags, target.name)
         add_extra_flags_benchmark(fid, extra_flags_benchmark, motif_mode_OK = False )
         fid.close()
+        if args.near_native:
+            os.system('cat %s/flags | grep -v "-s" > %s/flags_min ' % (target.name, target.name))
 
         print('\nSetting up submission files for: ', target.name)
         CWD = os.getcwd()
