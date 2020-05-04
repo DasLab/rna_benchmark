@@ -33,7 +33,6 @@ def safe_submit( command, allow_retry=False, max_retry=3 ):
 ###############################################################################
 def slice_out( inpath_dir, prefix, pdb, res_string, excise=False ):
     starting_native = inpath_dir+'/'+pdb
-    print starting_native
     assert( exists( starting_native ) )
     slice_pdb = prefix + pdb
     if not exists( slice_pdb ):
