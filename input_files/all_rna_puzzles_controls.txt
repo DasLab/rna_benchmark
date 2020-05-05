@@ -1,0 +1,454 @@
+Benchmark_flags: -superimpose_over_all
+
+Name:          rna_puzzle_1_fixed_helices
+Sequence:      ccgccgcgccaugccuguggcgg,ccgccgcgccaugccuguggcgg
+Secstruct:     .......................,.......................
+#Secstruct:     (((((((..((((...(((((((,)))))))..))))...)))))))
+Working_res:   A:1-23,B:1-23
+Input_res:     A:1-7,A:10-13,A:17-23,B:1-7,B:10-13,B:17-23
+Native:        1_solution_0_rpr.pdb
+Description:   RNA-puzzle 1
+Extra_flags:   -
+
+Name:          rna_puzzle_2_fixed_helices
+Sequence:      ccggaggaacuacug,ccggcagccu,ccggaggaacuacug,ccggcagccu,ccggaggaacuacug,ccggcagccu,ccggaggaacuacug,ccggcagccu
+Secstruct:     ...............,..........,...............,..........,...............,..........,...............,..........
+#Secstruct:     {{{{(((.....(((,aaaa)))))),<<<<(((.....(((,}}}})))))),[[[[(((.....(((,>>>>)))))),aaaa(((.....(((,]]]]))))))
+Working_res:   A:1-15,B:1-10,C:1-15,D:1-10,E:1-15,F:1-10,G:1-15,H:1-10
+Input_res:     A:1-7,A:13-15,B:1-10,C:1-7,C:13-15,D:1-10,E:1-7,E:13-15,F:1-10,G:1-7,G:13-15,H:1-10
+Description:   RNA-puzzle 2
+Native:        hacked_on.pdb
+Extra_flags:   -
+
+Name:          rna_puzzle_3_fixed_helices
+Sequence:      cucuggagagaaccguuuaaucggucgccgaaggagcaagcucugcgcauaugcagagugaaacucucaggcaaaaggacagag
+Secstruct:     ....................................................................................
+#Secstruct:     (((((......((((......)))))(((...((((...((((((((....))))))))....)))...))).......)))))
+Working_res:   A:1-84
+Input_res:     A:1-5,A:12-15,A:22-25,A:27-29,A:34-36,A:40-47,A:52-59,A:64-66,A:70-72,A:80-84
+Native:        3_solution_0_rpr.pdb
+Description:   RNA-puzzle 3
+Extra_flags:   -
+
+Name:          rna_puzzle_4_with_3IQP_fixed_helices
+Sequence:      ggcuuaucaagagagguggagggacuggcccgaugaaacccggcaaccacuagucuagcgucagcuucggcugacgcuaggcuaguggugccaauuccugcagcggaaacguugaaagaugagcca
+Secstruct:     ..............................................................................................................................
+#Secstruct:     ................................................(((((.(((((((((((....))))))))))).)))))........................................
+Working_res:   A:1-126
+Input_res:     A:1-47,A:49-53,A:55-65,A:70-80,A:82-86,A:88-126
+Native:        4_0_solution_3V7E_rpr.pdb
+Description:   RNA-puzzle 4, using a large chunk of a homologous structure known at the time
+Extra_flags:   -ignore_zero_occupancy false
+
+Name:          rna_puzzle_5_homology_fixed_helices
+Sequence:      gguuggguugggaaguaucauggcuaaucaccaugaugcaaucggguugaacacuuaauuggguuaaaacggugggggacgaucccguaacauccguccuaacggcgacagacugcacggcccugccucuuagguguguccaaugaacagucguuccgaaaggaagcauccgguaucccaagacaauc
+Secstruct:     ............................................................................................................................................................................................
+#Secstruct:     (((((..(((((..(((((((((...[[[.)))))))))..((((.(((.((((......(((((...((((..(((...]]]))).......))))((....)).....[[[[[...))))).(((.....))))))).)))....]]]]].((((....))))....))))...)))))..)))))
+Working_res:   A:1-188
+Input_res:     A:1-5,A:8-12,A:15-23,A:27-29,A:31-39,A:42-45,A:47-49,A:51-59,A:61-72,A:75-77,A:81-86,A:94-109,A:111-115,A:119-123,A:125-127,A:133-139,A:141-143,A:148-152,A:154-157,A:162-165,A:170-173,A:177-181,A:184-188
+Native:        5_0_solution_4p8z_rpr.pdb
+Description:   RNA-puzzle 5
+Extra_flags:   -
+
+Name:          rna_puzzle_6_homology_fixed_helices
+Sequence:      cggcaggugcucccgac,gucgggaguuaaaagggaagccggugcaaguccggcacggucccgccacugugacggggagucgccccucgggaugugccacuggcc,ggccgggaaggcggaggggcggcgaggauccggagucaggaaaccugccugccg 
+Secstruct:     .........................................................................................................,......................................................
+#Secstruct:     ((((((((.(((.(((.,.)).)))).....((....(((((.......)))))[[((.....)).(((...(((...(((((((.((.......(((.((((((,))))))...))).)).)))))))......)))..]]))).....))))))))))
+Working_res:   A:1-17,A:24-110,A:115-168
+Input_res:     A:1-8,A:10-12,A:15-16,A:25-26,A:29-35,A:37-38,A:41-52,A:55-63,A:69-70,A:72-74,A:77-90,A:92-93,A:101-103,A:105-110,A:115-120,A:124-126,A:128-129,A:131-146,A:149-153,A:159-168
+Native:        6_0_solution_4GXY_rpr.pdb
+Description:   RNA-puzzle 6
+Extra_flags:   -
+
+Name:          rna_puzzle_7_fixed_helices
+Sequence:      gcgcugugucgcaaucugcgaagggcgucgucggcccaagcgguaguaagcagggaacucaccuccaaugaaacacauugucguagcaguugacuacuguuaugugauugguagaggcuaagugacgguauuggcguaagccaauaccgcagcacagcacaagcccgcuugcgagauuacagcgc
+Secstruct:     .........................................................................................................................................................................................
+#Secstruct:     ((((((((((.....((((...((((.......))))..))))..((((((.(((..((((((..(((((.....)))))..(((((((.......)))))))......))).)))(((..(((.((((((((((....))))))))))...)))))).....)))))))))..))).)))))))
+Working_res:   A:1-185
+Input_res:     A:1-10,A:16-19,A:23-26,A:34-37,A:40-43,A:46-51,A:53-55,A:58-63,A:66-70,A:76-80,A:83-89,A:97-103,A:110-112,A:114-119,A:122-124,A:126-135,A:140-149,A:153-158,A:164-172,A:175-177,A:179-185
+Native:        7_0_solution_4r4v_rpr.pdb
+Description:   RNA-puzzle 7
+Extra_flags:   -
+
+#Name:          rna_puzzle_7_dimer_fixed_helices
+#Sequence:      gcgcugugucgcaaucugcgaagggcgucgucggcccaagcgguaguaagcagggaacucaccuccaaugaaacacauugucguagcaguugacuacuguuaugugauugguagaggcuaagugacgguauuggcguaagccaauaccgcagcacagcacaagcccgcuugcgagauuacagcgc,gcgcugugucgcaaucugcgaagggcgucgucggcccaagcgguaguaagcagggaacucaccuccaaugaaacacauugucguagcaguugacuacuguuaugugauugguagaggcuaagugacgguauuggcguaagccaauaccgcagcacagcacaagcccgcuugcgagauuacagcgc
+#Secstruct:     ((((((((((.....((((...((((.......))))..))))..((((((.(((..((((((..(((((.....)))))..(((((((.......)))))))......))).)))(((..(((.((((((((((....))))))))))...)))))).....)))))))))..))).))))))),((((((((((.....((((...((((.......))))..))))..((((((.(((..((((((..(((((.....)))))..(((((((.......)))))))......))).)))(((..(((.((((((((((....))))))))))...)))))).....)))))))))..))).)))))))
+#Working_res:   A:1-185,B:1-185
+#Input_res:     -
+#Native:        rna_puzzle_7_dimer_NATIVE.pdb
+#Description:   RNA-puzzle 7 dimer state
+#Extra_flags:   -secstruct "((((((((((.....((((...((((.......))))..))))..((((((.(((..((((((..(((((.....)))))..(((((((.......)))))))......))).)))(((..(((.((((((((((....))))))))))...)))))).....)))))))))..))).))))))),((((((((((.....((((...((((.......))))..))))..((((((.(((..((((((..(((((.....)))))..(((((((.......)))))))......))).)))(((..(((.((((((((((....))))))))))...)))))).....)))))))))..))).)))))))"
+
+#Name:          rna_puzzle_7_pseudomonomer_fixed_helices
+#Sequence:      gcgcugugucgcaaucugcgaagggcgucgucggcccaagcgguaguaagcagggaacucaccuccaaugaaaca,cauugucguagcaguugacuacuguuaugugauugguagaggcuaagugacgguauuggcguaagccaauaccgcagcacagcacaagcccgcuugcgagauuacagcgc
+#Secstruct:     ((((((((((.....((((...((((...[[[.))))..))))..((((((.(((..((((((..(((((.....,)))))..(((((((..]]]..)))))))......))).)))(((..(((.((((((((((....))))))))))...)))))).....)))))))))..)).))))))))
+#Working_res:   A:601-675,A:681-790
+#Input_res:     -
+#Native:        4r4v_pseudomonomer_full_model.pdb
+#Description:   RNA-puzzle 7, 'pseudonative' recovering corrupted dimer fold
+#Extra_flags:   -
+
+Name:          rna_puzzle_8_homology_fixed_helices
+Sequence:      ggaucacgagggggagaccccggcaaccugggacggacacccaaggugcucacaccggagacgguggauccggcccgagagggcaacgaaguccgu
+Secstruct:     ................................................................................................
+#Secstruct:     (((((....((((....))))(((..((((((.[[[[..))).))).)))..(((((....)))))))))).((((....)))).......]]]].
+Working_res:   A:1-96
+Input_res:     A:1-13,A:18-27,A:30-32,A:34-37,A:40-42,A:46-50,A:53-57,A:62-71,A:73-76,A:81-84,A:92-95
+Native:        8_0_solution_4L81_rpr.pdb
+Description:   RNA-puzzle 8
+Extra_flags:   -
+
+Name:          rna_puzzle_9_2xnw_tloop_fixed_helices
+Sequence:      ggacacugaugaucgcguggauauggcacgcauugaauuguuggacaccguaaauguccuaacacgugucc
+Secstruct:     .......................................................................
+#Secstruct:     ((((((......(.(((((.....[[))))))..(.......(((((]].....)))))...)..))))))
+Working_res:   A:13-83
+Input_res:     A:13-18,A:30-40,A:45-49,A:56-70,A:78-83
+Native:        5kpy.pdb
+Extra_flags:   -secstruct "((((((......(.(((((.....[[))))))..(.......(((((]].....)))))...)..))))))"
+
+Name:          rna_puzzle_10_homology_fixed_helices
+Sequence:      ugcgaugagaagaagaguauuaaggauuuacuaugauuagcgacucuaggauagugaaagcuagaggauaguaaccuuaagaaggcacuucgagca,aguaguucagugguagaacaccaccuugccaaggugggggucgcggguucgaaucccgucu
+Secstruct:     ................................................................................................,.............................................................
+#Secstruct:     (((.....((((.......((((((..(((((((......[..((((((..........])))))).)))))))))))))...[[[.))))..))),((..((((....{..)))).(((((..]]]..))))).....(((((..}....)))))))
+Working_res:   A:1-96,B:6-66
+Input_res:     A:1-10,A:16-20,A:22-25,A:28-34,A:37-49,A:53-66,A:68-78,A:80-86,A:90-96,B:6-18,B:20-30,B:33-35,B:38-66
+Native:        10_0_solution_4LCK_rpr.pdb
+Description:   RNA-puzzle 10
+Extra_flags:   -
+
+Name:          rna_puzzle_11_fixed_helices
+Sequence:      gggaucugucaccccauugaucgccuucgggcugaucuggcuggcuaggcggguccc
+Secstruct:     .........................................................
+#Secstruct:     ((((((((((.(((((..(((((((....))).)))))))..))...))))))))))
+Working_res:   A:1-57
+Input_res:     A:1-10,A:12-16,A:19-25,A:30-32,A:34-40,A:43-44,A:48-57
+Native:        native_5LYV.pdb
+Extra_flags:   -
+
+Name:          rna_puzzle_12_fixed_helices
+Sequence:      gaucgcugaacccga,aggggcgggggacccag,ggggcgaaucucuuccgaaaggaagaguaggguuacuccuucgacccgagcccgucagcuaaccucgcaagcguccgaaggagaa
+Secstruct:     ...............,.................,.....................................................................................
+#Secstruct:     ...((((...(((..,.)))((((((....(..,(((((....(((((((....)))))))..(((((.[[[[[[[)))))..))))..).)....)))))).))))...]]]]]]]..
+Working_res:   A:2-16,A:18-34,A:39-123
+Input_res:     A:5-8,A:12-14,A:19-27,A:40-43,A:48-54,A:59-65,A:68-72,A:74-85,A:88-91,A:101-106,A:108-111,A:115-121
+Native:        12_4qln_solution_rpr.pdb
+Description:   RNA-puzzle 12
+Extra_flags:   -
+
+Name:          rna_puzzle_13_fixed_helices
+Sequence:      gggucgugacuggcgaacaggugggaaaccaccggggagcgaccc,gccgcccgccugggc
+Secstruct:     .............................................,...............
+#Secstruct:     (((((((..(([[[[....(((((....))))).))..))))))),(((...]]]]..)))
+Working_res:   A:1-45,A:57-71
+Input_res:     A:1-7,A:10-15,A:20-24,A:29-33,A:35-36,A:39-45,A:57-59,A:63-66,A:69-71
+Native:        13_0_solution_4XW7_rpr.pdb
+Description:   RNA-puzzle 13
+Extra_flags:   -
+
+Name:          rna_puzzle_14_free_fixed_helices
+Sequence:      cguuggcccaggaaacugggu,aguaaggcccauugcacuccgggccugaagcaacgcu
+Secstruct:     .....................,.....................................
+#Secstruct:     (((((((((((....)))))),....((((((..........))))))....)))))..
+Working_res:   A:1-21,A:25-61
+Input_res:     A:1-11,A:16-21,A:29-34,A:45-50,A:55-59
+Native:        14_5ddo_free_solution_rpr.pdb
+Description:   RNA-puzzle 14, ligand-free
+Extra_flags:   -
+
+Name:          rna_puzzle_14_bound_fixed_helices
+Sequence:      cguugacccaggaaacugggcggaaguaaggcccauugcacuccgggccugaagcaacgcg
+Secstruct:     .............................................................
+#Secstruct:     (((((.(((((....)))))..[.....((((((..........))))))....)))))].
+Working_res:   A:1-61
+Input_res:     A:1-5,A:7-11,A:16-20,A:29-34,A:45-50,A:55-59
+Native:        14_5ddp_bound_solution_rpr.pdb
+Description:   RNA-puzzle 14, ligand-bound
+Extra_flags:   -
+
+Name:          rna_puzzle_15_fixed_helices
+Sequence:      ggguacuuaagcccacugaugagucgcugggaugcgacgaaacgccca,gggcgucugggcaguaccca
+Secstruct:     ................................................,....................
+#Secstruct:     ((((((....((((((....).(((((......)))))...((((((.,)))))).))))).)))))).
+Working_res:   A:1-48,B:1-20
+Input_res:     A:1-6,A:11-15,A:23-27,A:34-38,A:42-47,B:1-6,B:8-12,B:14-19
+Native:        15_solution_0_rpr.pdb
+Description:   RNA-puzzle 15
+Extra_flags:   -
+
+Name:          rna_puzzle_17_fixed_helices
+Sequence:      cgugguuagggccacguuaaauaguugcuuaagcccuaagcguugau,aucaggugcaa
+Secstruct:     ...............................................,...........
+#Secstruct:     ((((([[[[[[)))))........((((....(]]]]]].)..(((.,.)))...))))
+Working_res:   A:1-47,A:52-62
+Input_res:     A:1-5,A:8-16,A:25-28,A:34-37,A:44-46,A:53-55,A:59-62
+Native:        17_5k7c_solution_rpr.pdb
+Description:   RNA-puzzle 17
+Extra_flags:   -
+
+Name:          rna_puzzle_18_with_4PQV_fixed_helices
+Sequence:      gggucaggccggcgaaagucgccacaguuuggggaaagcugugcagccuguaacccccccacgaaaguggg
+Secstruct:     .......................................................................
+#Secstruct:     ....(((((((((....)))).((((((..[[[[...))))))..)))))...]]]](((((....)))))
+Working_res:   A:1-71
+Input_res:     A:1-26,A:31-34,A:40-50,A:54-62,A:67-71
+Native:        18_0_solution_5TPY_rpr.pdb
+Description:   RNA-puzzle 18, with original homology
+Extra_flags:   -
+
+Name:          rna_puzzle_19_t_loop_fixed_helices
+Sequence:      gcagggcaaggcccagucccgugcaagccgggaccgcccc,ggggcgcggcgcucauuccugc
+Secstruct:     ........................................,......................
+#Secstruct:     (((((...(((((..((((((.......))))))((((((,)))))).))).))....)))))
+Working_res:   A:1-40,B:1-22
+Input_res:     A:1-5,A:8,A:11-13,A:16-26,A:29-40,B:1-6,B:8-10,B:18-22
+Native:        19_5t5a_solution_0_rpr.pdb
+Description:   RNA-puzzle 19
+Extra_flags:   -
+
+Name:          rna_puzzle_20_t_loop_fixed_helices
+Sequence:      acccgcaaggccgacggc,gccgccgcuggugcaaguccagccacgcuucggcgugggcgcucaugggu
+Secstruct:     ..................,..................................................
+#Secstruct:     ((((...((((((.((((,)))).)(((((.......)))))(((((....)))))))).))...))))
+Working_res:   A:1-18,B:1-50
+Input_res:     A:1-4,A:7-12,A:15-18,B:1-4,B:7-16,B:19-28,B:33-40,B:42-43,B:47-50
+Native:        5y87_RNA.pdb
+Description:   RNA-puzzle 20, another TS ribozyme
+Extra_flags:   -
+
+Name:          rna_puzzle_21_fixed_helices
+Sequence:      ccggacgaggugcgccguacccggucaggacaagacggcgc
+Secstruct:     .........................................
+#Secstruct:     [[[[.......(((((((..]]]]..........)))))))
+Working_res:   A:1-41
+Input_res:     A:1-4,A:12-18,A:21-24,A:35-41
+Native:        21_5nwq_solution_0_rpr.pdb
+Description:   RNA-puzzle 21
+Extra_flags:   -block_stack_below_res A:1 A:12 -block_stack_above_res A:24 A:41
+
+Name:          rna_puzzle_1_align_tight
+Sequence:      ccgccgcgccaugccuguggcgg,ccgccgcgccaugccuguggcgg
+Secstruct:     (((((((..((((...(((((((,)))))))..))))...)))))))
+Working_res:   A:1-23,B:1-23
+Input_res:     -
+Align_res:     A:1-7,A:10-13,A:17-23,B:1-7,B:10-13,B:17-23
+Native:        1_solution_0_rpr.pdb
+Description:   RNA-puzzle 1
+Extra_flags:   -
+
+Name:          rna_puzzle_2_align_tight
+Sequence:      ccggaggaacuacug,ccggcagccu,ccggaggaacuacug,ccggcagccu,ccggaggaacuacug,ccggcagccu,ccggaggaacuacug,ccggcagccu
+Secstruct:     {{{{(((.....(((,aaaa)))))),<<<<(((.....(((,}}}})))))),[[[[(((.....(((,>>>>)))))),aaaa(((.....(((,]]]]))))))
+Working_res:   A:1-15,B:1-10,C:1-15,D:1-10,E:1-15,F:1-10,G:1-15,H:1-10
+Input_res:     B:1-10,D:1-10,F:1-10,H:1-10
+Align_res:     A:1-7,A:13-15,B:1-10,C:1-7,C:13-15,D:1-10,E:1-7,E:13-15,F:1-10,G:1-7,G:13-15,H:1-10
+Description:   RNA-puzzle 2
+Native:        hacked_on.pdb
+Extra_flags:   -
+
+Name:          rna_puzzle_3_align_tight
+Sequence:      cucuggagagaaccguuuaaucggucgccgaaggagcaagcucugcgcauaugcagagugaaacucucaggcaaaaggacagag
+Secstruct:     (((((......((((......)))).(((....(((...((((((((....))))))))....)))...))).......)))))
+Working_res:   A:1-84
+Input_res:     -
+Align_res:     A:1-5,A:12-15,A:22-25,A:27-29,A:34-36,A:40-47,A:52-59,A:64-66,A:70-72,A:80-84
+Native:        3_solution_0_rpr.pdb
+Description:   RNA-puzzle 3
+Extra_flags:   -
+
+Name:          rna_puzzle_4_with_3IQP_align_tight
+Sequence:      ggcuuaucaagagagguggagggacuggcccgaugaaacccggcaaccacuagucuagcgucagcuucggcugacgcuaggcuaguggugccaauuccugcagcggaaacguugaaagaugagcca
+Secstruct:     ................................................(((((.(((((((((((....))))))))))).)))))........................................
+Working_res:   A:1-126
+Input_res:     A:1-47,A:88-126
+Align_res:     A:1-47,A:49-53,A:55-65,A:70-80,A:82-86,A:88-126
+Native:        4_0_solution_3V7E_rpr.pdb
+Description:   RNA-puzzle 4, using a large chunk of a homologous structure known at the time
+Extra_flags:   -ignore_zero_occupancy false
+
+Name:          rna_puzzle_5_homology_align_tight
+Sequence:      gguuggguugggaaguaucauggcuaaucaccaugaugcaaucggguugaacacuuaauuggguuaaaacggugggggacgaucccguaacauccguccuaacggcgacagacugcacggcccugccucuuagguguguccaaugaacagucguuccgaaaggaagcauccgguaucccaagacaauc
+Secstruct:     (((((..(((((..(((((((((...[[[.)))))))))..((((.(((.((((......(((((...((((..(((...]]]))).......))))((....)).....[[[[[...))))).(((.....))))))).)))....]]]]].((((....))))....))))...)))))..)))))
+Working_res:   A:1-188
+Input_res:     A:62-70,A:96-122,A:148-153;A:55-60,A:124-129,A:132-135
+Align_res:     A:1-5,A:8-12,A:15-23,A:27-29,A:31-39,A:42-45,A:47-49,A:51-59,A:61-72,A:75-77,A:81-86,A:94-109,A:111-115,A:119-123,A:125-127,A:133-139,A:141-143,A:148-152,A:154-157,A:162-165,A:170-173,A:177-181,A:184-188
+Native:        5_0_solution_4p8z_rpr.pdb
+Description:   RNA-puzzle 5
+Extra_flags:   -
+
+Name:          rna_puzzle_6_homology_align_tight
+Sequence:      cggcaggugcucccgac,gucgggaguuaaaagggaagccggugcaaguccggcacggucccgccacugugacggggagucgccccucgggaugugccacuggcc,ggccgggaaggcggaggggcggcgaggauccggagucaggaaaccugccugccg 
+Secstruct:     ((((((((.(((.(((.,.)).)))).....((....(((((.......)))))[[((.....)).(((...(((...(((((((.((.......(((.((((((,))))))...))).)).)))))))......)))..]]))).....))))))))))
+Working_res:   A:1-17,A:24-110,A:115-168
+Input_res:     A:41-61,A:67-75,A:147-149;A:81-83,A:138-143;A:5-8,A:32-35,A:37-39,A:158-164
+Align_res:     A:1-8,A:10-12,A:15-16,A:25-26,A:29-35,A:37-38,A:41-52,A:55-63,A:69-70,A:72-74,A:77-90,A:92-93,A:101-103,A:105-110,A:115-120,A:124-126,A:128-129,A:131-146,A:149-153,A:159-168
+Native:        6_0_solution_4GXY_rpr.pdb
+Description:   RNA-puzzle 6
+Extra_flags:   -
+
+Name:          rna_puzzle_7_align_tight
+Sequence:      gcgcugugucgcaaucugcgaagggcgucgucggcccaagcgguaguaagcagggaacucaccuccaaugaaacacauugucguagcaguugacuacuguuaugugauugguagaggcuaagugacgguauuggcguaagccaauaccgcagcacagcacaagcccgcuugcgagauuacagcgc
+Secstruct:     ((((((((((.....((((...((((.......))))..))))..((((((.(((..((((((..(((((.....)))))..(((((((.......)))))))......))).)))(((..(((.((((((((((....))))))))))...)))))).....)))))))))..))).)))))))
+Working_res:   A:1-185
+Input_res:     -
+Align_res:     A:1-10,A:16-19,A:23-26,A:34-37,A:40-43,A:46-51,A:53-55,A:58-63,A:66-70,A:76-80,A:83-89,A:97-103,A:110-112,A:114-119,A:122-124,A:126-135,A:140-149,A:153-158,A:164-172,A:175-177,A:179-185
+Native:        7_0_solution_4r4v_rpr.pdb
+Description:   RNA-puzzle 7
+Extra_flags:   -
+
+#Name:          rna_puzzle_7_dimer_align_tight
+#Sequence:      gcgcugugucgcaaucugcgaagggcgucgucggcccaagcgguaguaagcagggaacucaccuccaaugaaacacauugucguagcaguugacuacuguuaugugauugguagaggcuaagugacgguauuggcguaagccaauaccgcagcacagcacaagcccgcuugcgagauuacagcgc,gcgcugugucgcaaucugcgaagggcgucgucggcccaagcgguaguaagcagggaacucaccuccaaugaaacacauugucguagcaguugacuacuguuaugugauugguagaggcuaagugacgguauuggcguaagccaauaccgcagcacagcacaagcccgcuugcgagauuacagcgc
+#Secstruct:     ((((((((((.....((((...((((.......))))..))))..((((((.(((..((((((..(((((.....)))))..(((((((.......)))))))......))).)))(((..(((.((((((((((....))))))))))...)))))).....)))))))))..))).))))))),((((((((((.....((((...((((.......))))..))))..((((((.(((..((((((..(((((.....)))))..(((((((.......)))))))......))).)))(((..(((.((((((((((....))))))))))...)))))).....)))))))))..))).)))))))
+#Working_res:   A:1-185,B:1-185
+#Align_res:     -
+#Native:        rna_puzzle_7_dimer_NATIVE.pdb
+#Description:   RNA-puzzle 7 dimer state
+#Extra_flags:   -secstruct "((((((((((.....((((...((((.......))))..))))..((((((.(((..((((((..(((((.....)))))..(((((((.......)))))))......))).)))(((..(((.((((((((((....))))))))))...)))))).....)))))))))..))).))))))),((((((((((.....((((...((((.......))))..))))..((((((.(((..((((((..(((((.....)))))..(((((((.......)))))))......))).)))(((..(((.((((((((((....))))))))))...)))))).....)))))))))..))).)))))))"
+
+#Name:          rna_puzzle_7_pseudomonomer_align_tight
+#Sequence:      gcgcugugucgcaaucugcgaagggcgucgucggcccaagcgguaguaagcagggaacucaccuccaaugaaaca,cauugucguagcaguugacuacuguuaugugauugguagaggcuaagugacgguauuggcguaagccaauaccgcagcacagcacaagcccgcuugcgagauuacagcgc
+#Secstruct:     ((((((((((.....((((...((((...[[[.))))..))))..((((((.(((..((((((..(((((.....,)))))..(((((((..]]]..)))))))......))).)))(((..(((.((((((((((....))))))))))...)))))).....)))))))))..)).))))))))
+#Working_res:   A:601-675,A:681-790
+#Align_res:     -
+#Native:        4r4v_pseudomonomer_full_model.pdb
+#Description:   RNA-puzzle 7, 'pseudonative' recovering corrupted dimer fold
+#Extra_flags:   -
+
+Name:          rna_puzzle_8_homology_align_tight
+Sequence:      ggaucacgagggggagaccccggcaaccugggacggacacccaaggugcucacaccggagacgguggauccggcccgagagggcaacgaaguccgu
+Secstruct:     (((((....((((....))))(((..((((((.[[[[..))).))).)))..(((((....)))))))))).((((....)))).......]]]].
+Working_res:   A:1-96
+Input_res:     A:1-9,A:22-27,A:46-50,A:67-71
+Align_res:     A:1-13,A:18-27,A:30-32,A:34-37,A:40-42,A:46-50,A:53-57,A:62-71,A:73-76,A:81-84,A:92-95
+Native:        8_0_solution_4L81_rpr.pdb
+Description:   RNA-puzzle 8
+Extra_flags:   -
+
+Name:          rna_puzzle_9_2xnw_tloop_align_tight
+Sequence:      ggacacugaugaucgcguggauauggcacgcauugaauuguuggacaccguaaauguccuaacacgugucc
+Secstruct:     ((((((......(.(((((.....[[))))))..(.......(((((]].....)))))...)..))))))
+Working_res:   A:13-83
+Input_res:     A:30-40,A:56-70;A:45-49
+Align_res:     A:13-18,A:30-40,A:45-49,A:56-70,A:78-83
+Native:        5kpy.pdb
+Extra_flags:   -secstruct "((((((......(.(((((.....[[))))))..(.......(((((]].....)))))...)..))))))"
+
+Name:          rna_puzzle_10_homology_align_tight
+Sequence:      ugcgaugagaagaagaguauuaaggauuuacuaugauuagcgacucuaggauagugaaagcuagaggauaguaaccuuaagaaggcacuucgagca,aguaguucagugguagaacaccaccuugccaaggugggggucgcggguucgaaucccgucu
+Secstruct:     (((.....((((.......((((((..(((((((......[..((((((..........])))))).)))))))))))))...[[[.))))..))),((..((((....{..)))).(((((..]]]..))))).....(((((..}....)))))))
+Working_res:   A:1-96,B:6-66
+Input_res:     A:37-43,A:53-60;A:1-10,A:90-96;A:16-20,A:80-83;B:6-18,B:20-30,B:38-66
+Align_res:     A:1-10,A:16-20,A:22-25,A:28-34,A:37-49,A:53-66,A:68-78,A:80-86,A:90-96,B:6-18,B:20-30,B:33-35,B:38-66
+Native:        10_0_solution_4LCK_rpr.pdb
+Description:   RNA-puzzle 10
+Extra_flags:   -
+
+Name:          rna_puzzle_11_align_tight
+Sequence:      gggaucugucaccccauugaucgccuucgggcugaucuggcuggcuaggcggguccc
+Secstruct:     ((((((((((.(((((..(((((((....))).)))))))..))...))))))))))
+Working_res:   A:1-57
+Input_res:     -
+Align_res:     A:1-10,A:12-16,A:19-25,A:30-32,A:34-40,A:43-44,A:48-57
+Native:        native_5LYV.pdb
+Extra_flags:   -
+
+Name:          rna_puzzle_12_align_tight
+Sequence:      gaucgcugaacccga,aggggcgggggacccag,ggggcgaaucucuuccgaaaggaagaguaggguuacuccuucgacccgagcccgucagcuaaccucgcaagcguccgaaggagaa
+Secstruct:     ...((((...(((..,.)))((((((....(..,(((((....(((((((....)))))))..(((((.[[[[[[[)))))..))))..).)....)))))).))))...]]]]]]]..
+Working_res:   A:2-16,A:18-34,A:39-123
+Input_res:     -
+Align_res:     A:5-8,A:12-14,A:19-27,A:40-43,A:48-54,A:59-65,A:68-72,A:74-85,A:88-91,A:101-106,A:108-111,A:115-121
+Native:        12_4qln_solution_rpr.pdb
+Description:   RNA-puzzle 12
+Extra_flags:   -
+
+Name:          rna_puzzle_13_align_tight
+Sequence:      gggucgugacuggcgaacaggugggaaaccaccggggagcgaccc,gccgcccgccugggc
+Secstruct:     (((((((..(([[[[....(((((....))))).))..))))))),(((...]]]]..)))
+Working_res:   A:1-45,A:57-71
+Input_res:     -
+Align_res:     A:1-7,A:10-15,A:20-24,A:29-33,A:35-36,A:39-45,A:57-59,A:63-66,A:69-71
+Native:        13_0_solution_4XW7_rpr.pdb
+Description:   RNA-puzzle 13
+Extra_flags:   -
+
+Name:          rna_puzzle_14_free_align_tight
+Sequence:      cguuggcccaggaaacugggu,aguaaggcccauugcacuccgggccugaagcaacgcu
+Secstruct:     (((((((((((....)))))),....((((((..........))))))....)))))..
+Working_res:   A:1-21,A:25-61
+Input_res:     -
+Align_res:     A:1-11,A:16-21,A:29-34,A:45-50,A:55-59
+Native:        14_5ddo_free_solution_rpr.pdb
+Description:   RNA-puzzle 14, ligand-free
+Extra_flags:   -
+
+Name:          rna_puzzle_14_bound_align_tight
+Sequence:      cguugacccaggaaacugggcggaaguaaggcccauugcacuccgggccugaagcaacgcg
+Secstruct:     (((((.(((((....)))))..[.....((((((..........))))))....)))))].
+Working_res:   A:1-61
+Input_res:     -
+Align_res:     A:1-5,A:7-11,A:16-20,A:29-34,A:45-50,A:55-59
+Native:        14_5ddp_bound_solution_rpr.pdb
+Description:   RNA-puzzle 14, ligand-bound
+Extra_flags:   -
+
+Name:          rna_puzzle_15_align_tight
+Sequence:      ggguacuuaagcccacugaugagucgcugggaugcgacgaaacgccca,gggcgucugggcaguaccca
+Secstruct:     ((((((....((((((....).(((((......)))))...((((((.,)))))).))))).)))))).
+Working_res:   A:1-48,B:1-20
+Input_res:     -
+Align_res:     A:1-6,A:11-15,A:23-27,A:34-38,A:42-47,B:1-6,B:8-12,B:14-19
+Native:        15_solution_0_rpr.pdb
+Description:   RNA-puzzle 15
+Extra_flags:   -
+
+Name:          rna_puzzle_17_align_tight
+Sequence:      cgugguuagggccacguuaaauaguugcuuaagcccuaagcguugau,aucaggugcaa
+Secstruct:     ((((([[[[[[)))))........((((....(]]]]]].)..(((.,.)))...))))
+Working_res:   A:1-47,A:52-62
+Input_res:     -
+Align_res:     A:1-5,A:8-16,A:25-28,A:34-37,A:44-46,A:53-55,A:59-62
+Native:        17_5k7c_solution_rpr.pdb
+Description:   RNA-puzzle 17
+Extra_flags:   -
+
+Name:          rna_puzzle_18_with_4PQV_align_tight
+Sequence:      gggucaggccggcgaaagucgccacaguuuggggaaagcugugcagccuguaacccccccacgaaaguggg
+Secstruct:     ....(((((((((....)))).((((((..[[[[...))))))..)))))...]]]](((((....)))))
+Working_res:   A:1-71
+Input_res:     A:1-26,A:40-50
+Align_res:     A:1-26,A:31-34,A:40-50,A:54-62,A:67-71
+Native:        18_0_solution_5TPY_rpr.pdb
+Description:   RNA-puzzle 18, with original homology
+Extra_flags:   -
+
+Name:          rna_puzzle_19_t_loop_align_tight
+Sequence:      gcagggcaaggcccagucccgugcaagccgggaccgcccc,ggggcgcggcgcucauuccugc
+Secstruct:     (((((...(((((..((((((.......))))))((((((,)))))).))).))....)))))
+Working_res:   A:1-40,B:1-22
+Input_res:     A:8,A:22-26
+Align_res:     A:1-5,A:8,A:11-13,A:16-26,A:29-40,B:1-6,B:8-10,B:18-22
+Native:        19_5t5a_solution_0_rpr.pdb
+Description:   RNA-puzzle 19
+Extra_flags:   -
+
+Name:          rna_puzzle_20_t_loop_align_tight
+Sequence:      acccgcaaggccgacggc,gccgccgcuggugcaaguccagccacgcuucggcgugggcgcucaugggu
+Secstruct:     ((((...((((((.((((,)))).)(((((.......)))))(((((....)))))))).))...))))
+Working_res:   A:1-18,B:1-50
+Input_res:     A:7,B:12-16
+Align_res:     A:1-4,A:7-12,A:15-18,B:1-4,B:7-16,B:19-28,B:33-40,B:42-43,B:47-50
+Native:        5y87_RNA.pdb
+Description:   RNA-puzzle 20, another TS ribozyme
+Extra_flags:   -
+
+Name:          rna_puzzle_21_align_tight
+Sequence:      ccggacgaggugcgccguacccggucaggacaagacggcgc
+Secstruct:     [[[[.......(((((((..]]]]..........)))))))
+Working_res:   A:1-41
+Input_res:     -
+Align_res:     A:1-4,A:12-18,A:21-24,A:35-41
+Native:        21_5nwq_solution_0_rpr.pdb
+Description:   RNA-puzzle 21
+Extra_flags:   -block_stack_below_res A:1 A:12 -block_stack_above_res A:24 A:41
+
