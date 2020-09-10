@@ -27,7 +27,7 @@ What's in here
 
 Setting up benchmark tools  
 --------------------------
-- Make sure you have Rosetta compiled. You also need the Rosetta tools repository, and to have set up the rna_tools subdirectory therein. Follow directions <a href="https://www.rosettacommons.org/docs/latest/RNA-tools.html">here</a>.
+- Make sure you have Rosetta compiled. You also need the Rosetta tools repository, and to have set up the rna_tools subdirectory therein. Follow directions <a href="https://www.rosettacommons.org/docs/latest/application_documentation/rna/RNA-tools">here</a>.
 - Run `source ./INSTALL` from inside the `stepwise_benchmark/` directory.
 
 Setting up a new benchmark run
