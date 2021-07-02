@@ -663,7 +663,8 @@ for target in targets:
     elif args.farna or args.farfar: # SETUP for Fragment Assembly of RNA
 
         fid = open( '%s/README_FARFAR' % target.name, 'w' )
-        if args.near_native:
+        # This logic had been flipped
+        if not args.near_native:
             fid.write( 'rna_denovo @flags -out:file:silent farna_rebuild.out\n' )
         else:
             fid.write( 'rna_denovo @flags -out:file:silent farna_rebuild.out && rna_minimize @flags_min -in:file:silent farna_rebuild.out -out:file:silent farna_rebuild.minimized.out \n' )
@@ -683,9 +684,12 @@ for target in targets:
         if '-cycles' not in extra_flags_benchmark: fid.write( '-cycles 20000\n' )
         if '-nstruct' not in extra_flags_benchmark: fid.write( '-nstruct 20\n' )
         if not args.save_times_off: fid.write( '-save_times\n' )
-        if len( target.dock_partners ) > 0:
-            fid.write( '-chain_connection SET1 %s SET2 %s\n' % ( make_tag_with_conventional_numbering( target.dock_partners[ 0 ], target.resnums, target.chains, target.segids ), \
-                                                                 make_tag_with_conventional_numbering( target.dock_partners[ 1 ], target.resnums, target.chains, target.segids ) ) )
+        
+        # No longer necessary for FARFAR2 runs; you will have -chain_connection implicitly through
+        # the secondary structure. And if you don't, you need this explicitly through -extra_flags!
+        #if len( target.dock_partners ) > 0:
+        #    fid.write( '-chain_connection SET1 %s SET2 %s\n' % ( make_tag_with_conventional_numbering( target.dock_partners[ 0 ], target.resnums, target.chains, target.segids ), \
+        #                                                         make_tag_with_conventional_numbering( target.dock_partners[ 1 ], target.resnums, target.chains, target.segids ) ) )
         add_extra_flags_for_name(fid, target.extra_flags, target.name)
         add_extra_flags_benchmark(fid, extra_flags_benchmark, motif_mode_OK = False )
         fid.close()
