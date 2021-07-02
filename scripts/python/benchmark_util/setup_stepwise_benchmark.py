@@ -150,8 +150,6 @@ for target in targets:
     target.working_native = slice_out( inpath, prefix, target.native, ' '.join( working_res_blocks ) )
     # We need to sort the sequences first. That's absurd, of course, but otherwise we'd need a
     # vastly more clever sequence determination algorithm. That's a TODO.
-    print(''.join(sequences))
-    print(''.join(get_sequences( target.working_native )[0]))
     assert( sorted(''.join(sequences))== sorted(''.join(get_sequences( target.working_native )[0])) )
 
     # create starting PDBs
@@ -178,11 +176,11 @@ for target in targets:
         input_segids_by_block.append(  [] )
         get_resnum_chain( input_res_blocks[m], input_resnums_by_block[m], input_chains_by_block[m], input_segids_by_block[m] )
         input_resnum_fullmodel_by_block.append( map( lambda x: get_fullmodel_number(x,target.resnums,target.chains, target.segids), zip( input_resnums_by_block[m], input_chains_by_block[m], input_segids_by_block[m] ) ) )
-        print(input_resnum_fullmodel_by_block)
+        #print(input_resnum_fullmodel_by_block)
     
     input_resnum_fullmodel = full_model_info[ target.name ].conventional_tag_to_full(input_res_blocks)
     input_resnum_fullmodel.sort()
-    print(input_resnum_fullmodel)
+    #print(input_resnum_fullmodel)
 
     #input_resnum_fullmodel = map( lambda x: get_fullmodel_number(x,resnums[name],chains[name]), zip( input_resnums, input_chains ) )
 
@@ -226,7 +224,7 @@ for target in targets:
         helix_file =  '%s/%s_HELIX%d.pdb' % (inpath,target.name,(i+1))
 
         stem = stems[i]
-        print("stem", i, stem)
+        #print("stem", i, stem)
         helix_seq = ''; helix_resnum = [];
         for bp in stem:
             helix_seq    += fasta_entities[ bp[0] - 1 ] #sequence_joined[ bp[0] - 1 ]
@@ -249,10 +247,10 @@ for target in targets:
         input_resnum_fullmodel_by_block.append( helix_resnum )
 
         if exists( helix_file ): continue
-        print(resnums, chains, segids)
+        #print(resnums, chains, segids)
         command = 'rna_helix.py -seq %s  -o %s -resnum %s' % ( helix_seq, helix_file, \
             make_tag_with_conventional_numbering( helix_resnum, resnums, chains, segids ) )
-        print(command)
+        #print(command)
         os.system( command )
 
 
@@ -418,14 +416,14 @@ for target in targets:
             design_sequences[-1] += res
         sequences = design_sequences
         target.sequence = ','.join(design_sequences)
-        print(input_resnum_fullmodel)
-        print(sequences)
+        #print(input_resnum_fullmodel)
+        #print(sequences)
     if args.swa:
         target.fasta = target.fasta.replace('.fasta', '_SWA.fasta')
     if not exists( target.fasta ):
         fid = open( target.fasta, 'w' )
-        print(sequences)
-        print(working_res_blocks)
+        #print(sequences)
+        #print(working_res_blocks)
         assert( len( sequences ) == len( working_res_blocks ) )
         if args.swa:
             fid.write( '>%s %s\n%s\n' % ( target.name, ' '.join(working_res_blocks),''.join(sequences) ) )
@@ -455,8 +453,17 @@ for target in targets:
         target.align_pdb = None
 
     # align_pdb is native and must ALSO appear if FARFAR and -rmsd_screen
-    if args.near_native or ( '-rmsd_screen' in target.extra_flags or '-rmsd_screen' in extra_flags_benchmark ) and args.farfar:
+    if args.near_native or ( '-rmsd_screen' in target.extra_flags or '-rmsd_screen' in extra_flags_benchmark ) and args.farfar and '-align_pdb' not in target.extra_flags:
         target.extra_flags[ '-align_pdb' ] = basename( target.native )
+    
+    # If -bps_moves is in extra_flags_benchmark, or really if no HELIX in -s (also base pair
+    # constraint condition, basically) then add a command line specification of secstruct.
+    # Unless, of course, secstruct is just dots... actually, sure, add it anyway. That's fine 
+    # because it hurts nothing and is just more explicit
+    #if (args.farna or args.farfar) and len(filter(target.input_pdbs, lambda(s): "HELIX" in s)) == 0:
+    if (args.farna or args.farfar) and (target.input_pdbs == '' or len(list(filter(lambda s: "HELIX" in s, target.input_pdbs))) == 0):
+        target.extra_flags['-secstruct'] = "\"{}\"".format(target.secstruct)
+
 
     # get sample loop res
     target.loop_res = {}
@@ -514,14 +521,6 @@ for target in targets:
             if args.verbose:
                 print('loopres_list for '+target.name+' = '+' '.join(loopres_list))
                 print('periph_res for '+target.name+' = '+periph_res_tag)
-
-    # If -bps_moves is in extra_flags_benchmark, or really if no HELIX in -s (also base pair
-    # constraint condition, basically) then add a command line specification of secstruct.
-    # Unless, of course, secstruct is just dots... actually, sure, add it anyway. That's fine 
-    # because it hurts nothing and is just more explicit
-    #if (args.farna or args.farfar) and len(filter(target.input_pdbs, lambda(s): "HELIX" in s)) == 0:
-    if (args.farna or args.farfar) and len(list(filter(lambda s: "HELIX" in s, target.input_pdbs))) == 0:
-        target.extra_flags['-secstruct'] = "\"{}\"".format(target.secstruct)
 
 
 # write qsubMINIs, READMEs and SUBMITs
@@ -663,11 +662,10 @@ for target in targets:
     elif args.farna or args.farfar: # SETUP for Fragment Assembly of RNA
 
         fid = open( '%s/README_FARFAR' % target.name, 'w' )
-        # This logic had been flipped
-        if not args.near_native:
-            fid.write( 'rna_denovo @flags -out:file:silent farna_rebuild.out\n' )
-        else:
+        if args.near_native:
             fid.write( 'rna_denovo @flags -out:file:silent farna_rebuild.out && rna_minimize @flags_min -in:file:silent farna_rebuild.out -out:file:silent farna_rebuild.minimized.out \n' )
+        else:
+            fid.write( 'rna_denovo @flags -out:file:silent farna_rebuild.out\n' )
         fid.close()
 
         fid = open( '%s/flags' % target.name, 'w' )

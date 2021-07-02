@@ -2,7 +2,7 @@ Benchmark_flags: -superimpose_over_all
 
 Name:          rna_puzzle_1
 Sequence:      ccgccgcgccaugccuguggcggccgccgcgccaugccuguggcgg
-Secstruct:     ((((((((.((((...((((((()))))))..)))).).)))))))
+Secstruct:     (((((((..((((...((((((()))))))..))))...)))))))
 Working_res:   A:1-46
 Input_res:     -
 Native:        1_solution_0_rpr.pdb
@@ -20,7 +20,7 @@ Extra_flags:   -
 
 Name:          rna_puzzle_3
 Sequence:      cucuggagagaaccguuuaaucggucgccgaaggagcaagcucugcgcauaugcagagugaaacucucaggcaaaaggacagag
-Secstruct:     (((((....(.((((......)))))(((...((((...((((((((....))))))))....))).).))).......)))))
+Secstruct:     (((((......((((......)))))(((...((((...((((((((....))))))))....)))...))).......)))))
 Working_res:   A:1-84
 Input_res:     -
 Native:        3_solution_0_rpr.pdb
