@@ -5,7 +5,7 @@ Working_res:   V:A:7-81
 Input_res:     -
 Native:        cdigmp.pdb
 Description:   -
-Extra_flags   -secstruct "((((((..((......(((((((((......[[[[[[[.)))))))))...))....]]]]]..]]..))))))."
+Extra_flags   -secstruct "((((((..((......(((((((((.....{[[[[[[[.)))))))))...))....]]]]]}.]]..))))))."
 
 Name:          cgamp
 Sequence:      gguacacgacaauacuaaaccauccgcgaggauggggcggaaagccuaagggucucccugagacagccgggcugccgaaauauc
@@ -14,7 +14,7 @@ Working_res:   R:A:1-84
 Input_res:     -
 Native:        cgamp.pdb
 Description:   -
-Extra_flags   -secstruct "((((..((......((...((((((....))))))...))...((((..(((((((...)))))..))))))...))...))))"
+Extra_flags   -secstruct "((((..((......((...((((((....))))))..[))...((((..(((((((...))))).]))))))...))...))))"
 
 Name:          cobalamin
 Sequence:      ggucaaauaggugccgguccgugaacaacagccggcuuaaaagggaaaccgguaaaagccggugcggucccgccacuguaauuggccaagcgccaagagccaggauaccugccuguuugaucagcacgaauucugcgaggacagauga
@@ -23,7 +23,7 @@ Working_res:   A:A:202-349
 Input_res:     -
 Native:        cobalamin.pdb
 Description:   -
-Extra_flags   -secstruct "((((((((((((((((((..((.....)).)))))).....(((...(((((......)))))[[((.....)).(((...(((((.....)))))..]])))....))))))))))))))).........................."
+Extra_flags   -secstruct "((((((((((((((((((.[((.....)).)))))).....(((...(((((......)))))[[((.....)).(((...(((((.....)))))..]])))]...)))))))))))))))..(.....((........).)...)."
 
 Name:          fmn
 Sequence:      ggaucuucggggcagggugaaauucccgaccggugguauaguccacgaaaguauuugcuuugauuuggugaaauuccaaaaccgacaguagagucuggaugagagaagauu
@@ -32,7 +32,7 @@ Working_res:   X:A:1-111
 Input_res:     -
 Native:        fmn.pdb
 Description:   -
-Extra_flags   -secstruct ".(((((((......(((.......)))...((((((....[[))))..(((......)))...(((((.......)))))]])).(((......))).......)))))))"
+Extra_flags   -secstruct ".(((((((......(((.......))).[[((((((....[[))))..(((......)))...(((((.......)))))]])).(((....]]))).......)))))))"
 
 Name:          gln2_monomer
 Sequence:      cguucacccuucggggcgc,augggaguagggaacgggauucucau
@@ -41,7 +41,7 @@ Working_res:   A:A:1-19,B:B:25-50
 Input_res:     -
 Native:        gln2_monomer.pdb
 Description:   -
-Extra_flags   -secstruct "(((((.(((....)))...[[[[[[[[...)))))..]]]]]]]]"
+Extra_flags   -secstruct "[[[[[.(((....)))..{.....((((((((...]]]]]}.))))))))"
 
 Name:          guanine
 Sequence:      ggacauauaaucgcguggauauggcacgcaaguuucuaccgggcaccguaaauguccgacuaugucc
@@ -59,7 +59,7 @@ Working_res:   A:A:1-99
 Input_res:     -
 Native:        mn.pdb
 Description:   -
-Extra_flags   -secstruct "(((((((......(((((((((((....))))))))(((((((((.......((((....)))))))))))))(((....)))..)))....)))))))"
+Extra_flags   -secstruct "(((((((......(((.(((((((....))))))).(((((((((.......((((....)))))))))))))(((....)))..)))....)))))))"
 
 Name:          nada
 Sequence:      ggcuucaacaaccccguagguugggccgaaaggcagcgaaucuacuggagcc
@@ -68,7 +68,7 @@ Working_res:   A:A:1-52
 Input_res:     -
 Native:        nada.pdb
 Description:   -
-Extra_flags   -secstruct "(((((((........((((((((.(((....)))..).))))))))))))))"
+Extra_flags   -secstruct "(((((((.....[[.((((((((.(((....))).])]))))))))))))))"
 
 Name:          neomycin
 Sequence:      ggcugcuuguccuuuaaugguccaguc
@@ -86,7 +86,7 @@ Working_res:   A:A:6-70,A:A:72-98
 Input_res:     -
 Native:        nico.pdb
 Description:   -
-Extra_flags   -secstruct "((((((((.....((.((((((.....))))))...))...(((((....))))).(((((((.........)))))))....))))))))."
+Extra_flags   -secstruct "((((((((..(.(((.((((((.....))))))...)))..(((((....))))).(((((((.........)))))))..).))))))))."
 
 Name:          preq1
 Sequence:      cugggucgcagu,ccccaguuaacaaaacaag
@@ -95,7 +95,7 @@ Working_res:   A:A:1-12,A:A:15-33
 Input_res:     -
 Native:        preq1.pdb
 Description:   -
-Extra_flags   -secstruct "(((((........)))))............."
+Extra_flags   -secstruct "(((((...[.[....))))).........]..]"
 
 Name:          prpp
 Sequence:      ggaaagugugucuaggguuccgcgugcuucggcacggacugguccaagugacacagacgcauucgugcguuacaccggagggauagaagcccaggcggguagguuuc
@@ -104,7 +104,7 @@ Working_res:   A:A:1-107
 Input_res:     -
 Native:        prpp.pdb
 Description:   -
-Extra_flags   -secstruct ".((((.((((((..((...((((((((....)))))..).)).))....))))))((((((....))))))...(((..(((.......)))...))).....))))"
+Extra_flags   -secstruct ".((((.((((((..((...((((((((....)))))..).)).))....))))))((((((....)))))).[.(((..(((.......))).].))).....)))) "
 
 Name:          sam3
 Sequence:      gggacaaguucccgaaaggauggcggaaacgccagaugccuuguccc
@@ -113,7 +113,7 @@ Working_res:   A:A:1-47
 Input_res:     -
 Native:        sam3.pdb
 Description:   -
-Extra_flags   -secstruct "((((((((.((((....)).(((((....)))))))...))))))))"
+Extra_flags   -secstruct ".(((((((.(((.....)))(((((....))))).....)))))))."
 
 Name:          thf
 Sequence:      ggagaguagaugauucgcguuaagugugugugaaugggaugucgucacacaacgaagcgagagcgcggugaaucauugcauccgcucca
