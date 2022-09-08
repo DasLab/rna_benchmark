@@ -41,7 +41,7 @@ Working_res:   A:A:1-19,B:B:25-50
 Input_res:     -
 Native:        gln2_monomer.pdb
 Description:   -
-Extra_flags   -secstruct "[[[[[.(((....)))..{.....((((((((...]]]]]}.))))))))"
+Extra_flags   -secstruct "[[[[[.(((....)))..{,((((((((...]]]]]}.))))))))"
 
 Name:          guanine
 Sequence:      ggacauauaaucgcguggauauggcacgcaaguuucuaccgggcaccguaaauguccgacuaugucc
